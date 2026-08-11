@@ -23,7 +23,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><div class="logo">정정당당 · NOW Rank 관리자</div><div class="pill">6H · MULTI-SOURCE</div></div>
+  <div class="head"><div class="logo">정정당당 · NOW Rank 관리자</div><div class="pill">6H · KEYLESS-FIRST</div></div>
 
   <section class="card" id="loginCard">
     <h2 style="margin-top:0">관리자 로그인</h2>
@@ -43,7 +43,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;
         <div><label>이벤트 키워드 (쉼표 구분)</label><input id="eventKeywords" value="더불어민주당 전당대회,8·17 전당대회,당대표 경선"></div>
       </div>
       <div class="notice" style="margin-top:12px">
-        Refresh는 299명 전체를 작은 배치로 나눠 수집합니다. NAVER API HUB 키가 설정되어 있으면 네이버 뉴스 검색을 사용하고, 없으면 Google News RSS로 자동 대체합니다. Refresh만으로 공개 순위는 바뀌지 않으며, 반드시 미리보기 후 게시해야 합니다.
+        Refresh는 299명 전체의 Google News를 전수 수집하고 Google Trends 급상승을 확인합니다. 이후 상위 후보를 대상으로 Wikimedia Pageviews와, robots.txt가 허용하는 경우 NAVER/Daum 공개 검색결과 HTML을 추가 관측합니다. HTML 원천이 차단·변경되면 관리자 화면에 상태를 표시하며 CAPTCHA/차단 우회는 하지 않습니다. Refresh만으로 공개 순위는 바뀌지 않으며 미리보기 후 게시합니다.
       </div>
       <div class="actions">
         <button class="mint" id="refreshBtn">NOW Rank 새로고침</button>
@@ -91,8 +91,8 @@ async function status(){
   try{
     const s=await api('/api/admin/status');
     setLogin(true);
-    const src=s.sources||{}; const badges=[['Google News',src.googleNews],['NAVER News',src.naverNews],['Kakao/Daum',src.kakao],['YouTube',src.youtube],['X',src.x],['정정당당 내부',src.internal]];
-    $('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>수집 원천: ${badges.map(([n,on])=>`<b class="${on?'good':'bad'}">${n} ${on?'ON':'OFF'}</b>`).join(' · ')}<br>최근 게시: <b>${s.current?.timestamp||'아직 없음'}</b>`;
+    const src=s.sources||{}; const badges=[['Google News',src.googleNews],['Google Trends',src.googleTrends],['Wikimedia',src.wikimedia],['NAVER HTML',src.naverHtml],['Daum HTML',src.daumHtml],['NAVER API',src.naverNews],['Kakao API',src.kakao],['YouTube API',src.youtube],['X',src.x],['정정당당 내부',src.internal]];
+    $('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>수집 원천: ${badges.map(([n,on])=>`<b class="${on?'good':'bad'}">${n} ${on?'ON':'OFF/동적확인'}</b>`).join(' · ')}<br>※ NAVER/Daum HTML은 Refresh 시작 시 robots.txt와 응답 상태를 다시 확인합니다. YouTube /results는 robots.txt가 금지하면 수집하지 않습니다.<br>최근 게시: <b>${s.current?.timestamp||'아직 없음'}</b>`;
     if(s.defaults){
       if(s.defaults.eventTitle) $('#eventTitle').value=s.defaults.eventTitle;
       if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length) $('#eventKeywords').value=s.defaults.eventKeywords.join(',');
@@ -112,7 +112,8 @@ function renderPreview(p){
   lastPreview=p;
   $('#previewCard').classList.remove('hidden');
   const q=p.quality||{};
-  $('#previewMeta').innerHTML=`계산시각 ${p.timestamp}<br>다중 원천 TOP30: <b>${q.top30MultiSource??0}명</b> · 3개 이상 원천: <b>${q.top30ThreePlus??0}명</b> · 단일원천: <b class="${(q.top30SingleSource||0)>10?'bad':'good'}">${q.top30SingleSource??0}명</b>${q.warning?`<br><span class="bad">⚠ ${q.warning}</span>`:''}<br>자동 감지 이슈: ${(p.detectedIssues||[]).slice(0,4).map(x=>`${x.term} (${x.articles}건/${x.sources}출처)`).join(' · ')||'아직 충분한 군집 없음'}`;
+  const h=p.sourceHealth||{}; const hs=(x)=>{const st=x?.state||'UNKNOWN';const good=['OK','READY'].includes(st);return `<b class="${good?'good':'bad'}">${st}</b>${x?.detail?`(${x.detail})`:''}`};
+  $('#previewMeta').innerHTML=`계산시각 ${p.timestamp}<br>다중 원천 TOP30: <b>${q.top30MultiSource??0}명</b> · 3개 이상 원천: <b>${q.top30ThreePlus??0}명</b> · 단일원천: <b class="${(q.top30SingleSource||0)>10?'bad':'good'}">${q.top30SingleSource??0}명</b>${q.warning?`<br><span class="bad">⚠ ${q.warning}</span>`:''}<br>Keyless 상태: Google Trends ${hs(h.googleTrends)} · Wikipedia ${hs(h.wiki)} · NAVER HTML ${hs(h.naverHtml)} · Daum HTML ${hs(h.daumHtml)} · YouTube HTML ${hs(h.youtubeHtml)}<br>자동 감지 이슈: ${(p.detectedIssues||[]).slice(0,4).map(x=>`${x.term} (${x.articles}건/${x.sources}출처)`).join(' · ')||'아직 충분한 군집 없음'}`;
   $('#previewBody').innerHTML=(p.top30||[]).map(x=>`<tr><td><b>${x.rank}</b></td><td>${x.name}</td><td>${x.party}</td><td>${x.score.toFixed(1)}</td><td>${Number.isFinite(x.change6h)?(x.change6h>0?'▲ '+x.change6h:x.change6h<0?'▼ '+Math.abs(x.change6h):'―'):'첫 스냅샷'}</td><td>${x.signal?.count6??0}</td><td>${(x.sourceBadges||[]).join('·')||'단일/희박'}</td></tr>`).join('');
   $('#moverBody').innerHTML=(p.movers||[]).map(x=>`<tr><td>${x.name}</td><td>${x.rank}</td><td class="${x.change6h>0?'good':'bad'}">${x.change6h>0?'▲ '+x.change6h:'▼ '+Math.abs(x.change6h)}</td><td>${(x.sourceBadges||[]).join('·')||'-'}</td></tr>`).join('');
 }
@@ -125,18 +126,19 @@ $('#refreshBtn').onclick=async()=>{
       eventKeywords:$('#eventKeywords').value.split(',').map(x=>x.trim()).filter(Boolean)
     })});
     draftId=start.draftId;
+    const sh=start.sourceHealth||{}; $('#refreshStatus').textContent=`원천 점검 완료 · Google Trends 매칭 ${start.trendingMatches||0}명 · NAVER HTML ${sh.naverHtml?.state||'?'} · Daum HTML ${sh.daumHtml?.state||'?'} · YouTube HTML ${sh.youtubeHtml?.state||'?'}`;
     let offset=0,total=start.total;
     while(offset<total){
       $('#refreshStatus').textContent=`1차 전수 수집 중 · ${offset}/${total}`;
-      const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:6})});
+      const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:4})});
       offset=b.nextOffset;
       $('#bar').style.width=`${Math.round(offset/total*72)}%`;
     }
     const prep=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'prepare-enrichment',draftId})});
     let eo=0,et=prep.total||0;
-    if(et && (prep.configured?.youtube||prep.configured?.x)){
+    if(et && (prep.configured?.keyless||prep.configured?.youtube||prep.configured?.x)){
       while(eo<et){
-        $('#refreshStatus').textContent=`2차 영상·SNS 보강 중 · ${eo}/${et}`;
+        $('#refreshStatus').textContent=`2차 Keyless·영상·SNS 보강 중 · ${eo}/${et}`;
         const eb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'enrich',draftId,offset:eo,size:4})});
         eo=eb.nextOffset;
         $('#bar').style.width=`${72+Math.round((eo/Math.max(1,et))*20)}%`;

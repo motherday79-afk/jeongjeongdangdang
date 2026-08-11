@@ -1,4 +1,5 @@
 const {URL}=require('url');
+const {collectKeylessSurface,collectKeylessEnrichment}=require('./keyless');
 
 function cleanHtml(s=''){
   return String(s).replace(/<[^>]+>/g,' ').replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
@@ -104,7 +105,7 @@ function mergeSummaries(list,provider='news-multi'){
     sources24:valid.reduce((a,x)=>Math.max(a,x.sources24||0),0),event6:valid.reduce((a,x)=>a+x.event6,0),title6:valid.reduce((a,x)=>a+x.title6,0),
     latest:latest.length?Math.max(...latest):null,provider,headlines:heads.slice(0,12),providers:valid.map(x=>x.provider)};
 }
-async function collectMember(member,keywords=[]){
+async function collectMember(member,keywords=[],globalSignals={}){
   const nowMs=Date.now(),warnings=[];
   let google=[],naver=null;
   try{google=await fetchGoogleNews(member);}catch(e){warnings.push(String(e.message||e));}
@@ -113,6 +114,8 @@ async function collectMember(member,keywords=[]){
   const naverSummary=naver?summarize(naver,member,keywords,nowMs,'naver-news'):null;
   const news=mergeSummaries([googleSummary,naverSummary],'news');
   const channels={news};
+  const gt=globalSignals?.trends?.signals?.[member.name];
+  if(gt) channels.googleTrends=gt;
   if(process.env.KAKAO_REST_API_KEY){
     const types=['web','blog','cafe','video'];
     const settled=await Promise.all(types.map(async type=>{try{return [type,await fetchKakao(member,type)]}catch(e){warnings.push(String(e.message||e));return [type,null]}}));
@@ -120,8 +123,10 @@ async function collectMember(member,keywords=[]){
   }else{
     for(const type of ['web','blog','cafe','video']) channels[type]=emptySummary(`kakao-${type}-unconfigured`);
   }
-  const evidenceItems=dedupe(Object.values(channels).flatMap(x=>x.headlines||[])).slice(0,28);
-  return {channels,evidenceItems,warning:warnings.length?warnings.join('; '):null,providers:{googleNews:true,naverNews:Boolean(naver),kakao:Boolean(process.env.KAKAO_REST_API_KEY)}};
+  let surfaceHealth={};
+  try{const k=await collectKeylessSurface(member,keywords,globalSignals);Object.assign(channels,k.channels||{});surfaceHealth=k.health||{};}catch(e){warnings.push(`keyless-surface: ${e.message||e}`);}
+  const evidenceItems=dedupe(Object.values(channels).flatMap(x=>x.headlines||[])).slice(0,32);
+  return {channels,evidenceItems,health:surfaceHealth,warning:warnings.length?warnings.join('; '):null,providers:{googleNews:true,naverNews:Boolean(naver),kakao:Boolean(process.env.KAKAO_REST_API_KEY),googleTrends:Boolean(gt&&gt.score>0)}};
 }
 
 function isoAgo(hours){return new Date(Date.now()-hours*3600000).toISOString();}
@@ -151,14 +156,15 @@ async function fetchX(member){
   const latest=bins.filter(b=>Number(b.tweet_count)>0).map(b=>Date.parse(b.end)).filter(Number.isFinite);
   return {count6:sum(6),count24:sum(24),count7d:sum(168),sources6:1,sources24:1,event6:0,title6:0,latest:latest.length?Math.max(...latest):null,provider:'x-counts',headlines:[],totalCount:Number(j.meta?.total_tweet_count||0)};
 }
-async function collectEnrichmentMember(member,keywords=[]){
-  const out={},warnings=[];
+async function collectEnrichmentMember(member,keywords=[],globalSignals={}){
+  const out={},warnings=[],health={};
   if(process.env.YOUTUBE_API_KEY){try{out.youtube=await fetchYouTube(member,keywords)}catch(e){warnings.push(String(e.message||e));}}
   if(process.env.X_BEARER_TOKEN){try{out.x=await fetchX(member)}catch(e){warnings.push(String(e.message||e));}}
-  return {channels:out,warning:warnings.length?warnings.join('; '):null};
+  try{const k=await collectKeylessEnrichment(member,keywords,globalSignals);Object.assign(out,k.channels||{});Object.assign(health,k.health||{});}catch(e){warnings.push(`keyless: ${e.message||e}`);}
+  return {channels:out,health,warning:warnings.length?warnings.join('; '):null};
 }
 function preliminaryHeat(signal){
-  const c=signal?.channels||{},news=c.news||{},portal=['web','blog','cafe','video'].map(k=>c[k]||{});
-  return 5*(news.event6||0)+3*(news.count6||0)+1.5*(news.sources6||0)+portal.reduce((a,x)=>a+1.5*(x.count6||0)+2*(x.event6||0),0);
+  const c=signal?.channels||{},news=c.news||{},portal=['web','blog','cafe','video'].map(k=>c[k]||{}),gt=c.googleTrends||{};
+  return 5*(news.event6||0)+3*(news.count6||0)+1.5*(news.sources6||0)+portal.reduce((a,x)=>a+1.5*(x.count6||0)+2*(x.event6||0),0)+0.8*(gt.score||0);
 }
 module.exports={collectMember,collectEnrichmentMember,preliminaryHeat,cleanHtml,normalizeTitle,normalizeEventText,summarize,keywordMatch};

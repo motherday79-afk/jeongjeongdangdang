@@ -23,6 +23,17 @@ function internalMomentum(s={}){
   const volume=logisticCount(c,18),score=clamp(.62*surge+.38*volume);
   return {score:score*(1-Math.exp(-c/8)),surge,volume};
 }
+function surfaceMomentum(cur={},prev={}){
+  const c=Number(cur.surfaceHits||0),p=Number(prev.surfaceHits||0);
+  const rise=(c+2)/(p+2),surge=clamp(100*(1-Math.exp(-Math.max(0,Math.log2(rise))/2.2)));
+  const level=logisticCount(c,14),fresh=Number(cur.freshHits||0)>0?70:35,event=clamp(25*Number(cur.eventHits||0));
+  const support=1-Math.exp(-c/6);
+  return {score:clamp((.48*surge+.32*level+.12*fresh+.08*event)*(.35+.65*support)),surge,level,fresh,event,rise};
+}
+function blendAvailable(parts=[]){
+  const valid=parts.filter(x=>Number.isFinite(x?.value)&&x.available!==false&&x.weight>0);
+  const w=valid.reduce((a,x)=>a+x.weight,0);return w?clamp(valid.reduce((a,x)=>a+x.value*x.weight,0)/w):0;
+}
 const STOP=new Set('국회의원 의원 국회 정치 정치권 더불어민주당 민주당 국민의힘 조국혁신당 진보당 개혁신당 무소속 대표 위원장 정부 대통령 대한민국 관련 오늘 최근 대해 위한 통해 하는 했다 한다 있는 없는 기자 뉴스 단독 종합 속보 인터뷰 포토 영상'.split(/\s+/));
 function tokens(title=''){
   return String(title).toLowerCase().replace(/[^0-9a-z가-힣 ]+/g,' ').split(/\s+/).map(x=>x.trim()).filter(x=>x.length>=2&&!STOP.has(x)&&!/^(의원|대표|위원|기자)$/.test(x));
@@ -82,39 +93,58 @@ function manualEvent(signal={}){
 }
 function sourceFamilyCount(signal={},traffic={}){
   const ch=signal.channels||{};let n=0;
+  if((ch.googleTrends?.score||0)>0)n++;
+  if((ch.wiki?.count6||0)>0)n++;
   if((ch.news?.count6||0)>0)n++;
-  if(['web','blog','cafe'].some(k=>(ch[k]?.count6||0)>0))n++;
-  if((ch.video?.count6||0)>0||(ch.youtube?.count6||0)>0)n++;
-  if((ch.x?.count6||0)>0)n++;
+  if((ch.naverSurface?.surfaceHits||0)>0||(ch.daumSurface?.surfaceHits||0)>0||['web','blog','cafe'].some(k=>(ch[k]?.count6||0)>0))n++;
+  if((ch.video?.count6||0)>0||(ch.youtube?.count6||0)>0||(ch.x?.count6||0)>0)n++;
   if((traffic.count6||0)>=3)n++;
   return n;
 }
-function computeMember(signal={},traffic={},autoEvent=0){
-  const ch=signal.channels||{};
+function computeMember(signal={},traffic={},autoEvent=0,previousSignal={}){
+  const ch=signal.channels||{},pch=previousSignal?.channels||{};
   const news=channelMomentum(ch.news||{}, {volumeK:9,halfLife:3.5});
-  const web=channelMomentum(ch.web||{}, {volumeK:8,halfLife:5}),blog=channelMomentum(ch.blog||{}, {volumeK:7,halfLife:5}),cafe=channelMomentum(ch.cafe||{}, {volumeK:7,halfLife:5});
-  const portal=clamp(.34*web.score+.36*blog.score+.30*cafe.score);
-  const kvideo=channelMomentum(ch.video||{}, {volumeK:6,halfLife:5}),yt=channelMomentum(ch.youtube||{}, {volumeK:5,halfLife:4}),xx=channelMomentum(ch.x||{}, {volumeK:40,breadthK:1,halfLife:3});
+  const wiki=channelMomentum(ch.wiki||{}, {volumeK:45,breadthK:1,halfLife:6,supportK:30,floor:Math.max(.7,Number(ch.wiki?.baseline6||0))});
   const internal=internalMomentum(traffic||{});
-  const videoSocial=clamp(.35*kvideo.score+.35*yt.score+.20*xx.score+.10*internal.score);
+  const naverSurface=surfaceMomentum(ch.naverSurface||{},pch.naverSurface||{}),daumSurface=surfaceMomentum(ch.daumSurface||{},pch.daumSurface||{});
+  const googleTrend=clamp(Number(ch.googleTrends?.score||0));
+  const searchInterest=blendAvailable([
+    {value:googleTrend,weight:.48,available:googleTrend>0},
+    {value:wiki.score,weight:.27,available:(ch.wiki?.count7d||0)>0},
+    {value:internal.score,weight:.15,available:(traffic.count6||0)>0||(traffic.baseline7d||0)>0},
+    {value:Math.max(naverSurface.score,daumSurface.score),weight:.10,available:(ch.naverSurface?.surfaceHits||0)>0||(ch.daumSurface?.surfaceHits||0)>0}
+  ]);
+  const web=channelMomentum(ch.web||{}, {volumeK:8,halfLife:5}),blog=channelMomentum(ch.blog||{}, {volumeK:7,halfLife:5}),cafe=channelMomentum(ch.cafe||{}, {volumeK:7,halfLife:5});
+  const portalApi=blendAvailable([{value:web.score,weight:.34,available:(ch.web?.count7d||0)>0},{value:blog.score,weight:.36,available:(ch.blog?.count7d||0)>0},{value:cafe.score,weight:.30,available:(ch.cafe?.count7d||0)>0}]);
+  const kvideo=channelMomentum(ch.video||{}, {volumeK:6,halfLife:5}),yt=channelMomentum(ch.youtube||{}, {volumeK:5,halfLife:4}),xx=channelMomentum(ch.x||{}, {volumeK:40,breadthK:1,halfLife:3});
+  const portalSocial=blendAvailable([
+    {value:portalApi,weight:.28,available:portalApi>0},
+    {value:naverSurface.score,weight:.18,available:(ch.naverSurface?.surfaceHits||0)>0},
+    {value:daumSurface.score,weight:.18,available:(ch.daumSurface?.surfaceHits||0)>0},
+    {value:kvideo.score,weight:.12,available:(ch.video?.count7d||0)>0},
+    {value:yt.score,weight:.16,available:(ch.youtube?.count7d||0)>0},
+    {value:xx.score,weight:.08,available:(ch.x?.count7d||0)>0}
+  ]);
   const mEvent=manualEvent(signal),event=clamp(Math.max(autoEvent,.65*mEvent+.35*autoEvent));
-  const freshPool=[news,web,blog,cafe,kvideo,yt,xx].filter(x=>x&&Number.isFinite(x.freshness));
-  const freshness=freshPool.length?clamp(freshPool.reduce((a,x)=>a+x.freshness,0)/freshPool.length):0;
-  const accel=freshPool.length?clamp(freshPool.reduce((a,x)=>a+x.accel,0)/freshPool.length):0;
+  const freshPool=[[news,ch.news],[wiki,ch.wiki],[web,ch.web],[blog,ch.blog],[cafe,ch.cafe],[kvideo,ch.video],[yt,ch.youtube],[xx,ch.x]].filter(([x,raw])=>x&&Number.isFinite(x.freshness)&&((raw?.count7d||0)>0||(raw?.count24||0)>0||(raw?.count6||0)>0)).map(([x])=>x);
+  const surfaceFresh=[[naverSurface,ch.naverSurface],[daumSurface,ch.daumSurface]].filter(([x,raw])=>x&&Number.isFinite(x.fresh)&&((raw?.surfaceHits||0)>0)).map(([x])=>({freshness:x.fresh,accel:x.surge}));
+  const allFresh=[...freshPool,...surfaceFresh];
+  const freshness=allFresh.length?clamp(allFresh.reduce((a,x)=>a+Number(x.freshness||0),0)/allFresh.length):0;
+  const accel=allFresh.length?clamp(allFresh.reduce((a,x)=>a+Number(x.accel||0),0)/allFresh.length):0;
   const freshAccel=clamp(.55*freshness+.45*accel);
-  let raw=.25*news.score+.20*portal+.20*videoSocial+.25*event+.10*freshAccel;
+  let raw=.25*searchInterest+.20*news.score+.20*portalSocial+.25*event+.10*freshAccel;
   const families=sourceFamilyCount(signal,traffic);
-  const cap=[25,42,65,82,94,100][Math.min(5,families)]||25;
+  const cap=[22,38,58,76,88,96,100][Math.min(6,families)]||22;
   raw=Math.min(raw,cap);
-  const evidenceConfidence=clamp(12+17*families+8*(1-Math.exp(-(ch.news?.sources6||0)/3))+8*(1-Math.exp(-(traffic.count6||0)/8)));
-  return {raw,news:news.score,portal,videoSocial,event,freshAccel,families,evidenceConfidence,details:{news,web,blog,cafe,kvideo,yt,xx,internal,mEvent,autoEvent}};
+  const evidenceConfidence=clamp(8+14*families+9*(1-Math.exp(-(ch.news?.sources6||0)/3))+6*(googleTrend>0)+6*((ch.wiki?.count6||0)>0));
+  return {raw,searchInterest,news:news.score,portalSocial,event,freshAccel,families,evidenceConfidence,details:{news,wiki,internal,naverSurface,daumSurface,googleTrend,web,blog,cafe,kvideo,yt,xx,mEvent,autoEvent}};
 }
 function makeMetric(label,v){v=round1(clamp(v));return [label,grade(v),v];}
 function computeSnapshot(roster,signals,context={},previous=null,trafficSignals={}){
   const active=roster.filter(x=>x.id!==300&&x.party!=='공석');
   const clusters=buildIssueClusters(signals);
   let scored=active.map(m=>{
-    const sig=signals[m.name]||{},traffic=trafficSignals[m.name]||{},auto=automaticCentrality(m.name,clusters),c=computeMember(sig,traffic,auto);
+    const sig=signals[m.name]||{},traffic=trafficSignals[m.name]||{},auto=automaticCentrality(m.name,clusters),prevSig=previous?.members?.find?.(p=>p.name===m.name)?.signal||{},c=computeMember(sig,traffic,auto,prevSig);
     const ch=sig.channels||{};
     const tiebreak=(ch.news?.count24||0)*1e-5+(ch.news?.sources24||0)*1e-6-m.id*1e-10;
     return {member:m,signal:sig,traffic,components:c,sortScore:c.raw+tiebreak};
@@ -123,18 +153,18 @@ function computeSnapshot(roster,signals,context={},previous=null,trafficSignals=
   scored=scored.map((x,i)=>{
     let display=round1(x.components.raw);if(i>0&&display>=prior&&prior>.1)display=round1(Math.max(.1,prior-.1));prior=display;
     const prev=previous?.members?.find?.(p=>p.name===x.member.name),change6h=Number.isFinite(prev?.rank)?prev.rank-(i+1):null;
-    const metrics=[makeMetric('뉴스 급상승',x.components.news),makeMetric('포털·커뮤니티',x.components.portal),makeMetric('영상·SNS',x.components.videoSocial),makeMetric('이슈 중심성',x.components.event),makeMetric('신선도·가속도',x.components.freshAccel)];
+    const metrics=[makeMetric('검색·프로필 급상승',x.components.searchInterest),makeMetric('뉴스 급상승',x.components.news),makeMetric('포털·SNS 확산',x.components.portalSocial),makeMetric('이슈 중심성',x.components.event),makeMetric('신선도·가속도',x.components.freshAccel)];
     const channels=x.signal.channels||{},sourceBadges=[];
-    if((channels.news?.count6||0)>0)sourceBadges.push('뉴스');if(['web','blog','cafe'].some(k=>(channels[k]?.count6||0)>0))sourceBadges.push('포털');if((channels.video?.count6||0)>0)sourceBadges.push('동영상');if((channels.youtube?.count6||0)>0)sourceBadges.push('YouTube');if((channels.x?.count6||0)>0)sourceBadges.push('X');if((x.traffic.count6||0)>=3)sourceBadges.push('정정당당');
+    if((channels.googleTrends?.score||0)>0)sourceBadges.push('Google Trends');if((channels.wiki?.count6||0)>0)sourceBadges.push('Wikipedia');if((channels.news?.count6||0)>0)sourceBadges.push('뉴스');if((channels.naverSurface?.surfaceHits||0)>0)sourceBadges.push('NAVER HTML');if((channels.daumSurface?.surfaceHits||0)>0)sourceBadges.push('Daum HTML');if(['web','blog','cafe'].some(k=>(channels[k]?.count6||0)>0))sourceBadges.push('포털API');if((channels.video?.count6||0)>0)sourceBadges.push('동영상');if((channels.youtube?.count6||0)>0)sourceBadges.push('YouTube');if((channels.x?.count6||0)>0)sourceBadges.push('X');if((x.traffic.count6||0)>=3)sourceBadges.push('정정당당');
     return {id:x.member.id,name:x.member.name,party:x.member.party,region:x.member.region,constituency:x.member.constituency,rank:i+1,score:display,rawScore:round1(x.components.raw),grade:grade(display),change6h,metrics,
       sourceCount:x.components.families,evidenceConfidence:round1(x.components.evidenceConfidence),sourceBadges,eventLabel:context.eventTitle||'현재 주요 정치 이슈',latest:channels.news?.latest?new Date(channels.news.latest).toISOString():null,
       signal:{count6:channels.news?.count6||0,count24:channels.news?.count24||0,count7d:channels.news?.count7d||0,sources6:channels.news?.sources6||0,event6:channels.news?.event6||0,headlines:channels.news?.headlines||[],channels,traffic:x.traffic,autoEvent:round1(x.components.details.autoEvent),manualEvent:round1(x.components.details.mEvent)}};
   });
-  scored.push({id:300,name:'강릉시 국회의원 공석',party:'공석',region:'강원',constituency:'강원 강릉시',rank:300,score:0,rawScore:0,grade:'D',change6h:0,metrics:[['뉴스 급상승','D',0],['포털·커뮤니티','D',0],['영상·SNS','D',0],['이슈 중심성','D',0],['신선도·가속도','D',0]],sourceCount:0,evidenceConfidence:0,sourceBadges:[],eventLabel:'공석',signal:{}});
-  const configured={googleNews:true,naverNews:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),kakao:Boolean(process.env.KAKAO_REST_API_KEY),youtube:Boolean(process.env.YOUTUBE_API_KEY),x:Boolean(process.env.X_BEARER_TOKEN),internal:true};
+  scored.push({id:300,name:'강릉시 국회의원 공석',party:'공석',region:'강원',constituency:'강원 강릉시',rank:300,score:0,rawScore:0,grade:'D',change6h:0,metrics:[['검색·프로필 급상승','D',0],['뉴스 급상승','D',0],['포털·SNS 확산','D',0],['이슈 중심성','D',0],['신선도·가속도','D',0]],sourceCount:0,evidenceConfidence:0,sourceBadges:[],eventLabel:'공석',signal:{}});
+  const configured={googleNews:true,googleTrends:true,wikimedia:true,naverHtml:context.sourceHealth?.naverHtml?.state==='READY',daumHtml:context.sourceHealth?.daumHtml?.state==='READY',youtubeHtml:false,naverNews:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),kakao:Boolean(process.env.KAKAO_REST_API_KEY),youtube:Boolean(process.env.YOUTUBE_API_KEY),x:Boolean(process.env.X_BEARER_TOKEN),internal:true};
   const top30=scored.slice(0,30),quality={configuredSources:configured,top30MultiSource:top30.filter(x=>x.sourceCount>=2).length,top30ThreePlus:top30.filter(x=>x.sourceCount>=3).length,top30SingleSource:top30.filter(x=>x.sourceCount<=1).length,warning:''};
-  if(quality.top30SingleSource>10)quality.warning='상위권 다수가 단일 원천에 의존합니다. Kakao/YouTube 등 추가 원천을 연결한 뒤 게시를 권장합니다.';
+  if(quality.top30SingleSource>10)quality.warning='상위권 다수가 단일 원천에 의존합니다. Keyless HTML/Trends/Wikipedia 상태와 추가 API 원천을 확인한 뒤 게시를 권장합니다.';
   const sourceSummary=Object.entries(configured).filter(([,on])=>on).map(([k])=>k);
-  return {version:'NOW Rank v1.4 Multi-Source Consensus',timestamp:new Date().toISOString(),cadenceHours:6,event:{title:context.eventTitle||'',keywords:context.eventKeywords||[]},configuredSources:configured,sourceSummary,detectedIssues:clusters.slice(0,5),quality,members:scored};
+  return {version:'NOW Rank v1.5 Keyless-First Consensus',timestamp:new Date().toISOString(),cadenceHours:6,event:{title:context.eventTitle||'',keywords:context.eventKeywords||[]},configuredSources:configured,sourceSummary,sourceHealth:context.sourceHealth||{},detectedIssues:clusters.slice(0,5),quality,members:scored};
 }
 module.exports={computeSnapshot,computeMember,buildIssueClusters,channelMomentum,grade,clamp};
