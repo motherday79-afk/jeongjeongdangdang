@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v1.1 · Responsive</title>
+<title>정정당당 NOW Rank v1.2 · 6H Snapshot UX</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -690,7 +690,22 @@ a{text-decoration:none;color:inherit}
 .journey-compact .timeline-title{font-size:14px}
 
 
-/* ===== NOW Rank v1.1 · Responsive UX ===== */
+
+/* ===== NOW Rank v1.2 · Detail / Snapshot UX ===== */
+.detail-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:18px}
+.detail-identity{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.detail-identity-info{min-width:0;flex:1}
+.detail-identity-info .h2{margin:0;word-break:keep-all;overflow-wrap:normal;line-height:1.08}
+.detail-identity .bigavatar{width:92px;height:92px;flex:0 0 92px;border-radius:24px}
+.detail-stats{display:grid;grid-template-columns:repeat(3,minmax(122px,1fr));gap:10px;min-width:0}
+.detail-stats .stat{min-width:0;margin:0}
+.snapshot-empty{padding:30px 18px;text-align:center;background:#fbfffe;border:1px dashed #cfded9;border-radius:18px;color:#64748b}
+.snapshot-empty b{display:block;color:#183b36;font-size:18px;margin-bottom:7px}
+.snapshot-empty span{font-size:13px;line-height:1.65}
+.snapshot-badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:999px;background:#eaf9f5;color:#0f766e;font-size:10px;font-weight:900;margin-left:6px}
+.politician-photo[data-photo-quality="high"] img{image-rendering:auto}
+
+/* ===== NOW Rank v1.2 · Responsive UX ===== */
 .mobile-now-flow,.mobile-bottom-nav{display:none}
 .mobile-now-flow{margin:18px 0 20px}
 .mobile-now-flow > * + *{margin-top:16px}
@@ -800,6 +815,26 @@ a{text-decoration:none;color:inherit}
   .footer-note{align-items:stretch}
   .info-pill{border-radius:14px;line-height:1.5}
 
+  .modal{padding:8px;align-items:center}
+  .modalbox{width:100%;max-height:94dvh;border-radius:22px;padding:16px 14px}
+  .modalhead{gap:8px}
+  .modalhead .h2{font-size:27px!important;line-height:1.05;word-break:keep-all}
+  .close{width:44px;height:44px;flex:0 0 44px}
+  .detail-hero{display:block;margin-top:14px}
+  .detail-identity{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;align-items:center}
+  .detail-identity .bigavatar{width:82px;height:82px;flex-basis:82px;border-radius:22px}
+  .detail-identity-info .h2{font-size:27px!important;letter-spacing:-1px;line-height:1.08;word-break:keep-all;overflow-wrap:normal}
+  .detail-identity-info .sub{font-size:13px;line-height:1.5;word-break:keep-all}
+  .detail-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+  .detail-stats .stat{padding:11px 9px;border-radius:14px;text-align:left}
+  .detail-stats .stat strong{font-size:19px;white-space:nowrap}
+  .detail-stats .stat span{font-size:10px;line-height:1.35}
+  .detail-comparebar{display:block!important;padding:13px!important}
+  .compare-control{width:100%;margin-top:10px;display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .compare-control>div{min-width:0}
+  .compare-select{width:100%!important;min-width:0!important}
+  .compare-btn{white-space:nowrap}
+
   .hide-sm{display:none}
   .article-content{padding:18px}
   .article-content h1{font-size:26px}
@@ -816,6 +851,22 @@ a{text-decoration:none;color:inherit}
   .mobile-rank-meta{max-width:150px}
   .row{grid-template-columns:38px minmax(0,1fr) 72px 56px;padding-left:7px;padding-right:7px}
   .pname{font-size:13px}
+}
+
+@media (max-width:480px){
+  .modal{padding:5px}
+  .modalbox{padding:14px 12px;border-radius:20px}
+  .modalhead .h2{font-size:24px!important}
+  .detail-identity{grid-template-columns:76px minmax(0,1fr);gap:10px}
+  .detail-identity .bigavatar{width:72px;height:72px;flex-basis:72px;border-radius:20px}
+  .detail-identity-info .h2{font-size:24px!important;letter-spacing:-1.1px}
+  .detail-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .detail-stats .stat:last-child:nth-child(odd){grid-column:1/-1}
+  .detail-stats .stat strong{font-size:18px}
+  .detail-stats .stat small{font-size:9px!important;line-height:1.35}
+  .detail-section{padding:14px!important}
+  .detail-section-head h3{font-size:18px!important;word-break:keep-all}
+  .journey-card{padding:14px!important}
 }
 </style>
 </head>
@@ -892,7 +943,7 @@ a{text-decoration:none;color:inherit}
         </section>
         <div class="head">
           <div class="head-left">
-            <h1>국회의원 NOW Rank <span class="livepill">LIVE SNAPSHOT</span></h1>
+            <h1>국회의원 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
             <div class="sub">뉴스·검색·현재 정치 이벤트·디지털 확산을 중심으로 “지금 누가 이슈인가”를 보여주는 국회의원 실시간 이슈 랭킹입니다.</div>
           </div>
           <div class="searchline">
@@ -907,19 +958,19 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>NOW RANK v1.1 · ISSUE RADAR · 2026.08.11</b> · 뉴스 화제성 30% + 검색 관심도 25% + 이벤트 중심성 20% + 디지털 확산 15% + 정치 체급 10%로 구성합니다. <b>의정활동·선수는 NOW Rank 입력값이 아닙니다.</b> 이번 업데이트는 점수와 1~300 순위를 변경하지 않고 PC·태블릿·모바일에서 같은 정보를 더 빠르게 볼 수 있도록 반응형 UX만 재구성했습니다.</div>
+        <div class="demo-notice"><b>NOW RANK v1.2 · 6H SNAPSHOT</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록하며, 과거 스냅샷이 충분히 쌓이기 전에는 변동 데이터를 임의 생성하지 않습니다. 현재 NOW Rank 점수와 1~300 순위 데이터는 그대로 유지합니다.</div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
-          <button class="tab" data-mode="rise">급상승</button>
-          <button class="tab" data-mode="top">TOP 30</button>
-          <button class="tab" data-mode="new">신규 이슈</button>
+          <button class="tab" data-mode="rise6">6시간 급상승</button>
+          <button class="tab" data-mode="rise24">24시간 급상승</button>
+          <button class="tab" data-mode="peak7d">7일 최고순위</button>
         </div>
 
         <section class="ranktable" id="ranktable"></section>
 
         <div class="footer-note">
-          <div class="info-pill">ⓘ NOW Rank는 뉴스 화제성·검색 관심·이벤트 중심성·디지털 확산·정치 체급을 종합한 실시간 이슈 지수입니다. 의정활동 평가는 순위에 넣지 않습니다.</div>
+          <div class="info-pill">ⓘ NOW Rank는 6시간 단위 스냅샷을 기준으로 기록합니다. 급상승·24시간 변화·7일 최고순위는 실제 과거 스냅샷이 쌓인 뒤 계산하며 임의의 과거값을 만들지 않습니다.</div>
           <button class="outline-btn">순위 산정 기준 안내</button>
         </div>
       </main>
@@ -1270,13 +1321,13 @@ function photoAttr(v){
 function photoNameFromSlot(el){
   try{return decodeURIComponent(el?.dataset?.photoName||"")}catch(e){return el?.dataset?.photoName||""}
 }
-function politicianPhotoHTML(name,seedv=1){
+function politicianPhotoHTML(name,seedv=1,quality="standard"){
   const enc=encodeURIComponent(name||"");
-  const cached=politicianPhotoCache[name];
+  const cached=quality==="high" ? null : politicianPhotoCache[name];
   if(cached?.url){
-    return `<span class="politician-photo" data-photo-name="${enc}" data-photo-seed="${seedv}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'cache')}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
-  return `<span class="politician-photo is-loading" data-photo-name="${enc}" data-photo-seed="${seedv}">${personSVG(seedv)}</span>`;
+  return `<span class="politician-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}">${personSVG(seedv)}</span>`;
 }
 function savePoliticianPhotoCache(){
   try{localStorage.setItem(POLITICIAN_PHOTO_CACHE_KEY,JSON.stringify(politicianPhotoCache))}catch(e){}
@@ -1353,7 +1404,7 @@ async function resolveAssemblyPhoto(name){
 async function resolveWikipediaPagePhoto(name){
   const q=encodeURIComponent(name);
   try{
-    const data=await photoFetchJSON(`https://ko.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail%7Coriginal&pithumbsize=600&titles=${q}`,4500);
+    const data=await photoFetchJSON(`https://ko.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail%7Coriginal&pithumbsize=900&titles=${q}`,4500);
     const pages=Object.values(data?.query?.pages||{});
     for(const pg of pages){
       const u=pg?.thumbnail?.source||pg?.original?.source;
@@ -1379,12 +1430,51 @@ async function resolveWikidataPhoto(name){
       const ent=await photoFetchJSON(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(cand.id)}&props=claims&format=json&origin=*`,4500);
       const file=ent?.entities?.[cand.id]?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
       if(file){
-        const u=`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=600`;
+        const u=`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=900`;
         return {url:u,source:'wikimedia',title:'사진 출처: Wikimedia Commons / Wikidata'};
       }
     }catch(e){}
   }
   return await resolveWikipediaPagePhoto(name);
+}
+
+async function resolveWikipediaPagePhotoHQ(name){
+  const q=encodeURIComponent(name);
+  try{
+    const data=await photoFetchJSON(`https://ko.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail%7Coriginal&pithumbsize=1400&titles=${q}`,4500);
+    const pages=Object.values(data?.query?.pages||{});
+    for(const pg of pages){
+      const u=pg?.original?.source||pg?.thumbnail?.source;
+      if(u && !pg?.missing) return {url:u,source:'wikimedia-hq',title:'고해상도 사진 출처: Wikimedia Commons / Wikipedia'};
+    }
+  }catch(e){}
+  return null;
+}
+async function resolveWikidataPhotoHQ(name){
+  const searches=[name,`${name} 정치인`,`${name} 국회의원`];
+  for(const term of searches){
+    try{
+      const data=await photoFetchJSON(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(term)}&language=ko&uselang=ko&format=json&origin=*&limit=8`,4500);
+      const list=(data?.search||[]).map(x=>{
+        const d=String(x.description||''),l=String(x.label||'');
+        let score=(l===name?10:(l.includes(name)?5:0));
+        if(/국회의원|정치인|정치가|대한민국/.test(d)) score+=8;
+        if(/배우|가수|선수|작가|교수/.test(d) && !/정치|국회의원/.test(d)) score-=8;
+        return {...x,_score:score};
+      }).sort((a,b)=>b._score-a._score);
+      const cand=list.find(x=>x._score>=13); if(!cand?.id) continue;
+      const ent=await photoFetchJSON(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(cand.id)}&props=claims&format=json&origin=*`,4500);
+      const file=ent?.entities?.[cand.id]?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
+      if(file) return {url:`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=1400`,source:'wikimedia-hq',title:'고해상도 사진 출처: Wikimedia Commons / Wikidata'};
+    }catch(e){}
+  }
+  return await resolveWikipediaPagePhotoHQ(name);
+}
+async function resolvePoliticianPhotoHigh(name){
+  if(!name) return null;
+  const result=await resolveWikidataPhotoHQ(name);
+  if(result) return result;
+  return await resolveAssemblyPhoto(name);
 }
 async function resolvePoliticianPhoto(name,{skipAssembly=false,skipWikimedia=false}={}){
   if(!name) return null;
@@ -1401,20 +1491,21 @@ async function resolvePoliticianPhoto(name,{skipAssembly=false,skipWikimedia=fal
   })().finally(()=>politicianPhotoPromises.delete(key));
   politicianPhotoPromises.set(key,p); return p;
 }
-function applyPoliticianPhoto(name,result){
+function applyPoliticianPhoto(name,result,quality="standard"){
   if(!result?.url) return;
-  document.querySelectorAll(`.politician-photo[data-photo-name="${CSS.escape(encodeURIComponent(name))}"]`).forEach(slot=>{
+  document.querySelectorAll(`.politician-photo[data-photo-name="${CSS.escape(encodeURIComponent(name))}"][data-photo-quality="${quality}"]`).forEach(slot=>{
     const seed=Number(slot.dataset.photoSeed||1);
     slot.classList.remove('is-loading');
-    slot.innerHTML=`<img src="${photoAttr(result.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(result.title||'실제 인물 사진')}" data-photo-source="${photoAttr(result.source||'unknown')}" data-photo-name="${encodeURIComponent(name)}" data-photo-seed="${seed}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)">`;
+    slot.innerHTML=`<img src="${photoAttr(result.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(result.title||'실제 인물 사진')}" data-photo-source="${photoAttr(result.source||'unknown')}" data-photo-quality="${quality}" data-photo-name="${encodeURIComponent(name)}" data-photo-seed="${seed}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)">`;
   });
 }
 async function hydratePhotoSlot(slot){
   if(!slot || slot.dataset.photoHydrating==='1') return;
   const name=photoNameFromSlot(slot); if(!name) return;
   slot.dataset.photoHydrating='1';
-  const result=await resolvePoliticianPhoto(name);
-  if(result) applyPoliticianPhoto(name,result); else slot.classList.remove('is-loading');
+  const quality=slot.dataset.photoQuality||"standard";
+  const result=quality==="high" ? await resolvePoliticianPhotoHigh(name) : await resolvePoliticianPhoto(name);
+  if(result) applyPoliticianPhoto(name,result,quality); else slot.classList.remove('is-loading');
   slot.dataset.photoHydrating='0';
 }
 function registerPoliticianPhotoSlots(root=document){
@@ -1432,9 +1523,13 @@ async function handlePoliticianPhotoError(img){
   const seed=Number(img.dataset.photoSeed||1); const source=img.dataset.photoSource||'';
   if(name) delete politicianPhotoCache[name]; savePoliticianPhotoCache();
   const slot=img.closest('.politician-photo');
+  const quality=img.dataset.photoQuality||"standard";
   if(source==='assembly'){
-    const alt=await resolvePoliticianPhoto(name,{skipAssembly:true});
-    if(alt){applyPoliticianPhoto(name,alt);return;}
+    const alt=quality==="high" ? await resolveWikidataPhotoHQ(name) : await resolvePoliticianPhoto(name,{skipAssembly:true});
+    if(alt){applyPoliticianPhoto(name,alt,quality);return;}
+  }else if(quality==="high" && String(source).startsWith('wikimedia')){
+    const alt=await resolveAssemblyPhoto(name);
+    if(alt){applyPoliticianPhoto(name,alt,quality);return;}
   }
   if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title='확인 가능한 실제 사진 원천을 찾지 못했습니다.';}
 }
@@ -8800,6 +8895,56 @@ document.querySelectorAll('.mobile-navbtn').forEach(btn=>{
 });
 window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);},{passive:true});
 
+
+function nowRankHistory(){
+  return Array.isArray(window.NOW_RANK_HISTORY) ? window.NOW_RANK_HISTORY : [];
+}
+function parseSnapshotTime(v){
+  if(!v) return NaN;
+  const normalized=String(v).replace(' KST','+09:00').replace(' ','T');
+  const t=Date.parse(normalized); return Number.isFinite(t)?t:NaN;
+}
+function currentSnapshotTime(){
+  const first=people.find(x=>x.rank===1)||people[0];
+  return parseSnapshotTime(first?.snapshot)||Date.now();
+}
+function historicalSnapshot(hoursAgo){
+  const target=currentSnapshotTime()-hoursAgo*3600000;
+  const hist=nowRankHistory().filter(s=>Number.isFinite(parseSnapshotTime(s.timestamp||s.snapshot)));
+  if(!hist.length) return null;
+  let best=null,dist=Infinity;
+  hist.forEach(s=>{const t=parseSnapshotTime(s.timestamp||s.snapshot); if(t<=currentSnapshotTime()){const d=Math.abs(t-target);if(d<dist){best=s;dist=d;}}});
+  return best;
+}
+function snapshotMember(snapshot,name){
+  if(!snapshot) return null;
+  if(snapshot.ranks && snapshot.ranks[name]) return snapshot.ranks[name];
+  if(Array.isArray(snapshot.people)) return snapshot.people.find(x=>x.name===name)||null;
+  return null;
+}
+function historyReadyMessage(mode){
+  const map={rise6:['6시간 급상승','최소 2개의 6시간 스냅샷'],rise24:['24시간 급상승','최소 24시간의 스냅샷'],peak7d:['7일 최고순위','최소 7일 동안 축적된 스냅샷']};
+  const [title,need]=map[mode]||['순위 기록','과거 스냅샷'];
+  return `<div class="snapshot-empty"><b>${title} · 데이터 축적 중</b><span>${need}이 필요합니다.<br>과거 값을 임의로 만들지 않고 실제 Refresh/Publish 기록이 쌓인 뒤 자동 활성화됩니다.</span></div>`;
+}
+function historyView(data,mode){
+  const hist=nowRankHistory();
+  if(!hist.length) return null;
+  if(mode==='rise6'||mode==='rise24'){
+    const prev=historicalSnapshot(mode==='rise6'?6:24); if(!prev) return null;
+    return data.map(x=>{const old=snapshotMember(prev,x.name);return {...x,_periodOldRank:old?.rank??null,_periodOldScore:old?.score??null,_periodChange:Number.isFinite(old?.rank)?old.rank-x.rank:null};})
+      .filter(x=>Number.isFinite(x._periodChange)).sort((a,b)=>(b._periodChange-a._periodChange)||((b.rank2Score||0)-(a.rank2Score||0))||a.rank-b.rank);
+  }
+  if(mode==='peak7d'){
+    const cutoff=currentSnapshotTime()-7*24*3600000;
+    const recent=hist.filter(s=>{const t=parseSnapshotTime(s.timestamp||s.snapshot);return Number.isFinite(t)&&t>=cutoff&&t<=currentSnapshotTime();});
+    if(!recent.length) return null;
+    return data.map(x=>{let best=x.rank;recent.forEach(s=>{const m=snapshotMember(s,x.name);if(Number.isFinite(m?.rank))best=Math.min(best,m.rank)});return {...x,_best7d:best};})
+      .sort((a,b)=>(a._best7d-b._best7d)||a.rank-b.rank);
+  }
+  return data;
+}
+
 function renderRank(){
   let q=document.getElementById("search").value.trim();
   let p=document.getElementById("party").value;
@@ -8807,15 +8952,20 @@ function renderRank(){
     const text=`${x.name} ${x.party} ${x.region} ${x.constituency||""}`.toLowerCase();
     return (!q||text.includes(q.toLowerCase()))&&(p==="all"||x.party===p);
   });
-  if(mode==="rise") data=[...data].sort((a,b)=>b.delta-a.delta);
-  if(mode==="top") data=data.slice(0,30);
-  if(mode==="new") data=data.filter(x=>x.issue);
-  let html=`<div class="row header"><div>순위</div><div>의원</div><div>정당</div><div>지역구</div><div>시간 변화</div><div>NOW 지수</div></div>`;
+  if(mode!=="all"){
+    const hv=historyView(data,mode);
+    if(!hv){ document.getElementById("ranktable").innerHTML=historyReadyMessage(mode); renderMobileTop10(); return; }
+    data=hv;
+  }
+  const changeHead=mode==="rise6"?"6시간 변화":mode==="rise24"?"24시간 변화":mode==="peak7d"?"7일 최고":"6시간 변화";
+  let html=`<div class="row header"><div>순위</div><div>의원</div><div>정당</div><div>지역구</div><div>${changeHead}</div><div>NOW 지수</div></div>`;
   data.slice(0,300).forEach((x,idx)=>{
-    const ch="첫 스냅샷";
-    const cls="same";
+    let ch="첫 스냅샷",cls="same";
+    if(mode==="rise6"||mode==="rise24"){
+      const d=x._periodChange; ch=d>0?`▲ ${d}`:d<0?`▼ ${Math.abs(d)}`:"―"; cls=d>0?"up":d<0?"down":"same";
+    }else if(mode==="peak7d"){ ch=`최고 ${x._best7d}위`; cls="same"; }
     html += `<div class="row" onclick="openDetail(${x.id})">
-      <div class="ranknum">${mode==="all"||mode==="top"?x.rank:idx+1}</div>
+      <div class="ranknum">${mode==="all"?x.rank:idx+1}</div>
       <div class="person">
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div>
@@ -9078,15 +9228,19 @@ function openDetail(id){
   document.getElementById("modalEyebrow").innerText="Person Detail";
   document.getElementById("modalTitle").innerText="국회의원 상세";
   document.getElementById("detail").innerHTML=`
-    <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar">${politicianPhotoHTML(x.name,x.id)}</div>
-      <div style="flex:1">
-        <h2 class="h2" style="font-size:32px">${x.name} 의원 ${x.isReal?'<span class="real-chip">REAL DATA</span>':''}</h2>
-        <div class="sub" style="margin-top:4px">${x.party} · ${x.constituency||x.region}</div>
+    <div class="detail-hero">
+      <div class="detail-identity">
+        <div class="bigavatar">${politicianPhotoHTML(x.name,x.id,"high")}</div>
+        <div class="detail-identity-info">
+          <h2 class="h2" style="font-size:32px">${x.name} 의원 ${x.isReal?'<span class="real-chip">REAL DATA</span>':''}</h2>
+          <div class="sub" style="margin-top:6px">${x.party} · ${x.constituency||x.region}</div>
+        </div>
       </div>
-      <div class="stat"><strong>${x.rank}위</strong><span>NOW Rank</span></div>
-      <div class="stat"><strong>${x.delta===0?"―":ch}</strong><span>Rank 2.1 대비</span></div>
-      <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Evidence ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(2):"-"} · Coverage ${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:"-"}%</small></div>
+      <div class="detail-stats">
+        <div class="stat"><strong>${x.rank}위</strong><span>NOW Rank</span></div>
+        <div class="stat"><strong>${x.delta===0?"―":ch}</strong><span>6시간 변화</span></div>
+        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Evidence ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(2):"-"} · Coverage ${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:"-"}%</small></div>
+      </div>
     </div>
 
     <div class="detail-comparebar">
@@ -9251,14 +9405,18 @@ function openPresident(){
   document.getElementById("modalEyebrow").innerText="President · Official + Survey Data";
   document.getElementById("modalTitle").innerText="이재명 대통령";
   document.getElementById("detail").innerHTML=`
-    <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" referrerpolicy="no-referrer"></div>
-      <div style="flex:1">
-        <h2 class="h2" style="font-size:32px">${president.name} <span class="real-chip">공식정보</span></h2>
-        <div class="sub" style="margin-top:4px">${president.title} · ${president.inaugurated} 취임</div>
+    <div class="detail-hero">
+      <div class="detail-identity">
+        <div class="bigavatar"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" referrerpolicy="no-referrer"></div>
+        <div class="detail-identity-info">
+          <h2 class="h2" style="font-size:32px">${president.name} <span class="real-chip">공식정보</span></h2>
+          <div class="sub" style="margin-top:6px">${president.title} · ${president.inaugurated} 취임</div>
+        </div>
       </div>
-      <div class="stat"><strong>OUT</strong><span>국회의원 랭킹 제외</span></div>
-      <div class="stat"><strong>21대</strong><span>대한민국 대통령</span></div>
+      <div class="detail-stats">
+        <div class="stat"><strong>OUT</strong><span>국회의원 랭킹 제외</span></div>
+        <div class="stat"><strong>21대</strong><span>대한민국 대통령</span></div>
+      </div>
     </div>
 
     <div class="why" style="margin-top:16px">
@@ -9330,11 +9488,13 @@ function openGovPerson(i){
   document.getElementById("modalEyebrow").innerText="Government · Official Profile";
   document.getElementById("modalTitle").innerText=g.name;
   document.getElementById("detail").innerHTML=`
-    <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar">${politicianPhotoHTML(g.name,700+i)}</div>
-      <div>
-        <h2 class="h2" style="font-size:32px">${g.name} <span class="real-chip">2026.08.11 기준</span></h2>
-        <div class="sub" style="margin-top:4px">${g.ministry} · ${g.role}</div>
+    <div class="detail-hero">
+      <div class="detail-identity">
+        <div class="bigavatar">${politicianPhotoHTML(g.name,700+i,"high")}</div>
+        <div class="detail-identity-info">
+          <h2 class="h2" style="font-size:32px">${g.name} <span class="real-chip">2026.08.11 기준</span></h2>
+          <div class="sub" style="margin-top:6px">${g.ministry} · ${g.role}</div>
+        </div>
       </div>
     </div>
     ${journeyHTML(g.journey,true)}
