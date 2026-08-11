@@ -129,6 +129,32 @@ async function collectMember(member,keywords=[],globalSignals={}){
   return {channels,evidenceItems,health:surfaceHealth,warning:warnings.length?warnings.join('; '):null,providers:{googleNews:true,naverNews:Boolean(naver),kakao:Boolean(process.env.KAKAO_REST_API_KEY),googleTrends:Boolean(gt&&gt.score>0)}};
 }
 
+
+async function fetchGoogleNewsQuery(query,provider='google-news-global'){
+  const url=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
+  const r=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 jjdd-nowrank/1.6'}});
+  if(!r.ok) throw new Error(`Google News global ${r.status}`);
+  return parseGoogleRss(await r.text()).map(x=>({...x,provider}));
+}
+function memberMapFromCorpus(items,active,eventKeywords=[]){
+  const members={};for(const m of active)members[m.name]={eventCount:0,eventTitleCount:0,eventSources:new Set(),broadCount:0,broadTitleCount:0,broadSources:new Set(),latest:null};
+  for(const x of items){
+    const txt=`${x.title} ${x.desc||''}`;for(const m of active){if(!txt.includes(m.name))continue;const st=members[m.name],isEvent=(x.tags||[]).includes('event')||keywordMatch(txt,eventKeywords);if(isEvent){st.eventCount++;if(x.title.includes(m.name))st.eventTitleCount++;if(x.source)st.eventSources.add(x.source);}else{st.broadCount++;if(x.title.includes(m.name))st.broadTitleCount++;if(x.source)st.broadSources.add(x.source);}st.latest=Math.max(st.latest||0,x.ts||0);}
+  }
+  const out={};for(const [name,s] of Object.entries(members))out[name]={eventCount:s.eventCount,eventTitleCount:s.eventTitleCount,eventSources:s.eventSources.size,broadCount:s.broadCount,broadTitleCount:s.broadTitleCount,broadSources:s.broadSources.size,latest:s.latest||null};return out;
+}
+async function collectGlobalPolitics(active,eventTitle='',eventKeywords=[]){
+  const specs=[];const title=String(eventTitle||'').trim();
+  if(title&&title!=='현재 주요 정치 이슈'){specs.push({q:`"${title}" when:1d`,tag:'event'});specs.push({q:`${title} when:1d`,tag:'event'});}
+  const kws=(eventKeywords||[]).filter(Boolean).slice(0,5);if(kws.length)specs.push({q:`${kws.map(k=>`"${k}"`).join(' OR ')} when:1d`,tag:'event'});
+  specs.push({q:'국회 정치 when:1d',tag:'broad'},{q:'더불어민주당 국민의힘 when:1d',tag:'broad'});
+  const warnings=[],all=[];
+  for(const s of specs){try{const rows=await fetchGoogleNewsQuery(s.q,`google-news-${s.tag}`);for(const x of rows)all.push({...x,tags:[s.tag]});}catch(e){warnings.push(e.message||String(e));}}
+  const byKey=new Map();for(const x of all){const k=(x.link||normalizeTitle(x.title)).split('?')[0];const prev=byKey.get(k);if(prev){prev.tags=[...new Set([...(prev.tags||[]),...(x.tags||[])])];}else byKey.set(k,{...x});}
+  const items=[...byKey.values()],members=memberMapFromCorpus(items,active,eventKeywords),eventItems=items.filter(x=>(x.tags||[]).includes('event')),broadItems=items.filter(x=>(x.tags||[]).includes('broad'));
+  return {items:items.slice(0,260),members,eventArticleCount:eventItems.length,eventSourceCount:new Set(eventItems.map(x=>x.source).filter(Boolean)).size,broadArticleCount:broadItems.length,broadSourceCount:new Set(broadItems.map(x=>x.source).filter(Boolean)).size,warnings};
+}
+
 function isoAgo(hours){return new Date(Date.now()-hours*3600000).toISOString();}
 async function fetchYouTube(member,keywords=[]){
   const key=process.env.YOUTUBE_API_KEY;if(!key) return null;
@@ -165,6 +191,7 @@ async function collectEnrichmentMember(member,keywords=[],globalSignals={}){
 }
 function preliminaryHeat(signal){
   const c=signal?.channels||{},news=c.news||{},portal=['web','blog','cafe','video'].map(k=>c[k]||{}),gt=c.googleTrends||{};
-  return 5*(news.event6||0)+3*(news.count6||0)+1.5*(news.sources6||0)+portal.reduce((a,x)=>a+1.5*(x.count6||0)+2*(x.event6||0),0)+0.8*(gt.score||0);
+  const surf=(c.naverSurface?.surfaceHits||0)+(c.daumSurface?.surfaceHits||0);
+  return 5*(news.event6||0)+3*(news.count6||0)+1.5*(news.sources6||0)+portal.reduce((a,x)=>a+1.5*(x.count6||0)+2*(x.event6||0),0)+0.8*(gt.score||0)+0.7*surf;
 }
-module.exports={collectMember,collectEnrichmentMember,preliminaryHeat,cleanHtml,normalizeTitle,normalizeEventText,summarize,keywordMatch};
+module.exports={collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPolitics,cleanHtml,normalizeTitle,normalizeEventText,summarize,keywordMatch};

@@ -7,9 +7,9 @@ module.exports=async function handler(req,res){
     const h=current?.sourceHealth||{};
     const sources={
       googleNews:true,googleTrends:true,wikimedia:true,
-      naverHtml:h.naverHtml?.state==='READY'||h.naverHtml?.state==='OK',
-      daumHtml:h.daumHtml?.state==='READY'||h.daumHtml?.state==='OK',
-      youtubeHtml:false,
+      naverHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.naverHtml?.state),
+      daumHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.daumHtml?.state),
+      youtubeHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.youtubeHtml?.state),
       naverNews:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),
       kakao:Boolean(process.env.KAKAO_REST_API_KEY),youtube:Boolean(process.env.YOUTUBE_API_KEY),x:Boolean(process.env.X_BEARER_TOKEN),internal:true
     };

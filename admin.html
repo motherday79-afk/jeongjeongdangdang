@@ -92,7 +92,7 @@ async function status(){
     const s=await api('/api/admin/status');
     setLogin(true);
     const src=s.sources||{}; const badges=[['Google News',src.googleNews],['Google Trends',src.googleTrends],['Wikimedia',src.wikimedia],['NAVER HTML',src.naverHtml],['Daum HTML',src.daumHtml],['NAVER API',src.naverNews],['Kakao API',src.kakao],['YouTube API',src.youtube],['X',src.x],['정정당당 내부',src.internal]];
-    $('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>수집 원천: ${badges.map(([n,on])=>`<b class="${on?'good':'bad'}">${n} ${on?'ON':'OFF/동적확인'}</b>`).join(' · ')}<br>※ NAVER/Daum HTML은 Refresh 시작 시 robots.txt와 응답 상태를 다시 확인합니다. YouTube /results는 robots.txt가 금지하면 수집하지 않습니다.<br>최근 게시: <b>${s.current?.timestamp||'아직 없음'}</b>`;
+    $('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>수집 원천: ${badges.map(([n,on])=>`<b class="${on?'good':'bad'}">${n} ${on?'ON':'OFF/동적확인'}</b>`).join(' · ')}<br>※ Keyless HTML은 공개 검색결과를 1회 직접 요청합니다. robots.txt는 상태 참고값으로 표시하며, 403/429/CAPTCHA/로그인 요구가 나오면 우회하지 않고 BLOCKED 처리합니다.<br>최근 게시: <b>${s.current?.timestamp||'아직 없음'}</b>`;
     if(s.defaults){
       if(s.defaults.eventTitle) $('#eventTitle').value=s.defaults.eventTitle;
       if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length) $('#eventKeywords').value=s.defaults.eventKeywords.join(',');
@@ -112,8 +112,8 @@ function renderPreview(p){
   lastPreview=p;
   $('#previewCard').classList.remove('hidden');
   const q=p.quality||{};
-  const h=p.sourceHealth||{}; const hs=(x)=>{const st=x?.state||'UNKNOWN';const good=['OK','READY'].includes(st);return `<b class="${good?'good':'bad'}">${st}</b>${x?.detail?`(${x.detail})`:''}`};
-  $('#previewMeta').innerHTML=`계산시각 ${p.timestamp}<br>다중 원천 TOP30: <b>${q.top30MultiSource??0}명</b> · 3개 이상 원천: <b>${q.top30ThreePlus??0}명</b> · 단일원천: <b class="${(q.top30SingleSource||0)>10?'bad':'good'}">${q.top30SingleSource??0}명</b>${q.warning?`<br><span class="bad">⚠ ${q.warning}</span>`:''}<br>Keyless 상태: Google Trends ${hs(h.googleTrends)} · Wikipedia ${hs(h.wiki)} · NAVER HTML ${hs(h.naverHtml)} · Daum HTML ${hs(h.daumHtml)} · YouTube HTML ${hs(h.youtubeHtml)}<br>자동 감지 이슈: ${(p.detectedIssues||[]).slice(0,4).map(x=>`${x.term} (${x.articles}건/${x.sources}출처)`).join(' · ')||'아직 충분한 군집 없음'}`;
+  const h=p.sourceHealth||{}; const hs=(x)=>{const st=x?.state||'UNKNOWN';const good=['OK','READY','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(st);return `<b class="${good?'good':'bad'}">${st}</b>${x?.detail?`(${x.detail})`:''}`};
+  $('#previewMeta').innerHTML=`계산시각 ${p.timestamp}<br>다중 원천 TOP30: <b>${q.top30MultiSource??0}명</b> · 3개 이상 원천: <b>${q.top30ThreePlus??0}명</b> · 단일원천: <b class="${(q.top30SingleSource||0)>10?'bad':'good'}">${q.top30SingleSource??0}명</b>${q.warning?`<br><span class="bad">⚠ ${q.warning}</span>`:''}<br>Keyless 상태: Google Trends ${hs(h.googleTrends)} · Wikipedia ${hs(h.wiki)} · NAVER HTML ${hs(h.naverHtml)} · Daum HTML ${hs(h.daumHtml)} · YouTube HTML ${hs(h.youtubeHtml)}<br>글로벌 정치뉴스: 이벤트 <b>${p.globalNews?.eventArticles||0}</b>건 / <b>${p.globalNews?.eventSources||0}</b>출처 · 광역 정치뉴스 <b>${p.globalNews?.broadArticles||0}</b>건 / <b>${p.globalNews?.broadSources||0}</b>출처<br>자동 감지 이슈: ${(p.detectedIssues||[]).slice(0,4).map(x=>`${x.term} (${x.articles}건/${x.sources}출처)`).join(' · ')||'아직 충분한 군집 없음'}`;
   $('#previewBody').innerHTML=(p.top30||[]).map(x=>`<tr><td><b>${x.rank}</b></td><td>${x.name}</td><td>${x.party}</td><td>${x.score.toFixed(1)}</td><td>${Number.isFinite(x.change6h)?(x.change6h>0?'▲ '+x.change6h:x.change6h<0?'▼ '+Math.abs(x.change6h):'―'):'첫 스냅샷'}</td><td>${x.signal?.count6??0}</td><td>${(x.sourceBadges||[]).join('·')||'단일/희박'}</td></tr>`).join('');
   $('#moverBody').innerHTML=(p.movers||[]).map(x=>`<tr><td>${x.name}</td><td>${x.rank}</td><td class="${x.change6h>0?'good':'bad'}">${x.change6h>0?'▲ '+x.change6h:'▼ '+Math.abs(x.change6h)}</td><td>${(x.sourceBadges||[]).join('·')||'-'}</td></tr>`).join('');
 }
@@ -126,7 +126,7 @@ $('#refreshBtn').onclick=async()=>{
       eventKeywords:$('#eventKeywords').value.split(',').map(x=>x.trim()).filter(Boolean)
     })});
     draftId=start.draftId;
-    const sh=start.sourceHealth||{}; $('#refreshStatus').textContent=`원천 점검 완료 · Google Trends 매칭 ${start.trendingMatches||0}명 · NAVER HTML ${sh.naverHtml?.state||'?'} · Daum HTML ${sh.daumHtml?.state||'?'} · YouTube HTML ${sh.youtubeHtml?.state||'?'}`;
+    const sh=start.sourceHealth||{},gn=start.globalNews||{}; $('#refreshStatus').textContent=`원천 점검 완료 · Google Trends 매칭 ${start.trendingMatches||0}명 · 이벤트뉴스 ${gn.eventArticles||0}건/${gn.eventSources||0}출처 · NAVER ${sh.naverHtml?.state||'?'} · Daum ${sh.daumHtml?.state||'?'} · YouTube ${sh.youtubeHtml?.state||'?'}`;
     let offset=0,total=start.total;
     while(offset<total){
       $('#refreshStatus').textContent=`1차 전수 수집 중 · ${offset}/${total}`;

@@ -1,7 +1,7 @@
 const crypto=require('crypto');
 const {requireAdmin}=require('../_lib/auth');
 const store=require('../_lib/store');
-const {collectMember,collectEnrichmentMember,preliminaryHeat}=require('../_lib/collector');
+const {collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPolitics}=require('../_lib/collector');
 const {computeSnapshot}=require('../_lib/score');
 const {readTrafficSignals}=require('../_lib/traffic');
 const {collectGlobalKeyless}=require('../_lib/keyless');
@@ -15,7 +15,7 @@ function active(){return roster.filter(x=>x.id!==300&&x.party!=='공석');}
 function aggregateSourceHealth(draft){
   const base={...(draft.sourceHealth||{})};
   const names=Object.keys(draft.signals||{});
-  for(const key of ['naverHtml','daumHtml','wiki']){
+  for(const key of ['naverHtml','daumHtml','wiki','naverView','daumBlog','youtubeHtml']){
     const rows=names.map(n=>draft.signals[n]?.health?.[key]).filter(Boolean);
     if(!rows.length)continue;
     const counts={};for(const r of rows)counts[r.state]=(counts[r.state]||0)+1;
@@ -34,10 +34,10 @@ module.exports=async function handler(req,res){
     if(action==='start'){
       const draftId=id(),eventTitle=String(b.eventTitle||process.env.DEFAULT_EVENT_TITLE||'현재 주요 정치 이슈').trim();
       const eventKeywords=(Array.isArray(b.eventKeywords)?b.eventKeywords:String(b.eventKeywords||'').split(',')).map(x=>String(x).trim()).filter(Boolean).slice(0,12);
-      const globalSignals=await collectGlobalKeyless(active());
-      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,sourceHealth:globalSignals.health||{}};
+      const [globalSignals,globalNews]=await Promise.all([collectGlobalKeyless(active()),collectGlobalPolitics(active(),eventTitle,eventKeywords)]);
+      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{}};
       await store.setJSON(`jjdd:draft:${draftId}`,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length});
+      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
     }
     const draftId=String(b.draftId||''),key=`jjdd:draft:${draftId}`,draft=await store.getJSON(key);
     if(!draft)return res.status(404).json({ok:false,error:'Refresh draft를 찾을 수 없습니다. 다시 시작해주세요.'});
@@ -52,7 +52,7 @@ module.exports=async function handler(req,res){
     }
     if(action==='prepare-enrichment'){
       const count=active().length;if(Object.keys(draft.signals||{}).length<count)return res.status(409).json({ok:false,error:`수집이 아직 끝나지 않았습니다. ${Object.keys(draft.signals||{}).length}/${count}`});
-      const n=Math.max(10,Math.min(80,Number(process.env.KEYLESS_ENRICH_TOP_N||process.env.ENRICH_TOP_N)||50));
+      const n=Math.max(10,Math.min(80,Number(process.env.KEYLESS_ENRICH_TOP_N||process.env.ENRICH_TOP_N)||80));
       const ranked=active().map(m=>({name:m.name,heat:preliminaryHeat(draft.signals[m.name])})).sort((a,b)=>b.heat-a.heat);
       const eventNames=ranked.filter(x=>{
         const c=draft.signals[x.name]?.channels||{};return Object.values(c).some(s=>(s?.event6||0)>0);
@@ -74,9 +74,9 @@ module.exports=async function handler(req,res){
       const count=active().length;if(Object.keys(draft.signals||{}).length<count)return res.status(409).json({ok:false,error:`수집이 아직 끝나지 않았습니다. ${Object.keys(draft.signals||{}).length}/${count}`});
       const previous=await store.getJSON('jjdd:current'),traffic=await readTrafficSignals(active());
       draft.sourceHealth=aggregateSourceHealth(draft);
-      draft.preview=computeSnapshot(roster,draft.signals,{eventTitle:draft.eventTitle,eventKeywords:draft.eventKeywords,sourceHealth:draft.sourceHealth,globalSignals:draft.globalSignals},previous,traffic);draft.status='preview';draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
+      draft.preview=computeSnapshot(roster,draft.signals,{eventTitle:draft.eventTitle,eventKeywords:draft.eventKeywords,sourceHealth:draft.sourceHealth,globalSignals:draft.globalSignals,globalNews:draft.globalNews},previous,traffic);draft.status='preview';draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
       const movers=draft.preview.members.slice(0,299).filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,15);
-      return res.status(200).json({ok:true,draftId,preview:{timestamp:draft.preview.timestamp,top30:draft.preview.members.slice(0,30),movers,quality:draft.preview.quality,configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth}});
+      return res.status(200).json({ok:true,draftId,preview:{timestamp:draft.preview.timestamp,top30:draft.preview.members.slice(0,30),movers,quality:draft.preview.quality,configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth,globalNews:draft.preview.globalNews}});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
