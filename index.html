@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 V14 · Rank 2.0 + Public Attention</title>
+<title>정정당당 V14.1 · Rank 2.0 + Public Attention + 실제 사진</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -202,7 +202,7 @@ a{text-decoration:none;color:inherit}
   width:42px;height:42px;border-radius:50%;overflow:hidden;background:#eef5f3;box-shadow:var(--shadow-soft);
   border:2px solid #fff
 }
-.avatar svg{width:100%;height:100%}
+.avatar svg,.avatar img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
 .pname{font-size:16px;font-weight:900;display:flex;align-items:center;gap:7px}
 .verified{
   width:18px;height:18px;border-radius:999px;background:var(--mint);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:900;
@@ -415,6 +415,11 @@ a{text-decoration:none;color:inherit}
   width:72px;height:72px;border-radius:22px;background:linear-gradient(180deg,#eef8f5,#dff5ef);display:grid;place-items:center;color:var(--mint-dark);font-size:22px;font-weight:950;overflow:hidden
 }
 .bigavatar img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
+.politician-photo{width:100%;height:100%;display:block;overflow:hidden}
+.politician-photo>img,.politician-photo>svg{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
+.politician-photo.is-loading{background:linear-gradient(110deg,#edf5f2 8%,#f7fbfa 18%,#edf5f2 33%);background-size:200% 100%;animation:photoPulse 1.3s linear infinite}
+@keyframes photoPulse{to{background-position-x:-200%}}
+
 .statline{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
 .stat{
   min-width:120px;padding:13px 15px;border-radius:16px;border:1px solid #edf2f0;background:#fbfffe
@@ -579,7 +584,7 @@ a{text-decoration:none;color:inherit}
 .suggestion-avatar{
   width:36px;height:36px;border-radius:50%;overflow:hidden;background:#edf5f2;flex:none
 }
-.suggestion-avatar svg{width:100%;height:100%}
+.suggestion-avatar svg,.suggestion-avatar img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
 .suggestion-name{font-weight:900}
 .suggestion-meta{font-size:11px;color:#89938d;margin-top:2px}
 .swap-btn{
@@ -779,7 +784,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>RANK 2.0 V14 · PUBLIC ATTENTION · 2026.08.11</b> · 기존 8축은 그대로 유지하면서 공개된 <b>YouTube·네이버·구글 관심 신호</b>를 대중 관심도·디지털 영향력·대중 반응도의 내부 입력값에 반영했습니다. 확인되지 않은 검색량은 생성하지 않으며, 최근 90일 공개원천이 확인된 현역 의원 37명만 개인별 시간감쇠 보정을 적용했습니다. 나머지는 기존 Rank 2.0 기준값을 유지합니다. 순위와 등급은 별개이며 국회·정부의 공식 평가점수가 아닙니다.</div>
+        <div class="demo-notice"><b>RANK 2.0 V14.1 · PUBLIC ATTENTION + REAL PHOTO · 2026.08.11</b> · 기존 8축은 그대로 유지하면서 공개된 <b>YouTube·네이버·구글 관심 신호</b>를 대중 관심도·디지털 영향력·대중 반응도의 내부 입력값에 반영했습니다. 확인되지 않은 검색량은 생성하지 않으며, 최근 90일 공개원천이 확인된 현역 의원 37명만 개인별 시간감쇠 보정을 적용했습니다. 나머지는 기존 Rank 2.0 기준값을 유지합니다. 순위와 등급은 별개이며 국회·정부의 공식 평가점수가 아닙니다. <b>인물 사진은 국회 공식 프로필을 우선 적용하고 Wikimedia 공개 사진을 보조 원천으로 사용합니다.</b></div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
@@ -1120,6 +1125,207 @@ function personSVG(seedv){
 function presidentPortraitSVG(){
   return `<img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" loading="eager" referrerpolicy="no-referrer">`;
 }
+
+
+// ===== V14.1 · 실제 인물 사진 레이어 =====
+// 현역 의원은 열린국회정보 ALLNAMEMBER의 NAAS_PIC/NAAS_CD를 최우선으로 사용합니다.
+// 공식 API 접근이 일시적으로 제한될 경우 Wikidata/Wikimedia Commons의 실제 인물 사진으로 보완합니다.
+// 어떤 외부 원천에서도 사진을 확인하지 못했을 때만 기존 일러스트를 안전한 최종 fallback으로 유지합니다.
+const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v141";
+const ASSEMBLY_MEMBER_API="https://open.assembly.go.kr/portal/openapi/ALLNAMEMBER";
+let politicianPhotoCache={};
+let politicianPhotoPromises=new Map();
+let assemblyPhotoDirectoryPromise=null;
+let assemblyPhotoMap={};
+let politicianPhotoObserver=null;
+
+try{ politicianPhotoCache=JSON.parse(localStorage.getItem(POLITICIAN_PHOTO_CACHE_KEY)||"{}")||{}; }catch(e){ politicianPhotoCache={}; }
+
+function photoAttr(v){
+  return String(v??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function photoNameFromSlot(el){
+  try{return decodeURIComponent(el?.dataset?.photoName||"")}catch(e){return el?.dataset?.photoName||""}
+}
+function politicianPhotoHTML(name,seedv=1){
+  const enc=encodeURIComponent(name||"");
+  const cached=politicianPhotoCache[name];
+  if(cached?.url){
+    return `<span class="politician-photo" data-photo-name="${enc}" data-photo-seed="${seedv}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'cache')}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+  }
+  return `<span class="politician-photo is-loading" data-photo-name="${enc}" data-photo-seed="${seedv}">${personSVG(seedv)}</span>`;
+}
+function savePoliticianPhotoCache(){
+  try{localStorage.setItem(POLITICIAN_PHOTO_CACHE_KEY,JSON.stringify(politicianPhotoCache))}catch(e){}
+}
+function normalizeAssemblyPhoto(pic,code){
+  let u=String(pic||"").trim();
+  if(u){
+    if(u.startsWith('//')) u='https:'+u;
+    else if(u.startsWith('/')) u='https://www.assembly.go.kr'+u;
+    else if(!/^https?:/i.test(u)) u='https://www.assembly.go.kr/'+u.replace(/^\/+/,"");
+    return u.replace(/^http:/i,'https:');
+  }
+  const c=String(code||"").trim();
+  return c ? `https://www.assembly.go.kr/photo/${encodeURIComponent(c)}.jpg` : "";
+}
+function collectMemberRows(node,out=[]){
+  if(!node) return out;
+  if(Array.isArray(node)){ node.forEach(v=>collectMemberRows(v,out)); return out; }
+  if(typeof node==='object'){
+    const nm=node.NAAS_NM||node.HG_NM||node.naasNm||node.hgNm;
+    const pic=node.NAAS_PIC||node.naasPic;
+    const cd=node.NAAS_CD||node.MONA_CD||node.naasCd||node.monaCd;
+    if(nm && (pic||cd)) out.push(node);
+    Object.values(node).forEach(v=>{ if(v && typeof v==='object') collectMemberRows(v,out); });
+  }
+  return out;
+}
+function rowName(r){return String(r?.NAAS_NM||r?.HG_NM||r?.naasNm||r?.hgNm||'').trim()}
+function rowPhoto(r){return normalizeAssemblyPhoto(r?.NAAS_PIC||r?.naasPic,r?.NAAS_CD||r?.MONA_CD||r?.naasCd||r?.monaCd)}
+async function photoFetchJSON(url,timeout=5000){
+  const ctl=new AbortController(); const timer=setTimeout(()=>ctl.abort(),timeout);
+  try{const r=await fetch(url,{mode:'cors',credentials:'omit',signal:ctl.signal,cache:'force-cache'}); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json();}
+  finally{clearTimeout(timer)}
+}
+async function ensureAssemblyPhotoDirectory(){
+  if(assemblyPhotoDirectoryPromise) return assemblyPhotoDirectoryPromise;
+  assemblyPhotoDirectoryPromise=(async()=>{
+    const urls=[
+      `${ASSEMBLY_MEMBER_API}?Type=json&pIndex=1&pSize=400`,
+      `${ASSEMBLY_MEMBER_API}?KEY=sample&Type=json&pIndex=1&pSize=400`
+    ];
+    for(const url of urls){
+      try{
+        const data=await photoFetchJSON(url,4500);
+        const rows=collectMemberRows(data,[]);
+        rows.forEach(r=>{const n=rowName(r),u=rowPhoto(r); if(n&&u&&!assemblyPhotoMap[n]) assemblyPhotoMap[n]=u;});
+        if(Object.keys(assemblyPhotoMap).length>50) break;
+      }catch(e){}
+    }
+    return assemblyPhotoMap;
+  })();
+  return assemblyPhotoDirectoryPromise;
+}
+async function resolveAssemblyPhoto(name){
+  await ensureAssemblyPhotoDirectory();
+  if(assemblyPhotoMap[name]) return {url:assemblyPhotoMap[name],source:'assembly',title:'사진 출처: 대한민국 국회'};
+  const q=encodeURIComponent(name);
+  const urls=[
+    `${ASSEMBLY_MEMBER_API}?KEY=sample&Type=json&pIndex=1&pSize=10&NAAS_NM=${q}`,
+    `${ASSEMBLY_MEMBER_API}?Type=json&pIndex=1&pSize=10&NAAS_NM=${q}`
+  ];
+  for(const url of urls){
+    try{
+      const data=await photoFetchJSON(url,4000);
+      let rows=collectMemberRows(data,[]).filter(r=>rowName(r)===name);
+      if(!rows.length) continue;
+      rows.sort((a,b)=>String(b.GTELT_ERACO||b.UNIT_NM||'').includes('22')-String(a.GTELT_ERACO||a.UNIT_NM||'').includes('22'));
+      const u=rowPhoto(rows[0]);
+      if(u){assemblyPhotoMap[name]=u; return {url:u,source:'assembly',title:'사진 출처: 대한민국 국회'};}
+    }catch(e){}
+  }
+  return null;
+}
+async function resolveWikipediaPagePhoto(name){
+  const q=encodeURIComponent(name);
+  try{
+    const data=await photoFetchJSON(`https://ko.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail%7Coriginal&pithumbsize=600&titles=${q}`,4500);
+    const pages=Object.values(data?.query?.pages||{});
+    for(const pg of pages){
+      const u=pg?.thumbnail?.source||pg?.original?.source;
+      if(u && !pg?.missing) return {url:u,source:'wikimedia',title:'사진 출처: Wikimedia Commons / Wikipedia'};
+    }
+  }catch(e){}
+  return null;
+}
+async function resolveWikidataPhoto(name){
+  const searches=[name,`${name} 정치인`,`${name} 국회의원`];
+  for(const term of searches){
+    try{
+      const data=await photoFetchJSON(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(term)}&language=ko&uselang=ko&format=json&origin=*&limit=8`,4500);
+      const list=(data?.search||[]).map(x=>{
+        const d=String(x.description||''); const l=String(x.label||'');
+        let score=(l===name?10:(l.includes(name)?5:0));
+        if(/국회의원|정치인|정치가|대한민국/.test(d)) score+=8;
+        if(/배우|가수|선수|작가|교수/.test(d) && !/정치|국회의원/.test(d)) score-=8;
+        return {...x,_score:score};
+      }).sort((a,b)=>b._score-a._score);
+      const cand=list.find(x=>x._score>=13);
+      if(!cand?.id) continue;
+      const ent=await photoFetchJSON(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(cand.id)}&props=claims&format=json&origin=*`,4500);
+      const file=ent?.entities?.[cand.id]?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
+      if(file){
+        const u=`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=600`;
+        return {url:u,source:'wikimedia',title:'사진 출처: Wikimedia Commons / Wikidata'};
+      }
+    }catch(e){}
+  }
+  return await resolveWikipediaPagePhoto(name);
+}
+async function resolvePoliticianPhoto(name,{skipAssembly=false,skipWikimedia=false}={}){
+  if(!name) return null;
+  const cached=politicianPhotoCache[name];
+  if(cached?.url && !skipAssembly && !skipWikimedia) return cached;
+  const key=`${name}|${skipAssembly?'A':''}|${skipWikimedia?'W':''}`;
+  if(politicianPhotoPromises.has(key)) return politicianPhotoPromises.get(key);
+  const p=(async()=>{
+    let result=null;
+    if(!skipAssembly) result=await resolveAssemblyPhoto(name);
+    if(!result && !skipWikimedia) result=await resolveWikidataPhoto(name);
+    if(result){politicianPhotoCache[name]=result;savePoliticianPhotoCache();}
+    return result;
+  })().finally(()=>politicianPhotoPromises.delete(key));
+  politicianPhotoPromises.set(key,p); return p;
+}
+function applyPoliticianPhoto(name,result){
+  if(!result?.url) return;
+  document.querySelectorAll(`.politician-photo[data-photo-name="${CSS.escape(encodeURIComponent(name))}"]`).forEach(slot=>{
+    const seed=Number(slot.dataset.photoSeed||1);
+    slot.classList.remove('is-loading');
+    slot.innerHTML=`<img src="${photoAttr(result.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(result.title||'실제 인물 사진')}" data-photo-source="${photoAttr(result.source||'unknown')}" data-photo-name="${encodeURIComponent(name)}" data-photo-seed="${seed}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)">`;
+  });
+}
+async function hydratePhotoSlot(slot){
+  if(!slot || slot.dataset.photoHydrating==='1') return;
+  const name=photoNameFromSlot(slot); if(!name) return;
+  slot.dataset.photoHydrating='1';
+  const result=await resolvePoliticianPhoto(name);
+  if(result) applyPoliticianPhoto(name,result); else slot.classList.remove('is-loading');
+  slot.dataset.photoHydrating='0';
+}
+function registerPoliticianPhotoSlots(root=document){
+  const slots=[];
+  if(root?.matches?.('.politician-photo')) slots.push(root);
+  root?.querySelectorAll?.('.politician-photo').forEach(x=>slots.push(x));
+  slots.forEach(slot=>{
+    if(slot.dataset.photoRegistered==='1') return;
+    slot.dataset.photoRegistered='1';
+    if(politicianPhotoObserver) politicianPhotoObserver.observe(slot); else hydratePhotoSlot(slot);
+  });
+}
+async function handlePoliticianPhotoError(img){
+  const name=(()=>{try{return decodeURIComponent(img.dataset.photoName||'')}catch(e){return img.dataset.photoName||''}})();
+  const seed=Number(img.dataset.photoSeed||1); const source=img.dataset.photoSource||'';
+  if(name) delete politicianPhotoCache[name]; savePoliticianPhotoCache();
+  const slot=img.closest('.politician-photo');
+  if(source==='assembly'){
+    const alt=await resolvePoliticianPhoto(name,{skipAssembly:true});
+    if(alt){applyPoliticianPhoto(name,alt);return;}
+  }
+  if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title='확인 가능한 실제 사진 원천을 찾지 못했습니다.';}
+}
+window.handlePoliticianPhotoError=handlePoliticianPhotoError;
+function initPoliticianPhotoHydrator(){
+  if('IntersectionObserver' in window){
+    politicianPhotoObserver=new IntersectionObserver(entries=>entries.forEach(en=>{if(en.isIntersecting){politicianPhotoObserver.unobserve(en.target);hydratePhotoSlot(en.target)}}),{rootMargin:'500px 0px'});
+  }
+  const mo=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1) registerPoliticianPhotoSlots(n)})));
+  mo.observe(document.body,{childList:true,subtree:true});
+  registerPoliticianPhotoSlots(document);
+  ensureAssemblyPhotoDirectory().then(()=>registerPoliticianPhotoSlots(document));
+}
+// ===== /V14.1 · 실제 인물 사진 레이어 =====
 
 function govSVG(){
   return `<svg viewBox="0 0 180 130" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#28b7a2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M40 42h100"/><path d="M54 42c9-20 63-20 72 0"/><path d="M52 50v44"/><path d="M76 50v44"/><path d="M100 50v44"/><path d="M124 50v44"/><path d="M42 96h98"/><path d="M34 106h114"/></g></svg>`;
@@ -8437,7 +8643,7 @@ function renderRank(){
     html += `<div class="row" onclick="openDetail(${x.id})">
       <div class="ranknum">${mode==="all"||mode==="top"?x.rank:idx+1}</div>
       <div class="person">
-        <div class="avatar">${personSVG(x.id)}</div>
+        <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div>
           <div class="pname">${x.name}<span class="verified">✓</span></div>
           <div class="pmeta">${x.isReal ? `국회 공식 프로필<span class="real-chip">REAL</span>` : `프로토타입 샘플<span class="sim-chip">DEMO</span>`}</div>
@@ -8620,9 +8826,9 @@ function compareResultHTML(a,b,showBack=false){
   ];
   return `
     <div class="compare-head">
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${a.name[0]}</div><div><h3 style="margin:0">${a.name} 의원</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.constituency||a.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(a.name,a.id)}</div><div><h3 style="margin:0">${a.name} 의원</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.constituency||a.region}</div></div></div></div>
       <div class="vs">VS</div>
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${b.name[0]}</div><div><h3 style="margin:0">${b.name} 의원</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.constituency||b.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(b.name,b.id)}</div><div><h3 style="margin:0">${b.name} 의원</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.constituency||b.region}</div></div></div></div>
     </div>
 
     <div class="combined-radar-wrap">
@@ -8681,7 +8887,7 @@ function openDetail(id){
   document.getElementById("modalTitle").innerText="국회의원 상세";
   document.getElementById("detail").innerHTML=`
     <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar">${x.name[0]}</div>
+      <div class="bigavatar">${politicianPhotoHTML(x.name,x.id)}</div>
       <div style="flex:1">
         <h2 class="h2" style="font-size:32px">${x.name} 의원 ${x.isReal?'<span class="real-chip">REAL DATA</span>':''}</h2>
         <div class="sub" style="margin-top:4px">${x.party} · ${x.constituency||x.region}</div>
@@ -8926,7 +9132,7 @@ function openGovPerson(i){
   document.getElementById("modalTitle").innerText=g.name;
   document.getElementById("detail").innerHTML=`
     <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar">${g.name[0]}</div>
+      <div class="bigavatar">${politicianPhotoHTML(g.name,700+i)}</div>
       <div>
         <h2 class="h2" style="font-size:32px">${g.name} <span class="real-chip">2026.08.11 기준</span></h2>
         <div class="sub" style="margin-top:4px">${g.ministry} · ${g.role}</div>
@@ -9000,7 +9206,7 @@ function politicianMatches(query, excludeId=null, limit=8){
 
 function suggestionHTML(p){
   return `<div class="suggestion" data-id="${p.id}">
-    <div class="suggestion-avatar">${personSVG(p.id)}</div>
+    <div class="suggestion-avatar">${politicianPhotoHTML(p.name,p.id)}</div>
     <div><div class="suggestion-name">${p.name} 의원 ${p.isReal?'<span class="real-chip">REAL</span>':''}</div><div class="suggestion-meta">${p.party} · ${p.constituency||p.region} · 현재 ${p.rank}위</div></div>
   </div>`;
 }
@@ -9083,6 +9289,7 @@ function initComparePage(){
   });
 }
 
+initPoliticianPhotoHydrator();
 initComparePage();
 renderGovernment();
 renderRank();
