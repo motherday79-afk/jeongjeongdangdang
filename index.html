@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank · 국회의원 실시간 이슈 랭킹</title>
+<title>정정당당 NOW Rank v1.1 · Responsive</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -689,28 +689,133 @@ a{text-decoration:none;color:inherit}
 .journey-compact .timeline-item{padding-bottom:12px}
 .journey-compact .timeline-title{font-size:14px}
 
+
+/* ===== NOW Rank v1.1 · Responsive UX ===== */
+.mobile-now-flow,.mobile-bottom-nav{display:none}
+.mobile-now-flow{margin:18px 0 20px}
+.mobile-now-flow > * + *{margin-top:16px}
+.mobile-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.mobile-section-head h3{margin:0;font-size:22px;font-weight:950;letter-spacing:-.7px;color:#183b36}
+.mobile-section-head .sub{margin:0;font-size:12px}
+.mobile-top10{background:linear-gradient(180deg,#fbfffe,#f5fbf9);border:1px solid rgba(40,183,162,.18);border-radius:24px;padding:18px;box-shadow:var(--shadow-soft)}
+.mobile-top10-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mobile-rank-card{display:grid;grid-template-columns:42px 46px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;border:1px solid #e8efed;background:#fff;border-radius:17px;cursor:pointer;box-shadow:0 7px 18px rgba(15,23,42,.035)}
+.mobile-rank-card:hover{background:#fbfffe}
+.mobile-rank-no{font-size:20px;font-weight:950;color:var(--mint-dark);text-align:center}
+.mobile-rank-card .avatar{width:44px;height:44px}
+.mobile-rank-name{font-size:15px;font-weight:950;line-height:1.2}
+.mobile-rank-meta{margin-top:4px;color:#77838f;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mobile-rank-score{text-align:right;font-size:18px;font-weight:950;color:#183b36}
+.mobile-rank-score span{display:block;margin-top:2px;font-size:10px;color:#94a3b8;font-weight:800}
+.mobile-all-rank-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px}
+.mobile-all-rank-title h3{margin:0;font-size:22px;font-weight:950;letter-spacing:-.7px}
+.mobile-all-rank-title span{font-size:12px;color:#7b8794}
+.mobile-bottom-nav{position:fixed;left:10px;right:10px;bottom:10px;z-index:120;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.96);border:1px solid rgba(216,226,223,.95);border-radius:20px;padding:7px 6px calc(7px + env(safe-area-inset-bottom));box-shadow:0 18px 45px rgba(15,23,42,.18);backdrop-filter:blur(14px)}
+.mobile-navbtn{border:0;background:transparent;border-radius:14px;min-height:50px;color:#7b8794;font-size:10px;font-weight:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.mobile-navbtn .mobile-nav-icon{font-size:18px;line-height:1}
+.mobile-navbtn.active{background:#eaf9f5;color:var(--mint-dark)}
+/* ===== /Responsive UX ===== */
+
 @media (max-width:1120px){
   .layout,.live-layout,.mypage,.profile{grid-template-columns:1fr}
-  .side{position:static;height:auto;overflow:visible}.side-track{transform:none!important}
+  .side{display:none!important}
+  .side-track{transform:none!important}
+  .mobile-now-flow{display:block}
   .row{grid-template-columns:60px minmax(180px,1fr) 120px 130px 100px 100px}
   .grid-news{grid-template-columns:1fr}
 }
 @media (max-width:780px){
-  .nav{height:64px;padding:0 14px}
-  .logo{font-size:22px}
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .nav{height:62px;padding:0 12px;gap:10px}
+  .logo{font-size:21px;letter-spacing:-1.1px}
+  .logo-mark{width:25px;height:25px}
   .navlinks{display:none}
-  .app{padding:14px}
-  .president{grid-template-columns:1fr;justify-items:start}
+  .navright{margin-left:auto;gap:6px}
+  .navright .loginbtn{display:none}
+  .iconbtn{width:38px;height:38px;border-radius:12px}
+  .app{padding:12px 12px 18px}
+  .mobile-bottom-nav{display:grid}
+
+  .president{grid-template-columns:76px minmax(0,1fr);gap:12px;padding:14px;border-radius:20px}
+  .portrait{width:70px;height:70px;border-width:4px}
+  .pres-text .mini{font-size:10px;margin-bottom:4px}
+  .pres-text h2{font-size:20px;letter-spacing:-.6px}
+  .pres-text p{display:none}
+  .meta-pills{margin-top:8px;gap:5px}
+  .meta-pill{height:28px;padding:0 9px;font-size:10px}
+  .meta-pill:nth-child(3){display:none}
   .govmark{display:none}
-  .head{flex-direction:column;align-items:start}
-  .head-left h1,.h1{font-size:34px}
-  .search{width:100%}
-  .row{grid-template-columns:54px minmax(140px,1fr) 100px 70px}
+
+  .gov-section{margin-top:12px!important;padding:14px!important;border-radius:20px!important}
+  .gov-section-head{align-items:start!important}
+  .gov-section-head h3{font-size:18px!important}
+  .gov-section-head .sub{display:none}
+  .gov-card{min-width:175px!important}
+
+  .mobile-now-flow{margin:14px 0 16px}
+  .mobile-now-flow .cardpad{padding:14px}
+  .mobile-now-flow .side-title{margin-bottom:10px}
+  .mobile-now-flow .side-title h3{font-size:19px}
+  .mobile-now-flow .issue-box{padding:13px}
+  .mobile-now-flow .issue-question{font-size:16px;margin:10px 0 8px}
+  .mobile-now-flow .candidate{margin:10px 0}
+  .mobile-top10{padding:14px;border-radius:20px}
+  .mobile-top10-list{grid-template-columns:1fr;gap:8px}
+  .mobile-rank-card{grid-template-columns:36px 40px minmax(0,1fr) 62px;padding:10px;gap:8px;border-radius:15px}
+  .mobile-rank-card .avatar{width:38px;height:38px}
+  .mobile-rank-no{font-size:18px}
+  .mobile-rank-name{font-size:14px}
+  .mobile-rank-score{font-size:16px}
+
+  #mobileNewsPortal .news-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,82vw);gap:10px;overflow-x:auto;padding:2px 1px 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  #mobileNewsPortal .news-row{display:flex;flex-direction:column-reverse;gap:10px;border:1px solid #e8efed!important;border-radius:16px;padding:10px;background:#fff;scroll-snap-align:start}
+  #mobileNewsPortal .news-row .thumb{width:100%;height:auto;aspect-ratio:16/8.5;border-radius:13px}
+  #mobileNewsPortal .news-row h4{font-size:15px}
+  #mobileNewsPortal .news-row p{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+  .head{flex-direction:column;align-items:stretch;margin:16px 0 10px;gap:10px}
+  .head-left h1,.h1{font-size:28px;letter-spacing:-1px}
+  .head-left .sub{font-size:12px;line-height:1.5}
+  .livepill{padding:5px 8px;font-size:10px;vertical-align:middle}
+  .searchline{width:100%;display:grid;grid-template-columns:1fr 124px;gap:8px}
+  .search,.select{width:100%;height:44px;border-radius:13px;padding:0 12px;font-size:13px}
+  .demo-notice{font-size:11px!important;line-height:1.55!important;padding:11px 12px!important;border-radius:14px!important}
+  .tabs{margin:12px -2px 12px;display:flex;flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 6px;gap:7px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{height:38px;padding:0 13px;font-size:12px;flex:0 0 auto}
+
+  .ranktable{border-radius:18px}
+  .row{grid-template-columns:42px minmax(0,1fr) 82px 62px;gap:7px;padding:11px 9px}
+  .row > :nth-child(3),.row > :nth-child(4){display:none}
+  .header{font-size:9px;letter-spacing:.02em}
+  .ranknum{font-size:18px}
+  .avatar{width:38px;height:38px}
+  .person{gap:8px;min-width:0}
+  .pname{font-size:14px;white-space:nowrap}
+  .verified{width:15px;height:15px;font-size:9px}
+  .pmeta{display:none}
+  .change{font-size:10px;line-height:1.2;text-align:center}
+  .rankpill{min-width:48px;height:31px;padding:0 8px;border-radius:10px;font-size:15px}
+  .row > :nth-child(6) > span:last-child{font-size:10px!important}
+  .footer-note{align-items:stretch}
+  .info-pill{border-radius:14px;line-height:1.5}
+
   .hide-sm{display:none}
-  .article-content h1{font-size:28px}
+  .article-content{padding:18px}
+  .article-content h1{font-size:26px}
   .grid-news,.features,.followlist,.checks,.formgrid,.ranks,.evalgrid{grid-template-columns:1fr}
   .combined-radar-wrap,.compare-search-grid{grid-template-columns:1fr}
   .swap-btn{justify-self:center;transform:rotate(90deg)}
+  .radar-card{padding:12px!important}
+  canvas{max-width:100%}
+}
+@media (max-width:420px){
+  .app{padding-left:9px;padding-right:9px}
+  .searchline{grid-template-columns:1fr 112px}
+  .mobile-rank-card{grid-template-columns:32px 38px minmax(0,1fr) 56px}
+  .mobile-rank-meta{max-width:150px}
+  .row{grid-template-columns:38px minmax(0,1fr) 72px 56px;padding-left:7px;padding-right:7px}
+  .pname{font-size:13px}
 }
 </style>
 </head>
@@ -767,10 +872,28 @@ a{text-decoration:none;color:inherit}
           <div class="gov-rail" id="govRail"></div>
         </section>
 
+        <section class="mobile-now-flow" id="mobileNowFlow" aria-label="모바일 NOW 요약">
+          <div id="mobileNowIssuePortal"></div>
+          <section class="mobile-top10">
+            <div class="mobile-section-head">
+              <div>
+                <div class="kicker">NOW TOP 10</div>
+                <h3>지금 가장 뜨거운 국회의원</h3>
+              </div>
+              <div class="sub">현재 스냅샷</div>
+            </div>
+            <div class="mobile-top10-list" id="mobileTop10List"></div>
+          </section>
+          <div id="mobileNewsPortal"></div>
+          <div class="mobile-all-rank-title">
+            <h3>전체 NOW Rank</h3>
+            <span>1~300 전체 보기</span>
+          </div>
+        </section>
         <div class="head">
           <div class="head-left">
             <h1>국회의원 NOW Rank <span class="livepill">LIVE SNAPSHOT</span></h1>
-            <div class="sub">의정활동과 대중 반응 데이터를 기반으로 실시간에 가깝게 변화하는 국회의원 랭킹입니다.</div>
+            <div class="sub">뉴스·검색·현재 정치 이벤트·디지털 확산을 중심으로 “지금 누가 이슈인가”를 보여주는 국회의원 실시간 이슈 랭킹입니다.</div>
           </div>
           <div class="searchline">
             <input id="search" class="search" placeholder="이름, 정당, 지역 검색" />
@@ -784,7 +907,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>RANK 2.1 · EVIDENCE FIRST · 2026.08.11</b> · <b>선수(초선·재선·다선)는 점수 입력에서 완전 제거</b>했습니다. 정치 영향력 24%는 <b>제도적 권력 30% + 전국 정치자본 30% + 정치권 레버리지 20% + 의제 전환력 20%</b>으로 재구성했습니다. 미측정 데이터는 더 이상 50점으로 채우지 않고 <b>N/A · 점수 계산 제외</b>로 처리하며 데이터 커버리지가 낮을수록 불확실성 패널티가 적용됩니다. 공동순위는 폐기하되 실제 근거점수는 Evidence Score로 보존하고, 정렬용 Rank Point만 최소 0.1점 간격으로 <b>1~299 단일 순위</b>, 강릉 공석은 300위로 고정합니다. 언론·의정·정책 축은 공식 원천 전수연동 전까지 N/A로 표시합니다. 인물 사진은 국회 공식 프로필을 우선 적용합니다.</div>
+        <div class="demo-notice"><b>NOW RANK v1.1 · ISSUE RADAR · 2026.08.11</b> · 뉴스 화제성 30% + 검색 관심도 25% + 이벤트 중심성 20% + 디지털 확산 15% + 정치 체급 10%로 구성합니다. <b>의정활동·선수는 NOW Rank 입력값이 아닙니다.</b> 이번 업데이트는 점수와 1~300 순위를 변경하지 않고 PC·태블릿·모바일에서 같은 정보를 더 빠르게 볼 수 있도록 반응형 UX만 재구성했습니다.</div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
@@ -803,7 +926,7 @@ a{text-decoration:none;color:inherit}
 
       <aside class="side">
         <div class="side-track">
-        <section class="card cardpad">
+        <section class="card cardpad" id="nowIssueCard">
           <div class="side-title">
             <h3>NOW ISSUE</h3>
             <div class="more">더보기 ›</div>
@@ -846,7 +969,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </section>
 
-        <section class="card cardpad">
+        <section class="card cardpad" id="sideNewsCard">
           <div class="side-title">
             <h3>정정뉴스</h3>
             <div class="more" onclick="showPage('news')">더보기 ›</div>
@@ -8628,6 +8751,55 @@ document.getElementById("govIcon").innerHTML = govSVG();
 document.getElementById("liveVisual").innerHTML = liveSVG();
 
 let mode="all";
+
+function renderMobileTop10(){
+  const box=document.getElementById('mobileTop10List');
+  if(!box) return;
+  const top=[...people].filter(x=>x.rank>=1 && x.rank<=10).sort((a,b)=>a.rank-b.rank);
+  box.innerHTML=top.map(x=>{
+    const meta=(typeof nowRankByName!=='undefined' && nowRankByName[x.name]) ? nowRankByName[x.name] : null;
+    const label=meta?.eventLabel && !meta.eventLabel.includes('연계 없음') ? meta.eventLabel : (x.party||'');
+    const score=Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'-';
+    return `<div class="mobile-rank-card" onclick="openDetail(${x.id})">
+      <div class="mobile-rank-no">${x.rank}</div>
+      <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
+      <div style="min-width:0"><div class="mobile-rank-name">${x.name}</div><div class="mobile-rank-meta">${label}</div></div>
+      <div class="mobile-rank-score">${score}<span>NOW</span></div>
+    </div>`;
+  }).join('');
+}
+
+function syncResponsiveContent(){
+  const issue=document.getElementById('nowIssueCard');
+  const news=document.getElementById('sideNewsCard');
+  const track=document.querySelector('#page-ranking .side-track');
+  const issuePortal=document.getElementById('mobileNowIssuePortal');
+  const newsPortal=document.getElementById('mobileNewsPortal');
+  if(!issue || !news || !track || !issuePortal || !newsPortal) return;
+  const compact=window.matchMedia('(max-width:1120px)').matches;
+  if(compact){
+    if(issue.parentElement!==issuePortal) issuePortal.appendChild(issue);
+    if(news.parentElement!==newsPortal) newsPortal.appendChild(news);
+  }else{
+    if(issue.parentElement!==track) track.appendChild(issue);
+    if(news.parentElement!==track) track.appendChild(news);
+  }
+}
+
+function setMobileNavActive(name){
+  document.querySelectorAll('.mobile-navbtn').forEach(b=>b.classList.toggle('active',b.dataset.mobilePage===name));
+}
+
+document.querySelectorAll('.mobile-navbtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const name=btn.dataset.mobilePage;
+    document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+    setMobileNavActive(name);
+    showPage(name);
+  });
+});
+window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);},{passive:true});
+
 function renderRank(){
   let q=document.getElementById("search").value.trim();
   let p=document.getElementById("party").value;
@@ -8658,6 +8830,7 @@ function renderRank(){
     </div>`;
   });
   document.getElementById("ranktable").innerHTML=html;
+  renderMobileTop10();
 }
 document.getElementById("search").addEventListener("input",renderRank);
 document.getElementById("party").addEventListener("change",renderRank);
@@ -8678,6 +8851,7 @@ document.querySelectorAll(".navbtn").forEach(btn=>{
 function showPage(name){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+name).classList.add("active");
+  setMobileNavActive(name);
   window.scrollTo({top:0,behavior:"smooth"});
 }
 window.showPage = showPage;
@@ -8970,7 +9144,7 @@ function openDetail(id){
           <div class="trend-card">
             <h4>NOW Rank 변화 추적</h4>
             <div class="trend-chart">${x.isReal?rank22TrendHTML(x):sparkLineSVG(x.id)}</div>
-            <div class="source-note">${x.isReal?'NOW Rank v1은 NOW Rank v1는 직책·정치자본·검색/디지털 신호의 중복계산을 줄이고, 미측정값을 재정규화하지 않는 Evidence Mass 방식을 적용합니다. 언론·의정·정책·대중반응·독립 인지도 원천은 연결 전까지 N/A로 유지합니다.':'프로토타입용 가상 추이입니다.'}</div>
+            <div class="source-note">${x.isReal?'NOW Rank는 의정평가가 아니라 현재 정치 이슈의 열기를 측정합니다. 뉴스 화제성·검색 관심도·이벤트 중심성·디지털 확산 90%와 정치 체급 10%를 사용하며, 공개 상위 신호 미포착은 해당 스냅샷의 낮은 관측값으로 표시합니다.':'프로토타입용 가상 추이입니다.'}</div>
           </div>
           <div class="trend-card">
             <h4>현재 모멘텀</h4>
@@ -9321,9 +9495,20 @@ renderRank();
 renderSideNews();
 renderNewsGrid();
 drawVotes();
+renderMobileTop10();
+syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- V12 roster snapshot: 제22대 국회 현역 실명 데이터. 2026-08-11 기준, 강릉시 1석 공석 반영. Rank/metrics are proprietary prototype analysis values. -->
+<!-- NOW Rank v1.1 Responsive: NOW Rank data unchanged; responsive UX layer added 2026-08-11. -->
+
+<nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
+  <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
+  <button class="mobile-navbtn" data-mobile-page="news"><span class="mobile-nav-icon">▤</span><span>뉴스</span></button>
+  <button class="mobile-navbtn" data-mobile-page="live"><span class="mobile-nav-icon">●</span><span>LIVE</span></button>
+  <button class="mobile-navbtn" data-mobile-page="compare"><span class="mobile-nav-icon">⇄</span><span>비교</span></button>
+  <button class="mobile-navbtn" data-mobile-page="my"><span class="mobile-nav-icon">○</span><span>MY</span></button>
+</nav>
+
 </body>
 </html>
