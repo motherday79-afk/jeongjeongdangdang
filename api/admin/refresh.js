@@ -55,7 +55,7 @@ module.exports=async function handler(req,res){
       draft.updatedAt=new Date().toISOString();
       await store.setJSON(key,draft,DRAFT_TTL);
       const movers=draft.preview.members.slice(0,299).filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,15);
-      return res.status(200).json({ok:true,draftId,preview:{timestamp:draft.preview.timestamp,top30:draft.preview.members.slice(0,30),movers,sourceSummary:draft.preview.sourceSummary}});
+      return res.status(200).json({ok:true,draftId,preview:{timestamp:draft.preview.timestamp,top30:draft.preview.members.slice(0,30),movers,sourceSummary:draft.preview.sourceSummary,quality:draft.preview.quality}});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}

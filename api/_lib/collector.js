@@ -13,6 +13,9 @@ function normalizeTitle(s=''){
     .replace(/[^0-9a-z가-힣]+/g,' ')
     .replace(/\s+/g,' ').trim();
 }
+function normalizeEventText(s=''){
+  return cleanHtml(s).toLowerCase().replace(/[^0-9a-z가-힣]+/g,' ').replace(/\s+/g,' ').trim();
+}
 function dedupe(items){
   const seen=new Set(),out=[];
   for(const x of items){
@@ -59,9 +62,13 @@ async function fetchNaver(member){
   return parseNaverItems(await r.json());
 }
 async function fetchGoogle(member){
-  const query=`"${member.name}" 국회의원 when:7d`;
+  // Google News RSS fallback is intentionally stricter than a name-only query.
+  // This reduces same-name noise while still catching stories that identify the member by party.
+  const party=(member.party&&member.party!=='공석')?member.party:'';
+  const qualifier=party?`(국회의원 OR "${party}")`:'국회의원';
+  const query=`"${member.name}" ${qualifier} when:7d`;
   const url=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
-  const r=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 jjdd-nowrank/1.3'}});
+  const r=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 jjdd-nowrank/1.3.2'}});
   if(!r.ok) throw new Error(`Google News ${r.status}`);
   return parseGoogleRss(await r.text());
 }
@@ -71,8 +78,14 @@ function itemMentionsMember(item,name){
 }
 function itemMatchesEvent(item,keywords=[]){
   if(!keywords.length) return false;
-  const t=`${item.title} ${item.desc||''}`.toLowerCase();
-  return keywords.some(k=>k && t.includes(String(k).toLowerCase()));
+  const t=normalizeEventText(`${item.title} ${item.desc||''}`);
+  return keywords.some(k=>{
+    const nk=normalizeEventText(String(k||''));
+    if(!nk) return false;
+    if(t.includes(nk)) return true;
+    const tokens=nk.split(' ').filter(x=>x.length>=2 || /^\d+$/.test(x));
+    return tokens.length>=2 && tokens.every(tok=>t.includes(tok));
+  });
 }
 function summarize(items,member,keywords,nowMs){
   const arr=dedupe(items).filter(x=>itemMentionsMember(x,member.name));
@@ -105,4 +118,4 @@ async function collectMember(member,keywords=[]){
   }
   return {...summarize(items,member,keywords,nowMs),source,warning};
 }
-module.exports={collectMember,cleanHtml,parseNaverItems,parseGoogleRss,summarize};
+module.exports={collectMember,cleanHtml,parseNaverItems,parseGoogleRss,summarize,itemMatchesEvent};
