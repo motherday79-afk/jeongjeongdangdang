@@ -140,6 +140,7 @@ a{text-decoration:none;color:inherit}
   background:#dbe4e1;
 }
 .portrait svg{width:100%;height:100%;display:block}
+.portrait img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
 .pres-text .mini{
   font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--mint-dark);text-transform:uppercase;margin-bottom:8px;
 }
@@ -411,8 +412,9 @@ a{text-decoration:none;color:inherit}
 }
 .bigperson{display:flex;gap:14px;align-items:center}
 .bigavatar{
-  width:72px;height:72px;border-radius:22px;background:linear-gradient(180deg,#eef8f5,#dff5ef);display:grid;place-items:center;color:var(--mint-dark);font-size:22px;font-weight:950
+  width:72px;height:72px;border-radius:22px;background:linear-gradient(180deg,#eef8f5,#dff5ef);display:grid;place-items:center;color:var(--mint-dark);font-size:22px;font-weight:950;overflow:hidden
 }
+.bigavatar img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 24%}
 .statline{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
 .stat{
   min-width:120px;padding:13px 15px;border-radius:16px;border:1px solid #edf2f0;background:#fbfffe
@@ -1116,16 +1118,7 @@ function personSVG(seedv){
 }
 
 function presidentPortraitSVG(){
-  return `
-  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="pbg" x1="0" x2="1"><stop offset="0%" stop-color="#f8fbfa"/><stop offset="100%" stop-color="#e5efec"/></linearGradient></defs>
-    <rect width="160" height="160" fill="url(#pbg)"/>
-    <circle cx="80" cy="52" r="28" fill="#f0d0bb"/>
-    <path d="M48 48c3-20 61-21 64 3-11-10-24-11-36-10-11 1-18 4-28 7z" fill="#1f2937"/>
-    <path d="M32 160c4-34 26-53 48-53s44 19 48 53z" fill="#1f2937"/>
-    <rect x="66" y="101" width="28" height="16" rx="3" fill="#fff"/>
-    <path d="M70 116h20l-10 19z" fill="#0f766e"/>
-  </svg>`;
+  return `<img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" loading="eager" referrerpolicy="no-referrer">`;
 }
 
 function govSVG(){
@@ -1899,7 +1892,7 @@ function openPresident(){
   document.getElementById("modalTitle").innerText="이재명 대통령";
   document.getElementById("detail").innerHTML=`
     <div class="bigperson" style="margin-top:18px">
-      <div class="bigavatar">이</div>
+      <div class="bigavatar"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" referrerpolicy="no-referrer"></div>
       <div style="flex:1">
         <h2 class="h2" style="font-size:32px">${president.name} <span class="real-chip">공식정보</span></h2>
         <div class="sub" style="margin-top:4px">${president.title} · ${president.inaugurated} 취임</div>
@@ -2143,5 +2136,6 @@ renderNewsGrid();
 drawVotes();
 requestAnimationFrame(syncSidebarWithPage);
 </script>
+<!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
 </body>
 </html>
