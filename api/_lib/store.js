@@ -1,7 +1,17 @@
 function config(){
-  const url=process.env.UPSTASH_REDIS_REST_URL||process.env.KV_REST_API_URL;
-  const token=process.env.UPSTASH_REDIS_REST_TOKEN||process.env.KV_REST_API_TOKEN;
-  if(!url||!token) throw new Error('Persistent store is not configured. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.');
+  const url =
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_KV_REST_API_URL ||
+    process.env.STORAGE_KV_REST_API_URL ||
+    process.env.UPSTASH_KV_REST_API_URL;
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN ||
+    process.env.STORAGE_KV_REST_API_TOKEN ||
+    process.env.UPSTASH_KV_REST_API_TOKEN;
+  if(!url||!token) throw new Error('Persistent store is not configured. Redis URL/TOKEN environment variables were not found.');
   return {url:url.replace(/\/$/,''),token};
 }
 async function cmd(args){
