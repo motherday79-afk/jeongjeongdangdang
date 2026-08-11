@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>정정당당 관리자 · NOW Rank</title>
+<style>
+:root{--bg:#f3f7f6;--panel:#fff;--ink:#111827;--muted:#64748b;--mint:#28b7a2;--line:#dfe8e5;--danger:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 18px 60px}.head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.logo{font-size:24px;font-weight:950}.pill{font-size:12px;background:#eaf9f5;color:#0f766e;padding:6px 10px;border-radius:999px;font-weight:800}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 28px rgba(15,23,42,.05);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px 13px;font:inherit;background:#fff}textarea{min-height:86px;resize:vertical}
+button{border:0;border-radius:13px;padding:12px 15px;font-weight:900;cursor:pointer}.primary{background:#111827;color:#fff}.mint{background:var(--mint);color:#fff}.ghost{background:#eef5f3;color:#183b36}.danger{background:#fee2e2;color:var(--danger)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.status{font-size:13px;line-height:1.6;color:var(--muted)}
+.progress{height:12px;background:#edf2f0;border-radius:999px;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;width:0;background:var(--mint);transition:width .2s}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid #edf2f0;text-align:left}th{font-size:11px;color:var(--muted)}
+.bad{color:var(--danger);font-weight:900}.good{color:#0f766e;font-weight:900}.hidden{display:none!important}
+.notice{padding:11px 13px;border-radius:13px;background:#f8fafc;color:#475569;font-size:12px;line-height:1.6}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 40px}.head{align-items:flex-start;flex-direction:column}.card{padding:15px;border-radius:18px}table{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><div class="logo">정정당당 · NOW Rank 관리자</div><div class="pill">6H SNAPSHOT</div></div>
+
+  <section class="card" id="loginCard">
+    <h2 style="margin-top:0">관리자 로그인</h2>
+    <div class="grid">
+      <div><label>관리자 ID</label><input id="adminId" autocomplete="username"></div>
+      <div><label>비밀번호</label><input id="adminPw" type="password" autocomplete="current-password"></div>
+    </div>
+    <div class="actions"><button class="primary" id="loginBtn">로그인</button></div>
+    <div class="status" id="loginStatus"></div>
+  </section>
+
+  <div id="adminArea" class="hidden">
+    <section class="card">
+      <h2 style="margin-top:0">1. 데이터 Refresh</h2>
+      <div class="grid">
+        <div><label>현재 핵심 이슈 제목</label><input id="eventTitle" value="민주당 8·17 전당대회"></div>
+        <div><label>이벤트 키워드 (쉼표 구분)</label><input id="eventKeywords" value="더불어민주당 전당대회,8·17 전당대회,당대표 경선"></div>
+      </div>
+      <div class="notice" style="margin-top:12px">
+        Refresh는 299명 전체를 작은 배치로 나눠 수집합니다. NAVER API HUB 키가 설정되어 있으면 네이버 뉴스 검색을 사용하고, 없으면 Google News RSS로 자동 대체합니다. Refresh만으로 공개 순위는 바뀌지 않으며, 반드시 미리보기 후 게시해야 합니다.
+      </div>
+      <div class="actions">
+        <button class="mint" id="refreshBtn">NOW Rank 새로고침</button>
+        <button class="ghost" id="logoutBtn">로그아웃</button>
+      </div>
+      <div class="progress"><span id="bar"></span></div>
+      <div class="status" id="refreshStatus">대기 중</div>
+    </section>
+
+    <section class="card hidden" id="previewCard">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+        <div><h2 style="margin:0">2. 미리보기</h2><div class="status" id="previewMeta"></div></div>
+        <div class="actions" style="margin:0">
+          <button class="primary" id="publishBtn">게시</button>
+          <button class="danger" id="rollbackBtn">이전 스냅샷으로 롤백</button>
+        </div>
+      </div>
+      <h3>새 TOP 30</h3>
+      <div style="overflow:auto"><table><thead><tr><th>순위</th><th>의원</th><th>정당</th><th>NOW</th><th>6시간 변화</th><th>6h 기사</th></tr></thead><tbody id="previewBody"></tbody></table></div>
+      <h3>변동폭 큰 인물</h3>
+      <div style="overflow:auto"><table><thead><tr><th>의원</th><th>새 순위</th><th>변화</th><th>자료원</th></tr></thead><tbody id="moverBody"></tbody></table></div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0">운영 상태</h2>
+      <div class="status" id="serverStatus">확인 중...</div>
+    </section>
+  </div>
+</div>
+<script>
+let draftId=null, lastPreview=null;
+const $=s=>document.querySelector(s);
+async function api(url,opts={}){
+  const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.error||`HTTP ${r.status}`);
+  return j;
+}
+function setLogin(ok,msg=''){
+  $('#loginCard').classList.toggle('hidden',ok);
+  $('#adminArea').classList.toggle('hidden',!ok);
+  $('#loginStatus').textContent=msg;
+}
+async function status(){
+  try{
+    const s=await api('/api/admin/status');
+    setLogin(true);
+    $('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>NAVER API HUB: <b class="${s.naverConfigured?'good':'bad'}">${s.naverConfigured?'설정됨':'미설정 · Google News fallback'}</b><br>최근 게시: <b>${s.current?.timestamp||'아직 없음'}</b>`;
+    if(s.defaults){
+      if(s.defaults.eventTitle) $('#eventTitle').value=s.defaults.eventTitle;
+      if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length) $('#eventKeywords').value=s.defaults.eventKeywords.join(',');
+    }
+  }catch(e){ setLogin(false); }
+}
+$('#loginBtn').onclick=async()=>{
+  $('#loginStatus').textContent='로그인 중...';
+  try{
+    await api('/api/admin/login',{method:'POST',body:JSON.stringify({id:$('#adminId').value,password:$('#adminPw').value})});
+    await status();
+  }catch(e){$('#loginStatus').textContent=e.message;}
+};
+$('#logoutBtn').onclick=async()=>{await api('/api/admin/logout',{method:'POST',body:'{}'}).catch(()=>{});location.reload();};
+
+function renderPreview(p){
+  lastPreview=p;
+  $('#previewCard').classList.remove('hidden');
+  $('#previewMeta').textContent=`계산시각 ${p.timestamp} · 원천 ${(p.sourceSummary||[]).join(' / ')}`;
+  $('#previewBody').innerHTML=(p.top30||[]).map(x=>`<tr><td><b>${x.rank}</b></td><td>${x.name}</td><td>${x.party}</td><td>${x.score.toFixed(1)}</td><td>${Number.isFinite(x.change6h)?(x.change6h>0?'▲ '+x.change6h:x.change6h<0?'▼ '+Math.abs(x.change6h):'―'):'첫 스냅샷'}</td><td>${x.signal?.count6??0}</td></tr>`).join('');
+  $('#moverBody').innerHTML=(p.movers||[]).map(x=>`<tr><td>${x.name}</td><td>${x.rank}</td><td class="${x.change6h>0?'good':'bad'}">${x.change6h>0?'▲ '+x.change6h:'▼ '+Math.abs(x.change6h)}</td><td>${x.signal?.source||'-'}</td></tr>`).join('');
+}
+$('#refreshBtn').onclick=async()=>{
+  const btn=$('#refreshBtn');btn.disabled=true;$('#previewCard').classList.add('hidden');$('#bar').style.width='0%';
+  try{
+    const start=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({
+      action:'start',
+      eventTitle:$('#eventTitle').value.trim(),
+      eventKeywords:$('#eventKeywords').value.split(',').map(x=>x.trim()).filter(Boolean)
+    })});
+    draftId=start.draftId;
+    let offset=0,total=start.total;
+    while(offset<total){
+      $('#refreshStatus').textContent=`데이터 수집 중 · ${offset}/${total}`;
+      const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:12})});
+      offset=b.nextOffset;
+      $('#bar').style.width=`${Math.round(offset/total*92)}%`;
+    }
+    $('#refreshStatus').textContent='순위 계산 및 미리보기 생성 중...';
+    const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});
+    $('#bar').style.width='100%';
+    $('#refreshStatus').textContent='미리보기 준비 완료 · 아직 공개되지 않았습니다.';
+    renderPreview(fin.preview);
+  }catch(e){$('#refreshStatus').textContent='오류: '+e.message;}
+  finally{btn.disabled=false;}
+};
+$('#publishBtn').onclick=async()=>{
+  if(!draftId) return alert('먼저 Refresh를 실행해주세요.');
+  if(!confirm('이 미리보기를 공개 NOW Rank로 게시할까요?')) return;
+  try{
+    const p=await api('/api/admin/publish',{method:'POST',body:JSON.stringify({draftId})});
+    alert(`게시 완료: ${p.timestamp}`);
+    await status();
+  }catch(e){alert(e.message);}
+};
+$('#rollbackBtn').onclick=async()=>{
+  if(!confirm('현재 공개 순위를 직전 게시 스냅샷으로 되돌릴까요?')) return;
+  try{const r=await api('/api/admin/rollback',{method:'POST',body:'{}'});alert(`롤백 완료: ${r.timestamp}`);await status();}
+  catch(e){alert(e.message);}
+};
+status();
+</script>
+</body></html>

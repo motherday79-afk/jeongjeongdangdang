@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v1.2 · 6H Snapshot UX</title>
+<title>정정당당 NOW Rank v1.3 · 6H Snapshot UX</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -691,7 +691,7 @@ a{text-decoration:none;color:inherit}
 
 
 
-/* ===== NOW Rank v1.2 · Detail / Snapshot UX ===== */
+/* ===== NOW Rank v1.3 · Detail / Snapshot UX ===== */
 .detail-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:18px}
 .detail-identity{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
 .detail-identity-info{min-width:0;flex:1}
@@ -705,7 +705,7 @@ a{text-decoration:none;color:inherit}
 .snapshot-badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:999px;background:#eaf9f5;color:#0f766e;font-size:10px;font-weight:900;margin-left:6px}
 .politician-photo[data-photo-quality="high"] img{image-rendering:auto}
 
-/* ===== NOW Rank v1.2 · Responsive UX ===== */
+/* ===== NOW Rank v1.3 · Responsive UX ===== */
 .mobile-now-flow,.mobile-bottom-nav{display:none}
 .mobile-now-flow{margin:18px 0 20px}
 .mobile-now-flow > * + *{margin-top:16px}
@@ -958,7 +958,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>NOW RANK v1.2 · 6H SNAPSHOT</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록하며, 과거 스냅샷이 충분히 쌓이기 전에는 변동 데이터를 임의 생성하지 않습니다. 현재 NOW Rank 점수와 1~300 순위 데이터는 그대로 유지합니다.</div>
+        <div class="demo-notice"><b>NOW RANK v1.3 · 6H OPERATIONAL</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록합니다. 관리자 Refresh → 미리보기 → 게시가 완료되면 서버 스냅샷이 즉시 공개 순위에 반영됩니다.</div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
@@ -980,42 +980,41 @@ a{text-decoration:none;color:inherit}
         <section class="card cardpad" id="nowIssueCard">
           <div class="side-title">
             <h3>NOW ISSUE</h3>
-            <div class="more">더보기 ›</div>
+            <div class="more" style="cursor:default">REAL DATA</div>
           </div>
           <div class="issue-box">
             <div class="issue-labels">
-              <span class="tinylabel">특집</span>
-              <span class="tinylabel" style="background:#fff5e9;color:#b45309">민주당 전당대회</span>
+              <span class="tinylabel">실데이터</span>
+              <span class="tinylabel" style="background:#fff5e9;color:#b45309">민주당 8·17 전당대회</span>
             </div>
-            <div class="issue-question">민주당 8·17 전당대회 당대표 경선</div>
-            <div class="sub" style="margin:0 0 10px;font-size:13px">8월 17일 당대표 선출을 앞둔 본선 3파전입니다. 아래 수치는 득표율이 아니라 NOW Rank의 이벤트 중심성 지수입니다.</div>
+            <div class="issue-question">당대표 본선 3파전 · 8월 17일 대전</div>
+            <div class="sub" style="margin:0 0 12px;font-size:12px;line-height:1.6">
+              김민석·정청래·송영길 후보가 본경선에 진출했습니다. 민주당은 예비경선 후보별 득표율을 공개하지 않았습니다.
+            </div>
 
+            <div class="issue-question" style="font-size:15px;margin:0 0 8px">NBS 당대표 적합도 · 7.27~29 전체 응답</div>
             <div class="candidate">
-              <div class="candline"><span>김민석</span><b>100.0</b></div>
+              <div class="candline"><span>정청래</span><b>21%</b></div>
               <div class="bar"><span style="width:100%"></span></div>
             </div>
             <div class="candidate">
-              <div class="candline"><span>정청래</span><b>98.1</b></div>
-              <div class="bar"><span style="width:98.1%"></span></div>
+              <div class="candline"><span>김민석</span><b>19%</b></div>
+              <div class="bar"><span style="width:90.5%"></span></div>
             </div>
             <div class="candidate">
-              <div class="candline"><span>송영길</span><b>81.1</b></div>
-              <div class="bar"><span style="width:81.1%"></span></div>
+              <div class="candline"><span>송영길</span><b>6%</b></div>
+              <div class="bar"><span style="width:28.6%"></span></div>
             </div>
 
-            <div class="issue-foot" style="margin-bottom:12px">
-              <div>8.9 누적 · 208,271표 기준</div>
-              <div style="color:var(--mint-dark);font-weight:900">8.15~16 다음 경선 ›</div>
+            <div class="issue-foot" style="display:block;line-height:1.55;margin-top:12px">
+              <div><b>민주당 지지층:</b> 정청래 34% · 김민석 29% · 송영길 9%</div>
+              <div style="margin-top:5px;color:#64748b">NBS 2026.07.27~29 · 표본 1,000명 · 95% 신뢰수준 ±3.1%p</div>
+              <div style="margin-top:5px;color:#64748b">※ 여론조사 적합도이며 경선 득표율이 아닙니다.</div>
             </div>
 
-            <div style="height:1px;background:#e9efee;margin:12px 0 14px"></div>
-
-            <div class="issue-question" style="font-size:16px;margin:0 0 4px">정정당당 사용자 선택 <span class="sim-chip">DEMO</span></div>
-            <div class="sub" style="margin:0 0 10px;font-size:11px">자발적 참여 결과이며 전체 유권자를 대표하는 여론조사가 아닙니다.</div>
-            <div id="voteArea"></div>
-            <div class="issue-foot">
-              <div>총 <b id="voteCount">12,538</b>명 참여</div>
-              <div style="color:var(--mint-dark);font-weight:900">결과보기 ›</div>
+            <div style="height:1px;background:#e9efee;margin:14px 0 12px"></div>
+            <div class="sub" id="serverUpdateStatus" style="margin:0;font-size:11px;line-height:1.55;color:#64748b">
+              NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다. 백엔드 연결 전에는 마지막 내장 스냅샷을 표시합니다.
             </div>
           </div>
         </section>
@@ -8885,15 +8884,17 @@ function setMobileNavActive(name){
   document.querySelectorAll('.mobile-navbtn').forEach(b=>b.classList.toggle('active',b.dataset.mobilePage===name));
 }
 
-document.querySelectorAll('.mobile-navbtn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const name=btn.dataset.mobilePage;
-    document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
-    setMobileNavActive(name);
-    showPage(name);
-  });
+document.addEventListener('click',(e)=>{
+  const btn=e.target.closest?.('.mobile-navbtn');
+  if(!btn) return;
+  const name=btn.dataset.mobilePage;
+  if(!name) return;
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  setMobileNavActive(name);
+  showPage(name);
 });
-window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);},{passive:true});
+window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);
+loadPublishedNowRank();},{passive:true});
 
 
 function nowRankHistory(){
@@ -9512,13 +9513,16 @@ window.openGovPerson=openGovPerson;
 let votes=[44.6,43.8,11.6], total=12538;
 const voteLabels=["김민석","정청래","송영길"];
 function drawVotes(){
-  document.getElementById("voteArea").innerHTML = votes.map((v,i)=>`
+  const area=document.getElementById("voteArea");
+  const count=document.getElementById("voteCount");
+  if(!area || !count) return;
+  area.innerHTML = votes.map((v,i)=>`
     <div class="candidate">
       <div class="candline"><span>${voteLabels[i]}</span><b>${v.toFixed(1)}%</b></div>
       <div class="bar"><span style="width:${v}%"></span></div>
     </div>
   `).join("");
-  document.getElementById("voteCount").innerText = total.toLocaleString();
+  count.innerText = total.toLocaleString();
 }
 
 document.querySelectorAll(".mymenu").forEach(btn=>{
@@ -9648,6 +9652,51 @@ function initComparePage(){
   });
 }
 
+
+async function loadPublishedNowRank(){
+  try{
+    const [currentRes,historyRes]=await Promise.all([
+      fetch('/api/rank/current',{cache:'no-store'}),
+      fetch('/api/rank/history?days=7',{cache:'no-store'})
+    ]);
+    if(historyRes.ok){
+      const h=await historyRes.json();
+      window.NOW_RANK_HISTORY=Array.isArray(h.snapshots)?h.snapshots:[];
+    }
+    if(!currentRes.ok) return false;
+    const snap=await currentRes.json();
+    if(!snap || !Array.isArray(snap.members) || !snap.members.length) return false;
+    const byName=new Map(snap.members.map(x=>[x.name,x]));
+    people.forEach(p=>{
+      const s=byName.get(p.name);
+      if(!s) return;
+      p.rank=s.rank;
+      p.rank2Score=s.score;
+      p.rank2RawScore=s.rawScore;
+      p.grade=s.grade||p.grade;
+      p.snapshot=snap.timestamp;
+      p.delta=Number.isFinite(s.change6h)?s.change6h:0;
+      if(Array.isArray(s.metrics)) p.metrics=s.metrics;
+      const meta=nowRankByName[p.name]||{};
+      meta.rank=s.rank; meta.score=s.score; meta.rawScore=s.rawScore; meta.grade=s.grade;
+      meta.snapshot=snap.timestamp; meta.metrics=s.metrics||meta.metrics; meta.eventLabel=s.eventLabel||meta.eventLabel;
+      meta.sourceCount=s.sourceCount??meta.sourceCount; meta.latest=s.latest||meta.latest;
+      nowRankByName[p.name]=meta;
+    });
+    people.sort((a,b)=>a.rank-b.rank);
+    const status=document.getElementById('serverUpdateStatus');
+    if(status){
+      const src=(snap.sourceSummary||[]).join(' · ');
+      status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'} · 다음 정기 갱신은 6시간 주기`;
+    }
+    renderRank();
+    renderMobileTop10();
+    return true;
+  }catch(e){
+    console.warn('published snapshot unavailable',e);
+    return false;
+  }
+}
 initPoliticianPhotoHydrator();
 initComparePage();
 renderGovernment();
@@ -9660,7 +9709,7 @@ syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.1 Responsive: NOW Rank data unchanged; responsive UX layer added 2026-08-11. -->
+<!-- NOW Rank v1.3 Operational: 6H admin refresh backend + published snapshot loader + mobile nav fix. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
