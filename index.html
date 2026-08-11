@@ -8893,8 +8893,7 @@ document.addEventListener('click',(e)=>{
   setMobileNavActive(name);
   showPage(name);
 });
-window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);
-loadPublishedNowRank();},{passive:true});
+window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);},{passive:true});
 
 
 function nowRankHistory(){
@@ -9198,6 +9197,18 @@ function openCompare(id){
 window.openCompare=openCompare;
 
 
+function jjddSessionId(){
+  try{
+    let id=localStorage.getItem('jjdd_session_v1');
+    if(!id){id=(crypto?.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`);localStorage.setItem('jjdd_session_v1',id);}
+    return id;
+  }catch(e){return `anon-${Date.now()}`;}
+}
+function trackJJDD(type,name){
+  if(!name)return;
+  try{fetch('/api/track',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({type,name,session:jjddSessionId()})}).catch(()=>{});}catch(e){}
+}
+
 function rank22TrendHTML(x){
   const src=(x.publicAttention&&Array.isArray(x.publicAttention.sources)?x.publicAttention.sources:[])
     .filter(s=>Number.isFinite(Number(s.effective)))
@@ -9223,6 +9234,7 @@ function rank22TrendHTML(x){
 
 function openDetail(id){
   const x=people.find(p=>p.id===id);
+  if(x) trackJJDD('profile',x.name);
   const ch=x.delta>0?`▲ ${x.delta}`:`▼ ${Math.abs(x.delta)}`;
   const assetBase=11+(x.id%7);
 
@@ -9624,6 +9636,7 @@ function renderComparePage(){
     result.innerHTML=`<div class="compare-empty" style="margin-top:18px"><b>두 정치인을 모두 선택해주세요.</b>검색창에 이름 일부를 입력한 뒤 나타나는 후보를 클릭해야 비교가 시작됩니다.</div>`;
     return;
   }
+  trackJJDD('compare',compareSelectedA.name); trackJJDD('compare',compareSelectedB.name);
   result.innerHTML=`<div class="compare-result-title"><div><div class="kicker">Comparison Result</div><h2 class="h2">비교 결과</h2></div></div>${compareResultHTML(compareSelectedA,compareSelectedB,false)}`;
 }
 
@@ -9652,6 +9665,17 @@ function initComparePage(){
   });
 }
 
+
+
+let jjddSearchTimer=null;
+document.getElementById('search')?.addEventListener('input',e=>{
+  clearTimeout(jjddSearchTimer);
+  jjddSearchTimer=setTimeout(()=>{
+    const q=String(e.target.value||'').trim();
+    const p=people.find(x=>x.name===q);
+    if(p)trackJJDD('search',p.name);
+  },900);
+});
 
 async function loadPublishedNowRank(){
   try{
@@ -9686,7 +9710,8 @@ async function loadPublishedNowRank(){
     people.sort((a,b)=>a.rank-b.rank);
     const status=document.getElementById('serverUpdateStatus');
     if(status){
-      const src=(snap.sourceSummary||[]).join(' · ');
+      const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
+      const src=(snap.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
       status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'} · 다음 정기 갱신은 6시간 주기`;
     }
     renderRank();
@@ -9707,9 +9732,11 @@ drawVotes();
 renderMobileTop10();
 syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
+// Published snapshot must hydrate on first load on BOTH desktop and mobile.
+loadPublishedNowRank();
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.3 Operational: 6H admin refresh backend + published snapshot loader + mobile nav fix. -->
+<!-- NOW Rank v1.4.1 Multi-Source Consensus + Desktop/Mobile Snapshot Sync. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>

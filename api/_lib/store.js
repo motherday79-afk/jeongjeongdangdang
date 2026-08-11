@@ -39,4 +39,14 @@ async function lpush(key,value){ return cmd(['LPUSH',key,value]); }
 async function ltrim(key,start,stop){ return cmd(['LTRIM',key,String(start),String(stop)]); }
 async function lrange(key,start,stop){ return cmd(['LRANGE',key,String(start),String(stop)]); }
 
-module.exports={config,cmd,getJSON,setJSON,del,lpush,ltrim,lrange};
+async function setNx(key,value,ttlSec){
+  const args=['SET',key,String(value),'NX'];
+  if(ttlSec) args.push('EX',String(ttlSec));
+  const r=await cmd(args);
+  return r==='OK';
+}
+async function hincrby(key,field,inc=1){ return cmd(['HINCRBY',key,field,String(inc)]); }
+async function hgetall(key){ return cmd(['HGETALL',key]); }
+async function expire(key,ttlSec){ return cmd(['EXPIRE',key,String(ttlSec)]); }
+
+module.exports={config,cmd,getJSON,setJSON,del,lpush,ltrim,lrange,setNx,hincrby,hgetall,expire};
