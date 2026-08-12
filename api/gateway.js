@@ -1,0 +1,47 @@
+// NOW Rank v1.10.5 Hobby Gateway
+// A single Vercel Function dispatches all API routes internally.
+const routes = {
+  'admin/login': require('./admin/login'),
+  'admin/logout': require('./admin/logout'),
+  'admin/status': require('./admin/status'),
+  'admin/refresh': require('./admin/refresh'),
+  'admin/publish': require('./admin/publish'),
+  'admin/rollback': require('./admin/rollback'),
+  'admin/name-pulse': require('./admin/name-pulse'),
+  'rank/current': require('./rank/current'),
+  'rank/history': require('./rank/history'),
+  'track': require('./track'),
+  'name-pulse-test': require('./name-pulse-test')
+};
+
+function cleanPath(v){
+  return String(v || '')
+    .replace(/^\/+/, '')
+    .replace(/\/+$/, '')
+    .replace(/\.js$/i, '');
+}
+
+module.exports = async function gateway(req, res){
+  // Vercel rewrite passes the requested API path in __path.
+  let key = cleanPath(req.query?.__path);
+  if(!key){
+    try{
+      const u = new URL(req.url, 'https://local.invalid');
+      key = cleanPath(u.pathname.replace(/^\/api\/?/, ''));
+    }catch(e){}
+  }
+  if(key === 'gateway') key = '';
+  const handler = routes[key];
+  if(!handler){
+    return res.status(404).json({ok:false,error:'API route not found',route:key||null});
+  }
+  // Do not expose internal routing marker to endpoint handlers.
+  if(req.query && Object.prototype.hasOwnProperty.call(req.query,'__path')) delete req.query.__path;
+  try{
+    return await handler(req,res);
+  }catch(e){
+    console.error('gateway route error', key, e);
+    if(res.headersSent) return;
+    return res.status(500).json({ok:false,error:e?.message||String(e),route:key});
+  }
+};
