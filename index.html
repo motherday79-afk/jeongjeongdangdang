@@ -8973,12 +8973,27 @@ function historyView(data,mode){
 }
 
 
-const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','본선','관련','공개','기반','실시간','지금','뉴스','기사','단독','속보','종합','기자','정치','오늘','이번','대한','통해','에서','으로','에게','했다','한다','있는','없는']);
+const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','본선','관련','공개','기반','실시간','지금','뉴스','기사','단독','속보','종합','기자','정치','오늘','이번','대한','통해','에서','으로','에게','했다','한다','있는','없는','민주당','국민의힘','더불어민주당']);
 const WHY_NOW_SENSITIVE=['비리','폭언','조롱','범죄','사기','성추문','의혹','혐의','막말','멱살'];
-function whyNowCleanToken(v){return String(v||'').replace(/<[^>]*>/g,' ').replace(/&[a-z]+;/gi,' ').replace(/[“”"'()[\]{}<>]/g,'').replace(/^[#·,.:/\-]+|[#·,.:/\-]+$/g,'').trim();}
+
+function whyNowCleanToken(v){
+  return String(v||'')
+    .replace(/<[^>]*>/g,' ')
+    .replace(/&[a-z]+;/gi,' ')
+    .replace(/[“”"'()[\]{}<>]/g,'')
+    .replace(/^[#·,.:/\-]+|[#·,.:/\-]+$/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function whyNowArticleTitles(x){
   const s=x.signal||{};
-  const pools=[x.articleTitles,x.newsTitles,x.articles,x.news,s.articleTitles,s.newsTitles,s.articles,s.news,s.items,s.results];
+  const w=x.whyNow||{};
+  const pools=[
+    x.articleTitles,x.newsTitles,x.articles,x.news,
+    s.articleTitles,s.newsTitles,s.articles,s.news,s.items,s.results,
+    w.articleTitles,w.newsTitles,w.evidenceTitles
+  ];
   const out=[];
   pools.forEach(arr=>{
     if(!Array.isArray(arr)) return;
@@ -8987,43 +9002,111 @@ function whyNowArticleTitles(x){
       if(title) out.push(String(title));
     });
   });
-  return [...new Set(out)].slice(0,30);
+  return [...new Set(out.map(v=>whyNowCleanToken(v)).filter(Boolean))].slice(0,40);
 }
+
+function whyNowNormalizeTitle(title){
+  return whyNowCleanToken(title)
+    .replace(/\b\d{1,2}\s*월\s*\d{1,2}\s*일\b/g,' ')
+    .replace(/\b\d{1,2}\s*월\b/g,' ')
+    .replace(/\b\d{1,2}\s*일\b/g,' ')
+    .replace(/\b\d{1,2}[.·\-/]\d{1,2}\b/g,' ')
+    .replace(/\b20\d{2}[.\-/]\d{1,2}(?:[.\-/]\d{1,2})?\b/g,' ')
+    .replace(/[|·,:;!?()[\]{}<>/\\]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function whyNowExtractFromTitles(x){
   const titles=whyNowArticleTitles(x); if(!titles.length) return [];
-  const names=new Set(people.map(p=>p.name));
   const freq=new Map();
+  const bigram=new Map();
+
   titles.forEach(title=>{
-    const clean=whyNowCleanToken(title).replace(/[|·,:;!?()[\]{}<>/\\]/g,' ');
-    const toks=clean.split(/\s+/).map(whyNowCleanToken).filter(t=>t.length>=2&&t.length<=14&&!WHY_NOW_STOPWORDS.has(t)&&t!==x.name);
-    toks.forEach(t=>{
-      if(/^\d+$/.test(t)) return;
-      if(/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)$/.test(t)) return;
-      freq.set(t,(freq.get(t)||0)+1);
+    const clean=whyNowNormalizeTitle(title);
+    const toks=clean.split(/\s+/).map(whyNowCleanToken).filter(t=>{
+      if(t.length<2||t.length>14||t===x.name||WHY_NOW_STOPWORDS.has(t)) return false;
+      if(/\d/.test(t)) return false;
+      if(/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)$/.test(t)) return false;
+      return true;
     });
-    people.forEach(p=>{ if(p.name!==x.name && clean.includes(p.name)) freq.set(p.name,(freq.get(p.name)||0)+2); });
+
+    toks.forEach(t=>freq.set(t,(freq.get(t)||0)+1));
+
+    for(let i=0;i<toks.length-1;i++){
+      const a=toks[i], b=toks[i+1];
+      if(a===b) continue;
+      if(a.length+b.length>18) continue;
+      const phrase=`${a} ${b}`;
+      bigram.set(phrase,(bigram.get(phrase)||0)+1);
+    }
+
+    people.forEach(p=>{
+      if(p.name!==x.name && clean.includes(p.name)){
+        freq.set(p.name,(freq.get(p.name)||0)+2);
+      }
+    });
   });
+
   const minRepeat=titles.length>=3?2:1;
-  return [...freq.entries()].filter(([k,n])=>n>=minRepeat).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(v=>v[0]);
+  const candidates=[
+    ...[...bigram.entries()]
+      .filter(([,n])=>n>=minRepeat)
+      .map(([k,n])=>[k,n+1]),
+    ...[...freq.entries()]
+      .filter(([,n])=>n>=minRepeat)
+  ];
+
+  const usedWords=new Set();
+  const ranked=[];
+  candidates
+    .sort((a,b)=>b[1]-a[1]||b[0].length-a[0].length||a[0].localeCompare(b[0],'ko'))
+    .forEach(([k])=>{
+      const words=k.split(/\s+/);
+      if(words.every(w=>usedWords.has(w))) return;
+      ranked.push(k);
+      words.forEach(w=>usedWords.add(w));
+    });
+
+  return ranked;
 }
+
 function whyNowSafeToken(t,x){
-  if(WHY_NOW_SENSITIVE.some(w=>t.includes(w)) && Number(x.sourceCount||x.signal?.sourceCount||x.signal?.sources?.length||0)<2) return t.includes('발언')?'관련 발언':'관련 논란';
+  if(WHY_NOW_SENSITIVE.some(w=>t.includes(w)) && Number(x.sourceCount||x.signal?.sourceCount||x.signal?.sources?.length||0)<2){
+    return t.includes('발언')?'관련 발언':'관련 논란';
+  }
   return t;
 }
+
+function whyNowEvidenceBackedExplicitKeywords(x){
+  const titles=whyNowArticleTitles(x);
+  if(!titles.length) return [];
+
+  const raw=[
+    ...(Array.isArray(x.whyNow?.keywords)?x.whyNow.keywords:[]),
+    ...(Array.isArray(x.whyNowKeywords)?x.whyNowKeywords:[])
+  ];
+
+  if(!raw.length) return [];
+
+  const corpus=titles.map(whyNowNormalizeTitle).join(' ');
+  return [...new Set(raw.map(whyNowCleanToken).filter(t=>{
+    if(!t||/\d/.test(t)) return false;
+    if(WHY_NOW_STOPWORDS.has(t)) return false;
+    const words=t.split(/\s+/).filter(Boolean);
+    return words.some(w=>w.length>=2 && corpus.includes(w));
+  }).map(t=>whyNowSafeToken(t,x)))];
+}
+
 function whyNowKeywords(x){
-  if(Array.isArray(x.whyNow?.keywords)&&x.whyNow.keywords.length) return [...new Set(x.whyNow.keywords.map(whyNowCleanToken).filter(Boolean).map(t=>whyNowSafeToken(t,x)))].slice(0,2);
-  if(Array.isArray(x.whyNowKeywords)&&x.whyNowKeywords.length) return [...new Set(x.whyNowKeywords.map(whyNowCleanToken).filter(Boolean).map(t=>whyNowSafeToken(t,x)))].slice(0,2);
+  // 핵심 원칙: 의원별 기사 제목 근거가 있을 때만 키워드를 표시한다.
+  // eventLabel, 전체 이벤트, 점수 축은 의원별 해시태그의 대체재로 사용하지 않는다.
+  const titles=whyNowArticleTitles(x);
+  if(!titles.length) return [];
+
+  const explicit=whyNowEvidenceBackedExplicitKeywords(x);
   const fromTitles=whyNowExtractFromTitles(x).map(t=>whyNowSafeToken(t,x));
-  if(fromTitles.length) return [...new Set(fromTitles)].slice(0,2);
-  const label=String(x.eventLabel||'').trim();
-  let parts=label.split(/[·|,/]+|\s{2,}/).map(whyNowCleanToken).filter(Boolean);
-  if(parts.length<2){parts=label.split(/\s+/).map(whyNowCleanToken).filter(t=>t.length>=2&&!WHY_NOW_STOPWORDS.has(t));}
-  parts=parts.filter(t=>!WHY_NOW_STOPWORDS.has(t)&&t!=='공석'&&!t.includes('연계 없음'));
-  const uniq=[...new Set(parts.map(t=>whyNowSafeToken(t,x)))];
-  if(uniq.length) return uniq.slice(0,2);
-  const c=x.nowComponents||{};
-  const ranked=[['뉴스 관심',c.news],['검색 관심',c.search],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>b[1]-a[1]);
-  return ranked.slice(0,2).map(v=>v[0]);
+  return [...new Set([...explicit,...fromTitles])].slice(0,2);
 }
 function whyNowReason(x){
   const titles=whyNowArticleTitles(x);
@@ -9819,20 +9902,24 @@ async function loadPublishedNowRank(){
       p.eventLabel=s.eventLabel||p.eventLabel;
       p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;
       p.latest=s.latest||s.signal?.latest||p.latest;
-      p.signal=s.signal||p.signal;
-      p.whyNow=s.whyNow||p.whyNow;
-      p.whyNowKeywords=s.whyNowKeywords||p.whyNowKeywords;
-      p.articleTitles=s.articleTitles||s.newsTitles||p.articleTitles;
-      p.newsTitles=s.newsTitles||p.newsTitles;
-      p.articles=s.articles||p.articles;
-      p.news=s.news||p.news;
+      p.signal=s.signal||null;
+
+      // 게시 스냅샷의 의원별 WHY NOW 데이터만 사용한다.
+      // 이전 내장 스냅샷/공통 이벤트 키워드가 새 스냅샷에 잔존하지 않도록 명시적으로 초기화한다.
+      p.whyNow=s.whyNow||null;
+      p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
+      p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);
+      p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];
+      p.articles=Array.isArray(s.articles)?s.articles:[];
+      p.news=Array.isArray(s.news)?s.news:[];
       if(s.nowComponents) p.nowComponents=s.nowComponents;
       const meta=nowRankByName[p.name]||{};
       meta.rank=s.rank; meta.score=s.score; meta.rawScore=s.rawScore; meta.grade=s.grade;
       meta.snapshot=snap.timestamp; meta.metrics=s.metrics||meta.metrics; meta.eventLabel=s.eventLabel||meta.eventLabel;
       meta.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount; meta.latest=s.latest||s.signal?.latest||meta.latest;
-      meta.signal=s.signal||meta.signal; meta.whyNow=s.whyNow||meta.whyNow; meta.whyNowKeywords=s.whyNowKeywords||meta.whyNowKeywords;
-      meta.articleTitles=s.articleTitles||s.newsTitles||meta.articleTitles; meta.articles=s.articles||meta.articles; meta.news=s.news||meta.news;
+      meta.signal=s.signal||null; meta.whyNow=s.whyNow||null; meta.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
+      meta.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);
+      meta.articles=Array.isArray(s.articles)?s.articles:[]; meta.news=Array.isArray(s.news)?s.news:[];
       nowRankByName[p.name]=meta;
     });
     people.sort((a,b)=>a.rank-b.rank);
