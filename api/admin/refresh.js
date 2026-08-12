@@ -1,12 +1,12 @@
 const crypto=require('crypto');
-const {requireAdmin}=require('../_lib/auth');
-const store=require('../_lib/store');
-const {collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPolitics}=require('../_lib/collector');
-const {computeSnapshot}=require('../_lib/score');
-const {readTrafficSignals}=require('../_lib/traffic');
-const {collectGlobalKeyless}=require('../_lib/keyless');
-const {collectTrendBatch,creds:naverCreds}=require('../_lib/naver_common');
-const {missing}=require('../_lib/observation');
+const {requireAdmin}=require('../../lib/auth');
+const store=require('../../lib/store');
+const {collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPolitics}=require('../../lib/collector');
+const {computeSnapshot}=require('../../lib/score');
+const {readTrafficSignals}=require('../../lib/traffic');
+const {collectGlobalKeyless}=require('../../lib/keyless');
+const {collectTrendBatch,creds:naverCreds}=require('../../lib/naver_common');
+const {missing}=require('../../lib/observation');
 const roster=require('../../data/roster.json');
 
 const DRAFT_TTL=12*60*60;

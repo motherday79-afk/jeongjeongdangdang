@@ -1,4 +1,4 @@
-const store=require('../_lib/store');
+const store=require('../../lib/store');
 module.exports=async function handler(req,res){
   try{
     const days=Math.max(1,Math.min(28,Number(req.query?.days)||7));

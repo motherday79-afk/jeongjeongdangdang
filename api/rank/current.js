@@ -1,4 +1,4 @@
-const store=require('../_lib/store');
+const store=require('../../lib/store');
 module.exports=async function handler(req,res){
   try{
     const current=await store.getJSON('jjdd:current');

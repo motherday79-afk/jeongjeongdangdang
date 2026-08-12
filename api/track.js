@@ -1,4 +1,4 @@
-const traffic=require('./_lib/traffic');
+const traffic=require('../lib/traffic');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false});
   try{

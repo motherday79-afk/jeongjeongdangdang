@@ -7,13 +7,7 @@
     "api/admin/name-pulse.js": {
       "maxDuration": 60
     },
-    "api/admin/name-pulse-health.js": {
-      "maxDuration": 10
-    },
-    "api/name-pulse-health.js": {
-      "maxDuration": 10
-    },
-    "api/name-pulse-probe.js": {
+    "api/name-pulse-test.js": {
       "maxDuration": 10
     }
   }

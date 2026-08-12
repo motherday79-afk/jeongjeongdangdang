@@ -1,4 +1,4 @@
-const {loginAllowed,sessionCookie}=require('../_lib/auth');
+const {loginAllowed,sessionCookie}=require('../../lib/auth');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   try{

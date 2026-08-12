@@ -1,5 +1,5 @@
-const {requireAdmin}=require('../_lib/auth');
-const store=require('../_lib/store');
+const {requireAdmin}=require('../../lib/auth');
+const store=require('../../lib/store');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   if(!requireAdmin(req,res)) return;

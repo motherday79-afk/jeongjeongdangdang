@@ -1,5 +1,5 @@
-const {requireAdmin}=require('../_lib/auth');
-const {credentials,queryKeywords}=require('../_lib/naver_searchad');
+const {requireAdmin}=require('../../lib/auth');
+const {credentials,queryKeywords}=require('../../lib/naver_searchad');
 
 const DEFAULT_NAMES=['한동훈'];
 const BENCHMARK_NAMES=['김민석','정청래','한동훈','서미화','김종민','천하람'];
