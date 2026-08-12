@@ -1,3 +1,7 @@
+# 정정당당 NOW Rank v1.9 · Sensor Recovery
+
+현재 최신 변경사항은 `README_V1_9.md`를 확인하세요.
+
 # 정정당당 NOW Rank v1.7 · Common Sensor
 
 ## 이번 버전의 목적
