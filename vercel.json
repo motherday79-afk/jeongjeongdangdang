@@ -9,6 +9,12 @@
     },
     "api/admin/name-pulse-health.js": {
       "maxDuration": 10
+    },
+    "api/name-pulse-health.js": {
+      "maxDuration": 10
+    },
+    "api/name-pulse-probe.js": {
+      "maxDuration": 10
     }
   }
 }
