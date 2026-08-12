@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/admin/refresh.js": {
+      "maxDuration": 60
+    },
+    "api/admin/name-pulse.js": {
+      "maxDuration": 60
+    },
+    "api/name-pulse-test.js": {
+      "maxDuration": 10
+    }
+  }
+}
