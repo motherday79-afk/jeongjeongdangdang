@@ -1,7 +1,8 @@
 const {requireAdmin}=require('../_lib/auth');
 const {credentials,queryKeywords}=require('../_lib/naver_searchad');
 
-const DEFAULT_NAMES=['김민석','정청래','한동훈','서미화','김종민','천하람'];
+const DEFAULT_NAMES=['한동훈'];
+const BENCHMARK_NAMES=['김민석','정청래','한동훈','서미화','김종민','천하람'];
 
 function parseKeywords(req){
   if(req.method==='POST'){
@@ -11,10 +12,12 @@ function parseKeywords(req){
   }
   const q=req.query?.keywords||req.query?.keyword||'';
   if(q)return String(q).split(',');
+  if(String(req.query?.benchmark||'')==='1') return BENCHMARK_NAMES;
   return DEFAULT_NAMES;
 }
 
 module.exports=async function handler(req,res){
+  res.setHeader('Cache-Control','no-store, max-age=0');
   if(!['GET','POST'].includes(req.method))return res.status(405).json({ok:false,error:'GET/POST only'});
   if(!requireAdmin(req,res))return;
   const c=credentials();

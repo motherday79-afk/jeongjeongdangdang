@@ -1,6 +1,6 @@
 const crypto=require('crypto');
 
-const BASE_URL='https://api.naver.com';
+const BASE_URL='https://api.searchad.naver.com';
 const PATH='/keywordstool';
 
 function credentials(){
@@ -47,13 +47,13 @@ async function queryKeyword(keyword,{showDetail=true}={}){
     'Content-Type':'application/json; charset=UTF-8'
   };
   const ctl=new AbortController();
-  const timer=setTimeout(()=>ctl.abort(),7000);
+  const timer=setTimeout(()=>ctl.abort(),5000);
   let r;
   try{
     r=await fetch(url,{method,headers,signal:ctl.signal});
   }catch(e){
     if(e?.name==='AbortError'){
-      const err=new Error('NAVER Search Ads request timeout after 7s');
+      const err=new Error('NAVER Search Ads request timeout after 5s');
       err.code='NAVER_AD_TIMEOUT';
       throw err;
     }
@@ -93,13 +93,11 @@ async function queryKeyword(keyword,{showDetail=true}={}){
 }
 
 async function queryKeywords(keywords=[]){
-  const out=[];
-  for(const keyword of keywords){
-    try{out.push({ok:true,...await queryKeyword(keyword)});}catch(e){out.push({ok:false,keyword,error:e.message||String(e),status:e.status||null});}
-    // Keep the probe gentle. Full 299-person collection will use its own queue later.
-    await new Promise(r=>setTimeout(r,40));
-  }
-  return out;
+  // Probe requests run in parallel so one slow upstream call cannot make the browser wait 30~40 seconds.
+  return Promise.all(keywords.map(async keyword=>{
+    try{return {ok:true,...await queryKeyword(keyword)};}
+    catch(e){return {ok:false,keyword,error:e.message||String(e),status:e.status||null};}
+  }));
 }
 
 module.exports={credentials,signature,queryKeyword,queryKeywords,numericSearchCount};
