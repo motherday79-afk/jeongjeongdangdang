@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v1.3 · 6H Snapshot UX</title>
+<title>정정당당 NOW Rank v1.4 · WHY NOW</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -977,7 +977,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>NOW RANK v1.3 · 6H OPERATIONAL</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록합니다. 관리자 Refresh → 미리보기 → 게시가 완료되면 서버 스냅샷이 즉시 공개 순위에 반영됩니다.</div>
+        <div class="demo-notice"><b>NOW RANK v1.4 · WHY NOW</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록합니다. 관리자 Refresh → 미리보기 → 게시가 완료되면 서버 스냅샷이 즉시 공개 순위에 반영됩니다.</div>
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
@@ -8595,6 +8595,8 @@ people = people.map(p => {
     rank2Score:r.score, rank2RawScore:r.rawScore, rank2GradeScore:r.gradeScore, rank2Coverage:r.coverage,
     rank2Snapshot:r.snapshot, rank2Role:r.role, publicAttention:r.attention,
     politicalComponents:r.politicalComponents, capitalScore:r.capitalScore, institutionalScore:r.institutionalScore,
+    eventLabel:r.eventLabel, sourceCount:r.sourceCount, latest:r.latest, nowComponents:r.nowComponents,
+    signal:r.signal||null, whyNow:r.whyNow||null,
     metrics:r.metrics.map(v=>[v[0],v[1],v[2]]),
     simulation:false, dataSource:"정정당당 NOW Rank v1 · Issue Radar"
   };
@@ -8971,27 +8973,61 @@ function historyView(data,mode){
 }
 
 
-const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','본선','관련','공개','기반','실시간','지금']);
+const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','본선','관련','공개','기반','실시간','지금','뉴스','기사','단독','속보','종합','기자','정치','오늘','이번','대한','통해','에서','으로','에게','했다','한다','있는','없는']);
 const WHY_NOW_SENSITIVE=['비리','폭언','조롱','범죄','사기','성추문','의혹','혐의','막말','멱살'];
-function whyNowCleanToken(v){return String(v||'').replace(/[“”"'()[\]{}<>]/g,'').replace(/^[#·,.:/\-]+|[#·,.:/\-]+$/g,'').trim();}
+function whyNowCleanToken(v){return String(v||'').replace(/<[^>]*>/g,' ').replace(/&[a-z]+;/gi,' ').replace(/[“”"'()[\]{}<>]/g,'').replace(/^[#·,.:/\-]+|[#·,.:/\-]+$/g,'').trim();}
+function whyNowArticleTitles(x){
+  const s=x.signal||{};
+  const pools=[x.articleTitles,x.newsTitles,x.articles,x.news,s.articleTitles,s.newsTitles,s.articles,s.news,s.items,s.results];
+  const out=[];
+  pools.forEach(arr=>{
+    if(!Array.isArray(arr)) return;
+    arr.forEach(v=>{
+      const title=typeof v==='string'?v:(v?.title||v?.headline||v?.name||'');
+      if(title) out.push(String(title));
+    });
+  });
+  return [...new Set(out)].slice(0,30);
+}
+function whyNowExtractFromTitles(x){
+  const titles=whyNowArticleTitles(x); if(!titles.length) return [];
+  const names=new Set(people.map(p=>p.name));
+  const freq=new Map();
+  titles.forEach(title=>{
+    const clean=whyNowCleanToken(title).replace(/[|·,:;!?()[\]{}<>/\\]/g,' ');
+    const toks=clean.split(/\s+/).map(whyNowCleanToken).filter(t=>t.length>=2&&t.length<=14&&!WHY_NOW_STOPWORDS.has(t)&&t!==x.name);
+    toks.forEach(t=>{
+      if(/^\d+$/.test(t)) return;
+      if(/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)$/.test(t)) return;
+      freq.set(t,(freq.get(t)||0)+1);
+    });
+    people.forEach(p=>{ if(p.name!==x.name && clean.includes(p.name)) freq.set(p.name,(freq.get(p.name)||0)+2); });
+  });
+  const minRepeat=titles.length>=3?2:1;
+  return [...freq.entries()].filter(([k,n])=>n>=minRepeat).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(v=>v[0]);
+}
+function whyNowSafeToken(t,x){
+  if(WHY_NOW_SENSITIVE.some(w=>t.includes(w)) && Number(x.sourceCount||x.signal?.sourceCount||x.signal?.sources?.length||0)<2) return t.includes('발언')?'관련 발언':'관련 논란';
+  return t;
+}
 function whyNowKeywords(x){
+  if(Array.isArray(x.whyNow?.keywords)&&x.whyNow.keywords.length) return [...new Set(x.whyNow.keywords.map(whyNowCleanToken).filter(Boolean).map(t=>whyNowSafeToken(t,x)))].slice(0,2);
+  if(Array.isArray(x.whyNowKeywords)&&x.whyNowKeywords.length) return [...new Set(x.whyNowKeywords.map(whyNowCleanToken).filter(Boolean).map(t=>whyNowSafeToken(t,x)))].slice(0,2);
+  const fromTitles=whyNowExtractFromTitles(x).map(t=>whyNowSafeToken(t,x));
+  if(fromTitles.length) return [...new Set(fromTitles)].slice(0,2);
   const label=String(x.eventLabel||'').trim();
   let parts=label.split(/[·|,/]+|\s{2,}/).map(whyNowCleanToken).filter(Boolean);
   if(parts.length<2){parts=label.split(/\s+/).map(whyNowCleanToken).filter(t=>t.length>=2&&!WHY_NOW_STOPWORDS.has(t));}
-  parts=parts.filter(t=>!WHY_NOW_STOPWORDS.has(t)&&t!=='공석');
-  const safe=parts.map(t=>{
-    if(WHY_NOW_SENSITIVE.some(w=>t.includes(w)) && Number(x.sourceCount||0)<2) return t.includes('발언')?'관련 발언':'관련 논란';
-    return t;
-  });
-  const uniq=[...new Set(safe)];
-  if(!uniq.length){
-    const c=x.nowComponents||{};
-    const ranked=[['뉴스 관심',c.news],['검색 관심',c.search],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>b[1]-a[1]);
-    return ranked.slice(0,2).map(v=>v[0]);
-  }
-  return uniq.slice(0,2);
+  parts=parts.filter(t=>!WHY_NOW_STOPWORDS.has(t)&&t!=='공석'&&!t.includes('연계 없음'));
+  const uniq=[...new Set(parts.map(t=>whyNowSafeToken(t,x)))];
+  if(uniq.length) return uniq.slice(0,2);
+  const c=x.nowComponents||{};
+  const ranked=[['뉴스 관심',c.news],['검색 관심',c.search],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>b[1]-a[1]);
+  return ranked.slice(0,2).map(v=>v[0]);
 }
 function whyNowReason(x){
+  const titles=whyNowArticleTitles(x);
+  if(titles.length) return `최근 수집 기사 ${titles.length}건의 제목·동시 등장 인물과 NOW 신호를 함께 분석한 결과입니다.`;
   const c=x.nowComponents||{};
   const signals=[['뉴스 화제성',c.news],['검색 관심도',c.search],['이벤트 중심성',c.event],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>Number(b[1])-Number(a[1]));
   const top=signals.slice(0,2).map(v=>v[0]).join(' · ');
@@ -9001,7 +9037,7 @@ function renderNowKeywordStrip(){
   const el=document.getElementById('nowKeywordStrip'); if(!el)return;
   const counts=new Map();
   people.slice().sort((a,b)=>a.rank-b.rank).slice(0,30).forEach(x=>whyNowKeywords(x).forEach(k=>counts.set(k,(counts.get(k)||0)+1)));
-  const keys=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(v=>v[0]);
+  const keys=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).slice(0,10).map(v=>v[0]);
   el.innerHTML=keys.length?keys.map(k=>`<button class="now-chip" onclick="event.stopPropagation();openWhyNowByKeyword('${String(k).replace(/'/g,"\\'")}')">#${k.replace(/\s+/g,'_')}</button>`).join(''):'<span class="sub" style="font-size:12px">현재 TOP30 키워드가 없습니다.</span>';
 }
 function openWhyNowByKeyword(keyword){
@@ -9780,10 +9816,23 @@ async function loadPublishedNowRank(){
       p.snapshot=snap.timestamp;
       p.delta=Number.isFinite(s.change6h)?s.change6h:0;
       if(Array.isArray(s.metrics)) p.metrics=s.metrics;
+      p.eventLabel=s.eventLabel||p.eventLabel;
+      p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;
+      p.latest=s.latest||s.signal?.latest||p.latest;
+      p.signal=s.signal||p.signal;
+      p.whyNow=s.whyNow||p.whyNow;
+      p.whyNowKeywords=s.whyNowKeywords||p.whyNowKeywords;
+      p.articleTitles=s.articleTitles||s.newsTitles||p.articleTitles;
+      p.newsTitles=s.newsTitles||p.newsTitles;
+      p.articles=s.articles||p.articles;
+      p.news=s.news||p.news;
+      if(s.nowComponents) p.nowComponents=s.nowComponents;
       const meta=nowRankByName[p.name]||{};
       meta.rank=s.rank; meta.score=s.score; meta.rawScore=s.rawScore; meta.grade=s.grade;
       meta.snapshot=snap.timestamp; meta.metrics=s.metrics||meta.metrics; meta.eventLabel=s.eventLabel||meta.eventLabel;
-      meta.sourceCount=s.sourceCount??meta.sourceCount; meta.latest=s.latest||meta.latest;
+      meta.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount; meta.latest=s.latest||s.signal?.latest||meta.latest;
+      meta.signal=s.signal||meta.signal; meta.whyNow=s.whyNow||meta.whyNow; meta.whyNowKeywords=s.whyNowKeywords||meta.whyNowKeywords;
+      meta.articleTitles=s.articleTitles||s.newsTitles||meta.articleTitles; meta.articles=s.articles||meta.articles; meta.news=s.news||meta.news;
       nowRankByName[p.name]=meta;
     });
     people.sort((a,b)=>a.rank-b.rank);
@@ -9794,6 +9843,7 @@ async function loadPublishedNowRank(){
       status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'} · 다음 정기 갱신은 6시간 주기`;
     }
     renderRank();
+    renderNowKeywordStrip();
     renderMobileTop10();
     return true;
   }catch(e){
