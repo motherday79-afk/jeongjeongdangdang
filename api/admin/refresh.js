@@ -5,6 +5,8 @@ const {collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPoliti
 const {computeSnapshot}=require('../_lib/score');
 const {readTrafficSignals}=require('../_lib/traffic');
 const {collectGlobalKeyless}=require('../_lib/keyless');
+const {collectTrendBatch,creds:naverCreds}=require('../_lib/naver_common');
+const {missing}=require('../_lib/observation');
 const roster=require('../../data/roster.json');
 
 const DRAFT_TTL=12*60*60;
@@ -34,38 +36,57 @@ module.exports=async function handler(req,res){
     if(action==='start'){
       const draftId=id(),eventTitle=String(b.eventTitle||process.env.DEFAULT_EVENT_TITLE||'현재 주요 정치 이슈').trim();
       const eventKeywords=(Array.isArray(b.eventKeywords)?b.eventKeywords:String(b.eventKeywords||'').split(',')).map(x=>String(x).trim()).filter(Boolean).slice(0,12);
-      const [globalSignals,globalNews]=await Promise.all([collectGlobalKeyless(active()),collectGlobalPolitics(active(),eventTitle,eventKeywords)]);
-      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{}};
+      const [globalSignals,globalNews,previous]=await Promise.all([collectGlobalKeyless(active()),collectGlobalPolitics(active(),eventTitle,eventKeywords),store.getJSON('jjdd:current').catch(()=>null)]);
+      const activeNames=new Set(active().map(x=>x.name));
+      const previousAnchor=(previous?.members||[]).filter(x=>activeNames.has(x.name)).sort((a,b)=>Number(a.rank||999)-Number(b.rank||999))[0]?.name;
+      const anchorName=previousAnchor||active()[0]?.name;
+      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{},naverTrend:{configured:Boolean(naverCreds()),anchorName,signals:{},processed:0,total:active().length}};
       await store.setJSON(`jjdd:draft:${draftId}`,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
+      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,naverTrend:{configured:draft.naverTrend.configured,anchorName,total:draft.naverTrend.total},globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
     }
     const draftId=String(b.draftId||''),key=`jjdd:draft:${draftId}`,draft=await store.getJSON(key);
     if(!draft)return res.status(404).json({ok:false,error:'Refresh draft를 찾을 수 없습니다. 다시 시작해주세요.'});
 
+    if(action==='trend-batch'){
+      const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(4,Math.max(1,Number(b.size)||4)),batch=members.slice(offset,offset+size);
+      const anchor=members.find(x=>x.name===draft.naverTrend?.anchorName)||members[0];
+      if(!draft.naverTrend?.configured){
+        for(const m of batch)draft.naverTrend.signals[m.name]=missing('naver-search-trend','NAVER API HUB credentials not configured');
+      }else{
+        const tr=await collectTrendBatch(batch,anchor);Object.assign(draft.naverTrend.signals,tr.signals||{});
+        if(tr.error)draft.naverTrend.lastError=tr.error;if(tr.period)draft.naverTrend.period=tr.period;
+      }
+      const nextOffset=offset+batch.length;draft.naverTrend.processed=nextOffset;draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
+      return res.status(200).json({ok:true,draftId,processed:nextOffset,total:members.length,nextOffset,done:nextOffset>=members.length,anchorName:anchor.name,configured:draft.naverTrend.configured,lastError:draft.naverTrend.lastError||null});
+    }
     if(action==='batch'){
       const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(8,Math.max(1,Number(b.size)||6)),batch=members.slice(offset,offset+size);
       const results=await Promise.all(batch.map(async m=>[m.name,await collectMember(m,draft.eventKeywords||[],draft.globalSignals||{})]));
-      for(const [name,signal] of results)draft.signals[name]=signal;
+      for(const [name,signal] of results){signal.channels=signal.channels||{};signal.channels.naverSearchTrend=draft.naverTrend?.signals?.[name]||missing('naver-search-trend',draft.naverTrend?.configured?'trend batch not collected':'NAVER trend not configured');draft.signals[name]=signal;}
       const nextOffset=offset+batch.length;draft.updatedAt=new Date().toISOString();if(nextOffset>=members.length)draft.status='collected';
       await store.setJSON(key,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,processed:Object.keys(draft.signals).length,total:members.length,nextOffset,done:nextOffset>=members.length,batch:results.map(([name,s])=>({name,news6:s.channels?.news?.count6||0,portal6:['web','blog','cafe'].reduce((a,k)=>a+(s.channels?.[k]?.count6||0),0),warning:s.warning||null}))});
+      return res.status(200).json({ok:true,draftId,processed:Object.keys(draft.signals).length,total:members.length,nextOffset,done:nextOffset>=members.length,batch:results.map(([name,s])=>({name,news6:s.channels?.news?.count6||0,naverTrend:Math.round((s.channels?.naverSearchTrend?.score||0)*10)/10,naverBlog:s.channels?.naverBlogApi?.surfaceHits||0,naverCafe:s.channels?.naverCafeApi?.surfaceHits||0,warning:s.warning||null}))});
     }
     if(action==='prepare-enrichment'){
       const count=active().length;if(Object.keys(draft.signals||{}).length<count)return res.status(409).json({ok:false,error:`수집이 아직 끝나지 않았습니다. ${Object.keys(draft.signals||{}).length}/${count}`});
-      const n=Math.max(10,Math.min(80,Number(process.env.KEYLESS_ENRICH_TOP_N||process.env.ENRICH_TOP_N)||80));
+      const n=Math.max(20,Math.min(100,Number(process.env.KEYLESS_ENRICH_TOP_N||process.env.ENRICH_TOP_N)||80));
       const ranked=active().map(m=>({name:m.name,heat:preliminaryHeat(draft.signals[m.name])})).sort((a,b)=>b.heat-a.heat);
-      const eventNames=ranked.filter(x=>{
-        const c=draft.signals[x.name]?.channels||{};return Object.values(c).some(s=>(s?.event6||0)>0);
-      }).map(x=>x.name);
-      const trendNames=active().filter(m=>(draft.globalSignals?.trends?.signals?.[m.name]?.score||0)>0).map(m=>m.name);
-      draft.enrichmentNames=[...new Set([...trendNames,...eventNames,...ranked.slice(0,n).map(x=>x.name)])].slice(0,n);
+      const eventNames=ranked.filter(x=>{const c=draft.signals[x.name]?.channels||{};return Object.values(c).some(s=>(s?.event6||s?.eventHits||0)>0);}).map(x=>x.name);
+      const trendNames=active().filter(m=>(draft.signals[m.name]?.channels?.naverSearchTrend?.score||0)>0||(draft.globalSignals?.trends?.signals?.[m.name]?.score||0)>0).sort((a,b)=>(draft.signals[b.name]?.channels?.naverSearchTrend?.score||0)-(draft.signals[a.name]?.channels?.naverSearchTrend?.score||0)).map(m=>m.name);
+      const previous=await store.getJSON('jjdd:current').catch(()=>null),previousTop=(previous?.members||[]).filter(x=>x.id!==300).sort((a,b)=>a.rank-b.rank).slice(0,40).map(x=>x.name);
+      const rotationSize=Math.min(35,n),rotationStart=(Math.floor(Date.now()/(6*3600000))*rotationSize)%active().length,rotation=[...active().slice(rotationStart),...active().slice(0,rotationStart)].slice(0,rotationSize).map(x=>x.name);
+      draft.enrichmentNames=[...new Set([...eventNames,...trendNames.slice(0,35),...previousTop,...rotation,...ranked.slice(0,35).map(x=>x.name)])].slice(0,n);
+      const youtubeCap=Math.max(0,Math.min(25,Number(process.env.YOUTUBE_ENRICH_TOP_N)||20)),xCap=Math.max(0,Math.min(50,Number(process.env.X_ENRICH_TOP_N)||20));
+      const quotaPriority=[...new Set([...eventNames,...trendNames,...ranked.map(x=>x.name),...previousTop])];
+      draft.youtubeEnrichmentNames=quotaPriority.slice(0,youtubeCap);draft.xEnrichmentNames=quotaPriority.slice(0,xCap);
       draft.enrichmentDone=0;draft.status='enriching';await store.setJSON(key,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,total:draft.enrichmentNames.length,names:draft.enrichmentNames,configured:{youtube:Boolean(process.env.YOUTUBE_API_KEY),x:Boolean(process.env.X_BEARER_TOKEN),keyless:true},sourceHealth:draft.sourceHealth});
+      return res.status(200).json({ok:true,draftId,total:draft.enrichmentNames.length,names:draft.enrichmentNames,configured:{youtube:Boolean(process.env.YOUTUBE_API_KEY),x:Boolean(process.env.X_BEARER_TOKEN),keyless:true},quota:{youtube:youtubeCap,x:xCap},sourceHealth:draft.sourceHealth});
     }
     if(action==='enrich'){
       const offset=Math.max(0,Number(b.offset)||0),size=Math.min(5,Math.max(1,Number(b.size)||4)),names=(draft.enrichmentNames||[]).slice(offset,offset+size);
       const map=new Map(active().map(m=>[m.name,m]));
-      const results=await Promise.all(names.map(async name=>[name,await collectEnrichmentMember(map.get(name),draft.eventKeywords||[],draft.globalSignals||{})]));
+      const ytSet=new Set(draft.youtubeEnrichmentNames||[]),xSet=new Set(draft.xEnrichmentNames||[]);
+      const results=await Promise.all(names.map(async name=>[name,await collectEnrichmentMember(map.get(name),draft.eventKeywords||[],draft.globalSignals||{},{allowYoutube:ytSet.has(name),allowX:xSet.has(name)})]));
       for(const [name,en] of results){draft.signals[name]=draft.signals[name]||{channels:{},evidenceItems:[]};Object.assign(draft.signals[name].channels,en.channels||{});const extra=Object.values(en.channels||{}).flatMap(x=>x?.headlines||[]);draft.signals[name].evidenceItems=[...(draft.signals[name].evidenceItems||[]),...extra].slice(0,40);draft.signals[name].health={...(draft.signals[name].health||{}),...(en.health||{})};if(en.warning)draft.signals[name].warning=[draft.signals[name].warning,en.warning].filter(Boolean).join('; ');}
       const nextOffset=offset+names.length;draft.enrichmentDone=nextOffset;if(nextOffset>=(draft.enrichmentNames||[]).length)draft.status='enriched';await store.setJSON(key,draft,DRAFT_TTL);
       return res.status(200).json({ok:true,nextOffset,total:(draft.enrichmentNames||[]).length,done:nextOffset>=(draft.enrichmentNames||[]).length});
