@@ -8991,7 +8991,7 @@ function whyNowArticleTitles(x){
   const w=x.whyNow||{};
   const pools=[
     x.articleTitles,x.newsTitles,x.articles,x.news,
-    s.articleTitles,s.newsTitles,s.articles,s.news,s.items,s.results,
+    s.articleTitles,s.newsTitles,s.articles,s.news,s.headlines,s.items,s.results,
     w.articleTitles,w.newsTitles,w.evidenceTitles
   ];
   const out=[];
@@ -9888,6 +9888,7 @@ async function loadPublishedNowRank(){
     if(!currentRes.ok) return false;
     const snap=await currentRes.json();
     if(!snap || !Array.isArray(snap.members) || !snap.members.length) return false;
+    window.NOW_DETECTED_ISSUES=Array.isArray(snap.detectedIssues)?snap.detectedIssues:[];
     const byName=new Map(snap.members.map(x=>[x.name,x]));
     people.forEach(p=>{
       const s=byName.get(p.name);
