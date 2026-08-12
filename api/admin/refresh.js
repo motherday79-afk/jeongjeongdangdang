@@ -14,6 +14,22 @@ function id(){return `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;}
 function body(req){return req.body||{};}
 function active(){return roster.filter(x=>x.id!==300&&x.party!=='공석');}
 
+
+const ADMIN_SENSOR_LABELS={naverSearchTrend:'NAVER 검색트렌드',googleTrends:'Google 급상승',news:'뉴스',naverBlogApi:'NAVER 블로그',naverCafeApi:'NAVER 카페',naverWebApi:'NAVER 웹',wiki:'Wikipedia',naverSurface:'NAVER HTML',daumSurface:'Daum HTML',naverView:'NAVER VIEW',daumBlog:'Daum 블로그',web:'포털 웹',blog:'포털 블로그',cafe:'포털 카페',video:'동영상',youtube:'YouTube API',youtubeHtml:'YouTube HTML',x:'X'};
+function compactSensor(key,s={}){
+  const o=s?.observation||{};const out={key,label:ADMIN_SENSOR_LABELS[key]||key,state:o.state||'UNKNOWN',provider:s?.provider||o.provider||'',carried:Boolean(o.carried)};
+  if(o.detail)out.detail=String(o.detail).slice(0,120);if(Number.isFinite(Number(o.carryFactor)))out.carryFactor=Math.round(Number(o.carryFactor)*100)/100;
+  for(const k of ['score','level7d','level30d','recent3','prior14','momentum','count6','count24','count7d','sources6','sources24','event6','title6','surfaceHits','freshHits','eventHits','totalCount','views6','views24','views7d']){
+    const v=Number(s?.[k]);if(Number.isFinite(v))out[k]=Math.round(v*10)/10;
+  }
+  if(s?.latest)out.latest=s.latest;
+  return out;
+}
+function adminMemberView(x){
+  const ch=x?.signal?.channels||{};const sensors=Object.keys(ADMIN_SENSOR_LABELS).map(k=>compactSensor(k,ch[k]||{}));
+  return {id:x.id,name:x.name,party:x.party,region:x.region,constituency:x.constituency,rank:x.rank,score:x.score,rawScore:x.rawScore,grade:x.grade,change6h:x.change6h,sourceCount:x.sourceCount,evidenceConfidence:x.evidenceConfidence,collection:x.collection||{},sourceBadges:x.sourceBadges||[],metrics:x.metrics||[],audit:x.audit||{},signal:{count6:x.signal?.count6||0,count24:x.signal?.count24||0,count7d:x.signal?.count7d||0,sources6:x.signal?.sources6||0,event6:x.signal?.event6||0,autoEvent:x.signal?.autoEvent||0,globalEvent:x.signal?.globalEvent||0,manualEvent:x.signal?.manualEvent||0,headlines:(x.signal?.headlines||[]).slice(0,5).map(h=>({title:h.title||'',source:h.source||'',ts:h.ts||null}))},sensors};
+}
+
 function aggregateSourceHealth(draft){
   const base={...(draft.sourceHealth||{})};
   const names=Object.keys(draft.signals||{});
@@ -96,8 +112,8 @@ module.exports=async function handler(req,res){
       const previous=await store.getJSON('jjdd:current'),traffic=await readTrafficSignals(active());
       draft.sourceHealth=aggregateSourceHealth(draft);
       draft.preview=computeSnapshot(roster,draft.signals,{eventTitle:draft.eventTitle,eventKeywords:draft.eventKeywords,sourceHealth:draft.sourceHealth,globalSignals:draft.globalSignals,globalNews:draft.globalNews},previous,traffic);draft.status='preview';draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
-      const movers=draft.preview.members.slice(0,299).filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,15);
-      return res.status(200).json({ok:true,draftId,preview:{timestamp:draft.preview.timestamp,top30:draft.preview.members.slice(0,30),movers,quality:draft.preview.quality,configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth,globalNews:draft.preview.globalNews}});
+      const allMembers=draft.preview.members.slice(0,299).map(adminMemberView),movers=allMembers.filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,20);
+      return res.status(200).json({ok:true,draftId,preview:{version:draft.preview.version,modelVersion:draft.preview.modelVersion,comparisonCompatible:draft.preview.comparisonCompatible,timestamp:draft.preview.timestamp,members:allMembers,top30:allMembers.slice(0,30),movers,quality:draft.preview.quality,configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth,globalNews:draft.preview.globalNews}});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
