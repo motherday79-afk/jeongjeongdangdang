@@ -8999,7 +8999,7 @@ function whyNowArticleTitles(x){
   const w=x.whyNow||{};
   const pools=[
     x.articleTitles,x.newsTitles,x.articles,x.news,
-    s.articleTitles,s.newsTitles,s.articles,s.news,s.headlines,s.items,s.results,
+    s.articleTitles,s.newsTitles,s.articles,s.news,s.headlines,s.bigKindsHeadlines,s.items,s.results,
     w.articleTitles,w.newsTitles,w.evidenceTitles
   ];
   const out=[];
@@ -9057,7 +9057,7 @@ function whyNowIsWeakCandidate(text){
 }
 
 function whyNowHeadlineSourceCount(x){
-  const hs=Array.isArray(x.signal?.headlines)?x.signal.headlines:[];
+  const hs=[...(Array.isArray(x.signal?.headlines)?x.signal.headlines:[]),...(Array.isArray(x.signal?.bigKindsHeadlines)?x.signal.bigKindsHeadlines:[])];
   return new Set(hs.map(h=>String(h?.source||'').trim()).filter(Boolean)).size;
 }
 
@@ -9128,14 +9128,27 @@ function whyNowKeywordCandidates(x){
     }
   });
 
+  // BIG KINDS 연관어는 단순 빈도보다 '왜 지금'을 설명하는 보강 근거로 사용한다.
+  const bkWords=Array.isArray(x.signal?.bigKindsRelatedWords)?x.signal.bigKindsRelatedWords:[];
+  bkWords.slice(0,20).forEach((w,idx)=>{
+    const text=whyNowCanonicalToken(typeof w==='string'?w:(w?.name||''));
+    if(!text||text===x.name||/\d/.test(text)||whyNowIsWeakCandidate(text)||whyNowIsPersonName(text))return;
+    if(/^(더불어)?민주당$|^국민의힘$|^개혁신당$/.test(text))return;
+    const words=text.split(/\s+/).filter(Boolean),weight=Math.max(0,Number(w?.weight||0));
+    const rec=stats.get(text)||{text,docs:new Set(),hits:0,kind:'bigkinds',words:words.length};
+    rec.docs.add(`bk-${idx}`);rec.hits+=1;rec.kind=rec.kind==='phrase'?'phrase':'bigkinds';rec.bigKindsWeight=Math.max(Number(rec.bigKindsWeight||0),weight);stats.set(text,rec);
+  });
+
   const scored=[];
   stats.forEach(rec=>{
     const df=rec.docs.size, text=rec.text, words=text.split(/\s+/);
     const signal=whyNowSignalWeight(text);
     const genericCount=words.filter(w=>WHY_NOW_GENERIC.has(w)||WHY_NOW_STOPWORDS.has(w)).length;
     const properSpecificity=Math.min(7,Math.max(0,text.replace(/\s/g,'').length-4)*.45);
-    let score=df*4+rec.hits*1.2+signal+properSpecificity+(rec.words-1)*2.4-genericCount*2.5;
-    if(rec.words===1 && signal===0 && df<2)score-=8;
+    const bigKindsBonus=rec.bigKindsWeight>0?Math.min(18,5+Math.log1p(rec.bigKindsWeight)*3):0;
+    let score=df*4+rec.hits*1.2+signal+properSpecificity+(rec.words-1)*2.4-genericCount*2.5+bigKindsBonus;
+    if(rec.kind==='bigkinds')score+=3;
+    if(rec.words===1 && signal===0 && df<2 && !rec.bigKindsWeight)score-=8;
     if(rec.words>=2 && signal===0 && df<2)score-=3;
     if(whyNowIsPersonName(text))score-=20;
     if(/^(더불어)?민주당$|^국민의힘$|^개혁신당$/.test(text))score-=30;
