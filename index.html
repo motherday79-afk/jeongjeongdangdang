@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v1.11 · Name Pulse Integrated</title>
+<title>정정당당 NOW Rank v1.3 · 6H Snapshot UX</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -181,6 +181,25 @@ a{text-decoration:none;color:inherit}
   background:linear-gradient(180deg,var(--mint),var(--mint-dark));border-color:transparent;color:#fff;
   box-shadow:0 12px 26px rgba(40,183,162,.22);
 }
+
+
+/* ===== NOW Keyword / Why NOW v1.4 ===== */
+.now-keyword-panel{margin:14px 0 4px;padding:14px 16px;border:1px solid rgba(40,183,162,.18);border-radius:18px;background:linear-gradient(180deg,#fbfffe,#f5fbf9)}
+.now-keyword-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.now-keyword-head b{font-size:13px;color:#0f766e;letter-spacing:-.2px}.now-keyword-head span{font-size:11px;color:#94a3b8;font-weight:800}
+.now-keyword-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.now-keyword-strip::-webkit-scrollbar{display:none}
+.now-chip{border:1px solid #d9ece7;background:#fff;color:#286b63;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:850;white-space:nowrap;cursor:pointer;transition:.15s}
+.now-chip:hover{transform:translateY(-1px);border-color:#91d8cc;box-shadow:0 6px 14px rgba(40,183,162,.10)}
+.person-copy{min-width:0}.person-keywords{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.person-keyword{display:inline-flex;align-items:center;max-width:145px;border:0;background:#effaf7;color:#137a6d;border-radius:7px;padding:3px 6px;font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.person-keyword:before{content:'#';opacity:.55;margin-right:1px}
+.why-now-modal{position:fixed;inset:0;background:rgba(15,23,42,.42);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.why-now-modal.open{display:flex}.why-now-dialog{width:min(480px,100%);background:#fff;border-radius:24px;box-shadow:0 24px 80px rgba(15,23,42,.22);padding:22px;position:relative}
+.why-now-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border:0;border-radius:50%;background:#f1f5f4;color:#64748b;font-size:20px;cursor:pointer}
+.why-now-kicker{color:#0f766e;font-size:11px;font-weight:950;letter-spacing:.12em}.why-now-dialog h3{margin:7px 38px 6px 0;font-size:22px;letter-spacing:-.7px}.why-now-summary{color:#64748b;font-size:13px;line-height:1.55;margin-bottom:14px}
+.why-now-facts{display:grid;gap:9px}.why-now-fact{padding:10px 12px;border-radius:12px;background:#f8fbfa;border:1px solid #e7efed}.why-now-fact small{display:block;color:#94a3b8;font-weight:800;margin-bottom:3px}.why-now-fact b{font-size:13px;color:#334155}.why-now-tags{display:flex;gap:7px;flex-wrap:wrap}.why-now-tags span{background:#eaf8f4;color:#137a6d;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:850}
+.why-now-action{margin-top:15px;width:100%;height:44px;border:0;border-radius:12px;background:#28b7a2;color:#fff;font-weight:900;cursor:pointer}
+@media(max-width:760px){.now-keyword-panel{margin-top:10px}.person-keyword{max-width:105px}.row .person{align-items:flex-start}.person-keywords{max-width:180px}}
 
 .ranktable{
   overflow:hidden;border-radius:24px;border:1px solid rgba(223,232,229,.95);background:#fff;box-shadow:var(--shadow);
@@ -959,6 +978,12 @@ a{text-decoration:none;color:inherit}
         </div>
 
         <div class="demo-notice"><b>NOW RANK v1.3 · 6H OPERATIONAL</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록합니다. 관리자 Refresh → 미리보기 → 게시가 완료되면 서버 스냅샷이 즉시 공개 순위에 반영됩니다.</div>
+
+
+        <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
+          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span>TOP30 이슈 자동 요약</span></div>
+          <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
+        </section>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
@@ -8945,6 +8970,58 @@ function historyView(data,mode){
   return data;
 }
 
+
+const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','본선','관련','공개','기반','실시간','지금']);
+const WHY_NOW_SENSITIVE=['비리','폭언','조롱','범죄','사기','성추문','의혹','혐의','막말','멱살'];
+function whyNowCleanToken(v){return String(v||'').replace(/[“”"'()[\]{}<>]/g,'').replace(/^[#·,.:/\-]+|[#·,.:/\-]+$/g,'').trim();}
+function whyNowKeywords(x){
+  const label=String(x.eventLabel||'').trim();
+  let parts=label.split(/[·|,/]+|\s{2,}/).map(whyNowCleanToken).filter(Boolean);
+  if(parts.length<2){parts=label.split(/\s+/).map(whyNowCleanToken).filter(t=>t.length>=2&&!WHY_NOW_STOPWORDS.has(t));}
+  parts=parts.filter(t=>!WHY_NOW_STOPWORDS.has(t)&&t!=='공석');
+  const safe=parts.map(t=>{
+    if(WHY_NOW_SENSITIVE.some(w=>t.includes(w)) && Number(x.sourceCount||0)<2) return t.includes('발언')?'관련 발언':'관련 논란';
+    return t;
+  });
+  const uniq=[...new Set(safe)];
+  if(!uniq.length){
+    const c=x.nowComponents||{};
+    const ranked=[['뉴스 관심',c.news],['검색 관심',c.search],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>b[1]-a[1]);
+    return ranked.slice(0,2).map(v=>v[0]);
+  }
+  return uniq.slice(0,2);
+}
+function whyNowReason(x){
+  const c=x.nowComponents||{};
+  const signals=[['뉴스 화제성',c.news],['검색 관심도',c.search],['이벤트 중심성',c.event],['디지털 확산',c.digital]].filter(v=>Number.isFinite(Number(v[1]))).sort((a,b)=>Number(b[1])-Number(a[1]));
+  const top=signals.slice(0,2).map(v=>v[0]).join(' · ');
+  return top?`${top} 신호가 현재 순위에 가장 크게 나타나고 있습니다.`:'수집된 공개 신호를 종합해 현재 순위를 산출했습니다.';
+}
+function renderNowKeywordStrip(){
+  const el=document.getElementById('nowKeywordStrip'); if(!el)return;
+  const counts=new Map();
+  people.slice().sort((a,b)=>a.rank-b.rank).slice(0,30).forEach(x=>whyNowKeywords(x).forEach(k=>counts.set(k,(counts.get(k)||0)+1)));
+  const keys=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(v=>v[0]);
+  el.innerHTML=keys.length?keys.map(k=>`<button class="now-chip" onclick="event.stopPropagation();openWhyNowByKeyword('${String(k).replace(/'/g,"\\'")}')">#${k.replace(/\s+/g,'_')}</button>`).join(''):'<span class="sub" style="font-size:12px">현재 TOP30 키워드가 없습니다.</span>';
+}
+function openWhyNowByKeyword(keyword){
+  const x=people.slice().sort((a,b)=>a.rank-b.rank).find(p=>whyNowKeywords(p).includes(keyword));
+  if(x) openWhyNow(x.id,keyword);
+}
+function openWhyNow(id,focusKeyword){
+  const x=people.find(p=>p.id===id); if(!x)return;
+  const tags=whyNowKeywords(x), modal=document.getElementById('whyNowModal');
+  document.getElementById('whyNowTitle').textContent=`왜 ${x.name}이(가) 지금 ${x.rank}위인가?`;
+  document.getElementById('whyNowSummary').textContent=whyNowReason(x);
+  document.getElementById('whyNowTags').innerHTML=tags.map(k=>`<span>${k}</span>`).join('');
+  document.getElementById('whyNowEvent').textContent=x.eventLabel||'직접 연결된 주요 이벤트 미포착';
+  document.getElementById('whyNowSource').textContent=`확인 원천 ${Number(x.sourceCount||0)}건${x.latest?` · 최근 ${x.latest}`:''}`;
+  document.getElementById('whyNowWindow').textContent=String(x.rank2Snapshot||'현재 스냅샷');
+  const btn=document.getElementById('whyNowDetailBtn'); btn.onclick=()=>{closeWhyNow();openDetail(x.id)};
+  modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+}
+function closeWhyNow(){const m=document.getElementById('whyNowModal');if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true')}}
+
 function renderRank(){
   let q=document.getElementById("search").value.trim();
   let p=document.getElementById("party").value;
@@ -8968,9 +9045,10 @@ function renderRank(){
       <div class="ranknum">${mode==="all"?x.rank:idx+1}</div>
       <div class="person">
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
-        <div>
+        <div class="person-copy">
           <div class="pname">${x.name}<span class="verified">✓</span></div>
           <div class="pmeta">${x.isReal ? `국회 공식 프로필<span class="real-chip">REAL</span>` : `프로토타입 샘플<span class="sim-chip">DEMO</span>`}</div>
+          ${x.rank<=30?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\'")}')">${k}</button>`).join('')}</div>`:''}
         </div>
       </div>
       <div class="${partyClass[x.party]||"party-gray"}">${x.party}</div>
@@ -8981,6 +9059,7 @@ function renderRank(){
   });
   document.getElementById("ranktable").innerHTML=html;
   renderMobileTop10();
+  renderNowKeywordStrip();
 }
 document.getElementById("search").addEventListener("input",renderRank);
 document.getElementById("party").addEventListener("change",renderRank);
@@ -9677,35 +9756,6 @@ document.getElementById('search')?.addEventListener('input',e=>{
   },900);
 });
 
-function jjddRelativeGrade(v){return v>=85?'S':v>=70?'A':v>=55?'B':v>=35?'C':'D';}
-function jjddRelativeQuantile(sorted,q){if(!sorted.length)return 0;const qq=Math.max(0,Math.min(1,q)),pos=(sorted.length-1)*qq,lo=Math.floor(pos),hi=Math.ceil(pos);return lo===hi?sorted[lo]:sorted[lo]+(sorted[hi]-sorted[lo])*(pos-lo);}
-function jjddRelativeDisplay(value,values=[],opts={}){
-  const v=Number(value);if(!Number.isFinite(v)||v<=0)return 0;
-  const positive=values.map(Number).filter(x=>Number.isFinite(x)&&x>0).sort((a,b)=>a-b);if(!positive.length)return 0;
-  let lower=0,equal=0;for(const x of positive){if(x<v)lower++;else if(Math.abs(x-v)<1e-9)equal++;}
-  const pct=positive.length===1?1:Math.max(0,Math.min(1,(lower+Math.max(1,equal)/2-.5)/(positive.length-1)));
-  const p90=Math.max(1e-9,jjddRelativeQuantile(positive,.90));
-  const intensity=Math.sqrt(Math.max(0,Math.min(1,v/p90)));
-  const pw=Number.isFinite(opts.percentileWeight)?opts.percentileWeight:.72,iw=1-pw,floor=Number.isFinite(opts.floor)?opts.floor:18,top=Number.isFinite(opts.top)?opts.top:96;
-  return Math.round(Math.max(0,Math.min(100,floor+(top-floor)*(pw*pct+iw*intensity)))*10)/10;
-}
-function normalizePublishedSnapshotDisplay(snap){
-  if(!snap||snap.displayScale==='relative-v1.6.1'||!Array.isArray(snap.members))return snap;
-  const active=snap.members.filter(x=>x.party!=='공석'&&x.name!=='강릉시 국회의원 공석');
-  const scorePool=active.map(x=>Number.isFinite(Number(x.rawScore))?Number(x.rawScore):Number(x.score)||0);
-  const maxMetrics=Math.max(0,...active.map(x=>Array.isArray(x.metrics)?x.metrics.length:0));
-  const metricPools=Array.from({length:maxMetrics},(_,i)=>active.map(x=>Number(x.metrics?.[i]?.[2])||0));
-  snap.members=snap.members.map(x=>{
-    if(x.party==='공석'||x.name==='강릉시 국회의원 공석')return x;
-    const raw=Number.isFinite(Number(x.rawScore))?Number(x.rawScore):Number(x.score)||0;
-    const score=jjddRelativeDisplay(raw,scorePool,{floor:12,top:98,percentileWeight:.76});
-    const metrics=Array.isArray(x.metrics)?x.metrics.map((m,i)=>{const rawMetric=Number(m?.[2])||0,display=jjddRelativeDisplay(rawMetric,metricPools[i]||[]);return [m?.[0]||'',jjddRelativeGrade(display),display];}):x.metrics;
-    return {...x,score,grade:jjddRelativeGrade(score),metrics};
-  });
-  snap.displayScale='relative-v1.6.1-client';
-  return snap;
-}
-
 async function loadPublishedNowRank(){
   try{
     const [currentRes,historyRes]=await Promise.all([
@@ -9717,7 +9767,7 @@ async function loadPublishedNowRank(){
       window.NOW_RANK_HISTORY=Array.isArray(h.snapshots)?h.snapshots:[];
     }
     if(!currentRes.ok) return false;
-    const snap=normalizePublishedSnapshotDisplay(await currentRes.json());
+    const snap=await currentRes.json();
     if(!snap || !Array.isArray(snap.members) || !snap.members.length) return false;
     const byName=new Map(snap.members.map(x=>[x.name,x]));
     people.forEach(p=>{
@@ -9739,7 +9789,7 @@ async function loadPublishedNowRank(){
     people.sort((a,b)=>a.rank-b.rank);
     const status=document.getElementById('serverUpdateStatus');
     if(status){
-      const label={naverNamePulse:'NAVER Name Pulse',googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
+      const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
       const src=(snap.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
       status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'} · 다음 정기 갱신은 6시간 주기`;
     }
@@ -9763,9 +9813,10 @@ syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
 // Published snapshot must hydrate on first load on BOTH desktop and mobile.
 loadPublishedNowRank();
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.6 Multi-Signal Event-Centric + Desktop/Mobile Snapshot Sync. -->
+<!-- NOW Rank v1.4.1 Multi-Source Consensus + Desktop/Mobile Snapshot Sync. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
@@ -9774,6 +9825,23 @@ loadPublishedNowRank();
   <button class="mobile-navbtn" data-mobile-page="compare"><span class="mobile-nav-icon">⇄</span><span>비교</span></button>
   <button class="mobile-navbtn" data-mobile-page="my"><span class="mobile-nav-icon">○</span><span>MY</span></button>
 </nav>
+
+
+<div class="why-now-modal" id="whyNowModal" aria-hidden="true" onclick="if(event.target===this)closeWhyNow()">
+  <div class="why-now-dialog" role="dialog" aria-modal="true" aria-labelledby="whyNowTitle">
+    <button class="why-now-close" onclick="closeWhyNow()" aria-label="닫기">×</button>
+    <div class="why-now-kicker">WHY NOW</div>
+    <h3 id="whyNowTitle">왜 지금 이 인물인가?</h3>
+    <div class="why-now-summary" id="whyNowSummary"></div>
+    <div class="why-now-tags" id="whyNowTags"></div>
+    <div class="why-now-facts" style="margin-top:14px">
+      <div class="why-now-fact"><small>핵심 이벤트</small><b id="whyNowEvent"></b></div>
+      <div class="why-now-fact"><small>근거 상태</small><b id="whyNowSource"></b></div>
+      <div class="why-now-fact"><small>이슈 집중 기준</small><b id="whyNowWindow"></b></div>
+    </div>
+    <button class="why-now-action" id="whyNowDetailBtn">관련 지표 · 근거 보기</button>
+  </div>
+</div>
 
 </body>
 </html>
