@@ -35,3 +35,9 @@ Custom names can be tested with:
 ## Why this is isolated first
 
 If values match the external tool, the next step is a 299-person queued collector + Redis history + Name Pulse scoring. Until then the probe has zero influence on NOW Rank.
+
+
+## Hotfix
+- Search Ads base URL corrected to `https://api.naver.com`
+- 7-second outbound timeout added so the probe cannot hang indefinitely.
+- name-pulse Vercel maxDuration set to 60 seconds.

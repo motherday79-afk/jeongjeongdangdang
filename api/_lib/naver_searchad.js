@@ -1,6 +1,6 @@
 const crypto=require('crypto');
 
-const BASE_URL='https://api.searchad.naver.com';
+const BASE_URL='https://api.naver.com';
 const PATH='/keywordstool';
 
 function credentials(){
@@ -46,7 +46,21 @@ async function queryKeyword(keyword,{showDetail=true}={}){
     'X-Signature':signature(timestamp,method,PATH,c.secretKey),
     'Content-Type':'application/json; charset=UTF-8'
   };
-  const r=await fetch(url,{method,headers});
+  const ctl=new AbortController();
+  const timer=setTimeout(()=>ctl.abort(),7000);
+  let r;
+  try{
+    r=await fetch(url,{method,headers,signal:ctl.signal});
+  }catch(e){
+    if(e?.name==='AbortError'){
+      const err=new Error('NAVER Search Ads request timeout after 7s');
+      err.code='NAVER_AD_TIMEOUT';
+      throw err;
+    }
+    throw e;
+  }finally{
+    clearTimeout(timer);
+  }
   const text=await r.text();
   let json=null;try{json=JSON.parse(text);}catch(e){}
   if(!r.ok){
@@ -83,7 +97,7 @@ async function queryKeywords(keywords=[]){
   for(const keyword of keywords){
     try{out.push({ok:true,...await queryKeyword(keyword)});}catch(e){out.push({ok:false,keyword,error:e.message||String(e),status:e.status||null});}
     // Keep the probe gentle. Full 299-person collection will use its own queue later.
-    await new Promise(r=>setTimeout(r,80));
+    await new Promise(r=>setTimeout(r,40));
   }
   return out;
 }
