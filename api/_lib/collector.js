@@ -1,6 +1,6 @@
 const {URL}=require('url');
 const {collectKeylessSurface,collectKeylessEnrichment}=require('./keyless');
-const {collectSearchSurfaces,politicalContext,collectNewsItems,credentialStatus}=require('./naver_common');
+const {collectSearchSurfaces,politicalContext}=require('./naver_common');
 const {mark,missing,STATES,healthStateToObservation}=require('./observation');
 
 function cleanHtml(s=''){
@@ -66,9 +66,13 @@ function summarize(items,member,keywords,nowMs,provider,totalCount=null){
   return mark(summary,provider,recent7.length?STATES.OBSERVED:STATES.ZERO);
 }
 async function fetchNaverNews(member){
-  const r=await collectNewsItems(member);
-  if(!r.items)throw new Error(r.error||credentialStatus().detail||'NAVER news unavailable');
-  return {items:parseNaverItems({items:r.items}),mode:r.mode||'unknown'};
+  const id=process.env.NAVER_API_HUB_CLIENT_ID,secret=process.env.NAVER_API_HUB_CLIENT_SECRET;
+  if(!id||!secret) return null;
+  const q=member.name;
+  const url=`https://naverapihub.apigw.ntruss.com/search/v1/news?query=${encodeURIComponent(q)}&display=100&sort=date`;
+  const r=await fetch(url,{headers:{'X-NCP-APIGW-API-KEY-ID':id,'X-NCP-APIGW-API-KEY':secret}});
+  if(!r.ok) throw new Error(`NAVER ${r.status}`);
+  return parseNaverItems(await r.json());
 }
 async function fetchGoogleNews(member){
   const party=member.party&&member.party!=='공석'?member.party:'';
@@ -102,7 +106,7 @@ function mergeSummaries(list,provider='news-multi'){
   const summary={count6:usable.reduce((a,x)=>a+Number(x.count6||0),0),count24:usable.reduce((a,x)=>a+Number(x.count24||0),0),count7d:usable.reduce((a,x)=>a+Number(x.count7d||0),0),
     sources6:new Set(usable.flatMap(x=>(x.headlines||[]).filter(h=>Date.now()-h.ts<=21600000).map(h=>h.source))).size,
     sources24:usable.reduce((a,x)=>Math.max(a,Number(x.sources24||0)),0),event6:usable.reduce((a,x)=>a+Number(x.event6||0),0),title6:usable.reduce((a,x)=>a+Number(x.title6||0),0),
-    latest:latest.length?Math.max(...latest):null,provider,headlines:heads.slice(0,12),providers:valid.map(x=>x.provider),sourceStates:Object.fromEntries(valid.map(x=>[x.provider,x?.observation?.state||'UNKNOWN'])),sourceDetails:Object.fromEntries(valid.map(x=>[x.provider,x?.observation?.detail||'']))};
+    latest:latest.length?Math.max(...latest):null,provider,headlines:heads.slice(0,12),providers:valid.map(x=>x.provider),sourceStates:Object.fromEntries(valid.map(x=>[x.provider,x?.observation?.state||'UNKNOWN']))};
   const st=!usable.length?STATES.MISSING:(summary.count7d>0?STATES.OBSERVED:STATES.ZERO);
   return mark(summary,provider,st,!usable.length?'all news sources missing':'');
 }
@@ -114,23 +118,21 @@ function stampKeylessChannel(summary,health,provider){
 async function collectMember(member,keywords=[],globalSignals={}){
   const nowMs=Date.now(),warnings=[];
   const safe=async(label,fn,fallback=null)=>{try{return await fn()}catch(e){warnings.push(`${label}: ${e.message||e}`);return fallback;}};
-  const kakaoPromise=process.env.KAKAO_REST_API_KEY?Promise.all(['web','blog','cafe','video'].map(async type=>[type,await safe(`Kakao ${type}`,()=>fetchKakao(member,type),null)])):Promise.resolve([]),allowNaver=globalSignals?.naverApiAvailable!==false;
-  const [google,naverResult,naverCommon,keyless,kakaoRows]=await Promise.all([
-    safe('Google News',()=>fetchGoogleNews(member),[]),allowNaver?safe('NAVER News',()=>fetchNaverNews(member),null):Promise.resolve(null),allowNaver?safe('NAVER Common',()=>collectSearchSurfaces(member,keywords),null):Promise.resolve(null),safe('Keyless Surface',()=>collectKeylessSurface(member,keywords,globalSignals),null),kakaoPromise
+  const kakaoPromise=process.env.KAKAO_REST_API_KEY?Promise.all(['web','blog','cafe','video'].map(async type=>[type,await safe(`Kakao ${type}`,()=>fetchKakao(member,type),null)])):Promise.resolve([]);
+  const [google,naver,naverCommon,keyless,kakaoRows]=await Promise.all([
+    safe('Google News',()=>fetchGoogleNews(member),[]),safe('NAVER News',()=>fetchNaverNews(member),null),safe('NAVER Common',()=>collectSearchSurfaces(member,keywords),null),safe('Keyless Surface',()=>collectKeylessSurface(member,keywords,globalSignals),null),kakaoPromise
   ]);
   const googleSummary=summarize(google||[],member,keywords,nowMs,'google-news-rss');
-  const naverItems=naverResult?.items||null,naverMode=naverResult?.mode||credentialStatus().mode;
-  const naverErr=!allowNaver?(globalSignals?.naverApiDetail||'NAVER probe failed; skipped this refresh'):(warnings.find(x=>x.startsWith('NAVER News:'))?.replace(/^NAVER News:\s*/, '')||(!credentialStatus().configured?credentialStatus().detail:'NAVER news request failed'));
-  const naverSummary=naverItems?summarize(naverItems,member,keywords,nowMs,`naver-news-${naverMode}`):missing(`naver-news-${naverMode||'none'}`,naverErr);
+  const naverSummary=naver?summarize(naver,member,keywords,nowMs,'naver-news'):missing('naver-news',process.env.NAVER_API_HUB_CLIENT_ID?'NAVER news request failed':'NAVER API HUB credentials not configured');
   const news=mergeSummaries([googleSummary,naverSummary],'news');
   const channels={news,googleTrends:mark(globalSignals?.trends?.signals?.[member.name]||{provider:'google-trends-rising',score:0,traffic:0,exact:false,latest:null,title:null},'google-trends-rising',(globalSignals?.trends?.signals?.[member.name]?.score||0)>0?STATES.OBSERVED:STATES.ZERO)};
-  if(naverCommon)Object.assign(channels,naverCommon);else {const nd=!allowNaver?(globalSignals?.naverApiDetail||'NAVER probe failed; skipped this refresh'):'NAVER common collection failed';Object.assign(channels,{naverBlogApi:missing('naver-blog-api',nd,'surface'),naverCafeApi:missing('naver-cafe-api',nd,'surface'),naverWebApi:missing('naver-web-api',nd,'surface')});}
+  if(naverCommon)Object.assign(channels,naverCommon);else Object.assign(channels,{naverBlogApi:missing('naver-blog-api','NAVER common collection failed','surface'),naverCafeApi:missing('naver-cafe-api','NAVER common collection failed','surface'),naverWebApi:missing('naver-web-api','NAVER common collection failed','surface')});
   if(process.env.KAKAO_REST_API_KEY){for(const [type,res] of kakaoRows)channels[type]=res?summarize(res.items,member,keywords,nowMs,`kakao-${type}`,res.totalCount):missing(`kakao-${type}`,`Kakao ${type} request failed`);}else for(const type of ['web','blog','cafe','video'])channels[type]=missing(`kakao-${type}`,'KAKAO_REST_API_KEY not configured');
   const surfaceHealth=keyless?.health||{};
   channels.naverSurface=stampKeylessChannel(keyless?.channels?.naverSurface,surfaceHealth.naverHtml,'naver-surface-html');
   channels.daumSurface=stampKeylessChannel(keyless?.channels?.daumSurface,surfaceHealth.daumHtml,'daum-surface-html');
   const evidenceItems=dedupe(Object.values(channels).flatMap(x=>x?.headlines||[])).slice(0,40);
-  return {channels,evidenceItems,health:surfaceHealth,warning:warnings.length?warnings.join('; '):null,providers:{googleNews:true,naverNews:Boolean(naverItems),naverMode,naverCommon:credentialStatus().configured,kakao:Boolean(process.env.KAKAO_REST_API_KEY),googleTrends:true}};
+  return {channels,evidenceItems,health:surfaceHealth,warning:warnings.length?warnings.join('; '):null,providers:{googleNews:true,naverNews:Boolean(naver),naverCommon:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),kakao:Boolean(process.env.KAKAO_REST_API_KEY),googleTrends:true}};
 }
 
 

@@ -1,16 +1,9 @@
-정정당당 NOW Rank v1.9 Sensor Recovery PATCH
+NOW Rank v1.8 Audit Console PATCH
 
-v1.8 Audit Console이 설치된 저장소에 이 패치의 파일을 같은 경로로 덮어쓰세요.
-
-변경 파일:
+v1.7 Common Sensor 배포본에 아래 파일을 동일 경로로 덮어쓰세요.
 - admin.html
-- .env.example
-- README.md
-- README_V1_9.md
-- api/_lib/naver_common.js
-- api/_lib/collector.js
-- api/_lib/score.js
 - api/admin/refresh.js
-- api/admin/status.js
+- api/_lib/score.js
 
-이번 패치는 NAVER 공통센서 복구/진단과 감사정보 확장이 핵심입니다.
+순위 수집/가중치 자체는 v1.7을 유지합니다.
+관리자 299명 전체 감사, 원천별 상세분해, 데이터 이상 필터, 모델 기준선 호환성 처리가 추가됩니다.

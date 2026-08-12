@@ -5,7 +5,7 @@ const {collectMember,collectEnrichmentMember,preliminaryHeat,collectGlobalPoliti
 const {computeSnapshot}=require('../_lib/score');
 const {readTrafficSignals}=require('../_lib/traffic');
 const {collectGlobalKeyless}=require('../_lib/keyless');
-const {collectTrendBatch,creds:naverCreds,credentialStatus:naverCredentialStatus,probe:probeNaver}=require('../_lib/naver_common');
+const {collectTrendBatch,creds:naverCreds}=require('../_lib/naver_common');
 const {missing}=require('../_lib/observation');
 const roster=require('../../data/roster.json');
 
@@ -23,8 +23,6 @@ function compactSensor(key,s={}){
     const v=Number(s?.[k]);if(Number.isFinite(v))out[k]=Math.round(v*10)/10;
   }
   if(s?.latest)out.latest=s.latest;
-  if(s?.pageTitle)out.pageTitle=String(s.pageTitle).slice(0,120);if(s?.granularity)out.granularity=String(s.granularity).slice(0,40);if(s?.anchorName)out.anchorName=String(s.anchorName).slice(0,60);
-  if(s?.sourceStates&&typeof s.sourceStates==='object')out.sourceStates=s.sourceStates;if(s?.sourceDetails&&typeof s.sourceDetails==='object')out.sourceDetails=s.sourceDetails;if(Array.isArray(s?.providers))out.providers=s.providers.slice(0,8);
   return out;
 }
 function adminMemberView(x){
@@ -54,15 +52,13 @@ module.exports=async function handler(req,res){
     if(action==='start'){
       const draftId=id(),eventTitle=String(b.eventTitle||process.env.DEFAULT_EVENT_TITLE||'현재 주요 정치 이슈').trim();
       const eventKeywords=(Array.isArray(b.eventKeywords)?b.eventKeywords:String(b.eventKeywords||'').split(',')).map(x=>String(x).trim()).filter(Boolean).slice(0,12);
-      const [globalSignals,globalNews,previous,naverProbe]=await Promise.all([collectGlobalKeyless(active()),collectGlobalPolitics(active(),eventTitle,eventKeywords),store.getJSON('jjdd:current').catch(()=>null),probeNaver()]);
+      const [globalSignals,globalNews,previous]=await Promise.all([collectGlobalKeyless(active()),collectGlobalPolitics(active(),eventTitle,eventKeywords),store.getJSON('jjdd:current').catch(()=>null)]);
       const activeNames=new Set(active().map(x=>x.name));
       const previousAnchor=(previous?.members||[]).filter(x=>activeNames.has(x.name)).sort((a,b)=>Number(a.rank||999)-Number(b.rank||999))[0]?.name;
       const anchorName=previousAnchor||active()[0]?.name;
-      const naverState=!naverProbe.configured?'UNCONFIGURED':(naverProbe.search?.ok&&naverProbe.trend?.ok?'OK':'ERROR'),naverDetail=!naverProbe.configured?naverProbe.detail:[`mode=${naverProbe.mode}`,`search=${naverProbe.search?.ok?'OK':naverProbe.search?.detail||'FAIL'}`,`trend=${naverProbe.trend?.ok?'OK':naverProbe.trend?.detail||'FAIL'}`].join(' · ');
-      globalSignals.naverApiAvailable=Boolean(naverProbe.search?.ok);globalSignals.naverApiDetail=naverProbe.search?.ok?`NAVER ${naverProbe.mode} search probe OK`:(naverProbe.search?.detail||naverDetail);
-      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:{...(globalSignals.health||{}),naverApi:{state:naverState,detail:naverDetail,mode:naverProbe.mode||'none'}},naverDiagnostics:naverProbe,naverTrend:{configured:Boolean(naverCreds())&&Boolean(naverProbe.trend?.ok),credentialsConfigured:Boolean(naverCreds()),mode:naverProbe.mode||naverCredentialStatus().mode,anchorName,signals:{},processed:0,total:active().length,lastError:naverProbe.trend?.ok?null:(naverProbe.trend?.detail||naverProbe.detail||null)}};
+      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{},naverTrend:{configured:Boolean(naverCreds()),anchorName,signals:{},processed:0,total:active().length}};
       await store.setJSON(`jjdd:draft:${draftId}`,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,naverDiagnostics:naverProbe,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,naverTrend:{configured:draft.naverTrend.configured,mode:draft.naverTrend.mode,anchorName,total:draft.naverTrend.total},globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
+      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,naverTrend:{configured:draft.naverTrend.configured,anchorName,total:draft.naverTrend.total},globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
     }
     const draftId=String(b.draftId||''),key=`jjdd:draft:${draftId}`,draft=await store.getJSON(key);
     if(!draft)return res.status(404).json({ok:false,error:'Refresh draft를 찾을 수 없습니다. 다시 시작해주세요.'});
@@ -74,10 +70,10 @@ module.exports=async function handler(req,res){
         for(const m of batch)draft.naverTrend.signals[m.name]=missing('naver-search-trend','NAVER API HUB credentials not configured');
       }else{
         const tr=await collectTrendBatch(batch,anchor);Object.assign(draft.naverTrend.signals,tr.signals||{});
-        if(tr.error)draft.naverTrend.lastError=tr.error;else draft.naverTrend.lastError=null;if(tr.mode)draft.naverTrend.mode=tr.mode;if(tr.period)draft.naverTrend.period=tr.period;
+        if(tr.error)draft.naverTrend.lastError=tr.error;if(tr.period)draft.naverTrend.period=tr.period;
       }
       const nextOffset=offset+batch.length;draft.naverTrend.processed=nextOffset;draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,processed:nextOffset,total:members.length,nextOffset,done:nextOffset>=members.length,anchorName:anchor.name,configured:draft.naverTrend.configured,mode:draft.naverTrend.mode||'none',lastError:draft.naverTrend.lastError||null});
+      return res.status(200).json({ok:true,draftId,processed:nextOffset,total:members.length,nextOffset,done:nextOffset>=members.length,anchorName:anchor.name,configured:draft.naverTrend.configured,lastError:draft.naverTrend.lastError||null});
     }
     if(action==='batch'){
       const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(8,Math.max(1,Number(b.size)||6)),batch=members.slice(offset,offset+size);
