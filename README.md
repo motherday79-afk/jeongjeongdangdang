@@ -1,3 +1,7 @@
+# 정정당당 NOW Rank v1.11 — Name Pulse Integrated
+
+See `README_V1_11_NAMEPULSE_INTEGRATED.md` for this release.
+
 # 정정당당 NOW Rank v1.7 · Common Sensor
 
 ## 이번 버전의 목적

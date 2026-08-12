@@ -29,7 +29,7 @@ module.exports=async function handler(req,res){
       ok:results.some(x=>x.ok),
       configured:true,
       provider:'NAVER Search Ads /keywordstool',
-      note:'Probe only: this endpoint does not affect NOW Rank yet.',
+      note:'Diagnostic endpoint only; v1.11 scoring integration runs through Admin Refresh.',
       keywords:results.length,
       results
     });

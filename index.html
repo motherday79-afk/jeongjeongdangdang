@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v1.6 · Multi-Signal 6H Snapshot</title>
+<title>정정당당 NOW Rank v1.11 · Name Pulse Integrated</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -9739,7 +9739,7 @@ async function loadPublishedNowRank(){
     people.sort((a,b)=>a.rank-b.rank);
     const status=document.getElementById('serverUpdateStatus');
     if(status){
-      const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
+      const label={naverNamePulse:'NAVER Name Pulse',googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
       const src=(snap.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
       status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'} · 다음 정기 갱신은 6시간 주기`;
     }

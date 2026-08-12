@@ -57,7 +57,7 @@ module.exports=async function handler(req,res){
         provider:'NAVER Search Ads /keywordstool',
         probeKeyword:'한동훈',
         result,
-        note:'Fixed diagnostic probe only; NOW Rank is not changed.'
+        note:'Fixed diagnostic probe only; This diagnostic call does not publish or change NOW Rank; v1.11 uses the same provider during Admin Refresh.'
       });
     }catch(e){
       return res.status(e.status&&Number.isInteger(e.status)?e.status:500).json({
@@ -87,7 +87,7 @@ module.exports=async function handler(req,res){
       succeeded:succeeded.length,
       summary:{match:matched,close,check:checked},
       results,
-      note:'Six-name fixed benchmark only; NOW Rank is not changed. Reference values are the previously observed KeywordCockpit monthly totals.'
+      note:'Six-name fixed benchmark only; This diagnostic call does not publish or change NOW Rank; v1.11 uses the same provider during Admin Refresh. Reference values are the previously observed KeywordCockpit monthly totals.'
     });
   }catch(e){
     return res.status(500).json({ok:false,configured:true,mode:'benchmark',error:e.message||String(e)});

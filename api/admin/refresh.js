@@ -6,7 +6,8 @@ const {computeSnapshot}=require('../../lib/score');
 const {readTrafficSignals}=require('../../lib/traffic');
 const {collectGlobalKeyless}=require('../../lib/keyless');
 const {collectTrendBatch,creds:naverCreds}=require('../../lib/naver_common');
-const {missing}=require('../../lib/observation');
+const {missing,mark,STATES}=require('../../lib/observation');
+const {credentials:searchAdCreds,queryKeywords,searchScaleScore}=require('../../lib/naver_searchad');
 const roster=require('../../data/roster.json');
 
 const DRAFT_TTL=12*60*60;
@@ -15,11 +16,11 @@ function body(req){return req.body||{};}
 function active(){return roster.filter(x=>x.id!==300&&x.party!=='공석');}
 
 
-const ADMIN_SENSOR_LABELS={naverSearchTrend:'NAVER 검색트렌드',googleTrends:'Google 급상승',news:'뉴스',naverBlogApi:'NAVER 블로그',naverCafeApi:'NAVER 카페',naverWebApi:'NAVER 웹',wiki:'Wikipedia',naverSurface:'NAVER HTML',daumSurface:'Daum HTML',naverView:'NAVER VIEW',daumBlog:'Daum 블로그',web:'포털 웹',blog:'포털 블로그',cafe:'포털 카페',video:'동영상',youtube:'YouTube API',youtubeHtml:'YouTube HTML',x:'X'};
+const ADMIN_SENSOR_LABELS={namePulse:'NAVER Name Pulse',naverSearchTrend:'NAVER 검색트렌드',googleTrends:'Google 급상승',news:'뉴스',naverBlogApi:'NAVER 블로그',naverCafeApi:'NAVER 카페',naverWebApi:'NAVER 웹',wiki:'Wikipedia',naverSurface:'NAVER HTML',daumSurface:'Daum HTML',naverView:'NAVER VIEW',daumBlog:'Daum 블로그',web:'포털 웹',blog:'포털 블로그',cafe:'포털 카페',video:'동영상',youtube:'YouTube API',youtubeHtml:'YouTube HTML',x:'X'};
 function compactSensor(key,s={}){
   const o=s?.observation||{};const out={key,label:ADMIN_SENSOR_LABELS[key]||key,state:o.state||'UNKNOWN',provider:s?.provider||o.provider||'',carried:Boolean(o.carried)};
   if(o.detail)out.detail=String(o.detail).slice(0,120);if(Number.isFinite(Number(o.carryFactor)))out.carryFactor=Math.round(Number(o.carryFactor)*100)/100;
-  for(const k of ['score','level7d','level30d','recent3','prior14','momentum','count6','count24','count7d','sources6','sources24','event6','title6','surfaceHits','freshHits','eventHits','totalCount','views6','views24','views7d']){
+  for(const k of ['score','level7d','level30d','recent3','prior14','momentum','count6','count24','count7d','sources6','sources24','event6','title6','surfaceHits','freshHits','eventHits','totalCount','views6','views24','views7d','monthlyPcQcCnt','monthlyMobileQcCnt','monthlyTotalQcCnt']){
     const v=Number(s?.[k]);if(Number.isFinite(v))out[k]=Math.round(v*10)/10;
   }
   if(s?.latest)out.latest=s.latest;
@@ -56,13 +57,39 @@ module.exports=async function handler(req,res){
       const activeNames=new Set(active().map(x=>x.name));
       const previousAnchor=(previous?.members||[]).filter(x=>activeNames.has(x.name)).sort((a,b)=>Number(a.rank||999)-Number(b.rank||999))[0]?.name;
       const anchorName=previousAnchor||active()[0]?.name;
-      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{},naverTrend:{configured:Boolean(naverCreds()),anchorName,signals:{},processed:0,total:active().length}};
+      const draft={id:draftId,status:'collecting',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),eventTitle,eventKeywords,signals:{},enrichmentNames:[],enrichmentDone:0,globalSignals,globalNews,sourceHealth:globalSignals.health||{},naverTrend:{configured:Boolean(naverCreds()),anchorName,signals:{},processed:0,total:active().length},namePulse:{configured:Boolean(searchAdCreds().configured),signals:{},processed:0,total:active().length}};
       await store.setJSON(`jjdd:draft:${draftId}`,draft,DRAFT_TTL);
-      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,naverTrend:{configured:draft.naverTrend.configured,anchorName,total:draft.naverTrend.total},globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
+      return res.status(200).json({ok:true,draftId,total:active().length,nextOffset:0,eventTitle,eventKeywords,sourceHealth:draft.sourceHealth,trendingMatches:Object.values(globalSignals.trends?.signals||{}).filter(x=>(x.score||0)>0).length,naverTrend:{configured:draft.naverTrend.configured,anchorName,total:draft.naverTrend.total},namePulse:{configured:draft.namePulse.configured,total:draft.namePulse.total},globalNews:{eventArticles:globalNews.eventArticleCount,eventSources:globalNews.eventSourceCount,broadArticles:globalNews.broadArticleCount,broadSources:globalNews.broadSourceCount,warnings:globalNews.warnings}});
     }
     const draftId=String(b.draftId||''),key=`jjdd:draft:${draftId}`,draft=await store.getJSON(key);
     if(!draft)return res.status(404).json({ok:false,error:'Refresh draft를 찾을 수 없습니다. 다시 시작해주세요.'});
 
+    if(action==='name-pulse-batch'){
+      const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(12,Math.max(1,Number(b.size)||10)),batch=members.slice(offset,offset+size);
+      if(!draft.namePulse)draft.namePulse={configured:Boolean(searchAdCreds().configured),signals:{},processed:0,total:members.length};
+      if(!draft.namePulse.configured){
+        for(const m of batch)draft.namePulse.signals[m.name]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0},'naver-search-ads-keywordstool',STATES.MISSING,'NAVER Search Ads credentials not configured');
+      }else{
+        let rows=await queryKeywords(batch.map(m=>m.name));
+        const failed=rows.map((r,i)=>!r.ok?i:-1).filter(i=>i>=0);
+        if(failed.length){
+          await new Promise(r=>setTimeout(r,350));
+          const retry=await queryKeywords(failed.map(i=>batch[i].name));
+          failed.forEach((idx,j)=>{if(retry[j]?.ok)rows[idx]=retry[j];});
+        }
+        rows.forEach((row,i)=>{
+          const name=batch[i].name;
+          if(row?.ok&&row?.found){
+            const total=Math.max(0,Number(row.monthlyTotalQcCnt)||0),score=searchScaleScore(total);
+            draft.namePulse.signals[name]=mark({provider:'naver-search-ads-keywordstool',score,matchedKeyword:row.matchedKeyword||name,monthlyPcQcCnt:Number(row.monthlyPcQcCnt)||0,monthlyMobileQcCnt:Number(row.monthlyMobileQcCnt)||0,monthlyTotalQcCnt:total,rawMonthlyPcQcCnt:row.rawMonthlyPcQcCnt,rawMonthlyMobileQcCnt:row.rawMonthlyMobileQcCnt,fetchedAt:row.fetchedAt||new Date().toISOString()},'naver-search-ads-keywordstool',total>0?STATES.OBSERVED:STATES.ZERO);
+          }else{
+            draft.namePulse.signals[name]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0},'naver-search-ads-keywordstool',STATES.MISSING,row?.error||'keyword not found');
+          }
+        });
+      }
+      const nextOffset=offset+batch.length;draft.namePulse.processed=nextOffset;draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
+      return res.status(200).json({ok:true,draftId,processed:nextOffset,total:members.length,nextOffset,done:nextOffset>=members.length,configured:draft.namePulse.configured,batch:batch.map(m=>{const x=draft.namePulse.signals[m.name]||{};return {name:m.name,monthlyTotalQcCnt:x.monthlyTotalQcCnt||0,score:x.score||0,state:x.observation?.state||'MISSING'};})});
+    }
     if(action==='trend-batch'){
       const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(4,Math.max(1,Number(b.size)||4)),batch=members.slice(offset,offset+size);
       const anchor=members.find(x=>x.name===draft.naverTrend?.anchorName)||members[0];
@@ -78,7 +105,7 @@ module.exports=async function handler(req,res){
     if(action==='batch'){
       const members=active(),offset=Math.max(0,Number(b.offset)||0),size=Math.min(8,Math.max(1,Number(b.size)||6)),batch=members.slice(offset,offset+size);
       const results=await Promise.all(batch.map(async m=>[m.name,await collectMember(m,draft.eventKeywords||[],draft.globalSignals||{})]));
-      for(const [name,signal] of results){signal.channels=signal.channels||{};signal.channels.naverSearchTrend=draft.naverTrend?.signals?.[name]||missing('naver-search-trend',draft.naverTrend?.configured?'trend batch not collected':'NAVER trend not configured');draft.signals[name]=signal;}
+      for(const [name,signal] of results){signal.channels=signal.channels||{};signal.channels.naverSearchTrend=draft.naverTrend?.signals?.[name]||missing('naver-search-trend',draft.naverTrend?.configured?'trend batch not collected':'NAVER trend not configured');signal.channels.namePulse=draft.namePulse?.signals?.[name]||mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0},'naver-search-ads-keywordstool',STATES.MISSING,draft.namePulse?.configured?'Name Pulse batch not collected':'NAVER Search Ads not configured');draft.signals[name]=signal;}
       const nextOffset=offset+batch.length;draft.updatedAt=new Date().toISOString();if(nextOffset>=members.length)draft.status='collected';
       await store.setJSON(key,draft,DRAFT_TTL);
       return res.status(200).json({ok:true,draftId,processed:Object.keys(draft.signals).length,total:members.length,nextOffset,done:nextOffset>=members.length,batch:results.map(([name,s])=>({name,news6:s.channels?.news?.count6||0,naverTrend:Math.round((s.channels?.naverSearchTrend?.score||0)*10)/10,naverBlog:s.channels?.naverBlogApi?.surfaceHits||0,naverCafe:s.channels?.naverCafeApi?.surfaceHits||0,warning:s.warning||null}))});
@@ -108,7 +135,7 @@ module.exports=async function handler(req,res){
       return res.status(200).json({ok:true,nextOffset,total:(draft.enrichmentNames||[]).length,done:nextOffset>=(draft.enrichmentNames||[]).length});
     }
     if(action==='finalize'){
-      const count=active().length;if(Object.keys(draft.signals||{}).length<count)return res.status(409).json({ok:false,error:`수집이 아직 끝나지 않았습니다. ${Object.keys(draft.signals||{}).length}/${count}`});
+      const count=active().length;if(draft.namePulse?.configured&&Number(draft.namePulse?.processed||0)<count)return res.status(409).json({ok:false,error:`Name Pulse 수집이 아직 끝나지 않았습니다. ${draft.namePulse?.processed||0}/${count}`});if(Object.keys(draft.signals||{}).length<count)return res.status(409).json({ok:false,error:`수집이 아직 끝나지 않았습니다. ${Object.keys(draft.signals||{}).length}/${count}`});
       const previous=await store.getJSON('jjdd:current'),traffic=await readTrafficSignals(active());
       draft.sourceHealth=aggregateSourceHealth(draft);
       draft.preview=computeSnapshot(roster,draft.signals,{eventTitle:draft.eventTitle,eventKeywords:draft.eventKeywords,sourceHealth:draft.sourceHealth,globalSignals:draft.globalSignals,globalNews:draft.globalNews},previous,traffic);draft.status='preview';draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);

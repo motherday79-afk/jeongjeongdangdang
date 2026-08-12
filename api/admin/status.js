@@ -6,7 +6,7 @@ module.exports=async function handler(req,res){
     store.config();const current=await store.getJSON('jjdd:current');
     const h=current?.sourceHealth||{};
     const sources={
-      googleNews:true,naverSearchTrend:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),naverCommon:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),googleTrends:true,wikimedia:true,
+      googleNews:true,naverNamePulse:Boolean(process.env.NAVER_AD_ACCESS_LICENSE&&process.env.NAVER_AD_SECRET_KEY&&process.env.NAVER_AD_CUSTOMER_ID),naverSearchTrend:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),naverCommon:Boolean(process.env.NAVER_API_HUB_CLIENT_ID&&process.env.NAVER_API_HUB_CLIENT_SECRET),googleTrends:true,wikimedia:true,
       naverHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.naverHtml?.state),
       daumHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.daumHtml?.state),
       youtubeHtml:['READY','OK','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(h.youtubeHtml?.state),
