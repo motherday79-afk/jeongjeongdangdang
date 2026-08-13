@@ -9727,27 +9727,91 @@ function trackJJDD(type,name){
   try{fetch('/api/track',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({type,name,session:jjddSessionId()})}).catch(()=>{});}catch(e){}
 }
 
-function rank22TrendHTML(x){
-  const src=(x.publicAttention&&Array.isArray(x.publicAttention.sources)?x.publicAttention.sources:[])
-    .filter(s=>Number.isFinite(Number(s.effective)))
-    .slice()
-    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+const JJDD_RANK_HISTORY_CACHE=new Map();
+function rankHistoryInitialSeries(x){
+  const out=[];
+  if(Number.isFinite(x?.previousRank)) out.push({label:'직전',rank:Number(x.previousRank)});
+  if(Number.isFinite(x?.rank)) out.push({label:'현재',rank:Number(x.rank)});
+  return out;
+}
+function rankHistoryChartHTML(series=[]){
+  const src=(Array.isArray(series)?series:[])
+    .filter(v=>Number.isFinite(Number(v.rank)))
+    .map(v=>({...v,rank:Number(v.rank)}));
   if(!src.length){
-    return `<div style="height:180px;display:flex;align-items:center;justify-content:center;border:1px dashed #dbe4e1;border-radius:14px;color:#94a3b8;font-weight:800">최근 공개 Attention 원천 N/A</div>`;
+    return `<div style="height:180px;display:flex;align-items:center;justify-content:center;border:1px dashed #dbe4e1;border-radius:14px;color:#94a3b8;font-weight:800">순위 이력 불러오는 중…</div>`;
   }
-  const vals=src.map(s=>Number(s.effective));
-  const min=Math.min(...vals,45), max=Math.max(...vals,65);
-  const span=Math.max(1,max-min);
-  const pts=vals.map((v,i)=>{
-    const x=24+(src.length===1?150:i*(300/Math.max(1,src.length-1)));
-    const y=145-((v-min)/span)*100;
-    return `${x},${y}`;
-  }).join(" ");
-  return `<svg viewBox="0 0 350 180" preserveAspectRatio="none">
-    <line x1="24" y1="150" x2="326" y2="150" stroke="#dfe8e5"/>
-    <polyline points="${pts}" fill="none" stroke="#28b7a2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    ${pts.split(" ").map((p,i)=>{const [cx,cy]=p.split(",");return `<circle cx="${cx}" cy="${cy}" r="4" fill="#fff" stroke="#28b7a2" stroke-width="2"/><text x="${cx}" y="170" text-anchor="middle" font-size="9" fill="#7b8794">${String(src[i].date||"").slice(5)}</text>`}).join("")}
+  if(src.length===1){
+    return `<div style="height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #dbe4e1;border-radius:14px;background:#fbfefd"><b style="font-size:32px;color:#0f766e">${src[0].rank}위</b><span style="margin-top:8px;color:#64748b;font-size:12px;font-weight:800">현재 게시 순위 · 다음 게시부터 변화선이 누적됩니다</span></div>`;
+  }
+  const vals=src.map(v=>v.rank);
+  let best=Math.min(...vals), worst=Math.max(...vals);
+  const pad=Math.max(2,Math.ceil((worst-best)*0.18));
+  best=Math.max(1,best-pad); worst=Math.min(300,worst+pad);
+  if(best===worst){best=Math.max(1,best-2);worst=Math.min(300,worst+2);}
+  const span=Math.max(1,worst-best);
+  const pts=src.map((v,i)=>{
+    const px=26+(src.length===1?150:i*(298/Math.max(1,src.length-1)));
+    const py=28+((v.rank-best)/span)*108; // rank 1 is visually higher
+    return {px,py,...v};
+  });
+  const pointString=pts.map(v=>`${v.px},${v.py}`).join(' ');
+  const labelIdx=new Set([0,src.length-1]);
+  if(src.length>=5){labelIdx.add(Math.floor((src.length-1)/2));}
+  const xLabels=pts.map((v,i)=>{
+    if(!labelIdx.has(i))return '';
+    const label=String(v.label||'').replace(/^\d{4}-/,'').slice(0,11);
+    return `<text x="${v.px}" y="171" text-anchor="middle" font-size="9" fill="#7b8794">${label}</text>`;
+  }).join('');
+  const rankLabels=pts.map((v,i)=>{
+    if(src.length>10 && i!==0 && i!==src.length-1)return '';
+    return `<text x="${v.px}" y="${Math.max(14,v.py-8)}" text-anchor="middle" font-size="10" font-weight="800" fill="#0f766e">${v.rank}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 350 180" preserveAspectRatio="none" aria-label="NOW Rank 실제 게시 이력">
+    <line x1="26" y1="145" x2="324" y2="145" stroke="#dfe8e5"/>
+    <line x1="26" y1="24" x2="26" y2="145" stroke="#edf2f1"/>
+    <text x="5" y="31" font-size="9" fill="#94a3b8">${best}위</text>
+    <text x="5" y="143" font-size="9" fill="#94a3b8">${worst}위</text>
+    <polyline points="${pointString}" fill="none" stroke="#28b7a2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map(v=>`<circle cx="${v.px}" cy="${v.py}" r="4" fill="#fff" stroke="#28b7a2" stroke-width="2"/>`).join('')}
+    ${rankLabels}${xLabels}
   </svg>`;
+}
+function rankHistoryFallbackHTML(x){
+  return rankHistoryChartHTML(rankHistoryInitialSeries(x));
+}
+async function loadRankHistoryForDetail(x){
+  if(!x?.name)return;
+  const chart=document.getElementById(`rankHistoryChart-${x.id}`);
+  const note=document.getElementById(`rankHistoryNote-${x.id}`);
+  if(!chart)return;
+  const key=String(x.name);
+  const apply=(rows)=>{
+    if(!document.getElementById(`rankHistoryChart-${x.id}`))return;
+    const sorted=(Array.isArray(rows)?rows:[]).slice().sort((a,b)=>Number(a.stamp||0)-Number(b.stamp||0));
+    if(sorted.length){
+      chart.innerHTML=rankHistoryChartHTML(sorted);
+      if(note){
+        const first=sorted[0], last=sorted[sorted.length-1];
+        const diff=Number(first.rank)-Number(last.rank);
+        const move=diff>0?`▲ ${diff}`:diff<0?`▼ ${Math.abs(diff)}`:'―';
+        note.textContent=`최근 ${sorted.length}개 실제 게시 스냅샷 · ${first.rank}위 → ${last.rank}위 (${move})`;
+      }
+    }else if(note){
+      note.textContent='아직 실제 게시 이력이 충분하지 않습니다. 현재·직전 순위부터 표시합니다.';
+    }
+  };
+  if(JJDD_RANK_HISTORY_CACHE.has(key)){apply(JJDD_RANK_HISTORY_CACHE.get(key));return;}
+  try{
+    const r=await fetch(`/api/rank/history?days=7&name=${encodeURIComponent(x.name)}`,{cache:'no-store'});
+    if(!r.ok)throw new Error('history '+r.status);
+    const data=await r.json();
+    const rows=Array.isArray(data.series)?data.series:[];
+    JJDD_RANK_HISTORY_CACHE.set(key,rows);
+    apply(rows);
+  }catch(e){
+    if(note)note.textContent='순위 이력 서버 연결이 지연되어 현재·직전 게시 순위를 표시합니다.';
+  }
 }
 
 function openDetail(id){
@@ -9770,7 +9834,7 @@ function openDetail(id){
       <div class="detail-stats">
         <div class="stat"><strong>${x.rank}위</strong><span>NOW Rank</span></div>
         <div class="stat"><strong class="change ${refresh.cls}">${refresh.text}</strong><span>직전 갱신 대비</span><small class="refresh-route">${refresh.route}</small></div>
-        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Evidence ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(2):"-"} · Coverage ${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:"-"}%</small></div>
+        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Raw ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(1):"-"} · Evidence ${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):"-"}% · Sources ${Number.isFinite(Number(x.sourceCount))?Number(x.sourceCount):0}</small></div>
       </div>
     </div>
 
@@ -9823,22 +9887,22 @@ function openDetail(id){
       <section class="detail-section" id="detail-trend">
         <div class="detail-section-head">
           <span class="detail-section-index">TREND</span>
-          <h3>변화 추적 <span class="real-chip">NOW Rank 첫 스냅샷</span></h3>
+          <h3>변화 추적 <span class="real-chip">실제 게시 이력</span></h3>
         </div>
         <div class="trend-grid">
           <div class="trend-card">
             <h4>NOW Rank 변화 추적</h4>
-            <div class="trend-chart">${x.isReal?rank22TrendHTML(x):sparkLineSVG(x.id)}</div>
-            <div class="source-note">${x.isReal?'NOW Rank는 의정평가가 아니라 현재 정치 이슈의 열기를 측정합니다. 뉴스 화제성·검색 관심도·이벤트 중심성·디지털 확산 90%와 정치 체급 10%를 사용하며, 공개 상위 신호 미포착은 해당 스냅샷의 낮은 관측값으로 표시합니다.':'프로토타입용 가상 추이입니다.'}</div>
+            <div class="trend-chart" id="rankHistoryChart-${x.id}">${x.isReal?rankHistoryFallbackHTML(x):sparkLineSVG(x.id)}</div>
+            <div class="source-note" id="rankHistoryNote-${x.id}">${x.isReal?'직전 게시 순위와 현재 순위를 먼저 표시하고, 상세페이지를 연 뒤 최근 실제 게시 스냅샷 이력을 불러옵니다.':'프로토타입용 가상 추이입니다.'}</div>
           </div>
           <div class="trend-card">
             <h4>현재 모멘텀</h4>
             <div class="mini-stats">
               ${x.isReal ? `
               <div class="mini-stat"><b class="change ${refresh.cls}">${refresh.text}</b><span>직전 갱신 대비 순위</span><small class="refresh-route">${refresh.route}</small></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:'N/A'}%</b><span>데이터 커버리지</span></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.capitalScore)?x.capitalScore.toFixed(1):'N/A'}</b><span>전국 정치자본</span></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.institutionalScore)?x.institutionalScore.toFixed(1):'N/A'}</b><span>제도적 권력</span></div>
+              <div class="mini-stat"><b>${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):'-'}%</b><span>근거 신뢰도</span></div>
+              <div class="mini-stat"><b>${Number.isFinite(x.searchRank)?x.searchRank+'위':'-'}</b><span>검색 관심 순위</span></div>
+              <div class="mini-stat"><b>${Number.isFinite(x.mediaRank)?x.mediaRank+'위':'-'}</b><span>언론 주목 순위</span></div>
               ` : `
               <div class="mini-stat"><b class="change up">▲ ${Math.abs(x.delta)}</b><span>24시간 순위 변동</span></div>
               <div class="mini-stat"><b>${Math.round(seeded(x.id+301,90)+10)}%</b><span>검색 관심 변화</span></div>
@@ -9930,6 +9994,7 @@ function openDetail(id){
 
   setupDetailCompareSearch(x.id);
   document.getElementById("modal").classList.add("show");
+  if(x.isReal) loadRankHistoryForDetail(x);
 }
 
 function openPresident(){
@@ -10264,11 +10329,12 @@ function applyPublishedNowRank(snap,{checking=false}={}){
     p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
     if(Array.isArray(s.metrics))p.metrics=s.metrics;
     p.eventLabel=s.eventLabel||p.eventLabel;p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;p.latest=s.latest||s.signal?.latest||p.latest;p.signal=s.signal||null;
+    p.evidenceConfidence=Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null;p.collectionStatus=s.collectionStatus||null;
     p.whyNow=s.whyNow||null;p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
     p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];p.articles=Array.isArray(s.articles)?s.articles:[];p.news=Array.isArray(s.news)?s.news:[];
     if(s.nowComponents)p.nowComponents=s.nowComponents;
     const meta=nowRankByName[p.name]||{};
-    Object.assign(meta,{rank:s.rank,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
+    Object.assign(meta,{rank:s.rank,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
     nowRankByName[p.name]=meta;
   });
   people.sort((a,b)=>a.rank-b.rank);
@@ -10305,7 +10371,7 @@ async function loadPublishedNowRank(){
       return true;
     }
     writeNowPublicCache(snap);
-    if(!cached || String(cached.publicationId||'')!==String(snap.publicationId||'')) applyPublishedNowRank(snap,{checking:false});
+    if(!cached || String(cached.publicationId||'')!==String(snap.publicationId||'') || Number(cached.schemaVersion||0)!==Number(snap.schemaVersion||0)) applyPublishedNowRank(snap,{checking:false});
     else updateNowStatus(snap,false);
     try{console.info('[NOW Rank] current ready',Math.round(performance.now()-t0)+'ms',snap.publicationId||'');}catch(_){}
     return true;

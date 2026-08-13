@@ -11,11 +11,11 @@ module.exports=async function handler(req,res){
   publicCache(res);
   try{
     let current=await store.getJSON('jjdd:current:public');
-    if(!current){
+    if(!current || Number(current.schemaVersion||0)<2){
       const full=await store.getJSON('jjdd:current');
       if(!full) return res.status(404).json({ok:false,error:'published snapshot not found'});
       current=publicSnapshot(full);
-      // Best-effort warm-up. Failure must not block the public response.
+      // Best-effort schema refresh. Failure must not block the public response.
       store.setJSON('jjdd:current:public',current).catch(()=>{});
     }
     return res.status(200).json(current);
