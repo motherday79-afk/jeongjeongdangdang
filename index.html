@@ -895,6 +895,35 @@ a{text-decoration:none;color:inherit}
   .detail-section-head h3{font-size:18px!important;word-break:keep-all}
   .journey-card{padding:14px!important}
 }
+
+/* ===== NOW Rank v1.14.5 · Circular politician avatar hardening =====
+   Keep list/sidebar avatars perfectly 1:1 even inside flex/grid layouts. */
+.avatar{
+  width:42px;height:42px;min-width:42px;min-height:42px;
+  flex:0 0 42px;aspect-ratio:1 / 1;box-sizing:border-box;
+  border-radius:50%;overflow:hidden;
+}
+.avatar .politician-photo,.avatar img,.avatar svg{
+  width:100%;height:100%;min-width:100%;min-height:100%;
+  aspect-ratio:1 / 1;display:block;object-fit:cover;
+}
+.rapid-rise-row .avatar{
+  width:40px;height:40px;min-width:40px;min-height:40px;flex-basis:40px;
+}
+.suggestion-avatar{
+  width:36px;height:36px;min-width:36px;min-height:36px;
+  flex:0 0 36px;aspect-ratio:1 / 1;box-sizing:border-box;border-radius:50%;overflow:hidden;
+}
+@media (max-width:780px){
+  .avatar{
+    width:38px;height:38px;min-width:38px;min-height:38px;flex-basis:38px;
+  }
+  .mobile-now-flow .rapid-rise-row .avatar{
+    width:36px;height:36px;min-width:36px;min-height:36px;flex-basis:36px;
+  }
+}
+/* ===== /v1.14.5 circular avatar hardening ===== */
+
 </style>
 </head>
 <body>
@@ -10298,7 +10327,7 @@ loadPublishedNowRank();
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.14.3 · Instant Local Snapshot + Lightweight Public Function + Short Edge Cache + Refresh Movers TOP10. -->
+<!-- NOW Rank v1.14.5 · Instant Main + Mobile Dedup + Circular Avatar Hardening. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
