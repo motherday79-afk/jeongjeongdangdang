@@ -275,6 +275,24 @@ a{text-decoration:none;color:inherit}
 .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#67d7c7);border-radius:999px}
 .issue-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:#6b7280;font-size:13px}
 
+/* ===== Refresh movers · biggest rank gains since the previous published snapshot ===== */
+.rapid-rise-list{display:flex;flex-direction:column}
+.rapid-rise-row{
+  display:grid;grid-template-columns:26px 42px minmax(0,1fr) auto;gap:9px;align-items:center;
+  padding:10px 0;border-top:1px solid #eef3f2;cursor:pointer;transition:.15s;
+}
+.rapid-rise-row:first-child{border-top:0;padding-top:2px}
+.rapid-rise-row:hover{background:#fbfffe}
+.rapid-rise-order{font-size:13px;font-weight:950;color:#94a3b8;text-align:center}
+.rapid-rise-row .avatar{width:40px;height:40px}
+.rapid-rise-copy{min-width:0}
+.rapid-rise-name{font-size:14px;font-weight:950;line-height:1.2;color:#18211f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rapid-rise-meta{margin-top:4px;font-size:11px;line-height:1.3;color:#7b8794;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rapid-rise-delta{text-align:right;color:#059669;font-size:16px;font-weight:950;white-space:nowrap}
+.rapid-rise-delta small{display:block;margin-top:2px;color:#94a3b8;font-size:9px;font-weight:800}
+.rapid-rise-empty{padding:14px 4px 4px;color:#7b8794;font-size:12px;line-height:1.6}
+.rapid-rise-note{margin-top:10px;padding-top:10px;border-top:1px solid #eef3f2;color:#94a3b8;font-size:10px;line-height:1.5}
+
 .news-list{display:flex;flex-direction:column}
 .news-row{
   display:grid;grid-template-columns:1fr 112px;gap:14px;padding:14px 0;border-top:1px solid #eef3f2;cursor:pointer
@@ -794,6 +812,10 @@ a{text-decoration:none;color:inherit}
   .mobile-now-flow .issue-box{padding:13px}
   .mobile-now-flow .issue-question{font-size:16px;margin:10px 0 8px}
   .mobile-now-flow .candidate{margin:10px 0}
+  .mobile-now-flow .rapid-rise-row{grid-template-columns:24px 38px minmax(0,1fr) auto;padding:9px 0;gap:8px}
+  .mobile-now-flow .rapid-rise-row .avatar{width:36px;height:36px}
+  .mobile-now-flow .rapid-rise-name{font-size:13px}
+  .mobile-now-flow .rapid-rise-delta{font-size:14px}
   .mobile-top10{padding:14px;border-radius:20px}
   .mobile-top10-list{grid-template-columns:1fr;gap:8px}
   .mobile-rank-card{grid-template-columns:36px 40px minmax(0,1fr) 62px;padding:10px;gap:8px;border-radius:15px}
@@ -955,6 +977,7 @@ a{text-decoration:none;color:inherit}
             </div>
             <div class="mobile-top10-list" id="mobileTop10List"></div>
           </section>
+          <div id="mobileRapidRisePortal"></div>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
             <h3 id="mobileAllRankTitle">전체 NOW Rank</h3>
@@ -1042,6 +1065,17 @@ a{text-decoration:none;color:inherit}
               NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다. 백엔드 연결 전에는 마지막 내장 스냅샷을 표시합니다.
             </div>
           </div>
+        </section>
+
+        <section class="card cardpad" id="rapidRiseCard">
+          <div class="side-title">
+            <h3>실시간 급상승 TOP10</h3>
+            <div class="more" style="cursor:default">직전 갱신 대비</div>
+          </div>
+          <div class="rapid-rise-list" id="rapidRiseList">
+            <div class="rapid-rise-empty">직전 게시 스냅샷과 비교한 뒤 가장 많이 오른 의원을 표시합니다.</div>
+          </div>
+          <div class="rapid-rise-note">현재 순위가 낮더라도 직전 갱신보다 크게 상승했다면 노출됩니다.</div>
         </section>
 
         <section class="card cardpad" id="sideNewsCard">
@@ -8905,18 +8939,23 @@ function renderMobileTop10(){
 
 function syncResponsiveContent(){
   const issue=document.getElementById('nowIssueCard');
+  const rise=document.getElementById('rapidRiseCard');
   const news=document.getElementById('sideNewsCard');
   const track=document.querySelector('#page-ranking .side-track');
   const issuePortal=document.getElementById('mobileNowIssuePortal');
+  const risePortal=document.getElementById('mobileRapidRisePortal');
   const newsPortal=document.getElementById('mobileNewsPortal');
-  if(!issue || !news || !track || !issuePortal || !newsPortal) return;
+  if(!issue || !rise || !news || !track || !issuePortal || !risePortal || !newsPortal) return;
   const compact=window.matchMedia('(max-width:1120px)').matches;
   if(compact){
     if(issue.parentElement!==issuePortal) issuePortal.appendChild(issue);
+    if(rise.parentElement!==risePortal) risePortal.appendChild(rise);
     if(news.parentElement!==newsPortal) newsPortal.appendChild(news);
   }else{
-    if(issue.parentElement!==track) track.appendChild(issue);
-    if(news.parentElement!==track) track.appendChild(news);
+    // Keep the desktop sidebar order deterministic even after mobile portal moves.
+    track.appendChild(issue);
+    track.appendChild(rise);
+    track.appendChild(news);
   }
 }
 
@@ -9033,6 +9072,38 @@ function refreshChangeText(x){
   const cls=r.change>0?'up':r.change<0?'down':'same';
   const route=finiteValue(r.oldRank)?`${r.oldRank}위 → ${x.rank}위`:'직전 갱신 대비';
   return {text,cls,route};
+}
+function renderRapidRiseTop10(){
+  const box=document.getElementById('rapidRiseList');
+  if(!box) return;
+  const movers=people
+    .filter(x=>x && x.id!==300 && x.party!=='공석')
+    .map(x=>{const r=refreshRankChange(x);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null};})
+    .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.x.rank))
+    .sort((a,b)=>(b.change-a.change)||(a.x.rank-b.x.rank)||String(a.x.name).localeCompare(String(b.x.name),'ko'))
+    .slice(0,10);
+
+  if(!movers.length){
+    const comparable=people.some(x=>finiteValue(refreshRankChange(x).change));
+    box.innerHTML=`<div class="rapid-rise-empty">${comparable?'이번 갱신에서 순위가 오른 의원이 없습니다.':'비교 가능한 직전 게시 스냅샷이 아직 없습니다.<br>다음 Refresh/Publish부터 실제 상승폭이 표시됩니다.'}</div>`;
+    return;
+  }
+
+  box.innerHTML=movers.map((v,i)=>{
+    const x=v.x;
+    const tags=whyNowKeywords(x);
+    const reason=tags.length?tags[0]:((x.eventLabel&&!String(x.eventLabel).includes('연계 없음')&&!String(x.eventLabel).includes('현재 주요 정치 이슈'))?x.eventLabel:'');
+    const meta=[`${x.rank}위`,x.party,reason].filter(Boolean).join(' · ');
+    return `<div class="rapid-rise-row" onclick="openDetail(${x.id})" title="${String(x.name).replace(/"/g,'&quot;')} 상세 보기">
+      <div class="rapid-rise-order">${i+1}</div>
+      <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
+      <div class="rapid-rise-copy">
+        <div class="rapid-rise-name">${x.name}</div>
+        <div class="rapid-rise-meta">${meta}</div>
+      </div>
+      <div class="rapid-rise-delta">▲ ${v.change}<small>${v.oldRank??'?'} → ${x.rank}</small></div>
+    </div>`;
+  }).join('');
 }
 function historyReadyMessage(mode){
   const map={rise6:['6시간 급상승','최소 2개의 6시간 스냅샷'],rise24:['24시간 급상승','최소 24시간의 스냅샷'],peak7d:['7일 최고순위','최소 7일 동안 축적된 스냅샷']};
@@ -9432,6 +9503,7 @@ function renderRank(){
   document.getElementById("ranktable").innerHTML=html;
   renderMobileTop10();
   renderNowKeywordStrip();
+  renderRapidRiseTop10();
 }
 document.getElementById("search").addEventListener("input",renderRank);
 document.getElementById("party").addEventListener("change",renderRank);
@@ -10218,7 +10290,7 @@ loadPublishedNowRank();
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.4.1 Multi-Source Consensus + Desktop/Mobile Snapshot Sync. -->
+<!-- NOW Rank v1.14 · Refresh Movers TOP10 + Three Ranking Views + Desktop/Mobile Snapshot Sync. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
