@@ -187,8 +187,8 @@ a{text-decoration:none;color:inherit}
 .now-keyword-panel{margin:14px 0 4px;padding:14px 16px;border:1px solid rgba(40,183,162,.18);border-radius:18px;background:linear-gradient(180deg,#fbfffe,#f5fbf9)}
 .now-keyword-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
 .now-keyword-head b{font-size:13px;color:#0f766e;letter-spacing:-.2px}.now-keyword-head span{font-size:11px;color:#94a3b8;font-weight:800}
-.now-keyword-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;overflow:visible;padding-bottom:2px}
-.now-chip{border:1px solid #d9ece7;background:#fff;color:#286b63;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:850;white-space:nowrap;cursor:pointer;transition:.15s;max-width:100%}
+.now-keyword-strip{display:flex;flex-wrap:wrap;align-items:center;gap:7px;overflow:visible;padding-bottom:2px}
+.now-chip{border:1px solid #d9ece7;background:#fff;color:#286b63;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:850;white-space:nowrap;cursor:pointer;transition:.15s;max-width:100%}
 .now-chip:hover{transform:translateY(-1px);border-color:#91d8cc;box-shadow:0 6px 14px rgba(40,183,162,.10)}
 .person-copy{min-width:0}.person-keywords{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
 .person-keyword{display:inline-flex;align-items:center;max-width:145px;border:0;background:#effaf7;color:#137a6d;border-radius:7px;padding:3px 6px;font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
@@ -981,7 +981,7 @@ a{text-decoration:none;color:inherit}
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
-          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span>TOP30 이슈 자동 요약</span></div>
+          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span id="nowKeywordMeta">TOP30 실시간 이슈 · 20~25개</span></div>
           <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
         </section>
 
@@ -9212,11 +9212,15 @@ function whyNowKeywords(x){
 }
 
 function whyNowGlobalKeywords(){
+  // 상단 실시간 키워드는 사용자가 지금 정치권의 흐름을 한눈에 이해할 수 있도록
+  // 가능한 한 20개 이상을 확보하되, 화면 과밀과 저품질 반복을 막기 위해 25개로 제한한다.
+  const KEYWORD_MIN=20, KEYWORD_MAX=25;
   const top=people.slice().sort((a,b)=>a.rank-b.rank).slice(0,30);
   const pool=new Map();
   const owner=new Map();
   top.forEach(x=>{
-    const cands=whyNowKeywordCandidates(x).slice(0,5);
+    // 의원별 후보군을 7개까지 확장해 '왜 지금'의 폭을 넓힌다.
+    const cands=whyNowKeywordCandidates(x).slice(0,7);
     cands.forEach((c,idx)=>{
       let text=whyNowSafeToken(c.text,x); if(!text)return;
       if(whyNowIsPersonName(text))return; // 상단은 사람 이름보다 '왜 뜨는지'를 우선한다.
@@ -9234,6 +9238,8 @@ function whyNowGlobalKeywords(){
   [...pool.values()].forEach(v=>{v.score+=(v.people.size-1)*7;});
   const ranked=[...pool.values()].sort((a,b)=>b.score-a.score||b.signal-a.signal||b.people.size-a.people.size||b.text.length-a.text.length);
   const result=[];
+
+  // 1차: 의미가 겹치는 긴/짧은 표현은 묶어서 이슈 다양성을 우선한다.
   for(const c of ranked){
     const norm=c.text.replace(/\s+/g,'');
     if(result.some(v=>{
@@ -9241,10 +9247,23 @@ function whyNowGlobalKeywords(){
       return norm===vn || (Math.min(norm.length,vn.length)>=5 && (norm.includes(vn)||vn.includes(norm)));
     }))continue;
     result.push(c);
-    if(result.length>=15)break;
+    if(result.length>=KEYWORD_MAX)break;
   }
-  window.NOW_KEYWORD_OWNER=Object.fromEntries(result.map(v=>[v.text,owner.get(v.text)]));
-  return result.map(v=>v.text);
+
+  // 2차: 엄격한 중복 제거 때문에 20개가 안 되면 정확히 같은 키워드만 제외하고
+  // 점수가 높은 근접 표현을 보충한다. 약한 일반어/인물명은 pool 단계에서 이미 제외된다.
+  if(result.length<KEYWORD_MIN){
+    for(const c of ranked){
+      const norm=c.text.replace(/\s+/g,'');
+      if(result.some(v=>v.text.replace(/\s+/g,'')===norm))continue;
+      result.push(c);
+      if(result.length>=KEYWORD_MIN)break;
+    }
+  }
+
+  const finalResult=result.slice(0,KEYWORD_MAX);
+  window.NOW_KEYWORD_OWNER=Object.fromEntries(finalResult.map(v=>[v.text,owner.get(v.text)]));
+  return finalResult.map(v=>v.text);
 }
 
 function whyNowReason(x){
@@ -9258,6 +9277,8 @@ function whyNowReason(x){
 function renderNowKeywordStrip(){
   const el=document.getElementById('nowKeywordStrip'); if(!el)return;
   const keys=whyNowGlobalKeywords();
+  const meta=document.getElementById('nowKeywordMeta');
+  if(meta) meta.textContent=keys.length?`TOP30 실시간 이슈 · ${keys.length}개`:'TOP30 실시간 이슈';
   el.innerHTML=keys.length?keys.map(k=>`<button class="now-chip" onclick="event.stopPropagation();openWhyNowByKeyword('${String(k).replace(/'/g,"\\'")}')">#${k.replace(/\s+/g,'_')}</button>`).join(''):'<span class="sub" style="font-size:12px">현재 TOP30 키워드가 없습니다.</span>';
 }
 function openWhyNowByKeyword(keyword){
