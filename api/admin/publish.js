@@ -1,5 +1,6 @@
 const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
+const {publicSnapshot}=require('../../lib/public_snapshot');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   if(!requireAdmin(req,res)) return;
@@ -18,7 +19,8 @@ module.exports=async function handler(req,res){
     await store.setJSON(`jjdd:snapshot:${snapId}`,snap);
     await store.lpush('jjdd:history',snapId);
     await store.ltrim('jjdd:history',0,111); // 28 days at 6h cadence
-    await store.setJSON('jjdd:current',snap); // switch public pointer only after snapshot/history are complete
+    await store.setJSON('jjdd:current',snap); // full admin/current snapshot
+    await store.setJSON('jjdd:current:public',publicSnapshot(snap)); // compact public pointer LAST
 
     draft.status='published';
     draft.publishedAt=publishedAt;

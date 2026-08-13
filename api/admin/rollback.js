@@ -1,5 +1,6 @@
 const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
+const {publicSnapshot}=require('../../lib/public_snapshot');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   if(!requireAdmin(req,res)) return;
@@ -16,6 +17,7 @@ module.exports=async function handler(req,res){
     await store.lpush('jjdd:history',snapId);
     await store.ltrim('jjdd:history',0,111);
     await store.setJSON('jjdd:current',rollbackSnap);
+    await store.setJSON('jjdd:current:public',publicSnapshot(rollbackSnap));
     return res.status(200).json({ok:true,publicationId:snapId,timestamp:rollbackSnap.timestamp,top:rollbackSnap.members?.slice?.(0,10)||[]});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
 };
