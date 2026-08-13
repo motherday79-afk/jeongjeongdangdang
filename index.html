@@ -9244,7 +9244,9 @@ function whyNowSafeToken(t,x){
 }
 
 function whyNowKeywordCandidates(x){
-  const titles=whyNowArticleTitles(x); if(!titles.length) return [];
+  const ck=String(x?.name||x?.id||'');
+  if(window.NOW_WHY_CANDIDATE_CACHE?.has(ck)) return window.NOW_WHY_CANDIDATE_CACHE.get(ck);
+  const titles=whyNowArticleTitles(x); if(!titles.length){ if(window.NOW_WHY_CANDIDATE_CACHE)window.NOW_WHY_CANDIDATE_CACHE.set(ck,[]); return []; }
   const stats=new Map();
   const counterpart=new Map();
 
@@ -9337,7 +9339,9 @@ function whyNowKeywordCandidates(x){
     });
   }
 
-  return compact.sort((a,b)=>b.score-a.score||b.signal-a.signal||b.df-a.df);
+  const out=compact.sort((a,b)=>b.score-a.score||b.signal-a.signal||b.df-a.df);
+  if(window.NOW_WHY_CANDIDATE_CACHE)window.NOW_WHY_CANDIDATE_CACHE.set(ck,out);
+  return out;
 }
 
 function whyNowEvidenceBackedExplicitKeywords(x){
@@ -9357,7 +9361,9 @@ function whyNowEvidenceBackedExplicitKeywords(x){
 
 function whyNowKeywords(x){
   // WHY NOW는 '많이 나온 단어'보다 '왜 지금 관심이 몰렸는지'를 우선한다.
-  const titles=whyNowArticleTitles(x); if(!titles.length) return [];
+  const ck=String(x?.name||x?.id||'');
+  if(window.NOW_WHY_KEYWORD_CACHE?.has(ck)) return window.NOW_WHY_KEYWORD_CACHE.get(ck);
+  const titles=whyNowArticleTitles(x); if(!titles.length){if(window.NOW_WHY_KEYWORD_CACHE)window.NOW_WHY_KEYWORD_CACHE.set(ck,[]);return []; }
   const explicit=whyNowEvidenceBackedExplicitKeywords(x);
   const candidates=whyNowKeywordCandidates(x).map(v=>({...v,text:whyNowSafeToken(v.text,x)})).filter(v=>v.text);
   const ordered=[];
@@ -9367,7 +9373,9 @@ function whyNowKeywords(x){
     ordered.push({text:t,score:v.score||0});
   });
   // 프로필 아래는 핵심 이유 2개만: 사건/행동 + 필요시 상대 인물.
-  return ordered.slice(0,2).map(v=>v.text);
+  const out=ordered.slice(0,2).map(v=>v.text);
+  if(window.NOW_WHY_KEYWORD_CACHE)window.NOW_WHY_KEYWORD_CACHE.set(ck,out);
+  return out;
 }
 
 function whyNowGlobalKeywords(){
@@ -10209,6 +10217,9 @@ document.getElementById('search')?.addEventListener('input',e=>{
 
 window.NOW_LIVE_READY=false;
 window.NOW_CURRENT_PUBLICATION_ID=null;
+const NOW_PUBLIC_CACHE_KEY='jjdd_now_public_snapshot_v143';
+const NOW_EXPECTED_PUBLICATION_KEY='jjdd_now_expected_publication';
+let nowPhotoHydratorStarted=false;
 
 function renderNowRankLoadingState(message='최신 NOW Rank를 불러오는 중입니다…'){
   const table=document.getElementById('ranktable');
@@ -10222,105 +10233,123 @@ function renderNowRankLoadingState(message='최신 NOW Rank를 불러오는 중�
   const mobile=document.getElementById('mobileTop10');
   if(mobile) mobile.innerHTML='';
 }
-
 function renderNowRankUnavailable(){
   window.NOW_LIVE_READY=false;
   const table=document.getElementById('ranktable');
   if(table) table.innerHTML=`<div style="padding:34px 20px;text-align:center;color:#64748b;font-size:13px;font-weight:800">최신 게시 데이터를 불러오지 못했습니다.<br><button type="button" onclick="loadPublishedNowRank()" style="margin-top:12px;border:1px solid #dbe3ee;background:#fff;border-radius:10px;padding:8px 12px;font-weight:900;cursor:pointer">다시 불러오기</button></div>`;
 }
-
-async function loadPublishedNowRank(){
+function nowSnapshotStamp(snap){
+  const pub=Number(snap?.publicationId||0); if(Number.isFinite(pub)&&pub>0)return pub;
+  const iso=Date.parse(snap?.publishedAt||''); if(Number.isFinite(iso))return iso;
+  const kst=String(snap?.timestamp||'').replace(' KST','+09:00').replace(' ','T');
+  const t=Date.parse(kst); return Number.isFinite(t)?t:0;
+}
+function readNowPublicCache(){
   try{
+    const snap=JSON.parse(localStorage.getItem(NOW_PUBLIC_CACHE_KEY)||'null');
+    if(!snap||!Array.isArray(snap.members)||!snap.members.length)return null;
+    // Last published data is safe as an instant shell; network revalidation begins immediately.
+    return snap;
+  }catch(_){return null;}
+}
+function writeNowPublicCache(snap){
+  try{localStorage.setItem(NOW_PUBLIC_CACHE_KEY,JSON.stringify(snap));}catch(_){}
+}
+function scheduleNowPhotoHydrator(){
+  if(nowPhotoHydratorStarted)return;
+  nowPhotoHydratorStarted=true;
+  // Keep external photo discovery entirely behind the ranking first paint.
+  setTimeout(()=>{try{initPoliticianPhotoHydrator();}catch(_){}},350);
+}
+function updateNowStatus(snap,checking=false){
+  const status=document.getElementById('serverUpdateStatus'); if(!status)return;
+  const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
+  const src=(snap?.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
+  status.innerHTML=`<b>최근 게시:</b> ${snap?.timestamp||'-'}${checking?' · <span style="color:#64748b">최신 확인 중</span>':''}<br><b>수집 원천:</b> ${src||'운영 데이터'}`;
+}
+function applyPublishedNowRank(snap,{checking=false}={}){
+  if(!snap || !Array.isArray(snap.members) || !snap.members.length)return false;
+  window.NOW_CURRENT_PUBLICATION_ID=snap.publicationId||null;
+  window.NOW_RANK_HISTORY=[];
+  window.NOW_DETECTED_ISSUES=Array.isArray(snap.detectedIssues)?snap.detectedIssues:[];
+  // Snapshot-scoped memo caches prevent repeated headline token analysis during one render.
+  window.NOW_WHY_CANDIDATE_CACHE=new Map();
+  window.NOW_WHY_KEYWORD_CACHE=new Map();
+  const byName=new Map(snap.members.map(x=>[x.name,x]));
+  people.forEach(p=>{
+    const s=byName.get(p.name); if(!s)return;
+    p.rank=s.rank;p.rank2Score=s.score;p.rank2RawScore=s.rawScore;p.grade=s.grade||p.grade;p.snapshot=snap.timestamp;
+    p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;
+    p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
+    p.delta=Number.isFinite(p.changeRefresh)?p.changeRefresh:0;
+    p.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null;p.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null;p.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
+    p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
+    if(Array.isArray(s.metrics))p.metrics=s.metrics;
+    p.eventLabel=s.eventLabel||p.eventLabel;p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;p.latest=s.latest||s.signal?.latest||p.latest;p.signal=s.signal||null;
+    p.whyNow=s.whyNow||null;p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
+    p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];p.articles=Array.isArray(s.articles)?s.articles:[];p.news=Array.isArray(s.news)?s.news:[];
+    if(s.nowComponents)p.nowComponents=s.nowComponents;
+    const meta=nowRankByName[p.name]||{};
+    Object.assign(meta,{rank:s.rank,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
+    nowRankByName[p.name]=meta;
+  });
+  people.sort((a,b)=>a.rank-b.rank);
+  window.NOW_LIVE_READY=true;
+  updateNowStatus(snap,checking);
+  renderRank();
+  scheduleNowPhotoHydrator();
+  return true;
+}
+async function loadPublishedNowRank(){
+  const cached=readNowPublicCache();
+  if(cached){
+    // Instant first paint from the last actually-published snapshot. Never show prototype data.
+    applyPublishedNowRank(cached,{checking:true});
+  }else{
     renderNowRankLoadingState();
-    const nonce=Date.now();
-    const requestInit={cache:'no-store',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}};
-    // FAST BOOT: the public CURRENT snapshot already includes previousRank/changeRefresh.
-    // Do not wait for 7-day history before the first paint.
-    const currentRes=await fetch(`/api/rank/current?__ts=${nonce}`,requestInit);
-    if(!currentRes.ok){ renderNowRankUnavailable(); return false; }
+  }
+  try{
+    const t0=performance.now();
+    // No timestamp nonce: allow Vercel's short edge cache to work. There is no stale-while-revalidate.
+    const currentRes=await fetch('/api/rank/current',{cache:'default'});
+    if(!currentRes.ok)throw new Error('CURRENT '+currentRes.status);
     const snap=await currentRes.json();
-    if(!snap || !Array.isArray(snap.members) || !snap.members.length){ renderNowRankUnavailable(); return false; }
-    window.NOW_CURRENT_PUBLICATION_ID=snap.publicationId||null;
-    window.NOW_RANK_HISTORY=[];
-    window.NOW_DETECTED_ISSUES=Array.isArray(snap.detectedIssues)?snap.detectedIssues:[];
-    const byName=new Map(snap.members.map(x=>[x.name,x]));
-    people.forEach(p=>{
-      const s=byName.get(p.name);
-      if(!s) return;
-      p.rank=s.rank;
-      p.rank2Score=s.score;
-      p.rank2RawScore=s.rawScore;
-      p.grade=s.grade||p.grade;
-      p.snapshot=snap.timestamp;
-      p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;
-      p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
-      p.delta=Number.isFinite(p.changeRefresh)?p.changeRefresh:0;
-      p.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null;
-      p.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null;
-      p.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
-      p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;
-      p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;
-      p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
-      if(Array.isArray(s.metrics)) p.metrics=s.metrics;
-      p.eventLabel=s.eventLabel||p.eventLabel;
-      p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;
-      p.latest=s.latest||s.signal?.latest||p.latest;
-      p.signal=s.signal||null;
-      p.whyNow=s.whyNow||null;
-      p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
-      p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);
-      p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];
-      p.articles=Array.isArray(s.articles)?s.articles:[];
-      p.news=Array.isArray(s.news)?s.news:[];
-      if(s.nowComponents) p.nowComponents=s.nowComponents;
-      const meta=nowRankByName[p.name]||{};
-      meta.rank=s.rank; meta.score=s.score; meta.rawScore=s.rawScore; meta.grade=s.grade;
-      meta.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null; meta.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
-      meta.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null; meta.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null; meta.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
-      meta.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null; meta.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null; meta.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
-      meta.snapshot=snap.timestamp; meta.metrics=s.metrics||meta.metrics; meta.eventLabel=s.eventLabel||meta.eventLabel;
-      meta.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount; meta.latest=s.latest||s.signal?.latest||meta.latest;
-      meta.signal=s.signal||null; meta.whyNow=s.whyNow||null; meta.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
-      meta.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);
-      meta.articles=Array.isArray(s.articles)?s.articles:[]; meta.news=Array.isArray(s.news)?s.news:[];
-      nowRankByName[p.name]=meta;
-    });
-    people.sort((a,b)=>a.rank-b.rank);
-    window.NOW_LIVE_READY=true;
-    const status=document.getElementById('serverUpdateStatus');
-    if(status){
-      const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
-      const src=(snap.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
-      status.innerHTML=`<b>최근 게시:</b> ${snap.timestamp||'-'}<br><b>수집 원천:</b> ${src||'운영 데이터'}`;
+    if(!snap || !Array.isArray(snap.members) || !snap.members.length)throw new Error('empty CURRENT');
+    const cachedNow=readNowPublicCache();
+    const expected=String(localStorage.getItem(NOW_EXPECTED_PUBLICATION_KEY)||'');
+    // A short-lived CDN response is never allowed to overwrite a newer locally-known publication.
+    if(cachedNow && nowSnapshotStamp(snap)<nowSnapshotStamp(cachedNow)){
+      updateNowStatus(cachedNow,false);
+      return true;
     }
-    // FIRST PAINT happens here. No history/API enrichment can delay it.
-    renderRank();
-    renderNowKeywordStrip();
-    renderMobileTop10();
-    // Photo discovery is useful but must never compete with NOW Rank first paint.
-    setTimeout(()=>initPoliticianPhotoHydrator(),0);
+    if(expected && cachedNow?.publicationId===expected && snap.publicationId!==expected && nowSnapshotStamp(snap)<=nowSnapshotStamp(cachedNow)){
+      updateNowStatus(cachedNow,false);
+      return true;
+    }
+    writeNowPublicCache(snap);
+    if(!cached || String(cached.publicationId||'')!==String(snap.publicationId||'')) applyPublishedNowRank(snap,{checking:false});
+    else updateNowStatus(snap,false);
+    try{console.info('[NOW Rank] current ready',Math.round(performance.now()-t0)+'ms',snap.publicationId||'');}catch(_){}
     return true;
   }catch(e){
-    console.warn('published snapshot unavailable',e);
-    renderNowRankUnavailable();
-    return false;
+    console.warn('published snapshot revalidation unavailable',e);
+    if(cached){updateNowStatus(cached,false);return true;}
+    renderNowRankUnavailable();return false;
   }
 }
 initComparePage();
 renderGovernment();
-renderNowRankLoadingState();
+if(!readNowPublicCache())renderNowRankLoadingState();
 renderSideNews();
 renderNewsGrid();
 drawVotes();
 syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
-// The bundled prototype rank data is never rendered on boot.
-// Only the latest published server snapshot may make NOW Rank visible.
 loadPublishedNowRank();
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.14.2 · Fast Public Snapshot + Non-blocking First Paint + Refresh Movers TOP10 + Three Ranking Views. -->
+<!-- NOW Rank v1.14.3 · Instant Local Snapshot + Lightweight Public Function + Short Edge Cache + Refresh Movers TOP10. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>

@@ -1,14 +1,42 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    { "src": "api/gateway.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" }
+    {
+      "src": "api/public-current.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/gateway.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/gateway.js?__path=$1" },
-    { "handle": "filesystem" },
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/admin", "dest": "/admin.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/api/rank/current",
+      "dest": "/api/public-current.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/gateway.js?__path=$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }

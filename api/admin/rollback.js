@@ -18,6 +18,6 @@ module.exports=async function handler(req,res){
     await store.ltrim('jjdd:history',0,111);
     await store.setJSON('jjdd:current',rollbackSnap);
     await store.setJSON('jjdd:current:public',publicSnapshot(rollbackSnap));
-    return res.status(200).json({ok:true,publicationId:snapId,timestamp:rollbackSnap.timestamp,top:rollbackSnap.members?.slice?.(0,10)||[]});
+    return res.status(200).json({ok:true,publicationId:snapId,timestamp:rollbackSnap.timestamp,top:rollbackSnap.members?.slice?.(0,10)||[],publicSnapshot:publicSnapshot(rollbackSnap)});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
 };

@@ -26,6 +26,6 @@ module.exports=async function handler(req,res){
     draft.publishedAt=publishedAt;
     draft.publicationId=snapId;
     await store.setJSON(key,draft,3600);
-    return res.status(200).json({ok:true,publicationId:snapId,timestamp:snap.timestamp,top:snap.members.slice(0,10)});
+    return res.status(200).json({ok:true,publicationId:snapId,timestamp:snap.timestamp,top:snap.members.slice(0,10),publicSnapshot:publicSnapshot(snap)});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
 };

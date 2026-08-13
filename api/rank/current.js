@@ -1,14 +1,14 @@
 const store=require('../../lib/store');
 const {publicSnapshot}=require('../../lib/public_snapshot');
-function disableCache(res){
-  res.setHeader('Cache-Control','private, no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('CDN-Cache-Control','no-store');
-  res.setHeader('Vercel-CDN-Cache-Control','no-store');
-  res.setHeader('Pragma','no-cache');
-  res.setHeader('Expires','0');
+function publicCache(res){
+  // Short edge cache removes repeated Redis/serverless latency without the long stale window
+  // that previously caused old snapshots to reappear. No stale-while-revalidate is used.
+  res.setHeader('Cache-Control','public, max-age=0, s-maxage=30, must-revalidate');
+  res.setHeader('CDN-Cache-Control','public, max-age=30');
+  res.setHeader('Vercel-CDN-Cache-Control','public, max-age=30');
 }
 module.exports=async function handler(req,res){
-  disableCache(res);
+  publicCache(res);
   try{
     let current=await store.getJSON('jjdd:current:public');
     if(!current){
