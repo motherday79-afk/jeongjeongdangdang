@@ -8,14 +8,22 @@ module.exports=async function handler(req,res){
     const key=`jjdd:draft:${draftId}`;
     const draft=await store.getJSON(key);
     if(!draft?.preview) return res.status(409).json({ok:false,error:'게시할 미리보기가 없습니다.'});
-    const snap=draft.preview;
+
+    // Publish consistency rule:
+    // 1) immutable snapshot -> 2) history -> 3) current pointer LAST.
+    // A reader that sees the new current is therefore guaranteed to have its history entry ready.
     const snapId=String(Date.now());
+    const publishedAt=new Date().toISOString();
+    const snap={...draft.preview,publicationId:snapId,publishedAt};
     await store.setJSON(`jjdd:snapshot:${snapId}`,snap);
-    await store.setJSON('jjdd:current',snap);
     await store.lpush('jjdd:history',snapId);
     await store.ltrim('jjdd:history',0,111); // 28 days at 6h cadence
-    draft.status='published'; draft.publishedAt=new Date().toISOString();
+    await store.setJSON('jjdd:current',snap); // switch public pointer only after snapshot/history are complete
+
+    draft.status='published';
+    draft.publishedAt=publishedAt;
+    draft.publicationId=snapId;
     await store.setJSON(key,draft,3600);
-    return res.status(200).json({ok:true,timestamp:snap.timestamp,top:snap.members.slice(0,10)});
+    return res.status(200).json({ok:true,publicationId:snapId,timestamp:snap.timestamp,top:snap.members.slice(0,10)});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
 };
