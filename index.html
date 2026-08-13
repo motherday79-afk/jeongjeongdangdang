@@ -231,6 +231,7 @@ a{text-decoration:none;color:inherit}
 .party-red{color:#ef4444;font-weight:800}
 .change.up{color:#059669;font-weight:900}
 .change.down{color:#ef4444;font-weight:900}
+.view-score{font-size:16px;font-weight:950;color:#173f39}.view-score small{display:block;margin-top:3px;color:#94a3b8;font-size:10px;font-weight:800}.refresh-route{display:block;margin-top:3px;color:#94a3b8;font-size:10px;font-weight:800;white-space:nowrap}
 .rankpill{
   min-width:64px;height:36px;padding:0 14px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;
   font-weight:900;font-size:18px;
@@ -947,17 +948,17 @@ a{text-decoration:none;color:inherit}
           <section class="mobile-top10">
             <div class="mobile-section-head">
               <div>
-                <div class="kicker">NOW TOP 10</div>
-                <h3>지금 가장 뜨거운 국회의원</h3>
+                <div class="kicker" id="mobileTop10Kicker">NOW TOP 10</div>
+                <h3 id="mobileTop10Title">지금 가장 뜨거운 국회의원</h3>
               </div>
-              <div class="sub">현재 스냅샷</div>
+              <div class="sub" id="mobileTop10Meta">현재 스냅샷</div>
             </div>
             <div class="mobile-top10-list" id="mobileTop10List"></div>
           </section>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
-            <h3>전체 NOW Rank</h3>
-            <span>1~300 전체 보기</span>
+            <h3 id="mobileAllRankTitle">전체 NOW Rank</h3>
+            <span id="mobileAllRankMeta">1~300 전체 보기</span>
           </div>
         </section>
         <div class="head">
@@ -977,7 +978,7 @@ a{text-decoration:none;color:inherit}
           </div>
         </div>
 
-        <div class="demo-notice"><b>NOW RANK v1.4 · WHY NOW</b> · 운영 기준은 6시간 단위 스냅샷입니다. <b>전체 / 6시간 급상승 / 24시간 급상승 / 7일 최고순위</b>를 기록합니다. 관리자 Refresh → 미리보기 → 게시가 완료되면 서버 스냅샷이 즉시 공개 순위에 반영됩니다.</div>
+        <div class="demo-notice"><b>NOW RANK · 3가지 시선</b> · <b>전체</b>는 종합 NOW Rank, <b>검색 관심</b>은 대중의 검색·관심 신호, <b>언론 주목</b>은 최근 뉴스량·출처 다양성·신선도를 중심으로 보여줍니다. 직전 게시 스냅샷 대비 순위 변화는 각 의원 프로필에서 바로 확인할 수 있습니다.</div>
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
@@ -987,15 +988,14 @@ a{text-decoration:none;color:inherit}
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
-          <button class="tab" data-mode="rise6">6시간 급상승</button>
-          <button class="tab" data-mode="rise24">24시간 급상승</button>
-          <button class="tab" data-mode="peak7d">7일 최고순위</button>
+          <button class="tab" data-mode="search">검색 관심</button>
+          <button class="tab" data-mode="media">언론 주목</button>
         </div>
 
         <section class="ranktable" id="ranktable"></section>
 
         <div class="footer-note">
-          <div class="info-pill">ⓘ NOW Rank는 6시간 단위 스냅샷을 기준으로 기록합니다. 급상승·24시간 변화·7일 최고순위는 실제 과거 스냅샷이 쌓인 뒤 계산하며 임의의 과거값을 만들지 않습니다.</div>
+          <div class="info-pill">ⓘ 전체 순위와 검색 관심·언론 주목 순위는 같은 최신 스냅샷에서 계산합니다. 직전 갱신 대비 변화는 실제 게시 이력이 있을 때만 표시하며 과거 값을 임의로 만들지 않습니다.</div>
           <button class="outline-btn">순위 산정 기준 안내</button>
         </div>
       </main>
@@ -8592,6 +8592,9 @@ people = people.map(p => {
   return {
     ...p,
     rank:r.rank, oldRank:r.oldRank, grade:r.grade, delta:r.delta, rank2Tie:false, issue:r.issue,
+    previousRank:Number.isFinite(r.previousRank)?r.previousRank:null, changeRefresh:Number.isFinite(r.changeRefresh)?r.changeRefresh:null,
+    searchRank:Number.isFinite(r.searchRank)?r.searchRank:null, searchScore:Number.isFinite(r.searchScore)?r.searchScore:null, searchRaw:Number.isFinite(r.searchRaw)?r.searchRaw:null,
+    mediaRank:Number.isFinite(r.mediaRank)?r.mediaRank:null, mediaScore:Number.isFinite(r.mediaScore)?r.mediaScore:null, mediaRaw:Number.isFinite(r.mediaRaw)?r.mediaRaw:null,
     rank2Score:r.score, rank2RawScore:r.rawScore, rank2GradeScore:r.gradeScore, rank2Coverage:r.coverage,
     rank2Snapshot:r.snapshot, rank2Role:r.role, publicAttention:r.attention,
     politicalComponents:r.politicalComponents, capitalScore:r.capitalScore, institutionalScore:r.institutionalScore,
@@ -8876,16 +8879,26 @@ let mode="all";
 function renderMobileTop10(){
   const box=document.getElementById('mobileTop10List');
   if(!box) return;
-  const top=[...people].filter(x=>x.rank>=1 && x.rank<=10).sort((a,b)=>a.rank-b.rank);
+  ensureViewRanks();
+  const label=viewLabel(mode);
+  const top=[...people].sort((a,b)=>viewRank(a,mode)-viewRank(b,mode)).slice(0,10);
+  const kicker=document.getElementById('mobileTop10Kicker'),title=document.getElementById('mobileTop10Title'),meta=document.getElementById('mobileTop10Meta');
+  const allTitle=document.getElementById('mobileAllRankTitle'),allMeta=document.getElementById('mobileAllRankMeta');
+  if(kicker) kicker.textContent=label.mobile;
+  if(title) title.textContent=mode==='search'?'지금 가장 많이 검색되는 국회의원':mode==='media'?'지금 언론이 가장 주목하는 국회의원':'지금 가장 뜨거운 국회의원';
+  if(meta) meta.textContent='현재 스냅샷';
+  if(allTitle) allTitle.textContent=mode==='search'?'검색 관심 전체 순위':mode==='media'?'언론 주목 전체 순위':'전체 NOW Rank';
+  if(allMeta) allMeta.textContent='1~300 전체 보기';
   box.innerHTML=top.map(x=>{
-    const meta=(typeof nowRankByName!=='undefined' && nowRankByName[x.name]) ? nowRankByName[x.name] : null;
-    const label=meta?.eventLabel && !meta.eventLabel.includes('연계 없음') ? meta.eventLabel : (x.party||'');
-    const score=Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'-';
+    const metaRow=(typeof nowRankByName!=='undefined' && nowRankByName[x.name]) ? nowRankByName[x.name] : null;
+    const event=metaRow?.eventLabel && !metaRow.eventLabel.includes('연계 없음') ? metaRow.eventLabel : (x.party||'');
+    const score=viewScore(x,mode);
+    const scoreLabel=mode==='search'?'SEARCH':mode==='media'?'MEDIA':'NOW';
     return `<div class="mobile-rank-card" onclick="openDetail(${x.id})">
-      <div class="mobile-rank-no">${x.rank}</div>
+      <div class="mobile-rank-no">${viewRank(x,mode)}</div>
       <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
-      <div style="min-width:0"><div class="mobile-rank-name">${x.name}</div><div class="mobile-rank-meta">${label}</div></div>
-      <div class="mobile-rank-score">${score}<span>NOW</span></div>
+      <div style="min-width:0"><div class="mobile-rank-name">${x.name}</div><div class="mobile-rank-meta">${event}</div></div>
+      <div class="mobile-rank-score">${Number.isFinite(score)?score.toFixed(1):'-'}<span>${scoreLabel}</span></div>
     </div>`;
   }).join('');
 }
@@ -8948,6 +8961,78 @@ function snapshotMember(snapshot,name){
   if(snapshot.ranks && snapshot.ranks[name]) return snapshot.ranks[name];
   if(Array.isArray(snapshot.people)) return snapshot.people.find(x=>x.name===name)||null;
   return null;
+}
+function finiteValue(v){return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));}
+function metricNumber(x,labels=[]){
+  const metrics=Array.isArray(x?.metrics)?x.metrics:[];
+  for(const m of metrics){
+    const label=String(m?.[0]||'');
+    if(labels.some(k=>label.includes(k)) && Number.isFinite(Number(m?.[2]))) return Number(m[2]);
+  }
+  return null;
+}
+function searchViewScore(x){
+  if(finiteValue(x?.searchScore)) return Number(x.searchScore);
+  const m=metricNumber(x,['대중 관심','검색 관심','검색']);
+  if(finiteValue(m)) return Number(m);
+  if(finiteValue(x?.nowComponents?.search)) return Number(x.nowComponents.search);
+  return 0;
+}
+function mediaViewScore(x){
+  if(finiteValue(x?.mediaScore)) return Number(x.mediaScore);
+  const m=metricNumber(x,['뉴스 급상승','뉴스 화제','언론 주목','언론']);
+  if(finiteValue(m)) return Number(m);
+  if(finiteValue(x?.nowComponents?.news)) return Number(x.nowComponents.news);
+  const sig=x?.signal||{};
+  return Math.min(100,Number(sig.count6||0)*5+Number(sig.sources6||0)*8+Number(sig.count24||0));
+}
+function ensureViewRanks(){
+  const active=people.filter(x=>x.id!==300&&x.party!=='공석');
+  const search=[...active].sort((a,b)=>(searchViewScore(b)-searchViewScore(a))||(a.rank-b.rank));
+  const media=[...active].sort((a,b)=>(mediaViewScore(b)-mediaViewScore(a))||(Number(b.signal?.sources6||0)-Number(a.signal?.sources6||0))||(a.rank-b.rank));
+  search.forEach((x,i)=>{x._searchRankComputed=i+1;});
+  media.forEach((x,i)=>{x._mediaRankComputed=i+1;});
+  const vacancy=people.find(x=>x.id===300||x.party==='공석');
+  if(vacancy){vacancy._searchRankComputed=300;vacancy._mediaRankComputed=300;}
+}
+function viewRank(x,viewMode=mode){
+  if(viewMode==='search') return finiteValue(x.searchRank)?Number(x.searchRank):Number(x._searchRankComputed||300);
+  if(viewMode==='media') return finiteValue(x.mediaRank)?Number(x.mediaRank):Number(x._mediaRankComputed||300);
+  return Number(x.rank||300);
+}
+function viewScore(x,viewMode=mode){
+  if(viewMode==='search') return searchViewScore(x);
+  if(viewMode==='media') return mediaViewScore(x);
+  return Number(x.rank2Score||0);
+}
+function viewLabel(viewMode=mode){
+  if(viewMode==='search') return {title:'검색 관심',score:'검색 관심',mobile:'검색 관심 TOP 10'};
+  if(viewMode==='media') return {title:'언론 주목',score:'언론 주목',mobile:'언론 주목 TOP 10'};
+  return {title:'전체',score:'NOW 지수',mobile:'NOW TOP 10'};
+}
+function previousPublishedSnapshot(){
+  const current=currentSnapshotTime();
+  return nowRankHistory()
+    .map(s=>({s,t:parseSnapshotTime(s.timestamp||s.snapshot)}))
+    .filter(x=>Number.isFinite(x.t)&&x.t<current-1000)
+    .sort((a,b)=>b.t-a.t)[0]?.s||null;
+}
+function refreshRankChange(x){
+  if(finiteValue(x?.changeRefresh)){
+    return {change:Number(x.changeRefresh),oldRank:finiteValue(x.previousRank)?Number(x.previousRank):null};
+  }
+  const prev=previousPublishedSnapshot(),old=snapshotMember(prev,x?.name);
+  if(finiteValue(old?.rank)) return {change:Number(old.rank)-Number(x.rank),oldRank:Number(old.rank)};
+  if(finiteValue(x?.delta) && Number(x.delta)!==0) return {change:Number(x.delta),oldRank:Number(x.rank)+Number(x.delta)};
+  return {change:null,oldRank:null};
+}
+function refreshChangeText(x){
+  const r=refreshRankChange(x);
+  if(!finiteValue(r.change)) return {text:'첫 게시',cls:'same',route:'비교 스냅샷 없음'};
+  const text=r.change>0?`▲ ${r.change}`:r.change<0?`▼ ${Math.abs(r.change)}`:'―';
+  const cls=r.change>0?'up':r.change<0?'down':'same';
+  const route=finiteValue(r.oldRank)?`${r.oldRank}위 → ${x.rank}위`:'직전 갱신 대비';
+  return {text,cls,route};
 }
 function historyReadyMessage(mode){
   const map={rise6:['6시간 급상승','최소 2개의 6시간 스냅샷'],rise24:['24시간 급상승','최소 24시간의 스냅샷'],peak7d:['7일 최고순위','최소 7일 동안 축적된 스냅샷']};
@@ -9301,38 +9386,47 @@ function openWhyNow(id,focusKeyword){
 function closeWhyNow(){const m=document.getElementById('whyNowModal');if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true')}}
 
 function renderRank(){
+  ensureViewRanks();
   let q=document.getElementById("search").value.trim();
   let p=document.getElementById("party").value;
   let data=people.filter(x=>{
     const text=`${x.name} ${x.party} ${x.region} ${x.constituency||""}`.toLowerCase();
     return (!q||text.includes(q.toLowerCase()))&&(p==="all"||x.party===p);
   });
-  if(mode!=="all"){
-    const hv=historyView(data,mode);
-    if(!hv){ document.getElementById("ranktable").innerHTML=historyReadyMessage(mode); renderMobileTop10(); return; }
-    data=hv;
-  }
-  const changeHead=mode==="rise6"?"6시간 변화":mode==="rise24"?"24시간 변화":mode==="peak7d"?"7일 최고":"6시간 변화";
-  let html=`<div class="row header"><div>순위</div><div>의원</div><div>정당</div><div>지역구</div><div>${changeHead}</div><div>NOW 지수</div></div>`;
-  data.slice(0,300).forEach((x,idx)=>{
-    let ch="첫 스냅샷",cls="same";
-    if(mode==="rise6"||mode==="rise24"){
-      const d=x._periodChange; ch=d>0?`▲ ${d}`:d<0?`▼ ${Math.abs(d)}`:"―"; cls=d>0?"up":d<0?"down":"same";
-    }else if(mode==="peak7d"){ ch=`최고 ${x._best7d}위`; cls="same"; }
+  data.sort((a,b)=>viewRank(a,mode)-viewRank(b,mode));
+  const label=viewLabel(mode);
+  let headers;
+  if(mode==='search') headers=['검색순위','의원','정당','지역구','검색 관심','전체 순위'];
+  else if(mode==='media') headers=['언론순위','의원','정당','지역구','언론 주목','전체 순위'];
+  else headers=['순위','의원','정당','지역구','직전 갱신','NOW 지수'];
+  let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
+  data.slice(0,300).forEach(x=>{
+    const refresh=refreshChangeText(x);
+    const metric=viewScore(x,mode);
+    const firstCell=viewRank(x,mode);
+    let fifth,sixth;
+    if(mode==='all'){
+      fifth=`<div class="change ${refresh.cls}">${refresh.text}<span class="refresh-route">${refresh.route}</span></div>`;
+      sixth=`<div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>`;
+    }else{
+      const sourceHint=mode==='search'?'관심 지수':'뉴스 모멘텀';
+      fifth=`<div class="view-score">${Number.isFinite(metric)?metric.toFixed(1):'-'}<small>${sourceHint}</small></div>`;
+      sixth=`<div class="view-score">${x.rank}위<small>NOW ${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'-'}</small></div>`;
+    }
     html += `<div class="row" onclick="openDetail(${x.id})">
-      <div class="ranknum">${mode==="all"?x.rank:idx+1}</div>
+      <div class="ranknum">${firstCell}</div>
       <div class="person">
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div class="person-copy">
           <div class="pname">${x.name}<span class="verified">✓</span></div>
           <div class="pmeta">${x.isReal ? `국회 공식 프로필<span class="real-chip">REAL</span>` : `프로토타입 샘플<span class="sim-chip">DEMO</span>`}</div>
-          ${x.rank<=30?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\'")}')">${k}</button>`).join('')}</div>`:''}
+          ${(x.rank<=30||viewRank(x,mode)<=30)?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\'")}')">${k}</button>`).join('')}</div>`:''}
         </div>
       </div>
       <div class="${partyClass[x.party]||"party-gray"}">${x.party}</div>
       <div>${x.constituency||x.region}</div>
-      <div class="change ${cls}">${ch}</div>
-      <div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>
+      ${fifth}
+      ${sixth}
     </div>`;
   });
   document.getElementById("ranktable").innerHTML=html;
@@ -9592,7 +9686,7 @@ function rank22TrendHTML(x){
 function openDetail(id){
   const x=people.find(p=>p.id===id);
   if(x) trackJJDD('profile',x.name);
-  const ch=x.delta>0?`▲ ${x.delta}`:`▼ ${Math.abs(x.delta)}`;
+  const refresh=refreshChangeText(x);
   const assetBase=11+(x.id%7);
 
   document.getElementById("modalEyebrow").innerText="Person Detail";
@@ -9608,7 +9702,7 @@ function openDetail(id){
       </div>
       <div class="detail-stats">
         <div class="stat"><strong>${x.rank}위</strong><span>NOW Rank</span></div>
-        <div class="stat"><strong>${x.delta===0?"―":ch}</strong><span>6시간 변화</span></div>
+        <div class="stat"><strong class="change ${refresh.cls}">${refresh.text}</strong><span>직전 갱신 대비</span><small class="refresh-route">${refresh.route}</small></div>
         <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Evidence ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(2):"-"} · Coverage ${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:"-"}%</small></div>
       </div>
     </div>
@@ -9674,7 +9768,7 @@ function openDetail(id){
             <h4>현재 모멘텀</h4>
             <div class="mini-stats">
               ${x.isReal ? `
-              <div class="mini-stat"><b class="${x.delta>0?'change up':x.delta<0?'change down':''}">${x.delta===0?'―':x.delta>0?`▲ ${x.delta}`:`▼ ${Math.abs(x.delta)}`}</b><span>Rank 2.1 대비 순위</span></div>
+              <div class="mini-stat"><b class="change ${refresh.cls}">${refresh.text}</b><span>직전 갱신 대비 순위</span><small class="refresh-route">${refresh.route}</small></div>
               <div class="mini-stat"><b>${Number.isFinite(x.rank2Coverage)?x.rank2Coverage:'N/A'}%</b><span>데이터 커버리지</span></div>
               <div class="mini-stat"><b>${Number.isFinite(x.capitalScore)?x.capitalScore.toFixed(1):'N/A'}</b><span>전국 정치자본</span></div>
               <div class="mini-stat"><b>${Number.isFinite(x.institutionalScore)?x.institutionalScore.toFixed(1):'N/A'}</b><span>제도적 권력</span></div>
@@ -10057,7 +10151,15 @@ async function loadPublishedNowRank(){
       p.rank2RawScore=s.rawScore;
       p.grade=s.grade||p.grade;
       p.snapshot=snap.timestamp;
-      p.delta=Number.isFinite(s.change6h)?s.change6h:0;
+      p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;
+      p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
+      p.delta=Number.isFinite(p.changeRefresh)?p.changeRefresh:0;
+      p.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null;
+      p.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null;
+      p.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
+      p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;
+      p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;
+      p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
       if(Array.isArray(s.metrics)) p.metrics=s.metrics;
       p.eventLabel=s.eventLabel||p.eventLabel;
       p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;
@@ -10075,6 +10177,9 @@ async function loadPublishedNowRank(){
       if(s.nowComponents) p.nowComponents=s.nowComponents;
       const meta=nowRankByName[p.name]||{};
       meta.rank=s.rank; meta.score=s.score; meta.rawScore=s.rawScore; meta.grade=s.grade;
+      meta.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null; meta.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
+      meta.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null; meta.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null; meta.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
+      meta.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null; meta.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null; meta.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
       meta.snapshot=snap.timestamp; meta.metrics=s.metrics||meta.metrics; meta.eventLabel=s.eventLabel||meta.eventLabel;
       meta.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount; meta.latest=s.latest||s.signal?.latest||meta.latest;
       meta.signal=s.signal||null; meta.whyNow=s.whyNow||null; meta.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
