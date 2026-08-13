@@ -753,16 +753,6 @@ a{text-decoration:none;color:inherit}
 .mobile-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}
 .mobile-section-head h3{margin:0;font-size:22px;font-weight:950;letter-spacing:-.7px;color:#183b36}
 .mobile-section-head .sub{margin:0;font-size:12px}
-.mobile-top10{background:linear-gradient(180deg,#fbfffe,#f5fbf9);border:1px solid rgba(40,183,162,.18);border-radius:24px;padding:18px;box-shadow:var(--shadow-soft)}
-.mobile-top10-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.mobile-rank-card{display:grid;grid-template-columns:42px 46px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;border:1px solid #e8efed;background:#fff;border-radius:17px;cursor:pointer;box-shadow:0 7px 18px rgba(15,23,42,.035)}
-.mobile-rank-card:hover{background:#fbfffe}
-.mobile-rank-no{font-size:20px;font-weight:950;color:var(--mint-dark);text-align:center}
-.mobile-rank-card .avatar{width:44px;height:44px}
-.mobile-rank-name{font-size:15px;font-weight:950;line-height:1.2}
-.mobile-rank-meta{margin-top:4px;color:#77838f;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mobile-rank-score{text-align:right;font-size:18px;font-weight:950;color:#183b36}
-.mobile-rank-score span{display:block;margin-top:2px;font-size:10px;color:#94a3b8;font-weight:800}
 .mobile-all-rank-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px}
 .mobile-all-rank-title h3{margin:0;font-size:22px;font-weight:950;letter-spacing:-.7px}
 .mobile-all-rank-title span{font-size:12px;color:#7b8794}
@@ -819,13 +809,6 @@ a{text-decoration:none;color:inherit}
   .mobile-now-flow .rapid-rise-row .avatar{width:36px;height:36px}
   .mobile-now-flow .rapid-rise-name{font-size:13px}
   .mobile-now-flow .rapid-rise-delta{font-size:14px}
-  .mobile-top10{padding:14px;border-radius:20px}
-  .mobile-top10-list{grid-template-columns:1fr;gap:8px}
-  .mobile-rank-card{grid-template-columns:36px 40px minmax(0,1fr) 62px;padding:10px;gap:8px;border-radius:15px}
-  .mobile-rank-card .avatar{width:38px;height:38px}
-  .mobile-rank-no{font-size:18px}
-  .mobile-rank-name{font-size:14px}
-  .mobile-rank-score{font-size:16px}
 
   #mobileNewsPortal .news-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,82vw);gap:10px;overflow-x:auto;padding:2px 1px 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   #mobileNewsPortal .news-row{display:flex;flex-direction:column-reverse;gap:10px;border:1px solid #e8efed!important;border-radius:16px;padding:10px;background:#fff;scroll-snap-align:start}
@@ -892,7 +875,6 @@ a{text-decoration:none;color:inherit}
 @media (max-width:420px){
   .app{padding-left:9px;padding-right:9px}
   .searchline{grid-template-columns:1fr 112px}
-  .mobile-rank-card{grid-template-columns:32px 38px minmax(0,1fr) 56px}
   .mobile-rank-meta{max-width:150px}
   .row{grid-template-columns:38px minmax(0,1fr) 72px 56px;padding-left:7px;padding-right:7px}
   .pname{font-size:13px}
@@ -970,16 +952,6 @@ a{text-decoration:none;color:inherit}
 
         <section class="mobile-now-flow" id="mobileNowFlow" aria-label="모바일 NOW 요약">
           <div id="mobileNowIssuePortal"></div>
-          <section class="mobile-top10">
-            <div class="mobile-section-head">
-              <div>
-                <div class="kicker" id="mobileTop10Kicker">NOW TOP 10</div>
-                <h3 id="mobileTop10Title">지금 가장 뜨거운 국회의원</h3>
-              </div>
-              <div class="sub" id="mobileTop10Meta">현재 스냅샷</div>
-            </div>
-            <div class="mobile-top10-list" id="mobileTop10List"></div>
-          </section>
           <div id="mobileRapidRisePortal"></div>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
@@ -8913,31 +8885,10 @@ document.getElementById("liveVisual").innerHTML = liveSVG();
 
 let mode="all";
 
-function renderMobileTop10(){
-  const box=document.getElementById('mobileTop10List');
-  if(!box) return;
-  ensureViewRanks();
-  const label=viewLabel(mode);
-  const top=[...people].sort((a,b)=>viewRank(a,mode)-viewRank(b,mode)).slice(0,10);
-  const kicker=document.getElementById('mobileTop10Kicker'),title=document.getElementById('mobileTop10Title'),meta=document.getElementById('mobileTop10Meta');
+function renderMobileRankHeading(){
   const allTitle=document.getElementById('mobileAllRankTitle'),allMeta=document.getElementById('mobileAllRankMeta');
-  if(kicker) kicker.textContent=label.mobile;
-  if(title) title.textContent=mode==='search'?'지금 가장 많이 검색되는 국회의원':mode==='media'?'지금 언론이 가장 주목하는 국회의원':'지금 가장 뜨거운 국회의원';
-  if(meta) meta.textContent='현재 스냅샷';
   if(allTitle) allTitle.textContent=mode==='search'?'검색 관심 전체 순위':mode==='media'?'언론 주목 전체 순위':'전체 NOW Rank';
   if(allMeta) allMeta.textContent='1~300 전체 보기';
-  box.innerHTML=top.map(x=>{
-    const metaRow=(typeof nowRankByName!=='undefined' && nowRankByName[x.name]) ? nowRankByName[x.name] : null;
-    const event=metaRow?.eventLabel && !metaRow.eventLabel.includes('연계 없음') ? metaRow.eventLabel : (x.party||'');
-    const score=viewScore(x,mode);
-    const scoreLabel=mode==='search'?'SEARCH':mode==='media'?'MEDIA':'NOW';
-    return `<div class="mobile-rank-card" onclick="openDetail(${x.id})">
-      <div class="mobile-rank-no">${viewRank(x,mode)}</div>
-      <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
-      <div style="min-width:0"><div class="mobile-rank-name">${x.name}</div><div class="mobile-rank-meta">${event}</div></div>
-      <div class="mobile-rank-score">${Number.isFinite(score)?score.toFixed(1):'-'}<span>${scoreLabel}</span></div>
-    </div>`;
-  }).join('');
 }
 
 function syncResponsiveContent(){
@@ -9516,7 +9467,7 @@ function renderRank(){
     </div>`;
   });
   document.getElementById("ranktable").innerHTML=html;
-  renderMobileTop10();
+  renderMobileRankHeading();
   renderNowKeywordStrip();
   renderRapidRiseTop10();
 }
@@ -10230,8 +10181,6 @@ function renderNowRankLoadingState(message='최신 NOW Rank를 불러오는 중�
   if(meta) meta.textContent='TOP30 실시간 이슈';
   const rapid=document.getElementById('rapidRiseList');
   if(rapid) rapid.innerHTML='<div class="rapid-rise-empty">직전 게시 대비 순위 변화를 불러오는 중입니다…</div>';
-  const mobile=document.getElementById('mobileTop10');
-  if(mobile) mobile.innerHTML='';
 }
 function renderNowRankUnavailable(){
   window.NOW_LIVE_READY=false;
