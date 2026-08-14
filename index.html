@@ -6,7 +6,7 @@
 <meta http-equiv="Expires" content="0">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v2.2.3 · LOCAL COMMUNITY</title>
+<title>정정당당 NOW Rank v2.2.4 · FINAL POLISH</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -963,7 +963,7 @@ a{text-decoration:none;color:inherit}
 
 /* ===== /v2.0.1 Account & Membership Foundation ===== */
 
-/* ===== v2.2.3 Visitor + Community ===== */
+/* ===== v2.2.4 Visitor + Community ===== */
 .visitor-strip{max-width:1180px;margin:10px auto 0;padding:0 18px;display:flex;justify-content:flex-end;align-items:center;gap:8px;color:#66736f}
 .visitor-stat{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid #e2ebe8;background:#fff;border-radius:999px;font-size:11px;box-shadow:0 3px 12px rgba(15,23,42,.035)}
 .visitor-stat b{font-size:12px;color:#13211e}.visitor-stat small{font-size:10px;font-weight:800}.visitor-dot{width:7px;height:7px;border-radius:50%;background:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.12)}
@@ -971,7 +971,7 @@ a{text-decoration:none;color:inherit}
 .community-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px}.community-main,.community-compose-card,.community-guide{background:#fff;border:1px solid #e2ebe8;border-radius:20px}.community-main{padding:18px}.community-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.community-cats{display:flex;gap:7px;flex-wrap:wrap}.community-cat,.community-reload{border:0;border-radius:999px;background:#eef5f3;color:#52625d;padding:8px 11px;font-size:11px;font-weight:900;cursor:pointer}.community-cat.active{background:#111827;color:#fff}.community-reload{border-radius:10px}.community-list{display:grid;gap:8px}.community-post{border:1px solid #e8efed;border-radius:14px;padding:14px 15px;cursor:pointer;background:#fff;transition:.15s}.community-post:hover{background:#f8fbfa;border-color:#cfe7e0}.community-post-top{display:flex;align-items:center;gap:8px;font-size:10px;color:#71807b}.community-badge{display:inline-flex;padding:4px 7px;border-radius:999px;background:#eef8f5;color:#087b67;font-weight:900}.community-post h3{margin:8px 0 5px;font-size:16px}.community-post p{margin:0;color:#64748b;font-size:12px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.community-post-meta{margin-top:9px;font-size:10px;color:#8b9894}.community-empty{padding:48px 15px;text-align:center;color:#87948f}.community-side{display:grid;gap:12px;align-content:start}.community-compose-card{padding:18px;position:sticky;top:82px}.community-compose-card h2{margin:4px 0 12px}.community-compose-card label{display:block;font-size:11px;font-weight:900;color:#53615d;margin:11px 0 5px}.community-compose-card input,.community-compose-card select,.community-compose-card textarea,.community-comment-compose textarea{width:100%;border:1px solid #dce6e3;border-radius:11px;padding:10px 11px;font:inherit;outline:none}.community-compose-card textarea{min-height:150px;resize:vertical}.community-write-btn,.community-comment-compose button{width:100%;border:0;border-radius:11px;background:#111827;color:#fff;padding:11px 12px;font-weight:900;cursor:pointer;margin-top:10px}.community-login-note,.community-status{font-size:11px;line-height:1.55;color:#71807b;min-height:17px}.community-guide{padding:15px 16px;font-size:11px;line-height:1.65;color:#64748b}.community-guide b{color:#24332f}.community-guide p{margin:6px 0 0}.community-detail{border:1px solid #e2ebe8;border-radius:18px;padding:20px;background:#fff}.community-detail h2{font-size:25px;margin:10px 0}.community-detail-body{white-space:pre-wrap;line-height:1.75;font-size:14px;color:#334155;margin-top:18px}.community-comments{margin-top:14px;border:1px solid #e2ebe8;border-radius:18px;padding:18px}.community-comments h3{margin:0 0 12px}.community-comment-list{display:grid;gap:8px}.community-comment{padding:11px 12px;background:#f8fbfa;border-radius:12px}.community-comment b{font-size:11px}.community-comment span{display:block;margin-top:3px;font-size:10px;color:#94a3b8}.community-comment p{margin:7px 0 0;white-space:pre-wrap;font-size:12px;line-height:1.6}.community-comment-compose{margin-top:12px}.community-comment-compose textarea{min-height:82px;resize:vertical}.community-comment-compose button{width:auto;padding:9px 13px}.community-comment-empty{padding:18px;text-align:center;color:#94a3b8;font-size:11px}
 @media(max-width:900px){.visitor-strip{justify-content:center;padding:0 10px;gap:5px;flex-wrap:wrap}.visitor-stat-note{display:none}.community-shell{grid-template-columns:1fr}.community-side{order:-1}.community-compose-card{position:static}.community-toolbar{align-items:flex-start;flex-direction:column}.community-reload{align-self:flex-end}.community-compose-card textarea{min-height:110px}}
 @media(max-width:520px){.visitor-strip{margin-top:6px}.visitor-stat{padding:5px 7px}.visitor-stat small{font-size:9px}.community-main{padding:11px;border-radius:16px}.community-compose-card{padding:14px;border-radius:16px}.community-post{padding:12px}.community-detail{padding:15px}.community-cats{gap:5px}.community-cat{padding:7px 9px}}
-/* ===== /v2.2.3 ===== */
+/* ===== /v2.2.4 ===== */
 </style>
 </head>
 <body>
@@ -9728,7 +9728,7 @@ function renderRank(){
   data.forEach(x=>{
     const refresh=refreshChangeText(x,mode);
     const firstCell=(Number(x.id)===300||x.party==='공석')?'―':viewRank(x,mode);
-    const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):(entityTypeOf(x)==='metro'?entityOffice(x):`${x.region||''}${x.office?` · ${entityOffice(x)}`:''}`);
+    const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x);
     const sourceMeta=entityTypeOf(x)==='assembly'?'국회 공식 프로필':(x.photoVerified?'지방정부 공식 프로필 · 사진 검증':'공식 단체장 명부 · 협의회 사진 자동확인');
     const fifth=`<div class="change ${refresh.cls}">${refresh.text}<span class="refresh-route">${refresh.route}</span></div>`;
     const sixth=`<div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>`;
@@ -10274,7 +10274,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">NOW Rank v2.2.3 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">NOW Rank v2.2.4 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -10942,7 +10942,7 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정정당당 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
-// ===== v2.2.3 Visitor statistics + Community =====
+// ===== v2.2.4 Visitor statistics + Community =====
 const JJDD_VISITOR_KEY='jjdd_visitor_session_v1';
 function jjddVisitorSession(){
   let v='';try{v=localStorage.getItem(JJDD_VISITOR_KEY)||'';}catch(_){}
@@ -11011,7 +11011,7 @@ document.getElementById('communityCommentBtn')?.addEventListener('click',async()
   try{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'comments',postId:communitySelectedPost.id,content})}});input.value='';st.textContent='';await loadCommunityComments(communitySelectedPost.id);await loadCommunity(true);}
   catch(e){st.textContent=e.message;}
 });
-// ===== /v2.2.3 =====
+// ===== /v2.2.4 =====
 const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
 refreshAccountSession();
 // ===== /v2.0.1 Simple ID Login & 8-char Password =====

@@ -11,6 +11,7 @@ const routes = {
   'admin/users': require('./admin/users'),
   'admin/password': require('./admin/password'),
   'admin/local-photo': require('./admin/local-photo'),
+  'admin/visitor-stats': require('./admin/visitor-stats'),
   'account/signup': require('./account/signup'),
   'account/login': require('./account/login'),
   'account/logout': require('./account/logout'),
