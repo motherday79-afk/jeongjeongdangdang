@@ -6,7 +6,7 @@
 <meta http-equiv="Expires" content="0">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>정정당당 NOW Rank v2.2.4 · FINAL POLISH</title>
+<title>정참시 · 정치에 참여할 시간 | NOW Rank</title>
 <style>
 :root{
   --bg:#f5f8f7;
@@ -45,9 +45,11 @@ a{text-decoration:none;color:inherit}
 }
 .logo{
   display:flex;align-items:center;gap:10px;
-  font-size:30px;font-weight:900;letter-spacing:-1.7px;color:var(--mint-dark);
-  white-space:nowrap;
+  color:var(--mint-dark);white-space:nowrap;
 }
+.logo-copy{display:flex;flex-direction:column;justify-content:center;line-height:1}
+.logo-title{font-size:29px;font-weight:950;letter-spacing:-1.8px}
+.logo-subtitle{margin-top:5px;font-size:10px;font-weight:850;letter-spacing:-.25px;color:#66736f}
 .logo-mark{
   width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,var(--mint),var(--mint-dark));
   position:relative;box-shadow:0 8px 18px rgba(40,183,162,.2);
@@ -783,7 +785,8 @@ a{text-decoration:none;color:inherit}
 @media (max-width:780px){
   body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
   .nav{height:62px;padding:0 12px;gap:10px}
-  .logo{font-size:21px;letter-spacing:-1.1px}
+  .logo-title{font-size:21px;letter-spacing:-1.1px}
+  .logo-subtitle{font-size:8px;margin-top:4px}
   .logo-mark{width:25px;height:25px}
   .navlinks{display:none}
   .navright{margin-left:auto;gap:6px}
@@ -963,7 +966,12 @@ a{text-decoration:none;color:inherit}
 
 /* ===== /v2.0.1 Account & Membership Foundation ===== */
 
-/* ===== v2.2.4 Visitor + Community ===== */
+.local-now-brand{display:flex;align-items:center;gap:8px;margin:14px 0 8px;color:#66736f;font-size:11px}
+.local-now-brand b{display:inline-flex;align-items:center;height:25px;padding:0 9px;border-radius:999px;background:#e9fbf7;color:var(--mint-dark);font-size:10px;letter-spacing:.04em}
+.local-now-brand span{font-weight:800}
+@media(max-width:780px){.local-now-brand{margin-top:11px}.local-now-brand span{font-size:10px}}
+
+/* ===== v2.2.5 JEONGCHAMSI Brand Final ===== */
 .visitor-strip{max-width:1180px;margin:10px auto 0;padding:0 18px;display:flex;justify-content:flex-end;align-items:center;gap:8px;color:#66736f}
 .visitor-stat{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid #e2ebe8;background:#fff;border-radius:999px;font-size:11px;box-shadow:0 3px 12px rgba(15,23,42,.035)}
 .visitor-stat b{font-size:12px;color:#13211e}.visitor-stat small{font-size:10px;font-weight:800}.visitor-dot{width:7px;height:7px;border-radius:50%;background:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.12)}
@@ -971,20 +979,20 @@ a{text-decoration:none;color:inherit}
 .community-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px}.community-main,.community-compose-card,.community-guide{background:#fff;border:1px solid #e2ebe8;border-radius:20px}.community-main{padding:18px}.community-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.community-cats{display:flex;gap:7px;flex-wrap:wrap}.community-cat,.community-reload{border:0;border-radius:999px;background:#eef5f3;color:#52625d;padding:8px 11px;font-size:11px;font-weight:900;cursor:pointer}.community-cat.active{background:#111827;color:#fff}.community-reload{border-radius:10px}.community-list{display:grid;gap:8px}.community-post{border:1px solid #e8efed;border-radius:14px;padding:14px 15px;cursor:pointer;background:#fff;transition:.15s}.community-post:hover{background:#f8fbfa;border-color:#cfe7e0}.community-post-top{display:flex;align-items:center;gap:8px;font-size:10px;color:#71807b}.community-badge{display:inline-flex;padding:4px 7px;border-radius:999px;background:#eef8f5;color:#087b67;font-weight:900}.community-post h3{margin:8px 0 5px;font-size:16px}.community-post p{margin:0;color:#64748b;font-size:12px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.community-post-meta{margin-top:9px;font-size:10px;color:#8b9894}.community-empty{padding:48px 15px;text-align:center;color:#87948f}.community-side{display:grid;gap:12px;align-content:start}.community-compose-card{padding:18px;position:sticky;top:82px}.community-compose-card h2{margin:4px 0 12px}.community-compose-card label{display:block;font-size:11px;font-weight:900;color:#53615d;margin:11px 0 5px}.community-compose-card input,.community-compose-card select,.community-compose-card textarea,.community-comment-compose textarea{width:100%;border:1px solid #dce6e3;border-radius:11px;padding:10px 11px;font:inherit;outline:none}.community-compose-card textarea{min-height:150px;resize:vertical}.community-write-btn,.community-comment-compose button{width:100%;border:0;border-radius:11px;background:#111827;color:#fff;padding:11px 12px;font-weight:900;cursor:pointer;margin-top:10px}.community-login-note,.community-status{font-size:11px;line-height:1.55;color:#71807b;min-height:17px}.community-guide{padding:15px 16px;font-size:11px;line-height:1.65;color:#64748b}.community-guide b{color:#24332f}.community-guide p{margin:6px 0 0}.community-detail{border:1px solid #e2ebe8;border-radius:18px;padding:20px;background:#fff}.community-detail h2{font-size:25px;margin:10px 0}.community-detail-body{white-space:pre-wrap;line-height:1.75;font-size:14px;color:#334155;margin-top:18px}.community-comments{margin-top:14px;border:1px solid #e2ebe8;border-radius:18px;padding:18px}.community-comments h3{margin:0 0 12px}.community-comment-list{display:grid;gap:8px}.community-comment{padding:11px 12px;background:#f8fbfa;border-radius:12px}.community-comment b{font-size:11px}.community-comment span{display:block;margin-top:3px;font-size:10px;color:#94a3b8}.community-comment p{margin:7px 0 0;white-space:pre-wrap;font-size:12px;line-height:1.6}.community-comment-compose{margin-top:12px}.community-comment-compose textarea{min-height:82px;resize:vertical}.community-comment-compose button{width:auto;padding:9px 13px}.community-comment-empty{padding:18px;text-align:center;color:#94a3b8;font-size:11px}
 @media(max-width:900px){.visitor-strip{justify-content:center;padding:0 10px;gap:5px;flex-wrap:wrap}.visitor-stat-note{display:none}.community-shell{grid-template-columns:1fr}.community-side{order:-1}.community-compose-card{position:static}.community-toolbar{align-items:flex-start;flex-direction:column}.community-reload{align-self:flex-end}.community-compose-card textarea{min-height:110px}}
 @media(max-width:520px){.visitor-strip{margin-top:6px}.visitor-stat{padding:5px 7px}.visitor-stat small{font-size:9px}.community-main{padding:11px;border-radius:16px}.community-compose-card{padding:14px;border-radius:16px}.community-post{padding:12px}.community-detail{padding:15px}.community-cats{gap:5px}.community-cat{padding:7px 9px}}
-/* ===== /v2.2.4 ===== */
+/* ===== /v2.2.5 ===== */
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="nav">
-    <div class="logo" id="logoHome" style="cursor:pointer">
+    <div class="logo" id="logoHome" style="cursor:pointer" aria-label="정참시 · 정치에 참여할 시간">
       <div class="logo-mark"><i></i></div>
-      <div>정정당당</div>
+      <div class="logo-copy"><div class="logo-title">정참시</div><div class="logo-subtitle">정치에 참여할 시간</div></div>
     </div>
     <div class="navlinks">
       <button class="navbtn active" data-page="ranking">실시간 인물순위</button>
       <button class="navbtn" data-page="news">정정뉴스</button>
-      <button class="navbtn" data-page="community">커뮤니티</button>
+      <button class="navbtn" data-page="community">정참시 커뮤니티</button>
       <button class="navbtn" data-page="compare">비교분석</button>
       <button class="navbtn" data-page="my">MY</button>
     </div>
@@ -996,7 +1004,7 @@ a{text-decoration:none;color:inherit}
   </div>
 </div>
 
-<div class="visitor-strip" aria-label="정정당당 방문 현황">
+<div class="visitor-strip" aria-label="정참시 방문 현황">
   <div class="visitor-stat"><span class="visitor-dot"></span><b id="visitorOnline">-</b><small>현재 접속</small></div>
   <div class="visitor-stat"><b id="visitorToday">-</b><small>오늘 방문</small></div>
   <div class="visitor-stat"><b id="visitorTotal">-</b><small>누적 방문</small></div>
@@ -1039,13 +1047,13 @@ a{text-decoration:none;color:inherit}
           <div id="mobileRapidRisePortal"></div>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
-            <h3 id="mobileAllRankTitle">전체 NOW Rank</h3>
+            <h3 id="mobileAllRankTitle">정참시 NOW Rank</h3>
             <span id="mobileAllRankMeta">1~300 전체 보기</span>
           </div>
         </section>
         <div class="head">
           <div class="head-left">
-            <h1>대한민국 정치 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
+            <h1>정참시 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
             <div class="sub">국회의원·광역단체장·기초단체장의 뉴스·검색·현재 정치 이벤트·디지털 확산을 함께 추적해 “지금 누가 이슈의 중심인가”를 보여주는 실시간 정치 인텔리전스 랭킹입니다.</div>
           </div>
           <div class="searchline">
@@ -1067,7 +1075,7 @@ a{text-decoration:none;color:inherit}
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
-          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 20~25개</span></div>
+          <div class="now-keyword-head"><b>WHY NOW · 지금 정치권 키워드</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 20~25개</span></div>
           <div class="keyword-category-tabs" id="keywordCategoryTabs">
             <button class="keyword-category-tab active" data-keyword-category="all">전체</button>
             <button class="keyword-category-tab" data-keyword-category="assembly">국회의원</button>
@@ -1076,6 +1084,8 @@ a{text-decoration:none;color:inherit}
           </div>
           <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
         </section>
+
+        <div class="local-now-brand" aria-label="LOCAL NOW"><b>LOCAL NOW</b><span>광역·기초단체장 실시간 흐름</span></div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
@@ -1186,7 +1196,7 @@ a{text-decoration:none;color:inherit}
     <div class="section-title">
       <div>
         <div class="kicker">Jeongjeong Community</div>
-        <h1 class="h1">커뮤니티</h1>
+        <h1 class="h1">정참시 커뮤니티</h1>
         <div class="sub">정치 현안과 지역 이슈를 회원들이 자유롭게 이야기하는 공간입니다. 글과 댓글은 로그인 회원만 작성할 수 있습니다.</div>
       </div>
     </div>
@@ -1236,7 +1246,7 @@ a{text-decoration:none;color:inherit}
           <div class="community-status" id="communityWriteStatus"></div>
         </section>
         <section class="community-guide">
-          <b>커뮤니티 운영 원칙</b>
+          <b>정참시 커뮤니티 운영 원칙</b>
           <p>비판과 토론은 자유롭게, 개인정보 침해·불법정보·명예훼손·반복 스팸은 제한합니다. NOW Rank 순위에는 커뮤니티 글이 직접 반영되지 않습니다.</p>
         </section>
       </aside>
@@ -1249,7 +1259,7 @@ a{text-decoration:none;color:inherit}
       <div>
         <div class="kicker">Politician Compare</div>
         <h1 class="h1">비교분석</h1>
-        <div class="sub">두 정치인을 직접 검색해 NOW Rank, NOW Rank, 5개 NOW 지표를 한 화면에서 비교합니다. 실존 정치인의 기본 프로필은 REAL DATA이며, Rank와 그래프는 공개된 실제 데이터를 정정당당 방식으로 재구성한 분석 표현입니다.</div>
+        <div class="sub">두 정치인을 직접 검색해 NOW Rank와 5개 NOW 지표를 한 화면에서 비교합니다. 실존 정치인의 기본 프로필은 REAL DATA이며, Rank와 그래프는 공개된 실제 데이터를 정참시 방식으로 재구성한 분석 표현입니다.</div>
       </div>
     </div>
 
@@ -1292,7 +1302,7 @@ a{text-decoration:none;color:inherit}
       <div>
         <div class="kicker">Account & Membership</div>
         <h1 class="h1">MY</h1>
-        <div class="sub">정정당당 회원 정보와 멤버십, 선택적 정치 관심정보를 관리합니다.</div>
+        <div class="sub">정참시 회원 정보와 멤버십, 선택적 정치 관심정보를 관리합니다.</div>
       </div>
     </div>
 
@@ -1308,12 +1318,12 @@ a{text-decoration:none;color:inherit}
           <div class="useravatar" id="myAvatar">J</div>
           <div>
             <h2 class="h2" style="font-size:23px" id="myNicknameHead">회원</h2>
-            <div class="sub" style="margin-top:4px"><span id="myRoleText">FREE</span> · 정정당당 멤버</div>
+            <div class="sub" style="margin-top:4px"><span id="myRoleText">FREE</span> · 정참시 멤버</div>
           </div>
         </div>
         <div class="menu">
           <button class="mymenu active" data-my="profile">프로필 / 기본정보</button>
-          <button class="mymenu" data-my="plus">PLUS 대시보드</button>
+          <button class="mymenu" data-my="plus">정참시 PLUS</button>
           <button class="mymenu" data-my="membership">멤버십</button>
           <button class="mymenu" data-my="preference">내 정치 관심사</button>
           <button class="mymenu" data-my="security">보안 / 계정</button>
@@ -1338,12 +1348,12 @@ a{text-decoration:none;color:inherit}
         </div>
 
         <div id="my-plus" class="mytab" style="display:none">
-          <h2 class="h2" style="font-size:28px">PLUS 대시보드</h2>
+          <h2 class="h2" style="font-size:28px">정참시 PLUS</h2>
           <div class="sub">내가 지켜보는 정치인과 이슈를 한곳에 모으고, 장기 변화와 비교분석까지 연결하는 개인 정치 인텔리전스 영역입니다.</div>
           <div id="myPlusLocked" class="plus-lock-card" style="margin-top:16px">
-            <div class="kicker">JJDD PLUS</div><h3>월 5,000원 · 낮은 진입장벽으로 시작합니다.</h3>
+            <div class="kicker">정참시 PLUS</div><h3>월 5,000원 · 낮은 진입장벽으로 시작합니다.</h3>
             <p>관심 정치인·이슈 저장, 30일/1년 NOW Rank 히스토리, 정치인 비교, 개인별 관심 대시보드를 제공합니다. 푸시 알림은 앱 단계에서 추가합니다.</p>
-            <button class="plus-pay-btn" style="max-width:280px" onclick="openPlusUpgrade('PLUS 대시보드')">PLUS 구독하기</button>
+            <button class="plus-pay-btn" style="max-width:280px" onclick="openPlusUpgrade('정참시 PLUS')">정참시 PLUS 구독하기</button>
           </div>
           <div id="myPlusUnlocked" style="display:none">
             <div class="plus-dashboard-grid">
@@ -1359,7 +1369,7 @@ a{text-decoration:none;color:inherit}
           <div class="sub">PLUS 기능은 이번 빌드부터 실제 권한으로 동작합니다. 결제 버튼과 서버 계약 구조는 준비되어 있으며 CMS 결제 연동만 추후 연결합니다. PRO는 현장 의뢰형으로 대응하며 공개 상품은 준비중입니다.</div>
           <div class="membership-grid" id="membershipGrid">
             <div class="membership-card" data-role-card="FREE"><span class="membership-state">기본</span><h3>FREE</h3><div class="price">무료</div><ul><li>NOW Rank 공개정보</li><li>정정뉴스·커뮤니티</li><li>7일 이내 순위 변화</li></ul></div>
-            <div class="membership-card plus-feature" data-role-card="PLUS"><span class="membership-state">이용 가능</span><h3>PLUS</h3><div class="price">월 5,000원</div><ul><li>관심 정치인·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul><button class="plus-pay-btn" id="plusSubscribeBtn" onclick="openPlusUpgrade('멤버십')">PLUS 구독하기</button></div>
+            <div class="membership-card plus-feature" data-role-card="PLUS"><span class="membership-state">이용 가능</span><h3>정참시 PLUS</h3><div class="price">월 5,000원</div><ul><li>관심 정치인·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul><button class="plus-pay-btn" id="plusSubscribeBtn" onclick="openPlusUpgrade('멤버십')">정참시 PLUS 구독하기</button></div>
             <div class="membership-card" data-role-card="PRO"><span class="membership-state">준비중</span><h3>PRO</h3><div class="price">별도 문의</div><ul><li>정치·정책 인텔리전스</li><li>맞춤 모니터링</li><li>AI 리서치</li><li>의원실·조직 업무용</li></ul></div>
           </div>
           <div class="account-note" style="margin-top:14px">CMS 결제는 아직 연결하지 않았으므로 실제 금액이 청구되지 않습니다. 현재 테스트는 관리자 콘솔에서 회원 등급을 PLUS로 변경해 진행할 수 있습니다.</div>
@@ -1392,7 +1402,7 @@ a{text-decoration:none;color:inherit}
 
 <div class="account-overlay" id="accountModal" onclick="if(event.target===this) closeAccountModal()" aria-hidden="true">
   <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="accountDialogTitle">
-    <div class="account-dialog-head"><div><div class="kicker">JEONGJEONGDANGDANG MEMBER</div><h2 id="accountDialogTitle">정정당당 계정</h2></div><button class="account-close" onclick="closeAccountModal()">✕</button></div>
+    <div class="account-dialog-head"><div><div class="kicker">JEONGCHAMSI MEMBER</div><h2 id="accountDialogTitle">정참시 계정</h2></div><button class="account-close" onclick="closeAccountModal()">✕</button></div>
     <div class="account-tabs"><button class="account-tab active" data-account-tab="login">로그인</button><button class="account-tab" data-account-tab="signup">회원가입</button></div>
     <form class="account-form" id="loginForm">
       <div class="account-field"><label>아이디</label><input id="loginUsername" type="text" maxlength="190" autocomplete="username" required placeholder="apple12"></div>
@@ -8853,7 +8863,7 @@ people.push({
   termStart:"-",grade:"D",delta:0,issue:false,isReal:true,simulation:false,dataSource:"현역 의석 현황",
   journey:[
     ["2026.07.16","의원직 공석","전임 의원의 의원직 상실로 현재 보궐선거 전 공석"],
-    ["현재","현역 의원 없음","정정당당은 공석도 실제 의석 상태로 표시"]
+    ["현재","현역 의원 없음","정참시는 공석도 실제 의석 상태로 표시"]
   ],
   metrics:[["언론 주목도","D"],["대중 관심도","D"],["디지털 영향력","D"],["대중 반응도","D"],["정책 활동도","D"],["의정 활동도","D"],["정치 영향력","D"],["인지도","D"]]
 });
@@ -8876,7 +8886,7 @@ people = people.map(p => {
     eventLabel:r.eventLabel, sourceCount:r.sourceCount, latest:r.latest, nowComponents:r.nowComponents,
     signal:r.signal||null, whyNow:r.whyNow||null,
     metrics:r.metrics.map(v=>[v[0],v[1],v[2]]),
-    simulation:false, dataSource:"정정당당 NOW Rank v1 · Issue Radar"
+    simulation:false, dataSource:"정참시 NOW Rank v1 · Issue Radar"
   };
 }).sort((a,b)=>a.rank-b.rank);
 // ===== /NOW Rank v1 =====
@@ -8974,8 +8984,8 @@ const newsArticles = [
     body:[
       "국회 산업 관련 상임위원회에서 반도체 특별법 핵심 조항을 두고 협상이 이어졌고, 세액공제와 인력 양성 지원에 대해 절충안이 마련됐다는 형식의 샘플 보도다.",
       "이 기사는 실제 뉴스 서비스처럼 관련 정책 키워드와 산업 이미지를 함께 배치했을 때의 전달력을 확인하기 위한 목적도 가진다.",
-      "정정당당에서는 향후 단순 뉴스 나열을 넘어 ‘어떤 정책이 어떤 정치인에게 어떤 영향을 미쳤는지’를 함께 보여주는 구조가 가능하다.",
-      "정책 기사 역시 정정당당의 랭킹 및 이슈 분석과 연결돼 맥락 있는 소비를 유도할 수 있다."
+      "정참시에서는 향후 단순 뉴스 나열을 넘어 ‘어떤 정책이 어떤 정치인에게 어떤 영향을 미쳤는지’를 함께 보여주는 구조가 가능하다.",
+      "정책 기사 역시 정참시의 랭킹 및 이슈 분석과 연결돼 맥락 있는 소비를 유도할 수 있다."
     ],
     type:"semiconductor"
   },
@@ -9016,7 +9026,7 @@ const newsArticles = [
     body:[
       "한 정치인의 청년 주거 대책 발표 이후 포털 검색량과 커뮤니티 반응, 영상 콘텐츠 조회가 동시 증가했다는 상황을 예시로 만든 기사다.",
       "정정뉴스는 이런 흐름을 단순 기사 제목에 그치지 않고, 어떤 요소가 인물의 순위 상승에 영향을 미쳤는지 풀어주는 역할을 하게 된다.",
-      "결국 정정당당의 뉴스는 ‘왜 지금 이 사람이 올라왔는가’를 설명하는 보조 엔진이 되는 구조를 지향한다.",
+      "결국 정참시의 뉴스는 ‘왜 지금 이 사람이 올라왔는가’를 설명하는 보조 엔진이 되는 구조를 지향한다.",
       "서비스 데모 단계에서는 실제 뉴스를 사용하지 않고도 이런 구조를 충분히 시각화할 수 있다."
     ],
     type:"housing"
@@ -9163,7 +9173,9 @@ function entityCategoryMatch(x,category=mode){
 function renderMobileRankHeading(){
   const allTitle=document.getElementById('mobileAllRankTitle'),allMeta=document.getElementById('mobileAllRankMeta');
   const label=ENTITY_LABELS[mode]||'전체';
-  if(allTitle) allTitle.textContent=mode==='all'?'전체 정치 NOW Rank':`${label} NOW Rank`;
+  if(allTitle){
+    allTitle.textContent=mode==='all'?'정참시 NOW Rank':(mode==='assembly'?'국회의원 NOW Rank':`LOCAL NOW · ${label}`);
+  }
   if(allMeta){
     const count=people.filter(x=>entityCategoryMatch(x,mode)).length;
     allMeta.textContent=count?`1~${count} 전체 보기`:'전체 보기';
@@ -9960,7 +9972,7 @@ function compareResultHTML(a,b,showBack=false){
       ${rows.map(r=>`<div class="compare-row"><div class="left">${r[1]}</div><div class="label">${r[0]}</div><div class="right">${r[2]}</div></div>`).join("")}
     </div>
 
-    <div class="why"><h4>비교 기능의 원칙</h4><p>실존 정치인의 공개 데이터를 바탕으로 두 인물의 현재 순위·Rank·5개 NOW 축을 같은 좌표계에서 비교합니다. Rank는 정정당당의 분석 표현이며, 어느 쪽이 더 ‘좋은 정치인’인지 결론내리지 않고 판단에 필요한 차이만 보여줍니다.</p></div>
+    <div class="why"><h4>비교 기능의 원칙</h4><p>실존 정치인의 공개 데이터를 바탕으로 두 인물의 현재 순위·Rank·5개 NOW 축을 같은 좌표계에서 비교합니다. Rank는 정참시의 분석 표현이며, 어느 쪽이 더 ‘좋은 정치인’인지 결론내리지 않고 판단에 필요한 차이만 보여줍니다.</p></div>
     ${showBack?`<div style="margin-top:14px"><button class="secondary" onclick="openDetail(${a.id})">← ${a.name} 상세로 돌아가기</button></div>`:""}
   `;
 }
@@ -10163,7 +10175,7 @@ async function loadRankHistoryForDetail(x,days=JJDD_RANK_HISTORY_DEFAULT_DAYS,fo
 
 // v1.14.7 — modal browser-history bridge
 // Opening a detail popup creates an in-page history entry so the browser Back button
-// closes/restores the popup instead of navigating away from 정정당당.
+// closes/restores the popup instead of navigating away from 정참시.
 const JJDD_MODAL_HISTORY_KEY='__jjddModal';
 function jjddModalHistoryState(){
   const st=history.state;
@@ -10274,7 +10286,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">NOW Rank v2.2.4 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.5 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -10291,8 +10303,8 @@ function openDetail(id,opts={}){
         <div class="detail-section-head"><span class="detail-section-index">RECORD</span><h3>공식 기록과 이력</h3></div>
         <div class="record-grid">
           ${entityRecordCardsHTML(x)}
-          <div class="record-card"><h4>정정당당 데이터 구분</h4><div class="record-list"><div class="record-item"><span>신상·소속·직위</span><b>공식정보 우선</b></div><div class="record-item"><span>NOW Rank·5축</span><b>실시간 이슈 분석</b></div><div class="record-item"><span>검색 관심·언론 주목</span><b>관측 데이터</b></div><div class="record-item"><span>사진 신원</span><b>${type==='assembly'?'국회 공식사진 우선':'지방정부·공식협의회 사진만 허용'}</b></div></div></div>
-          <div class="record-card"><h4>공식 기록 원칙</h4><div class="record-list"><div class="record-item"><span>성과 평가</span><b>NOW Rank와 분리</b></div><div class="record-item"><span>선거·임기 이력</span><b>공식 원문 우선</b></div><div class="record-item"><span>사진 불확실</span><b>기본 이미지로 대체</b></div><div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div></div><div class="why" style="margin-top:12px"><h4>정정당당의 원칙</h4><p>RECORD는 공식 기록을, NOW는 현재의 모멘텀을 보여줍니다. 확인되지 않은 사진이나 이력을 억지로 채우지 않습니다.</p></div></div>
+          <div class="record-card"><h4>정참시 데이터 구분</h4><div class="record-list"><div class="record-item"><span>신상·소속·직위</span><b>공식정보 우선</b></div><div class="record-item"><span>NOW Rank·5축</span><b>실시간 이슈 분석</b></div><div class="record-item"><span>검색 관심·언론 주목</span><b>관측 데이터</b></div><div class="record-item"><span>사진 신원</span><b>${type==='assembly'?'국회 공식사진 우선':'지방정부·공식협의회 사진만 허용'}</b></div></div></div>
+          <div class="record-card"><h4>공식 기록 원칙</h4><div class="record-list"><div class="record-item"><span>성과 평가</span><b>NOW Rank와 분리</b></div><div class="record-item"><span>선거·임기 이력</span><b>공식 원문 우선</b></div><div class="record-item"><span>사진 불확실</span><b>기본 이미지로 대체</b></div><div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div></div><div class="why" style="margin-top:12px"><h4>정참시의 원칙</h4><p>RECORD는 공식 기록을, NOW는 현재의 모멘텀을 보여줍니다. 확인되지 않은 사진이나 이력을 억지로 채우지 않습니다.</p></div></div>
         </div>
       </section>
     </div>`;
@@ -10351,7 +10363,7 @@ function openPresident(opts={}){
           <div class="ranks">
             ${president.metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]}</b></div>`).join("")}
           </div>
-          <div class="source-note">이 8개 Rank는 공개된 실제 정보와 여론 흐름을 정정당당의 5개 NOW 축으로 재구성한 프로토타입 분석 표현입니다. 정부가 발표한 공식 평가점수는 아니며, 실제 여론조사 수치와는 별도로 표시합니다.</div>
+          <div class="source-note">이 8개 Rank는 공개된 실제 정보와 여론 흐름을 정참시의 5개 NOW 축으로 재구성한 프로토타입 분석 표현입니다. 정부가 발표한 공식 평가점수는 아니며, 실제 여론조사 수치와는 별도로 표시합니다.</div>
         </div>
         <div class="radarbox">
           <svg viewBox="0 0 340 340">
@@ -10416,7 +10428,7 @@ function openGovPerson(i,opts={}){
       <div class="gov-detail-item"><span>상태</span><b>${g.status}</b></div>
       <div class="gov-detail-item"><span>랭킹</span><b>국회의원 300인 랭킹 대상 아님</b></div>
     </div>
-    <div class="why"><h4>왜 상단에 따로 보여주나요?</h4><p>장관과 국무총리는 정치적 영향력이 큰 인물이지만 국회의원 300인 랭킹과는 신분과 역할이 다릅니다. 정정당당에서는 정부 주요 인사로 별도 추적해 혼동 없이 보여주는 구조를 가정합니다.</p></div>`;
+    <div class="why"><h4>왜 상단에 따로 보여주나요?</h4><p>장관과 국무총리는 정치적 영향력이 큰 인물이지만 국회의원 300인 랭킹과는 신분과 역할이 다릅니다. 정참시에서는 정부 주요 인사로 별도 추적해 혼동 없이 보여주는 구조를 가정합니다.</p></div>`;
   document.getElementById("modal").classList.add("show");
 }
 window.openGovPerson=openGovPerson;
@@ -10650,7 +10662,7 @@ function scheduleNowPhotoHydrator(){
 }
 function updateNowStatus(snap,checking=false){
   const status=document.getElementById('serverUpdateStatus'); if(!status)return;
-  const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정정당당'};
+  const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정참시'};
   const src=(snap?.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
   status.innerHTML=`<b>최근 게시:</b> ${snap?.timestamp||'-'}${checking?' · <span style="color:#64748b">최신 확인 중</span>':''}<br><b>수집 원천:</b> ${src||'운영 데이터'}`;
 }
@@ -10782,7 +10794,7 @@ function openPlusUpgrade(feature='PLUS'){
   if(!window.JJDD_ACCOUNT_USER){openAccountModal('login');return;}
   if(hasPlusAccess()){openMyTab('plus');return;}
   const m=document.getElementById('billingModal');if(!m)return;
-  const title=document.getElementById('billingTitle');if(title)title.textContent=`PLUS 구독 · ${feature}`;
+  const title=document.getElementById('billingTitle');if(title)title.textContent=`정참시 PLUS · ${feature}`;
   const st=document.getElementById('billingStatus');if(st)st.textContent='';
   m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
 }
@@ -10939,10 +10951,10 @@ document.getElementById('myPlusIssueInput')?.addEventListener('keydown',e=>{if(e
 async function logoutAccount(){try{await accountApi('/api/account/logout',{method:'POST',body:'{}'});}catch(_){}setAccountUI(null);showPage('ranking');}
 document.getElementById('myLogoutBtn')?.addEventListener('click',logoutAccount);
 document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
-  const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정정당당 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
+  const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
-// ===== v2.2.4 Visitor statistics + Community =====
+// ===== v2.2.5 Visitor statistics + Community + JEONGCHAMSI branding =====
 const JJDD_VISITOR_KEY='jjdd_visitor_session_v1';
 function jjddVisitorSession(){
   let v='';try{v=localStorage.getItem(JJDD_VISITOR_KEY)||'';}catch(_){}
@@ -11011,7 +11023,7 @@ document.getElementById('communityCommentBtn')?.addEventListener('click',async()
   try{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'comments',postId:communitySelectedPost.id,content})}});input.value='';st.textContent='';await loadCommunityComments(communitySelectedPost.id);await loadCommunity(true);}
   catch(e){st.textContent=e.message;}
 });
-// ===== /v2.2.4 =====
+// ===== /v2.2.5 =====
 const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
 refreshAccountSession();
 // ===== /v2.0.1 Simple ID Login & 8-char Password =====
@@ -11030,7 +11042,7 @@ refreshAccountSession();
 
 <div class="account-overlay" id="billingModal" onclick="if(event.target===this)closePlusUpgrade()" aria-hidden="true">
   <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="billingTitle">
-    <div class="account-dialog-head"><div><div class="kicker">JJDD PLUS</div><h2 id="billingTitle">PLUS 구독</h2></div><button class="account-close" onclick="closePlusUpgrade()">✕</button></div>
+    <div class="account-dialog-head"><div><div class="kicker">정참시 PLUS</div><h2 id="billingTitle">정참시 PLUS 구독</h2></div><button class="account-close" onclick="closePlusUpgrade()">✕</button></div>
     <div class="billing-plan"><div class="sub" style="margin:0">개인 정치 인텔리전스</div><strong>월 5,000원</strong><div class="sub" style="margin-top:6px">관심 정치인·이슈 저장 · 30일/1년 히스토리 · 정치인 비교 · 개인 대시보드</div></div>
     <div class="account-note">결제 방식은 CMS를 연결할 예정입니다. 이번 빌드의 버튼은 결제 요청 API 계약과 구독 의사 기록까지만 준비되어 있으며 실제 출금·결제는 발생하지 않습니다.</div>
     <button class="account-submit mint" id="billingCheckoutBtn" style="width:100%;margin-top:14px" onclick="requestPlusCheckout()">결제하기 · CMS 연결 준비중</button>
