@@ -387,22 +387,34 @@
       "digital": 10.0,
       "event": 8.0,
       "news": 9.1
-    }
+    },
+    "ambiguousName": true,
+    "disambiguation": [
+      "해남",
+      "완도",
+      "진도",
+      "전남",
+      "국정원",
+      "국가정보원",
+      "5선"
+    ],
+    "identityNote": "전남 해남군완도군진도군 박지원 의원"
   },
   {
     "id": 27,
-    "name": "추경호",
+    "name": "이진숙",
     "party": "국민의힘",
     "region": "대구",
     "constituency": "대구 달성군",
     "baseline": {
-      "rank": 82,
-      "score": 36.2,
-      "search": 12.0,
-      "digital": 10.0,
-      "event": 8.0,
-      "news": 9.1
-    }
+      "rank": 299,
+      "score": 0.0,
+      "search": 0.0,
+      "digital": 0.0,
+      "event": 0.0,
+      "news": 0.0
+    },
+    "electedAt": "2026.06.04"
   },
   {
     "id": 28,
@@ -3031,18 +3043,19 @@
   },
   {
     "id": 203,
-    "name": "박수현",
-    "party": "더불어민주당",
+    "name": "윤용근",
+    "party": "국민의힘",
     "region": "충남",
     "constituency": "충남 공주시부여군청양군",
     "baseline": {
-      "rank": 17,
-      "score": 63.2,
-      "search": 61.1,
-      "digital": 58.7,
-      "event": 8.0,
-      "news": 22.9
-    }
+      "rank": 299,
+      "score": 0.0,
+      "search": 0.0,
+      "digital": 0.0,
+      "event": 0.0,
+      "news": 0.0
+    },
+    "electedAt": "2026.06.04"
   },
   {
     "id": 204,
@@ -3136,33 +3149,46 @@
   },
   {
     "id": 210,
-    "name": "신영대",
+    "name": "김의겸",
     "party": "더불어민주당",
     "region": "전북",
     "constituency": "전북 군산시김제시부안군갑",
     "baseline": {
-      "rank": 226,
-      "score": 18.8,
-      "search": 12.0,
-      "digital": 10.0,
-      "event": 8.0,
-      "news": 9.1
-    }
+      "rank": 299,
+      "score": 0.0,
+      "search": 0.0,
+      "digital": 0.0,
+      "event": 0.0,
+      "news": 0.0
+    },
+    "electedAt": "2026.06.04"
   },
   {
     "id": 211,
-    "name": "이원택",
+    "name": "박지원",
     "party": "더불어민주당",
     "region": "전북",
     "constituency": "전북 군산시김제시부안군을",
     "baseline": {
-      "rank": 18,
-      "score": 62.9,
-      "search": 59.9,
-      "digital": 59.9,
-      "event": 8.0,
-      "news": 22.5
-    }
+      "rank": 299,
+      "score": 0.0,
+      "search": 0.0,
+      "digital": 0.0,
+      "event": 0.0,
+      "news": 0.0
+    },
+    "electedAt": "2026.06.04",
+    "ambiguousName": true,
+    "disambiguation": [
+      "군산",
+      "김제",
+      "부안",
+      "전북",
+      "최고위원",
+      "평당원",
+      "변호사"
+    ],
+    "identityNote": "전북 군산시김제시부안군을 박지원 의원"
   },
   {
     "id": 212,
@@ -3796,18 +3822,19 @@
   },
   {
     "id": 254,
-    "name": "위성곤",
+    "name": "김성범",
     "party": "더불어민주당",
     "region": "제주",
     "constituency": "제주 서귀포시",
     "baseline": {
-      "rank": 264,
-      "score": 14.2,
-      "search": 12.0,
-      "digital": 10.0,
-      "event": 8.0,
-      "news": 9.1
-    }
+      "rank": 299,
+      "score": 0.0,
+      "search": 0.0,
+      "digital": 0.0,
+      "event": 0.0,
+      "news": 0.0
+    },
+    "electedAt": "2026.06.04"
   },
   {
     "id": 255,

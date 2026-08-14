@@ -13,13 +13,24 @@ function snapshotStamp(s){
   const kst=String(s?.timestamp||'').replace(' KST','+09:00').replace(' ','T');
   const t=Date.parse(kst); return Number.isFinite(t)?t:0;
 }
+function findMember(snapshot,{id,name}){
+  const rows=snapshot?.members||[];
+  if(Number.isFinite(Number(id))){
+    const m=rows.find(x=>Number(x?.id)===Number(id));
+    if(m && (!name||String(m.name||'')===name))return m;
+    return null;
+  }
+  if(!name)return null;
+  const matches=rows.filter(x=>String(x?.name||'')===name);
+  return matches.length===1?matches[0]:null;
+}
 module.exports=async function handler(req,res){
   disableCache(res);
   try{
     const days=Math.max(1,Math.min(28,Number(req.query?.days)||7));
     const personName=String(req.query?.name||'').trim();
-    // Manual publishing means the number of snapshots per day is variable. Read the retained
-    // history in one Redis MGET, then filter by real publication time rather than assuming 4/day.
+    const personId=Number(req.query?.id);
+    const hasPerson=personName||Number.isFinite(personId);
     const [ids,current]=await Promise.all([
       store.lrange('jjdd:history',0,111),
       store.getJSON('jjdd:current').catch(()=>null)
@@ -35,12 +46,11 @@ module.exports=async function handler(req,res){
     if(dated.length) full=dated;
     else full=full.slice(0,Math.max(2,days*4));
 
-    if(personName){
+    if(hasPerson){
       const series=full.map(s=>{
-        const m=(s.members||[]).find(x=>x?.name===personName);
+        const m=findMember(s,{id:personId,name:personName});
         if(!m||!Number.isFinite(Number(m.rank)))return null;
-        const stamp=snapshotStamp(s);
-        const dt=s.publishedAt||s.timestamp||'';
+        const stamp=snapshotStamp(s),dt=s.publishedAt||s.timestamp||'';
         let label='';
         try{
           const d=s.publishedAt?new Date(s.publishedAt):new Date(String(s.timestamp||'').replace(' KST','+09:00').replace(' ','T'));
@@ -52,16 +62,22 @@ module.exports=async function handler(req,res){
         }catch(_){ }
         return {publicationId:s.publicationId||null,publishedAt:s.publishedAt||null,timestamp:s.timestamp||null,stamp,label:label||String(dt).slice(5,16),rank:Number(m.rank),score:Number.isFinite(Number(m.score))?Number(m.score):null};
       }).filter(Boolean).sort((a,b)=>a.stamp-b.stamp);
-      return res.status(200).json({name:personName,days,currentPublicationId:current?.publicationId||null,currentTimestamp:current?.timestamp||null,series});
+      return res.status(200).json({id:Number.isFinite(personId)?personId:null,name:personName,days,currentPublicationId:current?.publicationId||null,currentTimestamp:current?.timestamp||null,series});
     }
 
-    const snapshots=full.map(s=>({
-      id:String(s.publicationId||''),publicationId:s.publicationId||null,
-      publishedAt:s.publishedAt||null,timestamp:s.timestamp,version:s.version,
-      ranks:Object.fromEntries((s.members||[]).map(m=>[m.name,{rank:m.rank,score:m.score}]))
-    }));
+    const snapshots=full.map(s=>{
+      const active=s.members||[];
+      const nameCounts=active.reduce((acc,m)=>(acc[m.name]=(acc[m.name]||0)+1,acc),{});
+      return {
+        id:String(s.publicationId||''),publicationId:s.publicationId||null,
+        publishedAt:s.publishedAt||null,timestamp:s.timestamp,version:s.version,
+        ranksById:Object.fromEntries(active.map(m=>[String(m.id),{name:m.name,rank:m.rank,score:m.score}])),
+        ranks:Object.fromEntries(active.filter(m=>nameCounts[m.name]===1).map(m=>[m.name,{rank:m.rank,score:m.score,id:m.id}]))
+      };
+    });
     return res.status(200).json({currentPublicationId:current?.publicationId||null,currentTimestamp:current?.timestamp||null,snapshots});
   }catch(e){
-    return res.status(200).json(req.query?.name?{name:String(req.query.name||''),series:[]}:{snapshots:[]});
+    const personName=String(req.query?.name||'').trim(),personId=Number(req.query?.id);
+    return res.status(200).json((personName||Number.isFinite(personId))?{id:Number.isFinite(personId)?personId:null,name:personName,series:[]}:{snapshots:[]});
   }
 };

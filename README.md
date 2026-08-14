@@ -1,3 +1,7 @@
+# 정정당당 NOW Rank v1.14.8 — Roster Identity Hotfix
+
+현재 배포본 안내는 `README_V1_14_8_ROSTER_IDENTITY_HOTFIX.md`를 먼저 확인하세요.
+
 # 정정당당 NOW Rank v1.11 — Name Pulse Integrated
 
 See `README_V1_11_NAMEPULSE_INTEGRATED.md` for this release.

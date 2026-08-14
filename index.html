@@ -1367,7 +1367,9 @@ function presidentPortraitSVG(){
 // 현역 의원은 열린국회정보 ALLNAMEMBER의 NAAS_PIC/NAAS_CD를 최우선으로 사용합니다.
 // 공식 API 접근이 일시적으로 제한될 경우 Wikidata/Wikimedia Commons의 실제 인물 사진으로 보완합니다.
 // 어떤 외부 원천에서도 사진을 확인하지 못했을 때만 기존 일러스트를 안전한 최종 fallback으로 유지합니다.
-const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v141";
+const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v148";
+const PHOTO_AMBIGUOUS_MEMBER_IDS=new Set([26,211]);
+const PHOTO_MEMBER_DISAMBIG={26:['전남','해남','완도','진도'],211:['전북','군산','김제','부안']};
 const ASSEMBLY_MEMBER_API="https://open.assembly.go.kr/portal/openapi/ALLNAMEMBER";
 let politicianPhotoCache={};
 let politicianPhotoPromises=new Map();
@@ -1385,11 +1387,12 @@ function photoNameFromSlot(el){
 }
 function politicianPhotoHTML(name,seedv=1,quality="standard"){
   const enc=encodeURIComponent(name||"");
-  const cached=quality==="high" ? null : politicianPhotoCache[name];
+  const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(Number(seedv));
+  const cached=(quality==="high"||ambiguous) ? null : politicianPhotoCache[name];
   if(cached?.url){
-    return `<span class="politician-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-ambiguous="${ambiguous?'1':'0'}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
-  return `<span class="politician-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}">${personSVG(seedv)}</span>`;
+  return `<span class="politician-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-ambiguous="${ambiguous?'1':'0'}">${personSVG(seedv)}</span>`;
 }
 function savePoliticianPhotoCache(){
   try{localStorage.setItem(POLITICIAN_PHOTO_CACHE_KEY,JSON.stringify(politicianPhotoCache))}catch(e){}
@@ -1443,9 +1446,23 @@ async function ensureAssemblyPhotoDirectory(){
   })();
   return assemblyPhotoDirectoryPromise;
 }
-async function resolveAssemblyPhoto(name){
+function memberPhotoClues(member){
+  if(!member)return [];
+  if(PHOTO_MEMBER_DISAMBIG[Number(member.id)])return PHOTO_MEMBER_DISAMBIG[Number(member.id)];
+  const raw=[member.region,member.constituency].filter(Boolean).join(' ');
+  return [...new Set(raw.split(/[\s·,()]+/).map(x=>x.replace(/[갑을병정]$/,'').trim()).filter(x=>x.length>=2&&!['대한민국','국회의원'].includes(x)))];
+}
+function assemblyRowContextScore(row,member){
+  const txt=JSON.stringify(row||{}).replace(/\s+/g,'');
+  const clues=memberPhotoClues(member);
+  let score=String(row?.GTELT_ERACO||row?.UNIT_NM||'').includes('22')?2:0;
+  clues.forEach(c=>{if(txt.includes(String(c).replace(/\s+/g,'')))score+=5;});
+  return score;
+}
+async function resolveAssemblyPhoto(name,member=null){
+  const ambiguous=!!member&&PHOTO_AMBIGUOUS_MEMBER_IDS.has(Number(member.id));
   await ensureAssemblyPhotoDirectory();
-  if(assemblyPhotoMap[name]) return {url:assemblyPhotoMap[name],source:'assembly',title:'사진 출처: 대한민국 국회'};
+  if(!ambiguous && assemblyPhotoMap[name]) return {url:assemblyPhotoMap[name],source:'assembly',title:'사진 출처: 대한민국 국회'};
   const q=encodeURIComponent(name);
   const urls=[
     `${ASSEMBLY_MEMBER_API}?KEY=sample&Type=json&pIndex=1&pSize=10&NAAS_NM=${q}`,
@@ -1456,9 +1473,16 @@ async function resolveAssemblyPhoto(name){
       const data=await photoFetchJSON(url,4000);
       let rows=collectMemberRows(data,[]).filter(r=>rowName(r)===name);
       if(!rows.length) continue;
-      rows.sort((a,b)=>String(b.GTELT_ERACO||b.UNIT_NM||'').includes('22')-String(a.GTELT_ERACO||a.UNIT_NM||'').includes('22'));
-      const u=rowPhoto(rows[0]);
-      if(u){assemblyPhotoMap[name]=u; return {url:u,source:'assembly',title:'사진 출처: 대한민국 국회'};}
+      if(ambiguous){
+        rows=rows.map(r=>({r,score:assemblyRowContextScore(r,member)})).sort((a,b)=>b.score-a.score);
+        if(!rows.length||rows[0].score<5) continue; // never guess between same-name lawmakers
+        const u=rowPhoto(rows[0].r);
+        if(u) return {url:u,source:'assembly',title:`사진 출처: 대한민국 국회 · ${member.constituency||member.region||''}`};
+      }else{
+        rows.sort((a,b)=>String(b.GTELT_ERACO||b.UNIT_NM||'').includes('22')-String(a.GTELT_ERACO||a.UNIT_NM||'').includes('22'));
+        const u=rowPhoto(rows[0]);
+        if(u){assemblyPhotoMap[name]=u; return {url:u,source:'assembly',title:'사진 출처: 대한민국 국회'};}
+      }
     }catch(e){}
   }
   return null;
@@ -1532,30 +1556,33 @@ async function resolveWikidataPhotoHQ(name){
   }
   return await resolveWikipediaPagePhotoHQ(name);
 }
-async function resolvePoliticianPhotoHigh(name){
+async function resolvePoliticianPhotoHigh(name,member=null){
   if(!name) return null;
+  if(member&&PHOTO_AMBIGUOUS_MEMBER_IDS.has(Number(member.id))) return await resolveAssemblyPhoto(name,member);
   const result=await resolveWikidataPhotoHQ(name);
   if(result) return result;
-  return await resolveAssemblyPhoto(name);
+  return await resolveAssemblyPhoto(name,member);
 }
-async function resolvePoliticianPhoto(name,{skipAssembly=false,skipWikimedia=false}={}){
+async function resolvePoliticianPhoto(name,{skipAssembly=false,skipWikimedia=false,member=null}={}){
   if(!name) return null;
-  const cached=politicianPhotoCache[name];
+  const ambiguous=!!member&&PHOTO_AMBIGUOUS_MEMBER_IDS.has(Number(member.id));
+  const cached=ambiguous?null:politicianPhotoCache[name];
   if(cached?.url && !skipAssembly && !skipWikimedia) return cached;
-  const key=`${name}|${skipAssembly?'A':''}|${skipWikimedia?'W':''}`;
+  const key=`${ambiguous?'id:'+member.id:name}|${skipAssembly?'A':''}|${skipWikimedia?'W':''}`;
   if(politicianPhotoPromises.has(key)) return politicianPhotoPromises.get(key);
   const p=(async()=>{
     let result=null;
-    if(!skipAssembly) result=await resolveAssemblyPhoto(name);
-    if(!result && !skipWikimedia) result=await resolveWikidataPhoto(name);
-    if(result){politicianPhotoCache[name]=result;savePoliticianPhotoCache();}
+    if(!skipAssembly) result=await resolveAssemblyPhoto(name,member);
+    if(!result && !skipWikimedia && !ambiguous) result=await resolveWikidataPhoto(name);
+    if(result&&!ambiguous){politicianPhotoCache[name]=result;savePoliticianPhotoCache();}
     return result;
   })().finally(()=>politicianPhotoPromises.delete(key));
   politicianPhotoPromises.set(key,p); return p;
 }
-function applyPoliticianPhoto(name,result,quality="standard"){
+function applyPoliticianPhoto(name,result,quality="standard",seedFilter=null){
   if(!result?.url) return;
   document.querySelectorAll(`.politician-photo[data-photo-name="${CSS.escape(encodeURIComponent(name))}"][data-photo-quality="${quality}"]`).forEach(slot=>{
+    if(seedFilter!==null && Number(slot.dataset.photoSeed)!==Number(seedFilter))return;
     const seed=Number(slot.dataset.photoSeed||1);
     slot.classList.remove('is-loading');
     slot.innerHTML=`<img src="${photoAttr(result.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(result.title||'실제 인물 사진')}" data-photo-source="${photoAttr(result.source||'unknown')}" data-photo-quality="${quality}" data-photo-name="${encodeURIComponent(name)}" data-photo-seed="${seed}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)">`;
@@ -1566,8 +1593,10 @@ async function hydratePhotoSlot(slot){
   const name=photoNameFromSlot(slot); if(!name) return;
   slot.dataset.photoHydrating='1';
   const quality=slot.dataset.photoQuality||"standard";
-  const result=quality==="high" ? await resolvePoliticianPhotoHigh(name) : await resolvePoliticianPhoto(name);
-  if(result) applyPoliticianPhoto(name,result,quality); else slot.classList.remove('is-loading');
+  const seed=Number(slot.dataset.photoSeed||0);
+  const member=PHOTO_AMBIGUOUS_MEMBER_IDS.has(seed)?people.find(p=>Number(p.id)===seed&&p.name===name):null;
+  const result=quality==="high" ? await resolvePoliticianPhotoHigh(name,member) : await resolvePoliticianPhoto(name,{member});
+  if(result) applyPoliticianPhoto(name,result,quality,member?seed:null); else slot.classList.remove('is-loading');
   slot.dataset.photoHydrating='0';
 }
 function registerPoliticianPhotoSlots(root=document){
@@ -1583,9 +1612,15 @@ function registerPoliticianPhotoSlots(root=document){
 async function handlePoliticianPhotoError(img){
   const name=(()=>{try{return decodeURIComponent(img.dataset.photoName||'')}catch(e){return img.dataset.photoName||''}})();
   const seed=Number(img.dataset.photoSeed||1); const source=img.dataset.photoSource||'';
-  if(name) delete politicianPhotoCache[name]; savePoliticianPhotoCache();
+  const member=PHOTO_AMBIGUOUS_MEMBER_IDS.has(seed)?people.find(p=>Number(p.id)===seed&&p.name===name):null;
+  if(name&&!member) delete politicianPhotoCache[name]; savePoliticianPhotoCache();
   const slot=img.closest('.politician-photo');
   const quality=img.dataset.photoQuality||"standard";
+  // Same-name lawmakers must never fall through to an unqualified Wikipedia/Wikidata guess.
+  if(member){
+    if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title='동명이인 공식 사진 식별 실패 · 잘못된 사진 대신 안전한 기본 이미지를 표시합니다.';}
+    return;
+  }
   if(source==='assembly'){
     const alt=quality==="high" ? await resolveWikidataPhotoHQ(name) : await resolvePoliticianPhoto(name,{skipAssembly:true});
     if(alt){applyPoliticianPhoto(name,alt,quality);return;}
@@ -1785,16 +1820,16 @@ const currentRealMembers = [
   },
   {
     id:27, rank:27,
-    name:"추경호", party:"국민의힘", region:"대구",
-    constituency:"대구 달성군", terms:"3선",
-    committee:"국회 공식자료 연동", termStart:"2024.05.30",
+    name:"이진숙", party:"국민의힘", region:"대구",
+    constituency:"대구 달성군", terms:"초선",
+    committee:"국회 공식자료 연동", termStart:"2026.06.04",
     grade:gradeFromScore(58+seeded(27,42)),
     delta:(()=>{const d=Math.round(seeded(27+41,30)-12);return d===0?1:d;})(),
     issue:seeded(27+11,1)>.90,
     isReal:true, simulation:true, dataSource:"현역 국회의원 공개명단",
     journey:[
-      ["제22대", "국회의원 · 대구 달성군", "국민의힘 소속 현역 의원"],
-      ["현재", "3선", "국회의원 당선 횟수 기준"],
+      ["2026.06.04", "국회의원 · 대구 달성군", "재보궐선거 당선 · 국민의힘 소속 현역 의원"],
+      ["현재", "초선", "국회의원 당선 횟수 기준"],
       ["RECORD", "공식 의정정보 연동", "상임위·법안·표결·재산 공개자료 순차 연동"]
     ],
     metrics:[
@@ -6185,16 +6220,16 @@ const currentRealMembers = [
   },
   {
     id:203, rank:203,
-    name:"박수현", party:"더불어민주당", region:"충남",
-    constituency:"충남 공주시부여군청양군", terms:"재선",
-    committee:"국회 공식자료 연동", termStart:"2024.05.30",
+    name:"윤용근", party:"국민의힘", region:"충남",
+    constituency:"충남 공주시부여군청양군", terms:"초선",
+    committee:"국회 공식자료 연동", termStart:"2026.06.04",
     grade:gradeFromScore(58+seeded(203,42)),
     delta:(()=>{const d=Math.round(seeded(203+41,30)-12);return d===0?1:d;})(),
     issue:seeded(203+11,1)>.90,
     isReal:true, simulation:true, dataSource:"현역 국회의원 공개명단",
     journey:[
-      ["제22대", "국회의원 · 충남 공주시부여군청양군", "더불어민주당 소속 현역 의원"],
-      ["현재", "재선", "국회의원 당선 횟수 기준"],
+      ["2026.06.04", "국회의원 · 충남 공주시부여군청양군", "재보궐선거 당선 · 국민의힘 소속 현역 의원"],
+      ["현재", "초선", "국회의원 당선 횟수 기준"],
       ["RECORD", "공식 의정정보 연동", "상임위·법안·표결·재산 공개자료 순차 연동"]
     ],
     metrics:[
@@ -6360,15 +6395,15 @@ const currentRealMembers = [
   },
   {
     id:210, rank:210,
-    name:"신영대", party:"더불어민주당", region:"전북",
+    name:"김의겸", party:"더불어민주당", region:"전북",
     constituency:"전북 군산시김제시부안군갑", terms:"재선",
-    committee:"국회 공식자료 연동", termStart:"2024.05.30",
+    committee:"국회 공식자료 연동", termStart:"2026.06.04",
     grade:gradeFromScore(58+seeded(210,42)),
     delta:(()=>{const d=Math.round(seeded(210+41,30)-12);return d===0?1:d;})(),
     issue:seeded(210+11,1)>.90,
     isReal:true, simulation:true, dataSource:"현역 국회의원 공개명단",
     journey:[
-      ["제22대", "국회의원 · 전북 군산시김제시부안군갑", "더불어민주당 소속 현역 의원"],
+      ["2026.06.04", "국회의원 · 전북 군산시김제시부안군갑", "재보궐선거 당선 · 더불어민주당 소속 현역 의원"],
       ["현재", "재선", "국회의원 당선 횟수 기준"],
       ["RECORD", "공식 의정정보 연동", "상임위·법안·표결·재산 공개자료 순차 연동"]
     ],
@@ -6385,16 +6420,16 @@ const currentRealMembers = [
   },
   {
     id:211, rank:211,
-    name:"이원택", party:"더불어민주당", region:"전북",
-    constituency:"전북 군산시김제시부안군을", terms:"재선",
-    committee:"국회 공식자료 연동", termStart:"2024.05.30",
+    name:"박지원", party:"더불어민주당", region:"전북",
+    constituency:"전북 군산시김제시부안군을", terms:"초선",
+    committee:"국회 공식자료 연동", termStart:"2026.06.04",
     grade:gradeFromScore(58+seeded(211,42)),
     delta:(()=>{const d=Math.round(seeded(211+41,30)-12);return d===0?1:d;})(),
     issue:seeded(211+11,1)>.90,
     isReal:true, simulation:true, dataSource:"현역 국회의원 공개명단",
     journey:[
-      ["제22대", "국회의원 · 전북 군산시김제시부안군을", "더불어민주당 소속 현역 의원"],
-      ["현재", "재선", "국회의원 당선 횟수 기준"],
+      ["2026.06.04", "국회의원 · 전북 군산시김제시부안군을", "재보궐선거 당선 · 더불어민주당 소속 현역 의원"],
+      ["현재", "초선", "국회의원 당선 횟수 기준"],
       ["RECORD", "공식 의정정보 연동", "상임위·법안·표결·재산 공개자료 순차 연동"]
     ],
     metrics:[
@@ -7460,16 +7495,16 @@ const currentRealMembers = [
   },
   {
     id:254, rank:254,
-    name:"위성곤", party:"더불어민주당", region:"제주",
-    constituency:"제주 서귀포시", terms:"3선",
-    committee:"국회 공식자료 연동", termStart:"2024.05.30",
+    name:"김성범", party:"더불어민주당", region:"제주",
+    constituency:"제주 서귀포시", terms:"초선",
+    committee:"국회 공식자료 연동", termStart:"2026.06.04",
     grade:gradeFromScore(58+seeded(254,42)),
     delta:(()=>{const d=Math.round(seeded(254+41,30)-12);return d===0?1:d;})(),
     issue:seeded(254+11,1)>.90,
     isReal:true, simulation:true, dataSource:"현역 국회의원 공개명단",
     journey:[
-      ["제22대", "국회의원 · 제주 서귀포시", "더불어민주당 소속 현역 의원"],
-      ["현재", "3선", "국회의원 당선 횟수 기준"],
+      ["2026.06.04", "국회의원 · 제주 서귀포시", "재보궐선거 당선 · 더불어민주당 소속 현역 의원"],
+      ["현재", "초선", "국회의원 당선 횟수 기준"],
       ["RECORD", "공식 의정정보 연동", "상임위·법안·표결·재산 공개자료 순차 연동"]
     ],
     metrics:[
@@ -8623,9 +8658,10 @@ people.push({
 });
 
 // ===== NOW Rank v1 · Evidence First · 300석 전체 =====
-const nowRankByName = {};
+const NOW_ROSTER_VERSION='2026-06-03-by-election-v1';
+const nowRankById = {};
 people = people.map(p => {
-  const r = nowRankByName[p.name];
+  const r = nowRankById[String(p.id)];
   if(!r) return p;
   return {
     ...p,
@@ -8978,10 +9014,24 @@ function historicalSnapshot(hoursAgo){
   hist.forEach(s=>{const t=parseSnapshotTime(s.timestamp||s.snapshot); if(t<=currentSnapshotTime()){const d=Math.abs(t-target);if(d<dist){best=s;dist=d;}}});
   return best;
 }
-function snapshotMember(snapshot,name){
-  if(!snapshot) return null;
-  if(snapshot.ranks && snapshot.ranks[name]) return snapshot.ranks[name];
-  if(Array.isArray(snapshot.people)) return snapshot.people.find(x=>x.name===name)||null;
+function snapshotMember(snapshot,person){
+  if(!snapshot||!person) return null;
+  const id=Number(typeof person==='object'?person.id:person);
+  const name=typeof person==='object'?String(person.name||''):'';
+  if(Number.isFinite(id) && snapshot.ranksById && snapshot.ranksById[String(id)]){
+    const m=snapshot.ranksById[String(id)];
+    if(!name || !m?.name || String(m.name)===name) return m;
+  }
+  if(Array.isArray(snapshot.people) && Number.isFinite(id)){
+    const m=snapshot.people.find(x=>Number(x.id)===id && (!name||String(x.name||'')===name));
+    if(m)return m;
+  }
+  // Legacy name fallback is safe only when the current roster name is unique.
+  if(name){
+    const duplicates=people.filter(x=>x.name===name && x.id!==300);
+    if(duplicates.length===1 && snapshot.ranks && snapshot.ranks[name]) return snapshot.ranks[name];
+    if(duplicates.length===1 && Array.isArray(snapshot.people)) return snapshot.people.find(x=>x.name===name)||null;
+  }
   return null;
 }
 function finiteValue(v){return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));}
@@ -9043,7 +9093,7 @@ function refreshRankChange(x){
   if(finiteValue(x?.changeRefresh)){
     return {change:Number(x.changeRefresh),oldRank:finiteValue(x.previousRank)?Number(x.previousRank):null};
   }
-  const prev=previousPublishedSnapshot(),old=snapshotMember(prev,x?.name);
+  const prev=previousPublishedSnapshot(),old=snapshotMember(prev,x);
   if(finiteValue(old?.rank)) return {change:Number(old.rank)-Number(x.rank),oldRank:Number(old.rank)};
   if(finiteValue(x?.delta) && Number(x.delta)!==0) return {change:Number(x.delta),oldRank:Number(x.rank)+Number(x.delta)};
   return {change:null,oldRank:null};
@@ -9098,14 +9148,14 @@ function historyView(data,mode){
   if(!hist.length) return null;
   if(mode==='rise6'||mode==='rise24'){
     const prev=historicalSnapshot(mode==='rise6'?6:24); if(!prev) return null;
-    return data.map(x=>{const old=snapshotMember(prev,x.name);return {...x,_periodOldRank:old?.rank??null,_periodOldScore:old?.score??null,_periodChange:Number.isFinite(old?.rank)?old.rank-x.rank:null};})
+    return data.map(x=>{const old=snapshotMember(prev,x);return {...x,_periodOldRank:old?.rank??null,_periodOldScore:old?.score??null,_periodChange:Number.isFinite(old?.rank)?old.rank-x.rank:null};})
       .filter(x=>Number.isFinite(x._periodChange)).sort((a,b)=>(b._periodChange-a._periodChange)||((b.rank2Score||0)-(a.rank2Score||0))||a.rank-b.rank);
   }
   if(mode==='peak7d'){
     const cutoff=currentSnapshotTime()-7*24*3600000;
     const recent=hist.filter(s=>{const t=parseSnapshotTime(s.timestamp||s.snapshot);return Number.isFinite(t)&&t>=cutoff&&t<=currentSnapshotTime();});
     if(!recent.length) return null;
-    return data.map(x=>{let best=x.rank;recent.forEach(s=>{const m=snapshotMember(s,x.name);if(Number.isFinite(m?.rank))best=Math.min(best,m.rank)});return {...x,_best7d:best};})
+    return data.map(x=>{let best=x.rank;recent.forEach(s=>{const m=snapshotMember(s,x);if(Number.isFinite(m?.rank))best=Math.min(best,m.rank)});return {...x,_best7d:best};})
       .sort((a,b)=>(a._best7d-b._best7d)||a.rank-b.rank);
   }
   return data;
@@ -9635,11 +9685,14 @@ function assetSVG(id){
 function resolvePersonByQuery(query, excludeId=null){
   const q=(query||"").trim().toLowerCase();
   if(!q)return null;
-  return people.find(p=>p.id!==excludeId && (
-    p.name.toLowerCase()===q ||
+  const exact=people.filter(p=>p.id!==excludeId && p.name.toLowerCase()===q);
+  if(exact.length===1)return exact[0];
+  if(exact.length>1)return null; // 동명이인은 반드시 지역구가 보이는 제안 목록에서 직접 선택
+  const matches=people.filter(p=>p.id!==excludeId && (
     p.name.toLowerCase().includes(q) ||
-    `${p.party} ${p.region}`.toLowerCase().includes(q)
-  )) || null;
+    `${p.party} ${p.region} ${p.constituency||''}`.toLowerCase().includes(q)
+  ));
+  return matches.length===1?matches[0]:null;
 }
 
 function combinedRadarSVG(a,b){
@@ -9722,9 +9775,10 @@ function jjddSessionId(){
     return id;
   }catch(e){return `anon-${Date.now()}`;}
 }
-function trackJJDD(type,name){
-  if(!name)return;
-  try{fetch('/api/track',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({type,name,session:jjddSessionId()})}).catch(()=>{});}catch(e){}
+function trackJJDD(type,person){
+  const p=(person&&typeof person==='object')?person:(Number.isFinite(Number(person))?people.find(x=>Number(x.id)===Number(person)):null);
+  if(!p?.id||!p?.name)return;
+  try{fetch('/api/track',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({type,memberId:Number(p.id),name:String(p.name),session:jjddSessionId()})}).catch(()=>{});}catch(e){}
 }
 
 const JJDD_RANK_HISTORY_CACHE=new Map();
@@ -9781,11 +9835,11 @@ function rankHistoryFallbackHTML(x){
   return rankHistoryChartHTML(rankHistoryInitialSeries(x));
 }
 async function loadRankHistoryForDetail(x){
-  if(!x?.name)return;
+  if(!x?.id||!x?.name)return;
   const chart=document.getElementById(`rankHistoryChart-${x.id}`);
   const note=document.getElementById(`rankHistoryNote-${x.id}`);
   if(!chart)return;
-  const key=String(x.name);
+  const key=String(x.id);
   const apply=(rows)=>{
     if(!document.getElementById(`rankHistoryChart-${x.id}`))return;
     const sorted=(Array.isArray(rows)?rows:[]).slice().sort((a,b)=>Number(a.stamp||0)-Number(b.stamp||0));
@@ -9803,7 +9857,7 @@ async function loadRankHistoryForDetail(x){
   };
   if(JJDD_RANK_HISTORY_CACHE.has(key)){apply(JJDD_RANK_HISTORY_CACHE.get(key));return;}
   try{
-    const r=await fetch(`/api/rank/history?days=7&name=${encodeURIComponent(x.name)}`,{cache:'no-store'});
+    const r=await fetch(`/api/rank/history?days=7&id=${encodeURIComponent(x.id)}&name=${encodeURIComponent(x.name)}`,{cache:'no-store'});
     if(!r.ok)throw new Error('history '+r.status);
     const data=await r.json();
     const rows=Array.isArray(data.series)?data.series:[];
@@ -9814,9 +9868,47 @@ async function loadRankHistoryForDetail(x){
   }
 }
 
-function openDetail(id){
+
+// v1.14.7 — modal browser-history bridge
+// Opening a detail popup creates an in-page history entry so the browser Back button
+// closes/restores the popup instead of navigating away from 정정당당.
+const JJDD_MODAL_HISTORY_KEY='__jjddModal';
+function jjddModalHistoryState(){
+  const st=history.state;
+  return st && typeof st==='object' ? st[JJDD_MODAL_HISTORY_KEY] : null;
+}
+function jjddPushModalHistory(type,payload={}){
+  try{
+    const current=jjddModalHistoryState();
+    // A modal session already owns the current history entry (e.g. detail -> compare -> detail).
+    // Do not stack extra entries; the first Back should always return to the underlying list.
+    if(current)return;
+    const base=(history.state && typeof history.state==='object') ? history.state : {};
+    history.pushState({...base,[JJDD_MODAL_HISTORY_KEY]:{type,...payload}},document.title);
+  }catch(e){/* History API unavailable: modal still works with its close button. */}
+}
+function jjddHardCloseModal(){
+  const modal=document.getElementById('modal');
+  if(modal)modal.classList.remove('show');
+}
+function jjddRestoreModalFromHistory(st){
+  if(!st || !st.type){jjddHardCloseModal();return;}
+  if(st.type==='person' && Number.isFinite(Number(st.id))){openDetail(Number(st.id),{skipHistory:true});return;}
+  if(st.type==='president'){openPresident({skipHistory:true});return;}
+  if(st.type==='government' && Number.isFinite(Number(st.index))){openGovPerson(Number(st.index),{skipHistory:true});return;}
+  jjddHardCloseModal();
+}
+window.addEventListener('popstate',(event)=>{
+  const st=event.state && typeof event.state==='object' ? event.state[JJDD_MODAL_HISTORY_KEY] : null;
+  if(st)jjddRestoreModalFromHistory(st);
+  else jjddHardCloseModal();
+});
+
+function openDetail(id,opts={}){
   const x=people.find(p=>p.id===id);
-  if(x) trackJJDD('profile',x.name);
+  if(!x)return;
+  if(!opts.skipHistory)jjddPushModalHistory('person',{id:Number(id)});
+  trackJJDD('profile',x);
   const refresh=refreshChangeText(x);
   const assetBase=11+(x.id%7);
 
@@ -9997,7 +10089,8 @@ function openDetail(id){
   if(x.isReal) loadRankHistoryForDetail(x);
 }
 
-function openPresident(){
+function openPresident(opts={}){
+  if(!opts.skipHistory)jjddPushModalHistory('president');
   document.getElementById("modalEyebrow").innerText="President · Official + Survey Data";
   document.getElementById("modalTitle").innerText="이재명 대통령";
   document.getElementById("detail").innerHTML=`
@@ -10064,7 +10157,15 @@ function openPresident(){
   document.getElementById("modal").classList.add("show");
 }
 window.openPresident=openPresident;
-function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+function closeModal(){
+  const modal=document.getElementById("modal");
+  if(!modal)return;
+  const ownsHistory=!!jjddModalHistoryState();
+  jjddHardCloseModal();
+  if(ownsHistory){
+    try{history.back();}catch(e){}
+  }
+}
 window.closeModal=closeModal;
 
 
@@ -10079,8 +10180,10 @@ function renderGovernment(){
       <div class="gov-status">${g.status}</div>
     </div>`).join("");
 }
-function openGovPerson(i){
+function openGovPerson(i,opts={}){
   const g=governmentOfficials[i];
+  if(!g)return;
+  if(!opts.skipHistory)jjddPushModalHistory('government',{index:Number(i)});
   document.getElementById("modalEyebrow").innerText="Government · Official Profile";
   document.getElementById("modalTitle").innerText=g.name;
   document.getElementById("detail").innerHTML=`
@@ -10219,7 +10322,7 @@ function renderComparePage(){
     result.innerHTML=`<div class="compare-empty" style="margin-top:18px"><b>두 정치인을 모두 선택해주세요.</b>검색창에 이름 일부를 입력한 뒤 나타나는 후보를 클릭해야 비교가 시작됩니다.</div>`;
     return;
   }
-  trackJJDD('compare',compareSelectedA.name); trackJJDD('compare',compareSelectedB.name);
+  trackJJDD('compare',compareSelectedA); trackJJDD('compare',compareSelectedB);
   result.innerHTML=`<div class="compare-result-title"><div><div class="kicker">Comparison Result</div><h2 class="h2">비교 결과</h2></div></div>${compareResultHTML(compareSelectedA,compareSelectedB,false)}`;
 }
 
@@ -10255,14 +10358,14 @@ document.getElementById('search')?.addEventListener('input',e=>{
   clearTimeout(jjddSearchTimer);
   jjddSearchTimer=setTimeout(()=>{
     const q=String(e.target.value||'').trim();
-    const p=people.find(x=>x.name===q);
-    if(p)trackJJDD('search',p.name);
+    const matches=people.filter(x=>x.name===q);
+    if(matches.length===1)trackJJDD('search',matches[0]);
   },900);
 });
 
 window.NOW_LIVE_READY=false;
 window.NOW_CURRENT_PUBLICATION_ID=null;
-const NOW_PUBLIC_CACHE_KEY='jjdd_now_public_snapshot_v143';
+const NOW_PUBLIC_CACHE_KEY='jjdd_now_public_snapshot_v148';
 const NOW_EXPECTED_PUBLICATION_KEY='jjdd_now_expected_publication';
 let nowPhotoHydratorStarted=false;
 
@@ -10287,11 +10390,19 @@ function nowSnapshotStamp(snap){
   const kst=String(snap?.timestamp||'').replace(' KST','+09:00').replace(' ','T');
   const t=Date.parse(kst); return Number.isFinite(t)?t:0;
 }
+function snapshotMatchesRoster(snap){
+  if(!snap||String(snap.rosterVersion||'')!==NOW_ROSTER_VERSION||!Array.isArray(snap.members))return false;
+  const byId=new Map(snap.members.map(x=>[Number(x.id),x]));
+  return people.filter(p=>Number(p.id)>=1&&Number(p.id)<=299).every(p=>{
+    const s=byId.get(Number(p.id));
+    return !!s && String(s.name||'')===String(p.name||'') && String(s.constituency||'')===String(p.constituency||'');
+  });
+}
 function readNowPublicCache(){
   try{
     const snap=JSON.parse(localStorage.getItem(NOW_PUBLIC_CACHE_KEY)||'null');
-    if(!snap||!Array.isArray(snap.members)||!snap.members.length)return null;
-    // Last published data is safe as an instant shell; network revalidation begins immediately.
+    if(!snap||!Array.isArray(snap.members)||!snap.members.length||!snapshotMatchesRoster(snap))return null;
+    // Only a snapshot matching the current roster can be used as the instant shell.
     return snap;
   }catch(_){return null;}
 }
@@ -10311,16 +10422,16 @@ function updateNowStatus(snap,checking=false){
   status.innerHTML=`<b>최근 게시:</b> ${snap?.timestamp||'-'}${checking?' · <span style="color:#64748b">최신 확인 중</span>':''}<br><b>수집 원천:</b> ${src||'운영 데이터'}`;
 }
 function applyPublishedNowRank(snap,{checking=false}={}){
-  if(!snap || !Array.isArray(snap.members) || !snap.members.length)return false;
+  if(!snap || !Array.isArray(snap.members) || !snap.members.length || !snapshotMatchesRoster(snap))return false;
   window.NOW_CURRENT_PUBLICATION_ID=snap.publicationId||null;
   window.NOW_RANK_HISTORY=[];
   window.NOW_DETECTED_ISSUES=Array.isArray(snap.detectedIssues)?snap.detectedIssues:[];
   // Snapshot-scoped memo caches prevent repeated headline token analysis during one render.
   window.NOW_WHY_CANDIDATE_CACHE=new Map();
   window.NOW_WHY_KEYWORD_CACHE=new Map();
-  const byName=new Map(snap.members.map(x=>[x.name,x]));
+  const byId=new Map(snap.members.map(x=>[Number(x.id),x]));
   people.forEach(p=>{
-    const s=byName.get(p.name); if(!s)return;
+    const s=byId.get(Number(p.id)); if(!s || String(s.name||'')!==String(p.name||''))return;
     p.rank=s.rank;p.rank2Score=s.score;p.rank2RawScore=s.rawScore;p.grade=s.grade||p.grade;p.snapshot=snap.timestamp;
     p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;
     p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
@@ -10333,9 +10444,9 @@ function applyPublishedNowRank(snap,{checking=false}={}){
     p.whyNow=s.whyNow||null;p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
     p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];p.articles=Array.isArray(s.articles)?s.articles:[];p.news=Array.isArray(s.news)?s.news:[];
     if(s.nowComponents)p.nowComponents=s.nowComponents;
-    const meta=nowRankByName[p.name]||{};
+    const meta=nowRankById[String(p.id)]||{};
     Object.assign(meta,{rank:s.rank,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
-    nowRankByName[p.name]=meta;
+    nowRankById[String(p.id)]=meta;
   });
   people.sort((a,b)=>a.rank-b.rank);
   window.NOW_LIVE_READY=true;
@@ -10359,6 +10470,7 @@ async function loadPublishedNowRank(){
     if(!currentRes.ok)throw new Error('CURRENT '+currentRes.status);
     const snap=await currentRes.json();
     if(!snap || !Array.isArray(snap.members) || !snap.members.length)throw new Error('empty CURRENT');
+    if(!snapshotMatchesRoster(snap))throw new Error('ROSTER_REFRESH_REQUIRED');
     const cachedNow=readNowPublicCache();
     const expected=String(localStorage.getItem(NOW_EXPECTED_PUBLICATION_KEY)||'');
     // A short-lived CDN response is never allowed to overwrite a newer locally-known publication.
@@ -10378,6 +10490,10 @@ async function loadPublishedNowRank(){
   }catch(e){
     console.warn('published snapshot revalidation unavailable',e);
     if(cached){updateNowStatus(cached,false);return true;}
+    if(String(e?.message||'')==='ROSTER_REFRESH_REQUIRED'){
+      renderNowRankLoadingState('현역 명단이 변경되었습니다. 관리자에서 Refresh → 게시를 한 번 실행해주세요.');
+      return false;
+    }
     renderNowRankUnavailable();return false;
   }
 }
@@ -10393,7 +10509,7 @@ loadPublishedNowRank();
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
-<!-- NOW Rank v1.14.5 · Instant Main + Mobile Dedup + Circular Avatar Hardening. -->
+<!-- NOW Rank v1.14.8 · Roster Identity Hotfix · memberId-first hydration. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
   <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
