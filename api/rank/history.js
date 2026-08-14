@@ -1,4 +1,5 @@
 const store=require('../../lib/store');
+const {authenticate,capabilities}=require('../../lib/user_auth');
 const {RANK_HISTORY_KEY,parseRankPoint,compactRankPoint,stampOf}=require('../../lib/rank_history');
 
 function disableCache(res){
@@ -57,10 +58,16 @@ function mergePoints(longPoints,fullSnaps){
 module.exports=async function handler(req,res){
   disableCache(res);
   try{
-    const days=Math.max(1,Math.min(365,Number(req.query?.days)||30));
+    const days=Math.max(1,Math.min(365,Number(req.query?.days)||7));
     const personName=String(req.query?.name||'').trim();
     const personId=Number(req.query?.id);
     const hasPerson=personName||Number.isFinite(personId);
+    if(days>7){
+      const user=await authenticate(req);
+      if(!user || !capabilities(user.role).plus){
+        return res.status(403).json({ok:false,error:'30일·1년 순위 이력은 PLUS 멤버십 기능입니다.',requires:'PLUS',freeMaxDays:7});
+      }
+    }
 
     const [rawLong,ids,current]=await Promise.all([
       store.lrange(RANK_HISTORY_KEY,0,1499).catch(()=>[]),

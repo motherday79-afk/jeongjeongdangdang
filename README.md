@@ -1,3 +1,7 @@
+# CURRENT RELEASE: v2.1 PLUS Beta
+
+실제 PLUS 권한/관심 의원·이슈/개인 대시보드/30일·1년 히스토리/정치인 비교와 CMS 결제 준비 계약을 추가했습니다. 자세한 내용은 `README_V2_1_PLUS_BETA.md`를 확인하세요.
+
 # CURRENT RELEASE: v2.0.1 Simple ID Login
 
 See `README_V2_0_1_SIMPLE_ID_LOGIN.md` for the latest account-login patch.
