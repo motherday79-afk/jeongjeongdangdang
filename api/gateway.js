@@ -9,6 +9,7 @@ const routes = {
   'admin/rollback': require('./admin/rollback'),
   'admin/name-pulse': require('./admin/name-pulse'),
   'admin/users': require('./admin/users'),
+  'admin/password': require('./admin/password'),
   'account/signup': require('./account/signup'),
   'account/login': require('./account/login'),
   'account/logout': require('./account/logout'),

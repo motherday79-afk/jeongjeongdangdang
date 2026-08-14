@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>정정당당 관리자 · NOW Rank v2.2 LOCAL NOW</title>
+<title>정정당당 관리자 · NOW Rank v2.2.1 LOCAL NOW</title>
 <style>
 :root{--bg:#f3f7f6;--panel:#fff;--ink:#111827;--muted:#64748b;--mint:#28b7a2;--mint2:#0f766e;--line:#dfe8e5;--danger:#b91c1c;--warn:#b45309;--blue:#1d4ed8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -22,7 +22,7 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><div><div class="logo">정정당당 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.2 · LOCAL NOW</div></div>
+  <div class="head"><div><div class="logo">정정당당 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.2.1 · LOCAL NOW</div></div>
 
   <section class="card" id="loginCard">
     <h2 style="margin-top:0">관리자 로그인</h2>
@@ -58,6 +58,22 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
       <div id="auditDetail" class="detail hidden"></div>
     </section>
 
+    <section class="card" id="adminSecurityCard">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div><h2 style="margin:0">관리자 보안</h2><div class="status">Vercel 환경변수를 매번 수정하지 않고 이 화면에서 관리자 비밀번호를 변경할 수 있습니다. 새 비밀번호는 8자 이상이면 됩니다.</div></div>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div><label>현재 비밀번호</label><input id="adminCurrentPw" type="password" autocomplete="current-password" placeholder="현재 관리자 비밀번호"></div>
+        <div><label>새 비밀번호</label><input id="adminNewPw" type="password" autocomplete="new-password" minlength="8" placeholder="8자 이상"></div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div><label>새 비밀번호 확인</label><input id="adminNewPwConfirm" type="password" autocomplete="new-password" minlength="8" placeholder="새 비밀번호 다시 입력"></div>
+        <div><label>변경 상태</label><div class="status" id="adminPasswordStatus" style="padding:11px 0">현재 로그인 비밀번호를 확인한 뒤 변경합니다.</div></div>
+      </div>
+      <div class="actions"><button class="primary" id="changeAdminPwBtn">관리자 비밀번호 변경</button></div>
+      <div class="notice" style="margin-top:12px">변경한 비밀번호는 평문으로 저장하지 않고 해시로 저장합니다. 변경이 완료되면 현재 관리자 세션은 로그아웃되며 새 비밀번호로 다시 로그인합니다.</div>
+    </section>
+
     <section class="card" id="memberAdminCard"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">회원 / 등급 관리</h2><div class="status">v2.1 PLUS 기반 · 아이디 기반 회원과 FREE / PLUS / PRO / ADMIN 등급을 운영자가 직접 관리할 수 있습니다. 관심 정당 정보는 이 화면에 노출하지 않습니다.</div></div><button class="ghost" id="reloadUsersBtn">회원 새로고침</button></div><div class="grid" style="margin-top:12px"><div><label>회원 검색</label><input id="userAdminSearch" placeholder="아이디 · 이메일 · 닉네임"></div><div><label>가입 현황</label><div class="status" id="userAdminSummary" style="padding:11px 0">불러오는 중...</div></div></div><div class="user-admin-list" id="userAdminList"></div></section>
 
     <section class="card"><h2 style="margin-top:0">운영 상태</h2><div class="status" id="serverStatus">확인 중...</div></section>
@@ -72,6 +88,7 @@ function setLogin(ok,msg=''){$('#loginCard').classList.toggle('hidden',ok);$('#a
 async function status(){try{const s=await api('/api/admin/status');setLogin(true);loadAdminUsers().catch(()=>{});const src=s.sources||{};const core=[['NAVER Name Pulse',src.naverNamePulse],['Google News',src.googleNews],['Google Trends',src.googleTrends],['Wikimedia',src.wikimedia],['Daum HTML',src.daumHtml],['NAVER 뉴스 API',src.naverNews],['Kakao/Daum API',src.kakao],['정정당당 내부',src.internal]];const optional=[['BIG KINDS',src.bigKinds],['YouTube API',src.youtube],['X',src.x]];const coreHtml=core.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'미설정'}</b>`).join(' · ');const optHtml=optional.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'키 미설정'}</b>`).join(' · ');$('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>핵심 원천: ${coreHtml}<br>보강 원천: ${optHtml}<br>최근 게시: <b>${esc(s.current?.timestamp||'아직 없음')}</b>`;if(s.defaults){if(s.defaults.eventTitle)$('#eventTitle').value=s.defaults.eventTitle;if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length)$('#eventKeywords').value=s.defaults.eventKeywords.join(',');}}catch(e){setLogin(false);}}
 $('#loginBtn').onclick=async()=>{$('#loginStatus').textContent='로그인 중...';try{await api('/api/admin/login',{method:'POST',body:JSON.stringify({id:$('#adminId').value,password:$('#adminPw').value})});await status();}catch(e){$('#loginStatus').textContent=e.message;}};
 $('#logoutBtn').onclick=async()=>{await api('/api/admin/logout',{method:'POST',body:'{}'}).catch(()=>{});location.reload();};
+$('#changeAdminPwBtn').onclick=async()=>{const btn=$('#changeAdminPwBtn'),st=$('#adminPasswordStatus');const current=$('#adminCurrentPw').value,newPw=$('#adminNewPw').value,confirmPw=$('#adminNewPwConfirm').value;if(!current){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(newPw.length<8){st.textContent='새 비밀번호는 8자 이상이어야 합니다.';return;}if(newPw!==confirmPw){st.textContent='새 비밀번호 확인이 일치하지 않습니다.';return;}if(!confirm('관리자 비밀번호를 변경할까요? 변경 후 새 비밀번호로 다시 로그인해야 합니다.'))return;btn.disabled=true;st.textContent='비밀번호 변경 중...';try{await api('/api/admin/password',{method:'POST',body:JSON.stringify({currentPassword:current,newPassword:newPw})});alert('관리자 비밀번호가 변경되었습니다. 새 비밀번호로 다시 로그인해주세요.');location.reload();}catch(e){st.textContent=e.message;}finally{btn.disabled=false;}};
 function sensor(m,key){return (m.sensors||[]).find(x=>x.key===key)||{};}
 function namePulseTotal(m){return Number(sensor(m,'namePulse').monthlyTotalQcCnt||0);}
 function namePulseScore(m){return Number(sensor(m,'namePulse').score||0);}
