@@ -905,6 +905,23 @@ a{text-decoration:none;color:inherit}
   .journey-card{padding:14px!important}
 }
 
+/* ===== NOW Rank v1.14.10 · Mobile party visibility ===== */
+.mobile-party-line{display:none}
+@media (max-width:780px){
+  .mobile-party-line{
+    display:block;
+    margin-top:2px;
+    font-size:11px;
+    line-height:1.25;
+    font-weight:850;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .person-copy .person-keywords{margin-top:5px}
+}
+/* ===== /v1.14.10 mobile party visibility ===== */
+
 /* ===== NOW Rank v1.14.5 · Circular politician avatar hardening =====
    Keep list/sidebar avatars perfectly 1:1 even inside flex/grid layouts. */
 .avatar{
@@ -9544,6 +9561,7 @@ function renderRank(){
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div class="person-copy">
           <div class="pname">${x.name}<span class="verified">✓</span></div>
+          <div class="mobile-party-line ${partyClass[x.party]||"party-gray"}">${x.party}</div>
           <div class="pmeta">${x.isReal ? `국회 공식 프로필<span class="real-chip">REAL</span>` : `프로토타입 샘플<span class="sim-chip">DEMO</span>`}</div>
           ${(x.rank<=30||viewRank(x,mode)<=30)?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\'")}')">${k}</button>`).join('')}</div>`:''}
         </div>
