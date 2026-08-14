@@ -1,3 +1,10 @@
+
+## v1.15 · Member Data Integrity
+- 국회 공식 의원사진 우선 / 이름 기반 위키 사진 추정 금지
+- ALLNAMEMBER 기반 당선대수 자동 검증 및 비연속 당선 선수 계산
+- 의원 ID 기반 사진 캐시 분리
+- NOW RANK 소개문을 정치 인텔리전스 서비스 설명으로 개편
+
 # 정정당당 NOW Rank v1.14.8 — Roster Identity Hotfix
 
 현재 배포본 안내는 `README_V1_14_8_ROSTER_IDENTITY_HOTFIX.md`를 먼저 확인하세요.

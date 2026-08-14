@@ -10,6 +10,7 @@ const routes = {
   'admin/name-pulse': require('./admin/name-pulse'),
   'rank/current': require('./rank/current'),
   'rank/history': require('./rank/history'),
+  'member-master': require('./member-master'),
   'track': require('./track'),
   'name-pulse-test': require('./name-pulse-test')
 };
