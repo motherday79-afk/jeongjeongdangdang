@@ -1,6 +1,7 @@
 const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
 const {publicSnapshot}=require('../../lib/public_snapshot');
+const {appendRankHistory}=require('../../lib/rank_history');
 const ROSTER_VERSION='2026-06-03-by-election-v1';
 function parseJSON(v){try{return v==null?null:JSON.parse(v)}catch(e){return null}}
 module.exports=async function handler(req,res){
@@ -22,6 +23,7 @@ module.exports=async function handler(req,res){
     await store.setJSON(`jjdd:snapshot:${snapId}`,rollbackSnap);
     await store.lpush('jjdd:history',snapId);
     await store.ltrim('jjdd:history',0,111);
+    await appendRankHistory(rollbackSnap,'ROLLBACK');
     await store.setJSON('jjdd:current',rollbackSnap);
     await store.setJSON('jjdd:current:public',publicSnapshot(rollbackSnap));
     return res.status(200).json({ok:true,publicationId:snapId,timestamp:rollbackSnap.timestamp,top:rollbackSnap.members?.slice?.(0,10)||[],publicSnapshot:publicSnapshot(rollbackSnap)});

@@ -1,6 +1,7 @@
 const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
 const {publicSnapshot}=require('../../lib/public_snapshot');
+const {appendRankHistory}=require('../../lib/rank_history');
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   if(!requireAdmin(req,res)) return;
@@ -18,7 +19,8 @@ module.exports=async function handler(req,res){
     const snap={...draft.preview,publicationId:snapId,publishedAt};
     await store.setJSON(`jjdd:snapshot:${snapId}`,snap);
     await store.lpush('jjdd:history',snapId);
-    await store.ltrim('jjdd:history',0,111); // 28 days at 6h cadence
+    await store.ltrim('jjdd:history',0,111); // short full snapshots remain for rollback/admin diagnostics
+    await appendRankHistory(snap,'MANUAL'); // lightweight long-term rank-only time series
     await store.setJSON('jjdd:current',snap); // full admin/current snapshot
     await store.setJSON('jjdd:current:public',publicSnapshot(snap)); // compact public pointer LAST
 

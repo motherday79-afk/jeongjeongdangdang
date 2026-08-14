@@ -68,3 +68,8 @@ Wikipedia / NAVER VIEW HTML / Daum Blog HTML / YouTube / X 같은 무거운 보�
 
 ## 중요
 이번 버전은 **데이터 수집 구조를 정상화하는 1차 개편**입니다. 이 결과를 보고 다음 단계에서 원천별 기여도 감사 화면과 가중치 재조정을 진행하는 것을 전제로 합니다.
+
+
+## v1.14.9 추가
+- 상세 NOW Rank 장기 변화 추적: 실제 게시마다 초경량 순위 이력 누적, 24h/7d/30d/1y 그래프.
+- 자세한 내용: README_V1_14_9_LONGTERM_RANK_HISTORY.md

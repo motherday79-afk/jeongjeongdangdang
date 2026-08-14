@@ -522,6 +522,15 @@ a{text-decoration:none;color:inherit}
   background-size:100% 45px,25% 100%;position:relative;overflow:hidden
 }
 .trend-chart svg{width:100%;height:100%;display:block}
+.rank-history-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-2px 0 10px}
+.rank-history-ranges{display:flex;gap:6px;flex-wrap:wrap}
+.rank-history-range{height:30px;padding:0 10px;border:1px solid #dfe8e5;background:#fff;border-radius:999px;color:#64748b;font-size:11px;font-weight:900;cursor:pointer}
+.rank-history-range.active{background:#0f766e;border-color:#0f766e;color:#fff}
+.rank-history-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 0}
+.rank-history-summary .rhs{padding:9px 8px;border:1px solid #e8efed;border-radius:12px;background:#fff;text-align:center}
+.rank-history-summary .rhs b{display:block;font-size:16px;color:#0f766e;white-space:nowrap}
+.rank-history-summary .rhs span{display:block;margin-top:2px;font-size:10px;color:#94a3b8;font-weight:800}
+@media(max-width:720px){.rank-history-summary{grid-template-columns:1fr 1fr}.rank-history-toolbar{align-items:flex-start}.rank-history-ranges{width:100%}.rank-history-range{flex:1 1 auto}}
 .mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .mini-stat{
   padding:12px;border-radius:14px;border:1px solid #e8efed;background:#fff
@@ -9782,82 +9791,150 @@ function trackJJDD(type,person){
 }
 
 const JJDD_RANK_HISTORY_CACHE=new Map();
+const JJDD_RANK_HISTORY_DEFAULT_DAYS=30;
 function rankHistoryInitialSeries(x){
   const out=[];
-  if(Number.isFinite(x?.previousRank)) out.push({label:'직전',rank:Number(x.previousRank)});
-  if(Number.isFinite(x?.rank)) out.push({label:'현재',rank:Number(x.rank)});
+  const now=Date.now();
+  if(Number.isFinite(x?.previousRank)) out.push({label:'직전',rank:Number(x.previousRank),stamp:now-1,mode:'PREVIOUS'});
+  if(Number.isFinite(x?.rank)) out.push({label:'현재',rank:Number(x.rank),stamp:now,mode:'CURRENT'});
   return out;
 }
+function rankHistoryModeLabel(mode){
+  const m=String(mode||'').toUpperCase();
+  if(m==='MANUAL')return '수동 게시';
+  if(m==='AUTO')return '자동 게시';
+  if(m==='ROLLBACK')return '롤백';
+  return '게시';
+}
+// Largest-Triangle-Three-Buckets keeps sharp political spikes visible while capping SVG work.
+function downsampleRankHistory(data,threshold=72){
+  const src=(Array.isArray(data)?data:[]).filter(v=>Number.isFinite(Number(v.rank)));
+  if(threshold>=src.length||threshold===0)return src.slice();
+  const sampled=[];
+  let sampledIndex=0;
+  const every=(src.length-2)/(threshold-2);
+  let a=0;
+  sampled[sampledIndex++]=src[a];
+  for(let i=0;i<threshold-2;i++){
+    let avgX=0,avgY=0;
+    let avgStart=Math.floor((i+1)*every)+1;
+    let avgEnd=Math.floor((i+2)*every)+1;
+    avgEnd=avgEnd<src.length?avgEnd:src.length;
+    const avgLen=Math.max(1,avgEnd-avgStart);
+    for(let j=avgStart;j<avgEnd;j++){
+      avgX+=Number(src[j].stamp||j);
+      avgY+=Number(src[j].rank);
+    }
+    avgX/=avgLen;avgY/=avgLen;
+    let rangeOffs=Math.floor(i*every)+1;
+    let rangeTo=Math.floor((i+1)*every)+1;
+    const pointAx=Number(src[a].stamp||a),pointAy=Number(src[a].rank);
+    let maxArea=-1,maxAreaPoint=src[rangeOffs],nextA=rangeOffs;
+    rangeTo=Math.min(rangeTo,src.length-1);
+    for(let j=rangeOffs;j<rangeTo;j++){
+      const px=Number(src[j].stamp||j),py=Number(src[j].rank);
+      const area=Math.abs((pointAx-avgX)*(py-pointAy)-(pointAx-px)*(avgY-pointAy))*0.5;
+      if(area>maxArea){maxArea=area;maxAreaPoint=src[j];nextA=j;}
+    }
+    sampled[sampledIndex++]=maxAreaPoint;
+    a=nextA;
+  }
+  sampled[sampledIndex++]=src[src.length-1];
+  return sampled;
+}
+function rankHistorySummaryHTML(series=[]){
+  const src=(Array.isArray(series)?series:[]).filter(v=>Number.isFinite(Number(v.rank)));
+  if(!src.length)return '';
+  const first=src[0],last=src[src.length-1];
+  const best=Math.min(...src.map(v=>Number(v.rank)));
+  const worst=Math.max(...src.map(v=>Number(v.rank)));
+  const diff=Number(first.rank)-Number(last.rank);
+  const move=diff>0?`▲ ${diff}`:diff<0?`▼ ${Math.abs(diff)}`:'―';
+  return `<div class="rhs"><b>${last.rank}위</b><span>현재</span></div><div class="rhs"><b>${best}위</b><span>기간 최고</span></div><div class="rhs"><b>${worst}위</b><span>기간 최저</span></div><div class="rhs"><b>${move}</b><span>기간 순변화</span></div>`;
+}
 function rankHistoryChartHTML(series=[]){
-  const src=(Array.isArray(series)?series:[])
+  const raw=(Array.isArray(series)?series:[])
     .filter(v=>Number.isFinite(Number(v.rank)))
-    .map(v=>({...v,rank:Number(v.rank)}));
-  if(!src.length){
+    .map((v,i)=>({...v,rank:Number(v.rank),stamp:Number(v.stamp||i)}));
+  if(!raw.length){
     return `<div style="height:180px;display:flex;align-items:center;justify-content:center;border:1px dashed #dbe4e1;border-radius:14px;color:#94a3b8;font-weight:800">순위 이력 불러오는 중…</div>`;
   }
-  if(src.length===1){
-    return `<div style="height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #dbe4e1;border-radius:14px;background:#fbfefd"><b style="font-size:32px;color:#0f766e">${src[0].rank}위</b><span style="margin-top:8px;color:#64748b;font-size:12px;font-weight:800">현재 게시 순위 · 다음 게시부터 변화선이 누적됩니다</span></div>`;
+  if(raw.length===1){
+    return `<div style="height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #dbe4e1;border-radius:14px;background:#fbfefd"><b style="font-size:32px;color:#0f766e">${raw[0].rank}위</b><span style="margin-top:8px;color:#64748b;font-size:12px;font-weight:800">실제 게시 이력이 누적되는 중입니다</span></div>`;
   }
-  const vals=src.map(v=>v.rank);
-  let best=Math.min(...vals), worst=Math.max(...vals);
-  const pad=Math.max(2,Math.ceil((worst-best)*0.18));
-  best=Math.max(1,best-pad); worst=Math.min(300,worst+pad);
-  if(best===worst){best=Math.max(1,best-2);worst=Math.min(300,worst+2);}
-  const span=Math.max(1,worst-best);
+  const src=downsampleRankHistory(raw,72);
+  const vals=raw.map(v=>v.rank);
+  let best=Math.min(...vals),worst=Math.max(...vals);
+  const pad=Math.max(2,Math.ceil((worst-best)*0.12));
+  const viewBest=Math.max(1,best-pad),viewWorst=Math.min(300,worst+pad);
+  const span=Math.max(1,viewWorst-viewBest);
   const pts=src.map((v,i)=>{
-    const px=26+(src.length===1?150:i*(298/Math.max(1,src.length-1)));
-    const py=28+((v.rank-best)/span)*108; // rank 1 is visually higher
+    const px=28+(src.length===1?148:i*(294/Math.max(1,src.length-1)));
+    const py=25+((v.rank-viewBest)/span)*112;
     return {px,py,...v};
   });
   const pointString=pts.map(v=>`${v.px},${v.py}`).join(' ');
   const labelIdx=new Set([0,src.length-1]);
   if(src.length>=5){labelIdx.add(Math.floor((src.length-1)/2));}
+  if(src.length>=20){labelIdx.add(Math.floor((src.length-1)/4));labelIdx.add(Math.floor((src.length-1)*3/4));}
   const xLabels=pts.map((v,i)=>{
     if(!labelIdx.has(i))return '';
     const label=String(v.label||'').replace(/^\d{4}-/,'').slice(0,11);
-    return `<text x="${v.px}" y="171" text-anchor="middle" font-size="9" fill="#7b8794">${label}</text>`;
+    return `<text x="${v.px}" y="171" text-anchor="middle" font-size="8.5" fill="#7b8794">${label}</text>`;
   }).join('');
-  const rankLabels=pts.map((v,i)=>{
-    if(src.length>10 && i!==0 && i!==src.length-1)return '';
-    return `<text x="${v.px}" y="${Math.max(14,v.py-8)}" text-anchor="middle" font-size="10" font-weight="800" fill="#0f766e">${v.rank}</text>`;
+  const showDots=src.length<=36;
+  const circles=pts.map((v,i)=>{
+    const isLast=i===pts.length-1,isExt=Number(v.rank)===best||Number(v.rank)===worst;
+    if(!showDots&&!isLast&&!isExt)return '';
+    const title=`${v.label||''} · ${v.rank}위 · ${rankHistoryModeLabel(v.mode)}`;
+    return `<circle cx="${v.px}" cy="${v.py}" r="${isLast?5:isExt?4:3}" fill="#fff" stroke="#28b7a2" stroke-width="2"><title>${title}</title></circle>`;
   }).join('');
   return `<svg viewBox="0 0 350 180" preserveAspectRatio="none" aria-label="NOW Rank 실제 게시 이력">
-    <line x1="26" y1="145" x2="324" y2="145" stroke="#dfe8e5"/>
-    <line x1="26" y1="24" x2="26" y2="145" stroke="#edf2f1"/>
-    <text x="5" y="31" font-size="9" fill="#94a3b8">${best}위</text>
-    <text x="5" y="143" font-size="9" fill="#94a3b8">${worst}위</text>
-    <polyline points="${pointString}" fill="none" stroke="#28b7a2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    ${pts.map(v=>`<circle cx="${v.px}" cy="${v.py}" r="4" fill="#fff" stroke="#28b7a2" stroke-width="2"/>`).join('')}
-    ${rankLabels}${xLabels}
+    <line x1="28" y1="145" x2="322" y2="145" stroke="#dfe8e5"/>
+    <line x1="28" y1="20" x2="28" y2="145" stroke="#edf2f1"/>
+    <text x="4" y="28" font-size="9" fill="#94a3b8">${viewBest}위</text>
+    <text x="4" y="143" font-size="9" fill="#94a3b8">${viewWorst}위</text>
+    <polyline points="${pointString}" fill="none" stroke="#28b7a2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${circles}${xLabels}
   </svg>`;
 }
-function rankHistoryFallbackHTML(x){
-  return rankHistoryChartHTML(rankHistoryInitialSeries(x));
+function rankHistoryFallbackHTML(x){return rankHistoryChartHTML(rankHistoryInitialSeries(x));}
+function setRankHistoryRange(id,days,btn){
+  const x=people.find(p=>Number(p.id)===Number(id));
+  if(!x)return;
+  const wrap=btn?.closest?.('.rank-history-ranges');
+  if(wrap)wrap.querySelectorAll('.rank-history-range').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===Number(days)));
+  loadRankHistoryForDetail(x,Number(days)||JJDD_RANK_HISTORY_DEFAULT_DAYS,true);
 }
-async function loadRankHistoryForDetail(x){
+window.setRankHistoryRange=setRankHistoryRange;
+async function loadRankHistoryForDetail(x,days=JJDD_RANK_HISTORY_DEFAULT_DAYS,force=false){
   if(!x?.id||!x?.name)return;
   const chart=document.getElementById(`rankHistoryChart-${x.id}`);
   const note=document.getElementById(`rankHistoryNote-${x.id}`);
+  const summary=document.getElementById(`rankHistorySummary-${x.id}`);
   if(!chart)return;
-  const key=String(x.id);
+  const key=`${x.id}:${days}`;
   const apply=(rows)=>{
     if(!document.getElementById(`rankHistoryChart-${x.id}`))return;
     const sorted=(Array.isArray(rows)?rows:[]).slice().sort((a,b)=>Number(a.stamp||0)-Number(b.stamp||0));
     if(sorted.length){
       chart.innerHTML=rankHistoryChartHTML(sorted);
+      if(summary)summary.innerHTML=rankHistorySummaryHTML(sorted);
       if(note){
-        const first=sorted[0], last=sorted[sorted.length-1];
+        const first=sorted[0],last=sorted[sorted.length-1];
         const diff=Number(first.rank)-Number(last.rank);
         const move=diff>0?`▲ ${diff}`:diff<0?`▼ ${Math.abs(diff)}`:'―';
-        note.textContent=`최근 ${sorted.length}개 실제 게시 스냅샷 · ${first.rank}위 → ${last.rank}위 (${move})`;
+        const rangeLabel=days===1?'24시간':days===7?'7일':days===30?'30일':'1년';
+        note.textContent=`${rangeLabel} · 실제 게시 ${sorted.length}회 기록 · ${first.rank}위 → ${last.rank}위 (${move}) · 그래프는 최대 72개 대표점으로 압축 표시`;
       }
     }else if(note){
-      note.textContent='아직 실제 게시 이력이 충분하지 않습니다. 현재·직전 순위부터 표시합니다.';
+      note.textContent='아직 해당 기간의 실제 게시 이력이 충분하지 않습니다. 현재·직전 순위부터 표시합니다.';
     }
   };
-  if(JJDD_RANK_HISTORY_CACHE.has(key)){apply(JJDD_RANK_HISTORY_CACHE.get(key));return;}
+  if(!force&&JJDD_RANK_HISTORY_CACHE.has(key)){apply(JJDD_RANK_HISTORY_CACHE.get(key));return;}
+  if(note)note.textContent='실제 게시 순위 이력을 불러오는 중입니다…';
   try{
-    const r=await fetch(`/api/rank/history?days=7&id=${encodeURIComponent(x.id)}&name=${encodeURIComponent(x.name)}`,{cache:'no-store'});
+    const r=await fetch(`/api/rank/history?days=${encodeURIComponent(days)}&id=${encodeURIComponent(x.id)}&name=${encodeURIComponent(x.name)}`,{cache:'no-store'});
     if(!r.ok)throw new Error('history '+r.status);
     const data=await r.json();
     const rows=Array.isArray(data.series)?data.series:[];
@@ -9984,8 +10061,10 @@ function openDetail(id,opts={}){
         <div class="trend-grid">
           <div class="trend-card">
             <h4>NOW Rank 변화 추적</h4>
+            ${x.isReal?`<div class="rank-history-toolbar"><div class="rank-history-ranges"><button class="rank-history-range" data-days="1" onclick="setRankHistoryRange(${x.id},1,this)">24시간</button><button class="rank-history-range" data-days="7" onclick="setRankHistoryRange(${x.id},7,this)">7일</button><button class="rank-history-range active" data-days="30" onclick="setRankHistoryRange(${x.id},30,this)">30일</button><button class="rank-history-range" data-days="365" onclick="setRankHistoryRange(${x.id},365,this)">1년</button></div></div>`:''}
             <div class="trend-chart" id="rankHistoryChart-${x.id}">${x.isReal?rankHistoryFallbackHTML(x):sparkLineSVG(x.id)}</div>
-            <div class="source-note" id="rankHistoryNote-${x.id}">${x.isReal?'직전 게시 순위와 현재 순위를 먼저 표시하고, 상세페이지를 연 뒤 최근 실제 게시 스냅샷 이력을 불러옵니다.':'프로토타입용 가상 추이입니다.'}</div>
+            ${x.isReal?`<div class="rank-history-summary" id="rankHistorySummary-${x.id}">${rankHistorySummaryHTML(rankHistoryInitialSeries(x))}</div>`:''}
+            <div class="source-note" id="rankHistoryNote-${x.id}">${x.isReal?'실제로 게시된 NOW Rank를 계속 누적합니다. 기본은 최근 30일이며 24시간·7일·1년으로 전환할 수 있습니다.':'프로토타입용 가상 추이입니다.'}</div>
           </div>
           <div class="trend-card">
             <h4>현재 모멘텀</h4>
@@ -10086,7 +10165,7 @@ function openDetail(id,opts={}){
 
   setupDetailCompareSearch(x.id);
   document.getElementById("modal").classList.add("show");
-  if(x.isReal) loadRankHistoryForDetail(x);
+  if(x.isReal) loadRankHistoryForDetail(x,JJDD_RANK_HISTORY_DEFAULT_DAYS);
 }
 
 function openPresident(opts={}){
