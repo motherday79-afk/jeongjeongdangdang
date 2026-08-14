@@ -951,12 +951,12 @@ a{text-decoration:none;color:inherit}
 /* ===== /v1.14.5 circular avatar hardening ===== */
 
 
-/* ===== v2.0 Account & Membership Foundation ===== */
+/* ===== v2.0.1 Account & Membership Foundation ===== */
 .hidden-account{display:none!important}
 .account-overlay{position:fixed;inset:0;background:rgba(15,23,42,.54);z-index:10050;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(6px)}
 .account-overlay.show{display:flex}.account-dialog{width:min(500px,100%);max-height:92vh;overflow:auto;background:#fff;border:1px solid #e2ebe8;border-radius:24px;box-shadow:0 30px 90px rgba(15,23,42,.28);padding:24px}.account-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.account-dialog-head h2{margin:2px 0 0;font-size:26px}.account-close{width:38px;height:38px;border:0;border-radius:50%;background:#f1f5f4;font-size:17px;cursor:pointer}.account-tabs{display:grid;grid-template-columns:1fr 1fr;background:#f2f7f5;border-radius:14px;padding:4px;margin-bottom:18px}.account-tab{border:0;background:transparent;padding:11px;border-radius:11px;font-weight:900;cursor:pointer;color:#67736f}.account-tab.active{background:#fff;color:#15211f;box-shadow:0 2px 10px rgba(15,23,42,.07)}.account-form{display:grid;gap:12px}.account-field label{display:block;font-size:12px;font-weight:900;color:#53615d;margin-bottom:6px}.account-field input,.account-field select{width:100%;border:1px solid #dce6e3;border-radius:12px;padding:12px 13px;font:inherit;outline:none}.account-field input:focus,.account-field select:focus{border-color:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.11)}.account-check{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.55;color:#4f5f5a}.account-check input{margin-top:3px;flex:0 0 auto}.account-check a{color:#087b67;font-weight:850}.account-submit{border:0;background:#111827;color:#fff;border-radius:13px;padding:13px;font-weight:950;cursor:pointer}.account-submit.mint{background:#0d9b7f}.account-status{min-height:20px;font-size:12px;color:#b45309;line-height:1.5}.account-note{font-size:11px;line-height:1.6;color:#71807b;background:#f6f9f8;border-radius:12px;padding:11px 12px}.role-chip{display:inline-flex;align-items:center;height:23px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:950;margin-left:6px;vertical-align:2px}.role-FREE{background:#eef3f2;color:#60706b}.role-PLUS{background:#e6fbf5;color:#087b67}.role-PRO{background:#eef2ff;color:#4f46e5}.role-ADMIN{background:#111827;color:#fff}.membership-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.membership-card{border:1px solid #e2ebe8;border-radius:18px;padding:18px;background:#fff}.membership-card.current{border-color:#15a98b;box-shadow:0 0 0 2px rgba(21,169,139,.10)}.membership-card h3{margin:0 0 7px;font-size:18px}.membership-card .price{font-size:23px;font-weight:950;margin:8px 0}.membership-card ul{padding-left:17px;margin:10px 0 0;color:#66736f;font-size:12px;line-height:1.75}.membership-state{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f1f5f4;font-size:10px;font-weight:900}.privacy-callout{padding:14px 15px;border:1px solid #f4dddd;background:#fff8f8;border-radius:14px;font-size:12px;line-height:1.7;color:#5b4a4a}.mypage-welcome{padding:32px;background:#fff;border:1px solid #e3ebe8;border-radius:20px;text-align:center}.mypage-welcome h2{font-size:28px;margin:0 0 8px}.mypage-welcome p{color:#66736f}.my-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.my-action-primary,.my-action-ghost,.my-action-danger{border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer}.my-action-primary{background:#111827;color:#fff}.my-action-ghost{background:#eef5f3;color:#21443c}.my-action-danger{background:#fff0f0;color:#b42318}.profile-meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.profile-meta-box{background:#f6f9f8;border-radius:14px;padding:13px}.profile-meta-box span{display:block;font-size:11px;color:#71807b}.profile-meta-box b{display:block;margin-top:4px;font-size:14px}.legal-links{margin-top:16px;font-size:11px;color:#76837f}.legal-links a{color:#52625d;font-weight:800;margin-right:12px}
 @media(max-width:780px){.membership-grid{grid-template-columns:1fr}.profile-meta-grid{grid-template-columns:1fr}.account-dialog{padding:19px;border-radius:20px}.account-overlay{align-items:flex-end;padding:0}.account-dialog{width:100%;max-height:94vh;border-radius:22px 22px 0 0}}
-/* ===== /v2.0 Account & Membership Foundation ===== */
+/* ===== /v2.0.1 Account & Membership Foundation ===== */
 </style>
 </head>
 <body>
@@ -1280,9 +1280,11 @@ a{text-decoration:none;color:inherit}
         <div id="my-profile" class="mytab">
           <h2 class="h2" style="font-size:28px">프로필 / 기본정보</h2>
           <div class="formgrid" style="margin-top:14px">
+            <div class="field"><label>아이디</label><input id="myUsername" maxlength="20" autocomplete="username" placeholder="apple12"/></div>
             <div class="field"><label>닉네임</label><input id="myNickname" maxlength="20"/></div>
-            <div class="field"><label>이메일</label><input id="myEmail" readonly/></div>
+            <div class="field" style="grid-column:1 / -1"><label>이메일</label><input id="myEmail" readonly/></div>
           </div>
+          <div class="account-note" id="myUsernameNote" style="margin-top:10px">아이디는 로그인에 사용하며 가입 후 변경할 수 없습니다.</div>
           <div class="profile-meta-grid">
             <div class="profile-meta-box"><span>현재 등급</span><b id="myRoleBox">FREE</b></div>
             <div class="profile-meta-box"><span>가입일</span><b id="myCreatedAt">-</b></div>
@@ -1331,20 +1333,21 @@ a{text-decoration:none;color:inherit}
     <div class="account-dialog-head"><div><div class="kicker">JEONGJEONGDANGDANG MEMBER</div><h2 id="accountDialogTitle">정정당당 계정</h2></div><button class="account-close" onclick="closeAccountModal()">✕</button></div>
     <div class="account-tabs"><button class="account-tab active" data-account-tab="login">로그인</button><button class="account-tab" data-account-tab="signup">회원가입</button></div>
     <form class="account-form" id="loginForm">
-      <div class="account-field"><label>이메일</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+      <div class="account-field"><label>아이디</label><input id="loginUsername" type="text" maxlength="190" autocomplete="username" required placeholder="apple12"></div>
       <div class="account-field"><label>비밀번호</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
       <button class="account-submit" type="submit">로그인</button><div class="account-status" id="loginAccountStatus"></div>
     </form>
     <form class="account-form hidden-account" id="signupForm">
+      <div class="account-field"><label>아이디</label><input id="signupUsername" maxlength="20" minlength="4" pattern="[A-Za-z0-9_]{4,20}" autocomplete="username" required placeholder="apple12 · 영문/숫자/_ 4~20자"></div>
       <div class="account-field"><label>닉네임</label><input id="signupNickname" maxlength="20" autocomplete="nickname" required placeholder="2~20자"></div>
-      <div class="account-field"><label>이메일</label><input id="signupEmail" type="email" autocomplete="email" required></div>
-      <div class="account-field"><label>비밀번호</label><input id="signupPassword" type="password" minlength="10" maxlength="128" autocomplete="new-password" required placeholder="10자 이상"></div>
-      <div class="account-field"><label>비밀번호 확인</label><input id="signupPassword2" type="password" minlength="10" maxlength="128" autocomplete="new-password" required></div>
+      <div class="account-field"><label>이메일 <span style="font-weight:700;color:#87928f">(필수 정보)</span></label><input id="signupEmail" type="email" autocomplete="email" required placeholder="계정 확인·운영용"></div>
+      <div class="account-field"><label>비밀번호</label><input id="signupPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="조합 조건 없이 8자 이상"></div>
+      <div class="account-field"><label>비밀번호 확인</label><input id="signupPassword2" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></div>
       <label class="account-check"><input type="checkbox" id="signupAge14" required><span><b>[필수]</b> 만 14세 이상입니다.</span></label>
       <label class="account-check"><input type="checkbox" id="signupTerms" required><span><b>[필수]</b> <a href="/terms.html" target="_blank">이용약관</a>에 동의합니다.</span></label>
       <label class="account-check"><input type="checkbox" id="signupPrivacy" required><span><b>[필수]</b> <a href="/privacy.html" target="_blank">개인정보 수집·이용 및 개인정보처리방침</a>을 확인하고 동의합니다.</span></label>
       <button class="account-submit mint" type="submit">FREE 회원가입</button><div class="account-status" id="signupAccountStatus"></div>
-      <div class="account-note">관심 정당은 가입 후 MY에서 선택할 수 있습니다. 별도의 선택 동의를 하지 않으면 정치적 관심정보는 저장하지 않습니다.</div>
+      <div class="account-note">로그인은 간단한 아이디로 합니다. 비밀번호는 대문자·소문자·숫자·특수문자 조합 조건 없이 8자 이상이면 됩니다. 관심 정당은 가입 후 MY에서 선택할 수 있습니다.</div>
     </form>
   </div>
 </div>
@@ -10703,7 +10706,7 @@ setTimeout(()=>loadMemberMasterIntegrity(),700);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 
 
-// ===== v2.0 Account & Membership Foundation =====
+// ===== v2.0.1 Simple ID Login & 8-char Password =====
 window.JJDD_ACCOUNT_USER=null;
 function accountEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function accountDate(v){try{return v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'-';}catch(_){return '-';}}
@@ -10724,7 +10727,7 @@ function openAccountModal(tab='login'){
   setAccountTab(tab);
   const m=document.getElementById('accountModal'); if(!m)return;
   m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById(tab==='signup'?'signupNickname':'loginEmail')?.focus(),50);
+  setTimeout(()=>document.getElementById(tab==='signup'?'signupUsername':'loginUsername')?.focus(),50);
 }
 function closeAccountModal(){const m=document.getElementById('accountModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
 window.openAccountModal=openAccountModal;window.closeAccountModal=closeAccountModal;
@@ -10742,7 +10745,7 @@ function setAccountUI(user){
   const nick=user.nickname||'회원',role=roleLabel(user.role),pref=user.preference||{};
   const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   setText('myAvatar',nick.slice(0,1));setText('myNicknameHead',`${nick} 님`);setText('myRoleText',role);setText('myRoleBox',role);setText('myCreatedAt',accountDate(user.createdAt));setText('myLastLogin',accountDate(user.lastLoginAt));
-  const n=document.getElementById('myNickname');if(n)n.value=nick;const e=document.getElementById('myEmail');if(e)e.value=user.email||'';
+  const un=document.getElementById('myUsername');if(un){un.value=user.username||'';un.readOnly=Boolean(user.username);un.placeholder=user.username?'':'기존 계정: 사용할 아이디를 한 번 설정하세요';}const unNote=document.getElementById('myUsernameNote');if(unNote)unNote.textContent=user.username?'아이디는 로그인에 사용하며 가입 후 변경할 수 없습니다.':'v2.0 기존 계정입니다. 사용할 아이디를 한 번 설정하면 이후부터 아이디로 로그인할 수 있습니다.';const n=document.getElementById('myNickname');if(n)n.value=nick;const e=document.getElementById('myEmail');if(e)e.value=user.email||'';
   const p=document.getElementById('myPartyPreference');if(p)p.value=pref.party||'';const c=document.getElementById('mySensitiveConsent');if(c)c.checked=Boolean(pref.sensitiveConsent);
   document.querySelectorAll('[data-role-card]').forEach(card=>card.classList.toggle('current',card.dataset.roleCard===role || (role==='ADMIN'&&card.dataset.roleCard==='PRO')));
 }
@@ -10752,16 +10755,16 @@ async function refreshAccountSession(){
 }
 document.getElementById('loginForm')?.addEventListener('submit',async e=>{
   e.preventDefault();const st=document.getElementById('loginAccountStatus');st.textContent='로그인 중...';
-  try{const j=await accountApi('/api/account/login',{method:'POST',body:JSON.stringify({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPassword').value})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
+  try{const j=await accountApi('/api/account/login',{method:'POST',body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
   catch(err){st.textContent=err.message;}
 });
 document.getElementById('signupForm')?.addEventListener('submit',async e=>{
   e.preventDefault();const st=document.getElementById('signupAccountStatus'),p1=document.getElementById('signupPassword').value,p2=document.getElementById('signupPassword2').value;if(p1!==p2){st.textContent='비밀번호 확인이 일치하지 않습니다.';return;}st.textContent='회원가입 중...';
-  try{const j=await accountApi('/api/account/signup',{method:'POST',body:JSON.stringify({nickname:document.getElementById('signupNickname').value,email:document.getElementById('signupEmail').value,password:p1,age14:document.getElementById('signupAge14').checked,agreeTerms:document.getElementById('signupTerms').checked,agreePrivacy:document.getElementById('signupPrivacy').checked})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
+  try{const j=await accountApi('/api/account/signup',{method:'POST',body:JSON.stringify({username:document.getElementById('signupUsername').value,nickname:document.getElementById('signupNickname').value,email:document.getElementById('signupEmail').value,password:p1,age14:document.getElementById('signupAge14').checked,agreeTerms:document.getElementById('signupTerms').checked,agreePrivacy:document.getElementById('signupPrivacy').checked})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
   catch(err){st.textContent=err.message;}
 });
 document.getElementById('saveMyProfile')?.addEventListener('click',async()=>{
-  const st=document.getElementById('myProfileStatus');st.textContent='저장 중...';try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({nickname:document.getElementById('myNickname').value})});setAccountUI(j.user);st.textContent='저장되었습니다.';}catch(e){st.textContent=e.message;}
+  const st=document.getElementById('myProfileStatus');st.textContent='저장 중...';try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({username:document.getElementById('myUsername').value,nickname:document.getElementById('myNickname').value})});setAccountUI(j.user);st.textContent='저장되었습니다.';}catch(e){st.textContent=e.message;}
 });
 document.getElementById('saveMyPreference')?.addEventListener('click',async()=>{
   const st=document.getElementById('myPreferenceStatus'),party=document.getElementById('myPartyPreference').value,consent=document.getElementById('mySensitiveConsent').checked;if(party && !consent){st.textContent='관심 정당을 저장하려면 선택적 민감정보 동의가 필요합니다.';return;}st.textContent='저장 중...';
@@ -10775,7 +10778,7 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
 });
 const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
 refreshAccountSession();
-// ===== /v2.0 Account & Membership Foundation =====
+// ===== /v2.0.1 Simple ID Login & 8-char Password =====
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
 <!-- NOW Rank v1.15 · Member Data Integrity · official Assembly photo/terms verification + investor copy. -->
