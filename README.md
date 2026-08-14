@@ -1,3 +1,7 @@
+# CURRENT RELEASE: v2.0 Account & Membership Foundation
+
+회원가입/로그인, FREE·PLUS·PRO·ADMIN 등급, MY, 선택적 관심 정당 별도 동의·암호화, 관리자 등급 관리가 포함된 1차 회원 빌드입니다. 자세한 내용은 `README_V2_0_ACCOUNT_MEMBERSHIP_FOUNDATION.md`를 확인하세요.
+
 
 ## v1.15 · Member Data Integrity
 - 국회 공식 의원사진 우선 / 이름 기반 위키 사진 추정 금지

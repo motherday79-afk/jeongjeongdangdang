@@ -950,6 +950,13 @@ a{text-decoration:none;color:inherit}
 }
 /* ===== /v1.14.5 circular avatar hardening ===== */
 
+
+/* ===== v2.0 Account & Membership Foundation ===== */
+.hidden-account{display:none!important}
+.account-overlay{position:fixed;inset:0;background:rgba(15,23,42,.54);z-index:10050;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(6px)}
+.account-overlay.show{display:flex}.account-dialog{width:min(500px,100%);max-height:92vh;overflow:auto;background:#fff;border:1px solid #e2ebe8;border-radius:24px;box-shadow:0 30px 90px rgba(15,23,42,.28);padding:24px}.account-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.account-dialog-head h2{margin:2px 0 0;font-size:26px}.account-close{width:38px;height:38px;border:0;border-radius:50%;background:#f1f5f4;font-size:17px;cursor:pointer}.account-tabs{display:grid;grid-template-columns:1fr 1fr;background:#f2f7f5;border-radius:14px;padding:4px;margin-bottom:18px}.account-tab{border:0;background:transparent;padding:11px;border-radius:11px;font-weight:900;cursor:pointer;color:#67736f}.account-tab.active{background:#fff;color:#15211f;box-shadow:0 2px 10px rgba(15,23,42,.07)}.account-form{display:grid;gap:12px}.account-field label{display:block;font-size:12px;font-weight:900;color:#53615d;margin-bottom:6px}.account-field input,.account-field select{width:100%;border:1px solid #dce6e3;border-radius:12px;padding:12px 13px;font:inherit;outline:none}.account-field input:focus,.account-field select:focus{border-color:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.11)}.account-check{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.55;color:#4f5f5a}.account-check input{margin-top:3px;flex:0 0 auto}.account-check a{color:#087b67;font-weight:850}.account-submit{border:0;background:#111827;color:#fff;border-radius:13px;padding:13px;font-weight:950;cursor:pointer}.account-submit.mint{background:#0d9b7f}.account-status{min-height:20px;font-size:12px;color:#b45309;line-height:1.5}.account-note{font-size:11px;line-height:1.6;color:#71807b;background:#f6f9f8;border-radius:12px;padding:11px 12px}.role-chip{display:inline-flex;align-items:center;height:23px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:950;margin-left:6px;vertical-align:2px}.role-FREE{background:#eef3f2;color:#60706b}.role-PLUS{background:#e6fbf5;color:#087b67}.role-PRO{background:#eef2ff;color:#4f46e5}.role-ADMIN{background:#111827;color:#fff}.membership-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.membership-card{border:1px solid #e2ebe8;border-radius:18px;padding:18px;background:#fff}.membership-card.current{border-color:#15a98b;box-shadow:0 0 0 2px rgba(21,169,139,.10)}.membership-card h3{margin:0 0 7px;font-size:18px}.membership-card .price{font-size:23px;font-weight:950;margin:8px 0}.membership-card ul{padding-left:17px;margin:10px 0 0;color:#66736f;font-size:12px;line-height:1.75}.membership-state{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f1f5f4;font-size:10px;font-weight:900}.privacy-callout{padding:14px 15px;border:1px solid #f4dddd;background:#fff8f8;border-radius:14px;font-size:12px;line-height:1.7;color:#5b4a4a}.mypage-welcome{padding:32px;background:#fff;border:1px solid #e3ebe8;border-radius:20px;text-align:center}.mypage-welcome h2{font-size:28px;margin:0 0 8px}.mypage-welcome p{color:#66736f}.my-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.my-action-primary,.my-action-ghost,.my-action-danger{border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer}.my-action-primary{background:#111827;color:#fff}.my-action-ghost{background:#eef5f3;color:#21443c}.my-action-danger{background:#fff0f0;color:#b42318}.profile-meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.profile-meta-box{background:#f6f9f8;border-radius:14px;padding:13px}.profile-meta-box span{display:block;font-size:11px;color:#71807b}.profile-meta-box b{display:block;margin-top:4px;font-size:14px}.legal-links{margin-top:16px;font-size:11px;color:#76837f}.legal-links a{color:#52625d;font-weight:800;margin-right:12px}
+@media(max-width:780px){.membership-grid{grid-template-columns:1fr}.profile-meta-grid{grid-template-columns:1fr}.account-dialog{padding:19px;border-radius:20px}.account-overlay{align-items:flex-end;padding:0}.account-dialog{width:100%;max-height:94vh;border-radius:22px 22px 0 0}}
+/* ===== /v2.0 Account & Membership Foundation ===== */
 </style>
 </head>
 <body>
@@ -969,7 +976,7 @@ a{text-decoration:none;color:inherit}
     <div class="navright">
       <button class="iconbtn">🔎</button>
       <button class="iconbtn">🔔</button>
-      <button class="loginbtn">로그인</button>
+      <button class="loginbtn" id="accountLoginBtn">로그인</button>
     </div>
   </div>
 </div>
@@ -1239,104 +1246,107 @@ a{text-decoration:none;color:inherit}
   <section class="page" id="page-my">
     <div class="section-title">
       <div>
-        <div class="kicker">My Page</div>
+        <div class="kicker">Account & Membership</div>
         <h1 class="h1">MY</h1>
-        <div class="sub">사용자가 실제로 관리하게 될 정보와 메뉴 구조를 확인할 수 있도록 정리한 마이페이지 시안입니다.</div>
+        <div class="sub">정정당당 회원 정보와 멤버십, 선택적 정치 관심정보를 관리합니다.</div>
       </div>
     </div>
 
-    <div class="mypage">
+    <div id="myLoggedOut" class="mypage-welcome">
+      <h2>로그인하면 MY가 시작됩니다.</h2>
+      <p>1차 회원 빌드에서는 FREE · PLUS · PRO · ADMIN 등급과 계정, 관심 정당 설정을 지원합니다.</p>
+      <div class="my-actions" style="justify-content:center"><button class="my-action-primary" onclick="openAccountModal('login')">로그인</button><button class="my-action-ghost" onclick="openAccountModal('signup')">회원가입</button></div>
+    </div>
+
+    <div class="mypage hidden-account" id="myLoggedIn">
       <aside class="profilecard">
         <div class="userhead">
-          <div class="useravatar">김</div>
+          <div class="useravatar" id="myAvatar">J</div>
           <div>
-            <h2 class="h2" style="font-size:24px">김광선 님</h2>
-            <div class="sub" style="margin-top:4px">정당앱 사용자 · 관심 정치인 7명</div>
+            <h2 class="h2" style="font-size:23px" id="myNicknameHead">회원</h2>
+            <div class="sub" style="margin-top:4px"><span id="myRoleText">FREE</span> · 정정당당 멤버</div>
           </div>
         </div>
         <div class="menu">
           <button class="mymenu active" data-my="profile">프로필 / 기본정보</button>
-          <button class="mymenu" data-my="interest">관심 정치인</button>
-          <button class="mymenu" data-my="alerts">알림 설정</button>
-          <button class="mymenu" data-my="history">활동 기록</button>
-          <button class="mymenu" data-my="support">후원 / 결제</button>
+          <button class="mymenu" data-my="membership">멤버십</button>
+          <button class="mymenu" data-my="preference">내 정치 관심사</button>
           <button class="mymenu" data-my="security">보안 / 계정</button>
         </div>
+        <div class="legal-links"><a href="/terms.html" target="_blank">이용약관</a><a href="/privacy.html" target="_blank">개인정보처리방침</a></div>
       </aside>
 
       <section class="mycontent">
         <div id="my-profile" class="mytab">
           <h2 class="h2" style="font-size:28px">프로필 / 기본정보</h2>
           <div class="formgrid" style="margin-top:14px">
-            <div class="field"><label>닉네임</label><input value="정당앱관찰자"/></div>
-            <div class="field"><label>이메일</label><input value="sample@jeongdang.app"/></div>
-            <div class="field"><label>관심 지역</label><select><option>경기도</option><option>서울특별시</option><option>부산광역시</option></select></div>
-            <div class="field"><label>관심 정당</label><select><option>전체 정당</option><option>정당 A</option><option>정당 B</option><option>정당 C</option></select></div>
-            <div class="field" style="grid-column:1 / -1"><label>자기소개</label><textarea>정치 데이터를 감정이 아닌 정보로 보고 싶어 정정당당을 이용하고 있습니다.</textarea></div>
+            <div class="field"><label>닉네임</label><input id="myNickname" maxlength="20"/></div>
+            <div class="field"><label>이메일</label><input id="myEmail" readonly/></div>
           </div>
-          <div class="savebar">
-            <button class="secondary">취소</button>
-            <button class="primary">저장</button>
+          <div class="profile-meta-grid">
+            <div class="profile-meta-box"><span>현재 등급</span><b id="myRoleBox">FREE</b></div>
+            <div class="profile-meta-box"><span>가입일</span><b id="myCreatedAt">-</b></div>
           </div>
+          <div class="savebar"><span class="sub" id="myProfileStatus" style="margin:0"></span><button class="primary" id="saveMyProfile">저장</button></div>
         </div>
 
-        <div id="my-interest" class="mytab" style="display:none">
-          <h2 class="h2" style="font-size:28px">관심 정치인</h2>
-          <div class="sub">팔로우한 정치인의 급상승, 급하락, 관련 뉴스 업데이트를 빠르게 받아볼 수 있습니다.</div>
-          <div class="followlist">
-            <div class="follow"><b>김OO 의원</b><div class="minirow"><span>정당 A · 경기</span><span class="rankpill rank-A" style="height:28px;font-size:14px">A</span></div></div>
-            <div class="follow"><b>박OO 의원</b><div class="minirow"><span>정당 B · 서울</span><span class="rankpill rank-B" style="height:28px;font-size:14px">B</span></div></div>
-            <div class="follow"><b>이OO 의원</b><div class="minirow"><span>정당 A · 광주</span><span class="rankpill rank-S" style="height:28px;font-size:14px">S</span></div></div>
-            <div class="follow"><b>최OO 의원</b><div class="minirow"><span>정당 C · 부산</span><span class="rankpill rank-C" style="height:28px;font-size:14px">C</span></div></div>
+        <div id="my-membership" class="mytab" style="display:none">
+          <h2 class="h2" style="font-size:28px">멤버십</h2>
+          <div class="sub">회원 기반을 먼저 안정화한 뒤 PLUS 결제를 연결합니다. PRO는 현장 의뢰형 서비스부터 대응하며 공개 상품은 준비중으로 운영합니다.</div>
+          <div class="membership-grid" id="membershipGrid">
+            <div class="membership-card" data-role-card="FREE"><span class="membership-state">기본</span><h3>FREE</h3><div class="price">무료</div><ul><li>NOW Rank 공개정보</li><li>정정뉴스·커뮤니티</li><li>개인화 기본 영역</li></ul></div>
+            <div class="membership-card" data-role-card="PLUS"><span class="membership-state">다음 빌드</span><h3>PLUS</h3><div class="price">월 5,000원 예정</div><ul><li>관심 의원·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul></div>
+            <div class="membership-card" data-role-card="PRO"><span class="membership-state">준비중</span><h3>PRO</h3><div class="price">별도 문의</div><ul><li>정치·정책 인텔리전스</li><li>맞춤 모니터링</li><li>AI 리서치</li><li>의원실·조직 업무용</li></ul></div>
           </div>
+          <div class="account-note" style="margin-top:14px">현재 결제 기능은 연결하지 않았습니다. 운영자는 관리자 콘솔에서 테스트 계정을 FREE / PLUS / PRO / ADMIN으로 변경해 권한 구조를 검증할 수 있습니다.</div>
         </div>
 
-        <div id="my-alerts" class="mytab" style="display:none">
-          <h2 class="h2" style="font-size:28px">알림 설정</h2>
-          <div class="checks">
-            <div class="check">☑ 관심 정치인 급상승 알림</div>
-            <div class="check">☑ 관심 정치인 급하락 알림</div>
-            <div class="check">☑ 정정LIVE 시작 알림</div>
-            <div class="check">☑ 정정뉴스 주요 기사 알림</div>
-            <div class="check">☑ NOW ISSUE 신규 투표 오픈</div>
-            <div class="check">☐ 이벤트 / 마케팅 알림</div>
+        <div id="my-preference" class="mytab" style="display:none">
+          <h2 class="h2" style="font-size:28px">내 정치 관심사</h2>
+          <div class="sub">공개 NOW Rank는 모든 이용자에게 동일합니다. 아래 선택은 향후 <b>FOR YOU</b> 개인화 영역에만 사용합니다.</div>
+          <div class="privacy-callout" style="margin-top:16px"><b>선택적 민감정보</b><br>관심 정당은 정치적 견해와 관련될 수 있어 별도 동의를 받은 경우에만 저장합니다. 선택하지 않아도 기본 서비스 이용에는 제한이 없습니다.</div>
+          <div class="formgrid" style="margin-top:14px">
+            <div class="field" style="grid-column:1 / -1"><label>관심 정당</label><select id="myPartyPreference"><option value="">선택하지 않음</option><option>더불어민주당</option><option>국민의힘</option><option>조국혁신당</option><option>개혁신당</option><option>진보당</option><option>기본소득당</option><option>사회민주당</option><option>무소속</option><option>기타</option><option>특정 정당 없음</option></select></div>
           </div>
-        </div>
-
-        <div id="my-history" class="mytab" style="display:none">
-          <h2 class="h2" style="font-size:28px">활동 기록</h2>
-          <div class="followlist">
-            <div class="follow"><b>최근 본 의원</b><div class="minirow"><span>김OO · 박OO · 정OO</span><span>오늘</span></div></div>
-            <div class="follow"><b>참여한 NOW ISSUE</b><div class="minirow"><span>전당대회 선호도 투표</span><span>어제</span></div></div>
-            <div class="follow"><b>읽은 기사</b><div class="minirow"><span>정책 발표 직후 검색량 급증</span><span>2일 전</span></div></div>
-            <div class="follow"><b>시청한 LIVE</b><div class="minirow"><span>오늘의 급상승 의원 분석</span><span>3일 전</span></div></div>
-          </div>
-        </div>
-
-        <div id="my-support" class="mytab" style="display:none">
-          <h2 class="h2" style="font-size:28px">후원 / 결제</h2>
-          <div class="followlist">
-            <div class="follow"><b>현재 배지</b><div class="minirow"><span>Silver Supporter</span><span>활성</span></div></div>
-            <div class="follow"><b>최근 후원</b><div class="minirow"><span>정정LIVE 슈퍼챗 10,000원</span><span>1주 전</span></div></div>
-            <div class="follow"><b>결제수단</b><div class="minirow"><span>등록 카드 1개</span><span>정상</span></div></div>
-            <div class="follow"><b>후원 내역</b><div class="minirow"><span>총 3회</span><span>보기</span></div></div>
-          </div>
+          <label class="account-check" style="margin-top:12px"><input type="checkbox" id="mySensitiveConsent"><span><b>[선택] 정치적 관심정보 수집·이용에 동의합니다.</b><br>수집항목: 선택한 관심 정당 · 목적: 개인화 콘텐츠 제공 · 보유: 동의 철회/설정 삭제 또는 회원탈퇴 시까지. <a href="/privacy.html" target="_blank">자세히 보기</a></span></label>
+          <div class="savebar"><span class="sub" id="myPreferenceStatus" style="margin:0"></span><button class="primary" id="saveMyPreference">저장</button></div>
         </div>
 
         <div id="my-security" class="mytab" style="display:none">
           <h2 class="h2" style="font-size:28px">보안 / 계정</h2>
-          <div class="checks">
-            <div class="check">☑ 비밀번호 변경</div>
-            <div class="check">☑ 2단계 인증</div>
-            <div class="check">☑ 로그인 기기 관리</div>
-            <div class="check">☑ 개인정보 다운로드</div>
-            <div class="check">☐ 계정 비활성화</div>
-            <div class="check">☐ 회원 탈퇴</div>
-          </div>
+          <div class="profile-meta-grid"><div class="profile-meta-box"><span>최근 로그인</span><b id="myLastLogin">-</b></div><div class="profile-meta-box"><span>세션</span><b>30일 보안 쿠키</b></div></div>
+          <div class="my-actions"><button class="my-action-ghost" id="myLogoutBtn">로그아웃</button></div>
+          <div style="height:1px;background:#e8efed;margin:26px 0 18px"></div>
+          <h3 style="margin:0 0 8px">회원 탈퇴</h3><div class="sub">탈퇴 시 계정과 선택적 관심 정당 정보를 삭제합니다. 비밀번호 확인 후 진행합니다.</div>
+          <div class="field" style="margin-top:12px"><label>현재 비밀번호</label><input type="password" id="deletePassword" autocomplete="current-password" placeholder="탈퇴 확인용 비밀번호"></div>
+          <div class="my-actions"><button class="my-action-danger" id="deleteAccountBtn">회원 탈퇴</button><span class="sub" id="deleteAccountStatus" style="margin:8px 0 0"></span></div>
         </div>
       </section>
     </div>
   </section>
+</div>
+
+<div class="account-overlay" id="accountModal" onclick="if(event.target===this) closeAccountModal()" aria-hidden="true">
+  <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="accountDialogTitle">
+    <div class="account-dialog-head"><div><div class="kicker">JEONGJEONGDANGDANG MEMBER</div><h2 id="accountDialogTitle">정정당당 계정</h2></div><button class="account-close" onclick="closeAccountModal()">✕</button></div>
+    <div class="account-tabs"><button class="account-tab active" data-account-tab="login">로그인</button><button class="account-tab" data-account-tab="signup">회원가입</button></div>
+    <form class="account-form" id="loginForm">
+      <div class="account-field"><label>이메일</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+      <div class="account-field"><label>비밀번호</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="account-submit" type="submit">로그인</button><div class="account-status" id="loginAccountStatus"></div>
+    </form>
+    <form class="account-form hidden-account" id="signupForm">
+      <div class="account-field"><label>닉네임</label><input id="signupNickname" maxlength="20" autocomplete="nickname" required placeholder="2~20자"></div>
+      <div class="account-field"><label>이메일</label><input id="signupEmail" type="email" autocomplete="email" required></div>
+      <div class="account-field"><label>비밀번호</label><input id="signupPassword" type="password" minlength="10" maxlength="128" autocomplete="new-password" required placeholder="10자 이상"></div>
+      <div class="account-field"><label>비밀번호 확인</label><input id="signupPassword2" type="password" minlength="10" maxlength="128" autocomplete="new-password" required></div>
+      <label class="account-check"><input type="checkbox" id="signupAge14" required><span><b>[필수]</b> 만 14세 이상입니다.</span></label>
+      <label class="account-check"><input type="checkbox" id="signupTerms" required><span><b>[필수]</b> <a href="/terms.html" target="_blank">이용약관</a>에 동의합니다.</span></label>
+      <label class="account-check"><input type="checkbox" id="signupPrivacy" required><span><b>[필수]</b> <a href="/privacy.html" target="_blank">개인정보 수집·이용 및 개인정보처리방침</a>을 확인하고 동의합니다.</span></label>
+      <button class="account-submit mint" type="submit">FREE 회원가입</button><div class="account-status" id="signupAccountStatus"></div>
+      <div class="account-note">관심 정당은 가입 후 MY에서 선택할 수 있습니다. 별도의 선택 동의를 하지 않으면 정치적 관심정보는 저장하지 않습니다.</div>
+    </form>
+  </div>
 </div>
 
 <div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
@@ -9678,6 +9688,7 @@ document.querySelectorAll(".navbtn").forEach(btn=>{
   });
 });
 function showPage(name){
+  if(name==='my' && !window.JJDD_ACCOUNT_USER){ openAccountModal('login'); return; }
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+name).classList.add("active");
   setMobileNavActive(name);
@@ -10690,6 +10701,81 @@ loadPublishedNowRank();
 // 메인 순위 first paint를 막지 않도록 의원 기본정보 검증은 뒤에서 시작합니다.
 setTimeout(()=>loadMemberMasterIntegrity(),700);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
+
+
+// ===== v2.0 Account & Membership Foundation =====
+window.JJDD_ACCOUNT_USER=null;
+function accountEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function accountDate(v){try{return v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'-';}catch(_){return '-';}}
+function roleLabel(r){return ({FREE:'FREE',PLUS:'PLUS',PRO:'PRO',ADMIN:'ADMIN'})[r]||'FREE';}
+async function accountApi(url,opts={}){
+  const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.error||`HTTP ${r.status}`);
+  return j;
+}
+function setAccountTab(tab){
+  document.querySelectorAll('[data-account-tab]').forEach(b=>b.classList.toggle('active',b.dataset.accountTab===tab));
+  const login=document.getElementById('loginForm'), signup=document.getElementById('signupForm');
+  if(login) login.classList.toggle('hidden-account',tab!=='login');
+  if(signup) signup.classList.toggle('hidden-account',tab!=='signup');
+}
+function openAccountModal(tab='login'){
+  setAccountTab(tab);
+  const m=document.getElementById('accountModal'); if(!m)return;
+  m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById(tab==='signup'?'signupNickname':'loginEmail')?.focus(),50);
+}
+function closeAccountModal(){const m=document.getElementById('accountModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+window.openAccountModal=openAccountModal;window.closeAccountModal=closeAccountModal;
+document.querySelectorAll('[data-account-tab]').forEach(b=>b.addEventListener('click',()=>setAccountTab(b.dataset.accountTab)));
+function setAccountUI(user){
+  window.JJDD_ACCOUNT_USER=user||null;
+  const loginBtn=document.getElementById('accountLoginBtn');
+  if(loginBtn){
+    if(user){loginBtn.innerHTML=`${accountEsc(user.nickname)} <span class="role-chip role-${roleLabel(user.role)}">${roleLabel(user.role)}</span>`;loginBtn.onclick=()=>showPage('my');}
+    else{loginBtn.textContent='로그인';loginBtn.onclick=()=>openAccountModal('login');}
+  }
+  document.getElementById('myLoggedOut')?.classList.toggle('hidden-account',Boolean(user));
+  document.getElementById('myLoggedIn')?.classList.toggle('hidden-account',!user);
+  if(!user)return;
+  const nick=user.nickname||'회원',role=roleLabel(user.role),pref=user.preference||{};
+  const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setText('myAvatar',nick.slice(0,1));setText('myNicknameHead',`${nick} 님`);setText('myRoleText',role);setText('myRoleBox',role);setText('myCreatedAt',accountDate(user.createdAt));setText('myLastLogin',accountDate(user.lastLoginAt));
+  const n=document.getElementById('myNickname');if(n)n.value=nick;const e=document.getElementById('myEmail');if(e)e.value=user.email||'';
+  const p=document.getElementById('myPartyPreference');if(p)p.value=pref.party||'';const c=document.getElementById('mySensitiveConsent');if(c)c.checked=Boolean(pref.sensitiveConsent);
+  document.querySelectorAll('[data-role-card]').forEach(card=>card.classList.toggle('current',card.dataset.roleCard===role || (role==='ADMIN'&&card.dataset.roleCard==='PRO')));
+}
+async function refreshAccountSession(){
+  try{const j=await accountApi('/api/account/me');setAccountUI(j.user);}
+  catch(_){setAccountUI(null);}
+}
+document.getElementById('loginForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();const st=document.getElementById('loginAccountStatus');st.textContent='로그인 중...';
+  try{const j=await accountApi('/api/account/login',{method:'POST',body:JSON.stringify({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPassword').value})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
+  catch(err){st.textContent=err.message;}
+});
+document.getElementById('signupForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();const st=document.getElementById('signupAccountStatus'),p1=document.getElementById('signupPassword').value,p2=document.getElementById('signupPassword2').value;if(p1!==p2){st.textContent='비밀번호 확인이 일치하지 않습니다.';return;}st.textContent='회원가입 중...';
+  try{const j=await accountApi('/api/account/signup',{method:'POST',body:JSON.stringify({nickname:document.getElementById('signupNickname').value,email:document.getElementById('signupEmail').value,password:p1,age14:document.getElementById('signupAge14').checked,agreeTerms:document.getElementById('signupTerms').checked,agreePrivacy:document.getElementById('signupPrivacy').checked})});setAccountUI(j.user);st.textContent='';closeAccountModal();showPage('my');}
+  catch(err){st.textContent=err.message;}
+});
+document.getElementById('saveMyProfile')?.addEventListener('click',async()=>{
+  const st=document.getElementById('myProfileStatus');st.textContent='저장 중...';try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({nickname:document.getElementById('myNickname').value})});setAccountUI(j.user);st.textContent='저장되었습니다.';}catch(e){st.textContent=e.message;}
+});
+document.getElementById('saveMyPreference')?.addEventListener('click',async()=>{
+  const st=document.getElementById('myPreferenceStatus'),party=document.getElementById('myPartyPreference').value,consent=document.getElementById('mySensitiveConsent').checked;if(party && !consent){st.textContent='관심 정당을 저장하려면 선택적 민감정보 동의가 필요합니다.';return;}st.textContent='저장 중...';
+  try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({partyPreference:party,sensitiveConsent:consent})});setAccountUI(j.user);st.textContent=party?'관심 정당이 저장되었습니다.':'관심 정당 정보가 삭제되었습니다.';}catch(e){st.textContent=e.message;}
+});
+async function logoutAccount(){try{await accountApi('/api/account/logout',{method:'POST',body:'{}'});}catch(_){}setAccountUI(null);showPage('ranking');}
+document.getElementById('myLogoutBtn')?.addEventListener('click',logoutAccount);
+document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
+  const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정정당당 회원 계정을 탈퇴할까요? 계정과 저장된 관심 정당 정보가 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
+  try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
+});
+const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
+refreshAccountSession();
+// ===== /v2.0 Account & Membership Foundation =====
 </script>
 <!-- 이재명 대통령 사진: 대한민국 국회, 공공누리 제1유형 / Wikimedia Commons -->
 <!-- NOW Rank v1.15 · Member Data Integrity · official Assembly photo/terms verification + investor copy. -->
