@@ -30,6 +30,8 @@ function compactSensor(key,s={}){
     const v=Number(s?.[k]);if(Number.isFinite(v))out[k]=Math.round(v*10)/10;
   }
   if(s?.latest)out.latest=s.latest;
+  for(const k of ['queryTerm','matchedKeyword','qualificationMode'])if(s?.[k])out[k]=String(s[k]).slice(0,120);
+  if(Number.isFinite(Number(s?.confidenceFactor)))out.confidenceFactor=Math.round(Number(s.confidenceFactor)*100)/100;
   return out;
 }
 function adminMemberView(x){
@@ -73,21 +75,30 @@ module.exports=async function handler(req,res){
       if(!draft.namePulse.configured){
         for(const m of batch)draft.namePulse.signals[memberKey(m)]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0},'naver-search-ads-keywordstool',STATES.MISSING,'NAVER Search Ads credentials not configured');
       }else{
-        // 지방단체장은 이름 단독 검색량을 쓰지 않는다. `이름 + 공식 직책`으로 조회해
-        // 배우·기업인 등 외부 동명이인의 검색량이 정치인에게 귀속되는 것을 막는다.
-        const queryTerms=batch.map(m=>['metro','local'].includes(String(m.entityType||'assembly'))?`${m.name} ${titleTerm(m)}`:m.name);
-        const rows=await queryKeywords(queryTerms);
-        rows.forEach((row,i)=>{
-          const member=batch[i],name=member.name,queryTerm=queryTerms[i],k=memberKey(member);
+        // v2.2.3: 지방단체장 Name Pulse는 직책 결합 키워드를 우선 조회하고,
+        // 해당 키워드가 NAVER 광고 키워드 DB에 없을 때만 '통합 roster에서 이름이 유일한 인물'에 한해
+        // 이름 단독 검색량을 보조값으로 사용한다. 동명이인은 이름 단독 fallback을 절대 사용하지 않는다.
+        const localType=m=>['metro','local'].includes(String(m.entityType||'assembly'));
+        const primaryTerms=batch.map(m=>localType(m)?`${m.name}${String(titleTerm(m)||'').replace(/\s+/g,'')}`:m.name);
+        const primaryRows=await queryKeywords(primaryTerms);
+        const fallbackIndexes=[];
+        primaryRows.forEach((row,i)=>{const m=batch[i];if(localType(m)&&row?.ok&&!row.found&&!m.ambiguousName)fallbackIndexes.push(i);});
+        const fallbackRows=fallbackIndexes.length?await queryKeywords(fallbackIndexes.map(i=>batch[i].name)):[];
+        const fallbackByIndex=new Map(fallbackIndexes.map((idx,j)=>[idx,fallbackRows[j]]));
+        primaryRows.forEach((first,i)=>{
+          const member=batch[i],k=memberKey(member),isLocal=localType(member),fallback=fallbackByIndex.get(i);
+          const row=(first?.ok&&first.found)?first:(fallback?.ok&&fallback.found?fallback:first);
+          const usedFallback=Boolean(isLocal&&fallback?.ok&&fallback.found&&!(first?.found));
+          const queryTerm=usedFallback?member.name:primaryTerms[i];
           if(row?.ok){
             const total=row.found?Math.max(0,Number(row.monthlyTotalQcCnt)||0):0;
-            // 이름만 제공되는 검색광고 키워드 도구는 동명이인을 구별할 수 없습니다.
-            // 두 박지원 의원에게 동일 검색량을 중복 반영하지 않고, 보조 정보만 보존합니다.
-            const ambiguous=Boolean(member.ambiguousName),score=ambiguous?0:searchScaleScore(total);
-            const detail=ambiguous?'동명이인 이름 검색량 · 인물별 순위 반영 제외':(row.found?'':'API 정상 · 정확 의원명 키워드 미반환(검색량 0으로 처리)');
-            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score,matchedKeyword:row.found?(row.matchedKeyword||queryTerm):null,monthlyPcQcCnt:ambiguous?0:(row.found?(Number(row.monthlyPcQcCnt)||0):0),monthlyMobileQcCnt:ambiguous?0:(row.found?(Number(row.monthlyMobileQcCnt)||0):0),monthlyTotalQcCnt:ambiguous?0:total,sharedNameMonthlyTotalQcCnt:ambiguous?total:null,ambiguousName:ambiguous,found:Boolean(row.found),fetchedAt:row.fetchedAt||new Date().toISOString()},'naver-search-ads-keywordstool',ambiguous?STATES.ZERO:(total>0?STATES.OBSERVED:STATES.ZERO),detail);
+            const ambiguous=Boolean(member.ambiguousName);
+            const confidenceFactor=usedFallback?0.72:1;
+            const score=ambiguous?0:Math.round(searchScaleScore(total)*confidenceFactor*10)/10;
+            const detail=ambiguous?'동명이인 · 이름 단독 검색량 인물별 반영 제외':usedFallback?'직책 결합 키워드 미반환 · roster 내 유일 이름 검색량을 72% 신뢰도로 보조 반영':(row.found?'직책/이름 정확 키워드 관측':'API 정상 · 정확 키워드 미반환(검색량 0)');
+            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score,matchedKeyword:row.found?(row.matchedKeyword||queryTerm):null,queryTerm,qualificationMode:usedFallback?'unique-name-fallback':(isLocal?'office-qualified':'name-exact'),confidenceFactor,monthlyPcQcCnt:ambiguous?0:(row.found?(Number(row.monthlyPcQcCnt)||0):0),monthlyMobileQcCnt:ambiguous?0:(row.found?(Number(row.monthlyMobileQcCnt)||0):0),monthlyTotalQcCnt:ambiguous?0:total,sharedNameMonthlyTotalQcCnt:ambiguous?total:null,ambiguousName:ambiguous,found:Boolean(row.found),fetchedAt:row.fetchedAt||new Date().toISOString()},'naver-search-ads-keywordstool',ambiguous?STATES.ZERO:(total>0?STATES.OBSERVED:STATES.ZERO),detail);
           }else{
-            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0,found:false},'naver-search-ads-keywordstool',STATES.MISSING,row?.error||'Name Pulse request failed');
+            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0,found:false,queryTerm},'naver-search-ads-keywordstool',STATES.MISSING,row?.error||'Name Pulse request failed');
           }
         });
       }

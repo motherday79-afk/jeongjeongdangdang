@@ -1,3 +1,7 @@
+# v2.2.3 · LOCAL COMMUNITY
+
+최신 변경사항은 `README_V2_2_3_LOCAL_COMMUNITY.md`를 먼저 확인하세요. 지방단체장 Name Pulse 보강, 직위 표시 정리, 공식 협의회 사진 자동 확인, 방문자 현황, 커뮤니티 게시판을 포함합니다.
+
 # CURRENT RELEASE
 
 - v2.2.2 Redis 10MB Refresh Hotfix: `README_V2_2_2_REDIS_10MB_HOTFIX.md`
