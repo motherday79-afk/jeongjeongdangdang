@@ -26,7 +26,7 @@ function compactMember(point,id){
   const rows=Array.isArray(point?.members)?point.members:[];
   const row=rows.find(x=>Array.isArray(x)&&Number(x[0])===Number(id));
   if(!row)return null;
-  return {rank:Number(row[1]),score:Number.isFinite(Number(row[2]))?Number(row[2]):null};
+  return {rank:Number(row[1]),score:Number.isFinite(Number(row[2]))?Number(row[2]):null,overallRank:Number.isFinite(Number(row[3]))?Number(row[3]):null};
 }
 function formatLabel(point){
   const dt=point?.publishedAt||point?.timestamp||'';
@@ -105,6 +105,7 @@ module.exports=async function handler(req,res){
           label:formatLabel(p),
           rank:Number(m.rank),
           score:Number.isFinite(Number(m.score))?Number(m.score):null,
+          overallRank:Number.isFinite(Number(m.overallRank))?Number(m.overallRank):null,
           mode:String(p.mode||'LEGACY').toUpperCase()
         };
       }).filter(Boolean).sort((a,b)=>a.stamp-b.stamp);

@@ -1,8 +1,8 @@
-const roster=require('../../data/roster.json');
+const {activeRoster}=require('../../lib/political_roster');
 const {requireUser,capabilities,saveUser}=require('../../lib/user_auth');
 const {plusState,mutatePlusState}=require('../../lib/plus');
 
-const activeIds=new Set((Array.isArray(roster)?roster:[]).filter(x=>Number(x.id)!==300 && String(x.party||'')!=='공석').map(x=>Number(x.id)));
+const activeIds=new Set(activeRoster().map(x=>Number(x.id))); 
 
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','private, no-store');
@@ -16,7 +16,7 @@ module.exports=async function(req,res){
   const b=req.body||{};
   try{
     if(['addPolitician','removePolitician'].includes(String(b.action||'')) && !activeIds.has(Number(b.memberId))){
-      return res.status(400).json({ok:false,error:'현재 현역 의원 목록에서 확인되지 않는 대상입니다.'});
+      return res.status(400).json({ok:false,error:'현재 정치인 명단에서 확인되지 않는 대상입니다.'});
     }
     const state=mutatePlusState(user,b.action,b);
     await saveUser(user);

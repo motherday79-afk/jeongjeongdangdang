@@ -193,6 +193,7 @@ a{text-decoration:none;color:inherit}
 .now-keyword-strip{display:flex;flex-wrap:wrap;align-items:center;gap:7px;overflow:visible;padding-bottom:2px}
 .now-chip{border:1px solid #d9ece7;background:#fff;color:#286b63;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:850;white-space:nowrap;cursor:pointer;transition:.15s;max-width:100%}
 .now-chip:hover{transform:translateY(-1px);border-color:#91d8cc;box-shadow:0 6px 14px rgba(40,183,162,.10)}
+.keyword-category-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 10px}.keyword-category-tab{border:1px solid #dbeae6;background:#fff;color:#60716c;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:900;cursor:pointer}.keyword-category-tab.active{background:#0f766e;border-color:#0f766e;color:#fff}.entity-chip{display:inline-flex;align-items:center;margin-left:5px;padding:2px 6px;border-radius:999px;background:#eef6f4;color:#46635d;font-size:9px;font-weight:900;vertical-align:1px}.photo-safe-note{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:10px;color:#7b8b86;font-weight:800}
 .person-copy{min-width:0}.person-keywords{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
 .person-keyword{display:inline-flex;align-items:center;max-width:145px;border:0;background:#effaf7;color:#137a6d;border-radius:7px;padding:3px 6px;font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .person-keyword:before{content:'#';opacity:.55;margin-right:1px}
@@ -1027,8 +1028,8 @@ a{text-decoration:none;color:inherit}
         </section>
         <div class="head">
           <div class="head-left">
-            <h1>국회의원 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
-            <div class="sub">뉴스·검색·현재 정치 이벤트·디지털 확산을 중심으로 “지금 누가 이슈인가”를 보여주는 국회의원 실시간 이슈 랭킹입니다.</div>
+            <h1>대한민국 정치 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
+            <div class="sub">국회의원·광역단체장·기초단체장의 뉴스·검색·현재 정치 이벤트·디지털 확산을 함께 추적해 “지금 누가 이슈의 중심인가”를 보여주는 실시간 정치 인텔리전스 랭킹입니다.</div>
           </div>
           <div class="searchline">
             <input id="search" class="search" placeholder="이름, 정당, 지역 검색" />
@@ -1036,30 +1037,40 @@ a{text-decoration:none;color:inherit}
               <option value="all">전체 정당</option>
               <option>더불어민주당</option>
               <option>국민의힘</option>
+              <option>조국혁신당</option>
+              <option>개혁신당</option>
+              <option>진보당</option>
+              <option>사회민주당</option>
               <option>무소속</option>
-              <option>프로토타입</option>
             </select>
           </div>
         </div>
 
-        <div class="demo-notice"><b>NOW RANK</b>는 <b>Google·NAVER·Daum</b> 등 국내외 포털과 <b>Facebook·Instagram·X·YouTube</b> 등 주요 공개 디지털 채널을 대상으로 소싱 범위를 확장하며 정치 관련 뉴스·검색·콘텐츠 신호를 수집·필터링합니다. 여기에 <b>AI Intelligence Layer</b>를 더해 중복·노이즈·맥락을 정제하고, 지금 이 순간 <b>이슈의 중심에 선 국회의원</b>을 실시간으로 보여주는 정치 인텔리전스 서비스입니다.</div>
+        <div class="demo-notice"><b>NOW RANK</b>는 <b>Google·NAVER·Daum</b> 등 국내외 포털과 <b>Facebook·Instagram·X·YouTube</b> 등 주요 공개 디지털 채널을 대상으로 소싱 범위를 확장하며 정치 관련 뉴스·검색·콘텐츠 신호를 수집·필터링합니다. 여기에 <b>AI Intelligence Layer</b>를 더해 중복·노이즈·맥락을 정제하고, 지금 이 순간 <b>이슈의 중심에 선 정치인</b>을 실시간으로 보여주는 정치 인텔리전스 서비스입니다.</div>
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
-          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span id="nowKeywordMeta">TOP30 실시간 이슈 · 20~25개</span></div>
+          <div class="now-keyword-head"><b>지금 정치권 키워드 · WHY NOW</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 20~25개</span></div>
+          <div class="keyword-category-tabs" id="keywordCategoryTabs">
+            <button class="keyword-category-tab active" data-keyword-category="all">전체</button>
+            <button class="keyword-category-tab" data-keyword-category="assembly">국회의원</button>
+            <button class="keyword-category-tab" data-keyword-category="metro">광역단체장</button>
+            <button class="keyword-category-tab" data-keyword-category="local">기초단체장</button>
+          </div>
           <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
         </section>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
-          <button class="tab" data-mode="search">검색 관심</button>
-          <button class="tab" data-mode="media">언론 주목</button>
+          <button class="tab" data-mode="assembly">국회의원</button>
+          <button class="tab" data-mode="metro">광역단체장</button>
+          <button class="tab" data-mode="local">기초단체장</button>
         </div>
 
         <section class="ranktable" id="ranktable"></section>
 
         <div class="footer-note">
-          <div class="info-pill">ⓘ 전체 순위와 검색 관심·언론 주목 순위는 같은 최신 스냅샷에서 계산합니다. 직전 갱신 대비 변화는 실제 게시 이력이 있을 때만 표시하며 과거 값을 임의로 만들지 않습니다.</div>
+          <div class="info-pill">ⓘ 전체는 국회의원·광역단체장·기초단체장을 함께 비교한 종합 NOW Rank입니다. 각 카테고리에서는 동일 직군 안에서의 순위를 보여주며, 검색 관심·언론 주목 지표는 각 인물 상세에서 확인할 수 있습니다. 직전 게시 대비 변화는 실제 게시 이력만 사용합니다.</div>
           <button class="outline-btn">순위 산정 기준 안내</button>
         </div>
       </main>
@@ -1303,13 +1314,13 @@ a{text-decoration:none;color:inherit}
           <div class="sub">내가 지켜보는 정치인과 이슈를 한곳에 모으고, 장기 변화와 비교분석까지 연결하는 개인 정치 인텔리전스 영역입니다.</div>
           <div id="myPlusLocked" class="plus-lock-card" style="margin-top:16px">
             <div class="kicker">JJDD PLUS</div><h3>월 5,000원 · 낮은 진입장벽으로 시작합니다.</h3>
-            <p>관심 의원·이슈 저장, 30일/1년 NOW Rank 히스토리, 정치인 비교, 개인별 관심 대시보드를 제공합니다. 푸시 알림은 앱 단계에서 추가합니다.</p>
+            <p>관심 정치인·이슈 저장, 30일/1년 NOW Rank 히스토리, 정치인 비교, 개인별 관심 대시보드를 제공합니다. 푸시 알림은 앱 단계에서 추가합니다.</p>
             <button class="plus-pay-btn" style="max-width:280px" onclick="openPlusUpgrade('PLUS 대시보드')">PLUS 구독하기</button>
           </div>
           <div id="myPlusUnlocked" style="display:none">
             <div class="plus-dashboard-grid">
               <section class="plus-panel"><div class="kicker">MY BRIEF</div><h3>내 관심 브리핑</h3><div class="sub" style="margin-top:0;font-size:12px">관심 등록한 의원의 현재 순위와 직전 게시 대비 변화를 자동 요약합니다.</div><div class="plus-brief-list" id="myPlusBrief"></div></section>
-              <section class="plus-panel"><div class="kicker">WATCHLIST</div><h3>관심 의원</h3><div class="sub" style="margin-top:0;font-size:12px">의원 상세페이지의 ☆ 버튼으로 최대 30명까지 저장할 수 있습니다.</div><div class="plus-watch-list" id="myPlusPoliticians"></div></section>
+              <section class="plus-panel"><div class="kicker">WATCHLIST</div><h3>관심 정치인</h3><div class="sub" style="margin-top:0;font-size:12px">정치인 상세페이지의 ☆ 버튼으로 최대 30명까지 저장할 수 있습니다.</div><div class="plus-watch-list" id="myPlusPoliticians"></div></section>
             </div>
             <section class="plus-panel" style="margin-top:14px"><div class="kicker">ISSUE WATCH</div><h3>관심 이슈</h3><div class="sub" style="margin-top:0;font-size:12px">WHY NOW 키워드에서 바로 저장하거나 직접 키워드를 추가할 수 있습니다. 관심 등록은 지지 의사 표시가 아니라 추적 대상을 저장하는 기능입니다.</div><div class="plus-issue-form"><input id="myPlusIssueInput" maxlength="60" placeholder="예: 반도체특별법, 연금개혁, 공천"><button id="myPlusIssueAdd">추가</button></div><div class="plus-issue-chips" id="myPlusIssues"></div><div class="account-status" id="myPlusStatus"></div></section>
           </div>
@@ -1320,7 +1331,7 @@ a{text-decoration:none;color:inherit}
           <div class="sub">PLUS 기능은 이번 빌드부터 실제 권한으로 동작합니다. 결제 버튼과 서버 계약 구조는 준비되어 있으며 CMS 결제 연동만 추후 연결합니다. PRO는 현장 의뢰형으로 대응하며 공개 상품은 준비중입니다.</div>
           <div class="membership-grid" id="membershipGrid">
             <div class="membership-card" data-role-card="FREE"><span class="membership-state">기본</span><h3>FREE</h3><div class="price">무료</div><ul><li>NOW Rank 공개정보</li><li>정정뉴스·커뮤니티</li><li>7일 이내 순위 변화</li></ul></div>
-            <div class="membership-card plus-feature" data-role-card="PLUS"><span class="membership-state">이용 가능</span><h3>PLUS</h3><div class="price">월 5,000원</div><ul><li>관심 의원·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul><button class="plus-pay-btn" id="plusSubscribeBtn" onclick="openPlusUpgrade('멤버십')">PLUS 구독하기</button></div>
+            <div class="membership-card plus-feature" data-role-card="PLUS"><span class="membership-state">이용 가능</span><h3>PLUS</h3><div class="price">월 5,000원</div><ul><li>관심 정치인·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul><button class="plus-pay-btn" id="plusSubscribeBtn" onclick="openPlusUpgrade('멤버십')">PLUS 구독하기</button></div>
             <div class="membership-card" data-role-card="PRO"><span class="membership-state">준비중</span><h3>PRO</h3><div class="price">별도 문의</div><ul><li>정치·정책 인텔리전스</li><li>맞춤 모니터링</li><li>AI 리서치</li><li>의원실·조직 업무용</li></ul></div>
           </div>
           <div class="account-note" style="margin-top:14px">CMS 결제는 아직 연결하지 않았으므로 실제 금액이 청구되지 않습니다. 현재 테스트는 관리자 콘솔에서 회원 등급을 PLUS로 변경해 진행할 수 있습니다.</div>
@@ -1342,7 +1353,7 @@ a{text-decoration:none;color:inherit}
           <div class="profile-meta-grid"><div class="profile-meta-box"><span>최근 로그인</span><b id="myLastLogin">-</b></div><div class="profile-meta-box"><span>세션</span><b>30일 보안 쿠키</b></div></div>
           <div class="my-actions"><button class="my-action-ghost" id="myLogoutBtn">로그아웃</button></div>
           <div style="height:1px;background:#e8efed;margin:26px 0 18px"></div>
-          <h3 style="margin:0 0 8px">회원 탈퇴</h3><div class="sub">탈퇴 시 계정과 선택적 관심 정당, PLUS 관심 의원·이슈 저장정보를 함께 삭제합니다. 비밀번호 확인 후 진행합니다.</div>
+          <h3 style="margin:0 0 8px">회원 탈퇴</h3><div class="sub">탈퇴 시 계정과 선택적 관심 정당, PLUS 관심 정치인·이슈 저장정보를 함께 삭제합니다. 비밀번호 확인 후 진행합니다.</div>
           <div class="field" style="margin-top:12px"><label>현재 비밀번호</label><input type="password" id="deletePassword" autocomplete="current-password" placeholder="탈퇴 확인용 비밀번호"></div>
           <div class="my-actions"><button class="my-action-danger" id="deleteAccountBtn">회원 탈퇴</button><span class="sub" id="deleteAccountStatus" style="margin:8px 0 0"></span></div>
         </div>
@@ -1392,10 +1403,14 @@ a{text-decoration:none;color:inherit}
 
 const firstNames=["민준","서준","도윤","예준","시우","하준","주원","지호","지후","준서","서연","서윤","지우","서현","민서","하은","하윤","윤서","지유","지민"];
 const lastNames=["김","이","박","최","정","강","조","윤","장","임","한","오","서","신","권","황","안","송","전","홍"];
-const parties=["더불어민주당","국민의힘","무소속","프로토타입"];
+const parties=["더불어민주당","국민의힘","조국혁신당","개혁신당","진보당","사회민주당","무소속","프로토타입"];
 const partyClass={
   "더불어민주당":"party-blue",
   "국민의힘":"party-red",
+  "조국혁신당":"party-blue",
+  "개혁신당":"party-red",
+  "진보당":"party-red",
+  "사회민주당":"party-blue",
   "무소속":"party-gray",
   "프로토타입":"party-gray"
 };
@@ -1426,10 +1441,10 @@ function presidentPortraitSVG(){
 
 
 // ===== V14.1 · 실제 인물 사진 레이어 =====
-// 현역 의원은 열린국회정보 ALLNAMEMBER의 NAAS_PIC/NAAS_CD를 최우선으로 사용합니다.
-// 공식 API 접근이 일시적으로 제한될 경우 Wikidata/Wikimedia Commons의 실제 인물 사진으로 보완합니다.
-// 어떤 외부 원천에서도 사진을 확인하지 못했을 때만 기존 일러스트를 안전한 최종 fallback으로 유지합니다.
-const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v115_memberid";
+// 현역 국회의원은 열린국회정보 ALLNAMEMBER의 NAAS_PIC/NAAS_CD 등 국회 공식 사진을 우선합니다.
+// 지방단체장은 지방정부 공식 출처에서 인물 신원이 검증된 사진만 허용합니다.
+// 공식 인물사진을 안전하게 확인하지 못하면 이름 기반 추정을 하지 않고 기본 인물 이미지를 사용합니다.
+const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v22_official_identity";
 const PHOTO_AMBIGUOUS_MEMBER_IDS=new Set([26,211]);
 const PHOTO_MEMBER_DISAMBIG={26:['전남','해남','완도','진도'],211:['전북','군산','김제','부안']};
 const ASSEMBLY_MEMBER_API="https://open.assembly.go.kr/portal/openapi/ALLNAMEMBER";
@@ -1450,6 +1465,16 @@ function photoNameFromSlot(el){
 function politicianPhotoHTML(name,seedv=1,quality="standard"){
   const enc=encodeURIComponent(name||"");
   const memberId=Number(seedv)||0;
+  const member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===memberId&&p.name===name):null;
+  const type=String(member?.entityType||'assembly');
+  // v2.2 local-government photo integrity: never infer a mayor/governor photo from a name search.
+  // Only a URL explicitly marked photoVerified in the local roster/snapshot may render.
+  if((type==='metro'||type==='local')){
+    if(member?.photoVerified===true && member?.officialPhoto){
+      return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(member.officialPhoto)}" alt="${photoAttr(name)} 사진" title="${photoAttr('사진 출처: 지방정부 공식 프로필 · 신원 검증 완료')}" data-photo-source="local-official" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    }
+    return `<span class="politician-photo local-safe-fallback" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1" title="공식 사진 신원 확인 전 · 잘못된 인물 사진 대신 안전한 기본 이미지를 표시합니다.">${personSVG(seedv)}</span>`;
+  }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
   if(cached?.url){
@@ -1656,6 +1681,7 @@ async function hydratePhotoSlot(slot){
   const quality=slot.dataset.photoQuality||"standard";
   const seed=Number(slot.dataset.photoSeed||0);
   const member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===seed&&p.name===name):null;
+  if(member && ['metro','local'].includes(String(member.entityType||''))){slot.classList.remove('is-loading');slot.dataset.photoHydrating='0';return;}
   const result=quality==="high" ? await resolvePoliticianPhotoHigh(name,member) : await resolvePoliticianPhoto(name,{member});
   if(result) applyPoliticianPhoto(name,result,quality,member?seed:null); else slot.classList.remove('is-loading');
   slot.dataset.photoHydrating='0';
@@ -1677,7 +1703,7 @@ async function handlePoliticianPhotoError(img){
   if(seed) delete politicianPhotoCache[String(seed)]; savePoliticianPhotoCache();
   const slot=img.closest('.politician-photo');
   // v1.15 integrity rule: 공식 국회 사진 식별이 실패하면 다른 동명이인 사진을 추정하지 않습니다.
-  if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title='대한민국 국회 공식 사진 식별 실패 · 잘못된 인물 사진 대신 안전한 기본 이미지를 표시합니다.';}
+  if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title=(member&&['metro','local'].includes(String(member.entityType||'')))?'지방정부 공식 사진 식별 실패 · 잘못된 인물 사진 대신 안전한 기본 이미지를 표시합니다.':'대한민국 국회 공식 사진 식별 실패 · 잘못된 인물 사진 대신 안전한 기본 이미지를 표시합니다.';}
 }
 window.handlePoliticianPhotoError=handlePoliticianPhotoError;
 function initPoliticianPhotoHydrator(){
@@ -8804,7 +8830,7 @@ people.push({
 });
 
 // ===== NOW Rank v1 · Evidence First · 300석 전체 =====
-const NOW_ROSTER_VERSION='2026-06-03-by-election-v1';
+const NOW_ROSTER_VERSION='2026-08-15-national-local-v1';
 const nowRankById = {};
 people = people.map(p => {
   const r = nowRankById[String(p.id)];
@@ -9095,11 +9121,24 @@ document.getElementById("govIcon").innerHTML = govSVG();
 document.getElementById("liveVisual").innerHTML = liveSVG();
 
 let mode="all";
-
+let keywordMode="all";
+const ENTITY_LABELS={all:'전체',assembly:'국회의원',metro:'광역단체장',local:'기초단체장'};
+function entityTypeOf(x){return String(x?.entityType||'assembly');}
+function entityLabel(x){return ENTITY_LABELS[entityTypeOf(x)]||'정치인';}
+function entityOffice(x){return String(x?.office|| (entityTypeOf(x)==='assembly'?'국회의원':'정치인'));}
+function entityCategoryMatch(x,category=mode){
+  if(category==='all')return Number(x?.id)!==300&&String(x?.party||'')!=='공석';
+  if(category==='assembly')return entityTypeOf(x)==='assembly';
+  return entityTypeOf(x)===category;
+}
 function renderMobileRankHeading(){
   const allTitle=document.getElementById('mobileAllRankTitle'),allMeta=document.getElementById('mobileAllRankMeta');
-  if(allTitle) allTitle.textContent=mode==='search'?'검색 관심 전체 순위':mode==='media'?'언론 주목 전체 순위':'전체 NOW Rank';
-  if(allMeta) allMeta.textContent='1~300 전체 보기';
+  const label=ENTITY_LABELS[mode]||'전체';
+  if(allTitle) allTitle.textContent=mode==='all'?'전체 정치 NOW Rank':`${label} NOW Rank`;
+  if(allMeta){
+    const count=people.filter(x=>entityCategoryMatch(x,mode)).length;
+    allMeta.textContent=count?`1~${count} 전체 보기`:'전체 보기';
+  }
 }
 
 function syncResponsiveContent(){
@@ -9205,28 +9244,17 @@ function mediaViewScore(x){
   return Math.min(100,Number(sig.count6||0)*5+Number(sig.sources6||0)*8+Number(sig.count24||0));
 }
 function ensureViewRanks(){
-  const active=people.filter(x=>x.id!==300&&x.party!=='공석');
-  const search=[...active].sort((a,b)=>(searchViewScore(b)-searchViewScore(a))||(a.rank-b.rank));
-  const media=[...active].sort((a,b)=>(mediaViewScore(b)-mediaViewScore(a))||(Number(b.signal?.sources6||0)-Number(a.signal?.sources6||0))||(a.rank-b.rank));
-  search.forEach((x,i)=>{x._searchRankComputed=i+1;});
-  media.forEach((x,i)=>{x._mediaRankComputed=i+1;});
-  const vacancy=people.find(x=>x.id===300||x.party==='공석');
-  if(vacancy){vacancy._searchRankComputed=300;vacancy._mediaRankComputed=300;}
+  // Backend publishes both overallRank (all political entities) and rank/categoryRank (same office family).
+  // Keep search/media scores for the detail page, but the main tabs are entity categories from v2.2.
 }
 function viewRank(x,viewMode=mode){
-  if(viewMode==='search') return finiteValue(x.searchRank)?Number(x.searchRank):Number(x._searchRankComputed||300);
-  if(viewMode==='media') return finiteValue(x.mediaRank)?Number(x.mediaRank):Number(x._mediaRankComputed||300);
-  return Number(x.rank||300);
+  if(viewMode==='all') return finiteValue(x?.overallRank)?Number(x.overallRank):Number(x?.rank||9999);
+  return Number(x?.rank||x?.categoryRank||9999);
 }
-function viewScore(x,viewMode=mode){
-  if(viewMode==='search') return searchViewScore(x);
-  if(viewMode==='media') return mediaViewScore(x);
-  return Number(x.rank2Score||0);
-}
+function viewScore(x){return Number(x?.rank2Score||0);}
 function viewLabel(viewMode=mode){
-  if(viewMode==='search') return {title:'검색 관심',score:'검색 관심',mobile:'검색 관심 TOP 10'};
-  if(viewMode==='media') return {title:'언론 주목',score:'언론 주목',mobile:'언론 주목 TOP 10'};
-  return {title:'전체',score:'NOW 지수',mobile:'NOW TOP 10'};
+  const title=ENTITY_LABELS[viewMode]||'전체';
+  return {title,score:'NOW 지수',mobile:viewMode==='all'?'전체 정치 NOW Rank':`${title} NOW Rank`};
 }
 function previousPublishedSnapshot(){
   const current=currentSnapshotTime();
@@ -9235,36 +9263,41 @@ function previousPublishedSnapshot(){
     .filter(x=>Number.isFinite(x.t)&&x.t<current-1000)
     .sort((a,b)=>b.t-a.t)[0]?.s||null;
 }
-function refreshRankChange(x){
-  if(finiteValue(x?.changeRefresh)){
-    return {change:Number(x.changeRefresh),oldRank:finiteValue(x.previousRank)?Number(x.previousRank):null};
+function refreshRankChange(x,viewMode=mode){
+  const overall=viewMode==='all';
+  const direct=overall?x?.changeOverallRefresh:x?.changeRefresh;
+  const prevDirect=overall?x?.previousOverallRank:x?.previousRank;
+  const currentRank=overall?x?.overallRank:x?.rank;
+  if(finiteValue(direct)){
+    return {change:Number(direct),oldRank:finiteValue(prevDirect)?Number(prevDirect):null,currentRank:finiteValue(currentRank)?Number(currentRank):null};
   }
   const prev=previousPublishedSnapshot(),old=snapshotMember(prev,x);
-  if(finiteValue(old?.rank)) return {change:Number(old.rank)-Number(x.rank),oldRank:Number(old.rank)};
-  if(finiteValue(x?.delta) && Number(x.delta)!==0) return {change:Number(x.delta),oldRank:Number(x.rank)+Number(x.delta)};
-  return {change:null,oldRank:null};
+  const oldRank=overall?old?.overallRank:old?.rank;
+  if(finiteValue(oldRank)&&finiteValue(currentRank)) return {change:Number(oldRank)-Number(currentRank),oldRank:Number(oldRank),currentRank:Number(currentRank)};
+  if(!overall&&finiteValue(x?.delta) && Number(x.delta)!==0 && finiteValue(currentRank)) return {change:Number(x.delta),oldRank:Number(currentRank)+Number(x.delta),currentRank:Number(currentRank)};
+  return {change:null,oldRank:null,currentRank:finiteValue(currentRank)?Number(currentRank):null};
 }
-function refreshChangeText(x){
-  const r=refreshRankChange(x);
+function refreshChangeText(x,viewMode=mode){
+  const r=refreshRankChange(x,viewMode);
   if(!finiteValue(r.change)) return {text:'첫 게시',cls:'same',route:'비교 스냅샷 없음'};
   const text=r.change>0?`▲ ${r.change}`:r.change<0?`▼ ${Math.abs(r.change)}`:'―';
   const cls=r.change>0?'up':r.change<0?'down':'same';
-  const route=finiteValue(r.oldRank)?`${r.oldRank}위 → ${x.rank}위`:'직전 갱신 대비';
+  const route=finiteValue(r.oldRank)&&finiteValue(r.currentRank)?`${r.oldRank}위 → ${r.currentRank}위`:'직전 갱신 대비';
   return {text,cls,route};
 }
 function renderRapidRiseTop10(){
   const box=document.getElementById('rapidRiseList');
   if(!box) return;
   const movers=people
-    .filter(x=>x && x.id!==300 && x.party!=='공석')
-    .map(x=>{const r=refreshRankChange(x);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null};})
-    .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.x.rank))
-    .sort((a,b)=>(b.change-a.change)||(a.x.rank-b.x.rank)||String(a.x.name).localeCompare(String(b.x.name),'ko'))
+    .filter(x=>x && entityCategoryMatch(x,mode) && x.id!==300 && x.party!=='공석')
+    .map(x=>{const r=refreshRankChange(x,mode);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null,currentRank:finiteValue(r.currentRank)?Number(r.currentRank):viewRank(x,mode)};})
+    .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.currentRank))
+    .sort((a,b)=>(b.change-a.change)||(a.currentRank-b.currentRank)||String(a.x.name).localeCompare(String(b.x.name),'ko'))
     .slice(0,10);
 
   if(!movers.length){
-    const comparable=people.some(x=>finiteValue(refreshRankChange(x).change));
-    box.innerHTML=`<div class="rapid-rise-empty">${comparable?'이번 갱신에서 순위가 오른 의원이 없습니다.':'비교 가능한 직전 게시 스냅샷이 아직 없습니다.<br>다음 Refresh/Publish부터 실제 상승폭이 표시됩니다.'}</div>`;
+    const comparable=people.filter(x=>entityCategoryMatch(x,mode)).some(x=>finiteValue(refreshRankChange(x,mode).change));
+    box.innerHTML=`<div class="rapid-rise-empty">${comparable?'이번 갱신에서 순위가 오른 정치인이 없습니다.':'비교 가능한 직전 게시 스냅샷이 아직 없습니다.<br>다음 Refresh/Publish부터 실제 상승폭이 표시됩니다.'}</div>`;
     return;
   }
 
@@ -9272,7 +9305,7 @@ function renderRapidRiseTop10(){
     const x=v.x;
     const tags=whyNowKeywords(x);
     const reason=tags.length?tags[0]:((x.eventLabel&&!String(x.eventLabel).includes('연계 없음')&&!String(x.eventLabel).includes('현재 주요 정치 이슈'))?x.eventLabel:'');
-    const meta=[`${x.rank}위`,x.party,reason].filter(Boolean).join(' · ');
+    const meta=[`${v.currentRank}위`,entityLabel(x),x.party,reason].filter(Boolean).join(' · ');
     return `<div class="rapid-rise-row" onclick="openDetail(${x.id})" title="${String(x.name).replace(/"/g,'&quot;')} 상세 보기">
       <div class="rapid-rise-order">${i+1}</div>
       <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
@@ -9280,7 +9313,7 @@ function renderRapidRiseTop10(){
         <div class="rapid-rise-name">${x.name}</div>
         <div class="rapid-rise-meta">${meta}</div>
       </div>
-      <div class="rapid-rise-delta">▲ ${v.change}<small>${v.oldRank??'?'} → ${x.rank}</small></div>
+      <div class="rapid-rise-delta">▲ ${v.change}<small>${v.oldRank??'?'} → ${v.currentRank}</small></div>
     </div>`;
   }).join('');
 }
@@ -9308,7 +9341,7 @@ function historyView(data,mode){
 }
 
 
-const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','의원','본선','관련','공개','기반','실시간','지금','뉴스','기사','단독','속보','종합','기자','정치','오늘','이번','대한','통해','에서','으로','에게','했다','한다','있는','없는','밝혔다','전했다','나섰다','두고','놓고','대해','더불어민주당','민주당','국민의힘','개혁신당','조국혁신당','진보당','기본소득당','사회민주당']);
+const WHY_NOW_STOPWORDS=new Set(['현재','최상위','이벤트','직접','연계','없음','대한민국','국회','국회의원','의원','광역단체장','기초단체장','시장','도지사','구청장','군수','지방정부','민선','본선','관련','공개','기반','실시간','지금','뉴스','기사','단독','속보','종합','기자','정치','오늘','이번','대한','통해','에서','으로','에게','했다','한다','있는','없는','밝혔다','전했다','나섰다','두고','놓고','대해','더불어민주당','민주당','국민의힘','개혁신당','조국혁신당','진보당','기본소득당','사회민주당']);
 const WHY_NOW_SENSITIVE=['비리','폭언','조롱','범죄','사기','성추문','성추행','성희롱','성폭력','의혹','혐의','막말','멱살','폭행','뇌물'];
 const WHY_NOW_GENERIC=new Set(['대표','당대표','원내대표','최고위원','위원장','후보','정부','대통령','장관','여당','야당','본회의','회의','정당','지역','서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주']);
 const WHY_NOW_SIGNAL_WEIGHTS={
@@ -9554,11 +9587,11 @@ function whyNowKeywords(x){
   return out;
 }
 
-function whyNowGlobalKeywords(){
+function whyNowGlobalKeywords(category=keywordMode){
   // 상단 실시간 키워드는 사용자가 지금 정치권의 흐름을 한눈에 이해할 수 있도록
   // 가능한 한 20개 이상을 확보하되, 화면 과밀과 저품질 반복을 막기 위해 25개로 제한한다.
   const KEYWORD_MIN=20, KEYWORD_MAX=25;
-  const top=people.slice().sort((a,b)=>a.rank-b.rank).slice(0,30);
+  const top=people.filter(x=>entityCategoryMatch(x,category)&&Number(x.id)!==300).slice().sort((a,b)=>viewRank(a,category)-viewRank(b,category)).slice(0,30);
   const pool=new Map();
   const owner=new Map();
   top.forEach(x=>{
@@ -9568,7 +9601,7 @@ function whyNowGlobalKeywords(){
       let text=whyNowSafeToken(c.text,x); if(!text)return;
       if(whyNowIsPersonName(text))return; // 상단은 사람 이름보다 '왜 뜨는지'를 우선한다.
       if(whyNowIsWeakCandidate(text))return;
-      const rankBonus=Math.max(0,31-Number(x.rank||30))*.10;
+      const rankBonus=Math.max(0,31-Number(viewRank(x,category)||30))*.10;
       const riseBonus=Math.max(0,Number(x.delta||x.change6h||0))*.18;
       const primaryBonus=idx===0?8:idx===1?3:0;
       const rec=pool.get(text)||{text,score:0,people:new Set(),signal:0};
@@ -9619,10 +9652,12 @@ function whyNowReason(x){
 }
 function renderNowKeywordStrip(){
   const el=document.getElementById('nowKeywordStrip'); if(!el)return;
-  const keys=whyNowGlobalKeywords();
+  const keys=whyNowGlobalKeywords(keywordMode);
   const meta=document.getElementById('nowKeywordMeta');
-  if(meta) meta.textContent=keys.length?`TOP30 실시간 이슈 · ${keys.length}개`:'TOP30 실시간 이슈';
-  el.innerHTML=keys.length?keys.map(k=>`<button class="now-chip" onclick="event.stopPropagation();openWhyNowByKeyword('${String(k).replace(/'/g,"\\'")}')">#${k.replace(/\s+/g,'_')}</button>`).join(''):'<span class="sub" style="font-size:12px">현재 TOP30 키워드가 없습니다.</span>';
+  const label=ENTITY_LABELS[keywordMode]||'전체';
+  if(meta) meta.textContent=keys.length?`${label} TOP30 실시간 이슈 · ${keys.length}개`:`${label} TOP30 실시간 이슈`;
+  document.querySelectorAll('[data-keyword-category]').forEach(b=>b.classList.toggle('active',b.dataset.keywordCategory===keywordMode));
+  el.innerHTML=keys.length?keys.map(k=>`<button class="now-chip" onclick="event.stopPropagation();openWhyNowByKeyword('${String(k).replace(/'/g,"\'")}')">#${k.replace(/\s+/g,'_')}</button>`).join(''):`<span class="sub" style="font-size:12px">${label} TOP30에서 설명 가능한 WHY NOW 키워드가 아직 없습니다.</span>`;
 }
 function openWhyNowByKeyword(keyword){
   const owner=window.NOW_KEYWORD_OWNER?.[keyword];
@@ -9650,46 +9685,37 @@ function renderRank(){
     renderNowRankLoadingState();
     return;
   }
-  ensureViewRanks();
   let q=document.getElementById("search").value.trim();
   let p=document.getElementById("party").value;
   let data=people.filter(x=>{
-    const text=`${x.name} ${x.party} ${x.region} ${x.constituency||""}`.toLowerCase();
+    if(!entityCategoryMatch(x,mode))return false;
+    const text=`${x.name} ${x.party} ${x.region} ${x.constituency||""} ${x.jurisdiction||""} ${x.office||""}`.toLowerCase();
     return (!q||text.includes(q.toLowerCase()))&&(p==="all"||x.party===p);
   });
   data.sort((a,b)=>viewRank(a,mode)-viewRank(b,mode));
-  const label=viewLabel(mode);
-  let headers;
-  if(mode==='search') headers=['검색순위','의원','정당','지역구','검색 관심','전체 순위'];
-  else if(mode==='media') headers=['언론순위','의원','정당','지역구','언론 주목','전체 순위'];
-  else headers=['순위','의원','정당','지역구','직전 갱신','NOW 지수'];
+  const label=ENTITY_LABELS[mode]||'전체';
+  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','직전 갱신','NOW 지수'];
   let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
-  data.slice(0,300).forEach(x=>{
-    const refresh=refreshChangeText(x);
-    const metric=viewScore(x,mode);
-    const firstCell=viewRank(x,mode);
-    let fifth,sixth;
-    if(mode==='all'){
-      fifth=`<div class="change ${refresh.cls}">${refresh.text}<span class="refresh-route">${refresh.route}</span></div>`;
-      sixth=`<div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>`;
-    }else{
-      const sourceHint=mode==='search'?'관심 지수':'뉴스 모멘텀';
-      fifth=`<div class="view-score">${Number.isFinite(metric)?metric.toFixed(1):'-'}<small>${sourceHint}</small></div>`;
-      sixth=`<div class="view-score">${x.rank}위<small>NOW ${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'-'}</small></div>`;
-    }
+  data.forEach(x=>{
+    const refresh=refreshChangeText(x,mode);
+    const firstCell=(Number(x.id)===300||x.party==='공석')?'―':viewRank(x,mode);
+    const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):(`${x.jurisdiction||x.region}${x.office?` · ${x.office}`:''}`);
+    const sourceMeta=entityTypeOf(x)==='assembly'?'국회 공식 프로필':(x.photoVerified?'공식 단체장 프로필 · 사진 검증':'공식 당선인 명부 · 사진 안전모드');
+    const fifth=`<div class="change ${refresh.cls}">${refresh.text}<span class="refresh-route">${refresh.route}</span></div>`;
+    const sixth=`<div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>`;
     html += `<div class="row" onclick="openDetail(${x.id})">
       <div class="ranknum">${firstCell}</div>
       <div class="person">
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div class="person-copy">
-          <div class="pname">${x.name}<span class="verified">✓</span></div>
+          <div class="pname">${x.name}<span class="entity-chip">${entityLabel(x)}</span></div>
           <div class="mobile-party-line ${partyClass[x.party]||"party-gray"}">${x.party}</div>
-          <div class="pmeta">${x.isReal ? `국회 공식 프로필<span class="real-chip">REAL</span>` : `프로토타입 샘플<span class="sim-chip">DEMO</span>`}</div>
-          ${(x.rank<=30||viewRank(x,mode)<=30)?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\'")}')">${k}</button>`).join('')}</div>`:''}
+          <div class="pmeta">${sourceMeta}<span class="real-chip">REAL</span></div>
+          ${(Number(x.id)!==300&&viewRank(x,mode)<=30)?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\\'")}')">${k}</button>`).join('')}</div>`:''}
         </div>
       </div>
       <div class="${partyClass[x.party]||"party-gray"}">${x.party}</div>
-      <div>${x.constituency||x.region}</div>
+      <div>${place}</div>
       ${fifth}
       ${sixth}
     </div>`;
@@ -9705,7 +9731,12 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
   mode=t.dataset.mode;
+  keywordMode=mode;
   renderRank();
+}));
+document.querySelectorAll('[data-keyword-category]').forEach(t=>t.addEventListener('click',()=>{
+  keywordMode=t.dataset.keywordCategory||'all';
+  renderNowKeywordStrip();
 }));
 
 document.querySelectorAll(".navbtn").forEach(btn=>{
@@ -9840,7 +9871,7 @@ function resolvePersonByQuery(query, excludeId=null){
   if(exact.length>1)return null; // 동명이인은 반드시 지역구가 보이는 제안 목록에서 직접 선택
   const matches=people.filter(p=>p.id!==excludeId && (
     p.name.toLowerCase().includes(q) ||
-    `${p.party} ${p.region} ${p.constituency||''}`.toLowerCase().includes(q)
+    `${p.party} ${p.region} ${p.constituency||''} ${p.jurisdiction||''} ${p.office||''}`.toLowerCase().includes(q)
   ));
   return matches.length===1?matches[0]:null;
 }
@@ -9865,9 +9896,9 @@ function compareResultHTML(a,b,showBack=false){
   ];
   return `
     <div class="compare-head">
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(a.name,a.id)}</div><div><h3 style="margin:0">${a.name} 의원</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.constituency||a.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(a.name,a.id)}</div><div><h3 style="margin:0">${a.name} · ${entityOffice(a)}</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.jurisdiction||a.constituency||a.region}</div></div></div></div>
       <div class="vs">VS</div>
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(b.name,b.id)}</div><div><h3 style="margin:0">${b.name} 의원</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.constituency||b.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(b.name,b.id)}</div><div><h3 style="margin:0">${b.name} · ${entityOffice(b)}</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.jurisdiction||b.constituency||b.region}</div></div></div></div>
     </div>
 
     <div class="combined-radar-wrap">
@@ -9883,12 +9914,12 @@ function compareResultHTML(a,b,showBack=false){
         <div class="compare-person">
           <div class="kicker">${a.name}</div>
           <h3 style="margin:4px 0">${a.rank}위 · ${a.grade} Rank</h3>
-          <div class="sub" style="margin-top:4px">${a.party} · ${a.constituency||a.region}</div>
+          <div class="sub" style="margin-top:4px">${a.party} · ${entityLabel(a)} · ${a.jurisdiction||a.constituency||a.region}</div>
         </div>
         <div class="compare-person">
           <div class="kicker" style="color:#7c3aed">${b.name}</div>
           <h3 style="margin:4px 0">${b.rank}위 · ${b.grade} Rank</h3>
-          <div class="sub" style="margin-top:4px">${b.party} · ${b.constituency||b.region}</div>
+          <div class="sub" style="margin-top:4px">${b.party} · ${entityLabel(b)} · ${b.jurisdiction||b.constituency||b.region}</div>
         </div>
       </div>
     </div>
@@ -10133,192 +10164,110 @@ window.addEventListener('popstate',(event)=>{
   else jjddHardCloseModal();
 });
 
+function entityRecordCardsHTML(x){
+  const type=entityTypeOf(x);
+  if(type==='assembly'){
+    return `
+      <div class="record-card">
+        <h4>국회 공식 프로필 <span class="real-chip">REAL</span></h4>
+        <div class="record-list">
+          <div class="record-item"><span>소속 정당</span><b>${x.party}</b></div>
+          <div class="record-item"><span>선거구</span><b>${x.constituency||x.region}</b></div>
+          <div class="record-item"><span>당선 횟수</span><b title="${x.termsVerified?'대한민국 국회 공식 당선대수 기준':'공식 의원정보 동기화 후 자동 검증'}">${x.terms||'공식자료 연동'}</b></div>
+          <div class="record-item"><span>22대 의원 임기 시작</span><b>${x.termStart||'공식자료 연동'}</b></div>
+          <div class="record-item"><span>현재 확인 상임위</span><b>${x.committee||'국회 공식자료 연동'}</b></div>
+        </div>
+        <div class="source-note">국회의원 기본정보와 당선 횟수는 대한민국 국회 공개 프로필을 우선 기준으로 사용합니다. 사진도 국회 공식 신원 확인 경로만 허용합니다.</div>
+      </div>`;
+  }
+  const photoState=x.photoVerified===true&&x.officialPhoto?'공식사진 신원 검증 완료':'공식사진 확인 전 · 안전 기본이미지';
+  return `
+    <div class="record-card">
+      <h4>${entityLabel(x)} 공식 기본정보 <span class="real-chip">REAL</span></h4>
+      <div class="record-list">
+        <div class="record-item"><span>소속 정당</span><b>${x.party}</b></div>
+        <div class="record-item"><span>직위</span><b>${entityOffice(x)}</b></div>
+        <div class="record-item"><span>관할 지역</span><b>${x.jurisdiction||x.region}</b></div>
+        <div class="record-item"><span>민선9기 임기 시작</span><b>${x.termStart||'2026.07.01'}</b></div>
+        <div class="record-item"><span>프로필 사진</span><b>${photoState}</b></div>
+      </div>
+      <div class="source-note">제9회 전국동시지방선거 당선인과 현직 지방정부 정보를 기준으로 구성합니다. 단체장 사진은 지방정부 공식 프로필에서 인물·직위·지역이 함께 확인된 경우만 사용하며, 신원 확인 전에는 다른 웹 인물 사진을 추정하지 않습니다.</div>
+    </div>`;
+}
 function openDetail(id,opts={}){
-  const x=people.find(p=>p.id===id);
+  const x=people.find(p=>Number(p.id)===Number(id));
   if(!x)return;
   if(!opts.skipHistory)jjddPushModalHistory('person',{id:Number(id)});
   trackJJDD('profile',x);
-  const refresh=refreshChangeText(x);
-  const assetBase=11+(x.id%7);
-
-  document.getElementById("modalEyebrow").innerText="Person Detail";
-  document.getElementById("modalTitle").innerText="국회의원 상세";
+  const type=entityTypeOf(x), typeLabel=entityLabel(x), refresh=refreshChangeText(x,type);
+  const suffix=type==='assembly'?' 의원':` · ${entityOffice(x)}`;
+  const place=type==='assembly'?(x.constituency||x.region):(x.jurisdiction||x.region);
+  const nowExplain=type==='assembly'
+    ?'NOW Rank는 의정활동의 우열을 평가하는 점수가 아니라 지금 정치 이슈의 중심에 있는 정도를 측정합니다. 뉴스·검색·이벤트 중심성·디지털 확산을 중심으로 계산하며, 당선 횟수 자체는 NOW Rank 점수가 아닙니다.'
+    :'NOW Rank는 지방행정 성과의 우열을 판정하는 점수가 아니라 지금 정치·지역 이슈의 중심에 있는 정도를 측정합니다. 뉴스·검색·지역 현안·디지털 확산을 중심으로 현재의 관심 모멘텀을 보여줍니다.';
+  document.getElementById("modalEyebrow").innerText=`Person Detail · ${typeLabel}`;
+  document.getElementById("modalTitle").innerText=`${typeLabel} 상세`;
   document.getElementById("detail").innerHTML=`
     <div class="detail-hero">
       <div class="detail-identity">
         <div class="bigavatar">${politicianPhotoHTML(x.name,x.id,"high")}</div>
         <div class="detail-identity-info">
-          <h2 class="h2" style="font-size:32px">${x.name} 의원 ${x.isReal?'<span class="real-chip">REAL DATA</span>':''}</h2>
-          <div class="sub" style="margin-top:6px">${x.party} · ${x.constituency||x.region}</div>
-          ${x.isReal?`<div class="detail-member-actions">${plusWatchButtonHTML(x)}</div>`:''}
+          <h2 class="h2" style="font-size:32px">${x.name}${suffix} <span class="real-chip">REAL DATA</span></h2>
+          <div class="sub" style="margin-top:6px">${x.party} · ${place}</div>
+          ${type!=='assembly'&&!(x.photoVerified&&x.officialPhoto)?'<div class="photo-safe-note">● 공식 사진 신원 확인 전 · 안전 기본이미지 표시</div>':''}
+          <div class="detail-member-actions">${plusWatchButtonHTML(x)}</div>
         </div>
       </div>
       <div class="detail-stats">
-        <div class="stat"><strong>${x.rank}위</strong><span>NOW Rank</span></div>
-        <div class="stat"><strong class="change ${refresh.cls}">${refresh.text}</strong><span>직전 갱신 대비</span><small class="refresh-route">${refresh.route}</small></div>
-        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Raw ${Number.isFinite(x.rank2RawScore)?x.rank2RawScore.toFixed(1):"-"} · Evidence ${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):"-"}% · Sources ${Number.isFinite(Number(x.sourceCount))?Number(x.sourceCount):0}</small></div>
+        <div class="stat"><strong>${x.rank}위</strong><span>${typeLabel} NOW Rank</span></div>
+        <div class="stat"><strong class="change ${refresh.cls}">${refresh.text}</strong><span>직전 게시 대비</span><small class="refresh-route">${refresh.route}</small></div>
+        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Overall ${Number.isFinite(x.overallRank)?x.overallRank+'위':'-'} · Evidence ${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):'-'}% · Sources ${Number(x.sourceCount||0)}</small></div>
       </div>
     </div>
 
     <div class="detail-comparebar">
-      <div>
-        <b>다른 정치인과 비교</b>
-        <div class="sub" style="margin-top:2px;font-size:12px">PLUS 회원은 이름을 검색해 바로 비교할 수 있습니다.</div>
-      </div>
-      <div class="compare-control">
-        <div style="position:relative">
-          <input class="compare-select" id="compareDetailSearch" autocomplete="off" placeholder="정치인 이름 검색" />
-          <div class="search-suggestions" id="compareDetailSuggestions" style="top:44px;min-width:240px"></div>
-        </div>
-        <button class="compare-btn" onclick="openCompare(${x.id})">비교하기</button>
-      </div>
+      <div><b>다른 정치인과 비교</b><div class="sub" style="margin-top:2px;font-size:12px">PLUS 회원은 국회의원과 지방자치단체장을 함께 검색해 비교할 수 있습니다.</div></div>
+      <div class="compare-control"><div style="position:relative"><input class="compare-select" id="compareDetailSearch" autocomplete="off" placeholder="정치인 이름 검색" /><div class="search-suggestions" id="compareDetailSuggestions" style="top:44px;min-width:240px"></div></div><button class="compare-btn" onclick="openCompare(${x.id})">비교하기</button></div>
     </div>
 
-    ${x.isReal?journeyHTML(x.journey):""}
+    ${Array.isArray(x.journey)&&x.journey.length?journeyHTML(x.journey):''}
 
     <div class="detail-flow">
       <section class="detail-section" id="detail-now">
-        <div class="detail-section-head">
-          <span class="detail-section-index">NOW</span>
-          <h3>지금 이 인물은 ${x.isReal?'<span class="real-chip">REAL DATA 기반 분석</span>':'<span class="sim-chip">DEMO</span>'}</h3>
-        </div>
+        <div class="detail-section-head"><span class="detail-section-index">NOW</span><h3>지금 이 인물은 <span class="real-chip">REAL DATA 기반 분석</span></h3></div>
         <div class="profile" style="margin-top:0">
           <div>
-            <div class="ranks">
-              ${x.metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]==="NA"?"N/A":m[1]}${Number.isFinite(m[2])?` · ${m[2].toFixed(1)}`:""}</b></div>`).join("")}
-            </div>
-            <div class="why">
-              <h4>왜 움직였나요?</h4>
-              <p>${x.isReal?'NOW Rank는 ‘누가 의정활동을 잘했는가’가 아니라 ‘지금 누가 정치 이슈의 중심인가’를 측정합니다. 뉴스 화제성·검색 관심·현재 이벤트 중심성·디지털 확산이 90%, 정치 체급은 10%만 반영합니다. 당선 횟수와 의정평가 순위는 NOW Rank 입력값이 아닙니다.':'언론 보도, 대중 관심, 디지털 반응, 정책 활동 등 여러 지표가 움직이는 상황을 가정한 프로토타입 화면입니다.'}</p>
-            </div>
+            <div class="ranks">${(x.metrics||[]).map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]==="NA"?"N/A":m[1]}${Number.isFinite(m[2])?` · ${m[2].toFixed(1)}`:""}</b></div>`).join("")}</div>
+            <div class="why"><h4>왜 움직였나요?</h4><p>${nowExplain}</p></div>
           </div>
           <div class="radarbox">
-            <svg viewBox="0 0 340 340">
-              <g fill="none" stroke="#e7eeec">
-                <polygon points="${gridPoly(116,x.metrics.length)}"/><polygon points="${gridPoly(92,x.metrics.length)}"/><polygon points="${gridPoly(68,x.metrics.length)}"/><polygon points="${gridPoly(44,x.metrics.length)}"/><polygon points="${gridPoly(20,x.metrics.length)}"/>
-                ${radarAxes(x.metrics)}
-              </g>
-              <polygon points="${pointsFor(x.metrics)}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics)}
-            </svg>
-            <div class="sub" style="text-align:center;font-size:13px">${x.isReal?'NOW Rank v1 · 5개 실시간 이슈축 · 2026.08.11 22:47 KST':'프로토타입 Rank 예시'}</div><div class="sub" style="text-align:center;font-size:11px;margin-top:4px;color:#94a3b8">공개 상위 신호에 포착되지 않은 경우는 N/A 대신 해당 스냅샷의 낮은 관측값으로 표시합니다.</div>
-            ${x.publicAttention && x.publicAttention.source_count ? `<div style="margin:10px auto 0;max-width:620px;padding:10px 12px;border-radius:12px;background:#f0fdfa;border:1px solid #ccfbf1;font-size:12px;color:#0f766e;text-align:center;font-weight:800">PUBLIC SIGNAL ${Number(x.publicAttention.score||50).toFixed(1)} · 실측원천 ${x.publicAttention.source_count}건 · 최신 ${x.publicAttention.latest||"-"}</div>` : `<div style="margin:10px auto 0;max-width:620px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;font-size:12px;color:#64748b;text-align:center;font-weight:800">PUBLIC SIGNAL · 이번 공개 상위목록에서 개별 신호 미포착</div>`}
+            <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
+            <div class="sub" style="text-align:center;font-size:13px">NOW Rank v2.2 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
 
       <section class="detail-section" id="detail-trend">
-        <div class="detail-section-head">
-          <span class="detail-section-index">TREND</span>
-          <h3>변화 추적 <span class="real-chip">실제 게시 이력</span></h3>
-        </div>
+        <div class="detail-section-head"><span class="detail-section-index">TREND</span><h3>변화 추적 <span class="real-chip">실제 게시 이력</span></h3></div>
         <div class="trend-grid">
-          <div class="trend-card">
-            <h4>NOW Rank 변화 추적</h4>
-            ${x.isReal?rankHistoryRangeButtonsHTML(x.id):''}
-            <div class="trend-chart" id="rankHistoryChart-${x.id}">${x.isReal?rankHistoryFallbackHTML(x):sparkLineSVG(x.id)}</div>
-            ${x.isReal?`<div class="rank-history-summary" id="rankHistorySummary-${x.id}">${rankHistorySummaryHTML(rankHistoryInitialSeries(x))}</div>`:''}
-            <div class="source-note" id="rankHistoryNote-${x.id}">${x.isReal?'실제로 게시된 NOW Rank를 계속 누적합니다. FREE는 24시간·7일, PLUS는 30일·1년 장기 이력을 이용할 수 있습니다.':'프로토타입용 가상 추이입니다.'}</div>
-          </div>
-          <div class="trend-card">
-            <h4>현재 모멘텀</h4>
-            <div class="mini-stats">
-              ${x.isReal ? `
-              <div class="mini-stat"><b class="change ${refresh.cls}">${refresh.text}</b><span>직전 갱신 대비 순위</span><small class="refresh-route">${refresh.route}</small></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):'-'}%</b><span>근거 신뢰도</span></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.searchRank)?x.searchRank+'위':'-'}</b><span>검색 관심 순위</span></div>
-              <div class="mini-stat"><b>${Number.isFinite(x.mediaRank)?x.mediaRank+'위':'-'}</b><span>언론 주목 순위</span></div>
-              ` : `
-              <div class="mini-stat"><b class="change up">▲ ${Math.abs(x.delta)}</b><span>24시간 순위 변동</span></div>
-              <div class="mini-stat"><b>${Math.round(seeded(x.id+301,90)+10)}%</b><span>검색 관심 변화</span></div>
-              <div class="mini-stat"><b>${Math.round(seeded(x.id+302,70)+5)}%</b><span>디지털 반응 변화</span></div>
-              <div class="mini-stat"><b>${Math.round(seeded(x.id+303,50)+8)}%</b><span>언론 노출 변화</span></div>
-              `}
-            </div>
-          </div>
+          <div class="trend-card"><h4>${typeLabel} NOW Rank 변화 추적</h4>${rankHistoryRangeButtonsHTML(x.id)}<div class="trend-chart" id="rankHistoryChart-${x.id}">${rankHistoryFallbackHTML(x)}</div><div class="rank-history-summary" id="rankHistorySummary-${x.id}">${rankHistorySummaryHTML(rankHistoryInitialSeries(x))}</div><div class="source-note" id="rankHistoryNote-${x.id}">실제로 게시된 NOW Rank를 계속 누적합니다. FREE는 24시간·7일, PLUS는 30일·1년 장기 이력을 이용할 수 있습니다.</div></div>
+          <div class="trend-card"><h4>현재 모멘텀</h4><div class="mini-stats"><div class="mini-stat"><b class="change ${refresh.cls}">${refresh.text}</b><span>직전 게시 대비</span><small class="refresh-route">${refresh.route}</small></div><div class="mini-stat"><b>${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):'-'}%</b><span>근거 신뢰도</span></div><div class="mini-stat"><b>${Number.isFinite(x.searchRank)?x.searchRank+'위':'-'}</b><span>검색 관심 순위</span></div><div class="mini-stat"><b>${Number.isFinite(x.mediaRank)?x.mediaRank+'위':'-'}</b><span>언론 주목 순위</span></div></div></div>
         </div>
       </section>
 
       <section class="detail-section" id="detail-record">
-        <div class="detail-section-head">
-          <span class="detail-section-index">RECORD</span>
-          <h3>공식 기록과 이력</h3>
-        </div>
+        <div class="detail-section-head"><span class="detail-section-index">RECORD</span><h3>공식 기록과 이력</h3></div>
         <div class="record-grid">
-          ${x.isReal ? `
-          <div class="record-card">
-            <h4>국회 공식 프로필 <span class="real-chip">REAL</span></h4>
-            <div class="record-list">
-              <div class="record-item"><span>소속 정당</span><b>${x.party}</b></div>
-              <div class="record-item"><span>선거구</span><b>${x.constituency}</b></div>
-              <div class="record-item"><span>당선 횟수</span><b title="${x.termsVerified?'대한민국 국회 공식 당선대수 기준':'공식 의원정보 동기화 후 자동 검증'}">${x.terms}</b></div>
-              <div class="record-item"><span>22대 의원 임기 시작</span><b>${x.termStart||"공식자료 연동"}</b></div>
-              <div class="record-item"><span>현재 확인 상임위</span><b>${x.committee||"국회 공식자료 연동"}</b></div>
-            </div>
-            <div class="source-note">기본 신상·정당·선거구·당선횟수·확인된 위원회 정보는 대한민국 국회 공개 프로필을 기준으로 구성했습니다.</div>
-          </div>
-
-          <div class="record-card">
-            <h4>정정당당 데이터 구분</h4>
-            <div class="record-list">
-              <div class="record-item"><span>신상·소속·선거구</span><b>REAL DATA · 공식정보</b></div>
-              <div class="record-item"><span>NOW Rank·5축</span><b>NOW Rank 이슈 분석</b></div>
-              <div class="record-item"><span>단기 TREND</span><b>공개 원천 확인분만 표시</b></div>
-              <div class="record-item"><span>재산 신고</span><b>공식자료 연동</b></div>
-            </div>
-          </div>
-
-          <div class="record-card">
-            <h4>공직자 재산신고</h4>
-            <div style="padding:22px 10px;text-align:center">
-              <div style="font-size:34px">↗</div>
-              <b style="display:block;margin-top:8px">공식 신고자료 연동 영역</b>
-              <div class="sub" style="font-size:12px">실제 신고액이 검증된 뒤 연도별 추이를 표시합니다.</div>
-            </div>
-            <div class="source-note">프로토타입에서 실존 인물의 재산 금액을 임의 생성하지 않습니다. 실제 서비스에서는 국회공직자윤리위원회 공개자료와 원문 링크를 함께 제공합니다.</div>
-          </div>` : `
-          <div class="record-card">
-            <h4>의정활동 기록 <span class="sim-chip">DEMO</span></h4>
-            <div class="record-list">
-              <div class="record-item"><span>본회의 출석</span><b>${Math.round(88+seeded(x.id+401,11))}%</b></div>
-              <div class="record-item"><span>표결 참여</span><b>${Math.round(82+seeded(x.id+402,16))}%</b></div>
-              <div class="record-item"><span>대표발의</span><b>${Math.round(4+seeded(x.id+403,24))}건</b></div>
-              <div class="record-item"><span>공동발의</span><b>${Math.round(35+seeded(x.id+404,85))}건</b></div>
-            </div>
-          </div>
-
-          <div class="record-card">
-            <h4>정치 경력 / 선거 이력 <span class="sim-chip">DEMO</span></h4>
-            <div class="record-list">
-              <div class="record-item"><span>국회의원 선수</span><b>${1+(x.id%4)}선</b></div>
-              <div class="record-item"><span>최근 당선</span><b>제22대 국회의원</b></div>
-              <div class="record-item"><span>지역 기반</span><b>${x.region}</b></div>
-            </div>
-          </div>
-
-          <div class="record-card">
-            <h4>공직자 재산신고 추이 <span class="sim-chip">DEMO</span></h4>
-            <div class="asset-chart">${assetSVG(x.id)}</div>
-            <div class="source-note">가상 인물 영역의 시각화 샘플입니다.</div>
-          </div>`}
-
-          <div class="record-card">
-            <h4>공식 기록 원칙</h4>
-            <div class="record-list">
-              <div class="record-item"><span>의정 기록</span><b>공식 원문 우선</b></div>
-              <div class="record-item"><span>재산 신고</span><b>평가하지 않음</b></div>
-              <div class="record-item"><span>선거 이력</span><b>득표율·당락 기록</b></div>
-              <div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div>
-            </div>
-            <div class="why" style="margin-top:12px"><h4>정정당당의 차이</h4><p>RECORD는 과거의 공식 기록을 보여주는 영역이고, NOW는 현재의 모멘텀을 보여주는 영역입니다. 둘을 섞어 인물의 가치판단 점수로 만들지 않습니다.</p></div>
-          </div>
+          ${entityRecordCardsHTML(x)}
+          <div class="record-card"><h4>정정당당 데이터 구분</h4><div class="record-list"><div class="record-item"><span>신상·소속·직위</span><b>공식정보 우선</b></div><div class="record-item"><span>NOW Rank·5축</span><b>실시간 이슈 분석</b></div><div class="record-item"><span>검색 관심·언론 주목</span><b>관측 데이터</b></div><div class="record-item"><span>사진 신원</span><b>${type==='assembly'?'국회 공식사진 우선':'지방정부 공식사진만 허용'}</b></div></div></div>
+          <div class="record-card"><h4>공식 기록 원칙</h4><div class="record-list"><div class="record-item"><span>성과 평가</span><b>NOW Rank와 분리</b></div><div class="record-item"><span>선거·임기 이력</span><b>공식 원문 우선</b></div><div class="record-item"><span>사진 불확실</span><b>기본 이미지로 대체</b></div><div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div></div><div class="why" style="margin-top:12px"><h4>정정당당의 원칙</h4><p>RECORD는 공식 기록을, NOW는 현재의 모멘텀을 보여줍니다. 확인되지 않은 사진이나 이력을 억지로 채우지 않습니다.</p></div></div>
         </div>
       </section>
-    </div>
-  `;
+    </div>`;
 
   setupDetailCompareSearch(x.id);
   document.getElementById("modal").classList.add("show");
-  if(x.isReal) loadRankHistoryForDetail(x,rankHistoryDefaultDaysForUser());
+  loadRankHistoryForDetail(x,rankHistoryDefaultDaysForUser());
 }
 
 function openPresident(opts={}){
@@ -10493,14 +10442,16 @@ function politicianMatches(query, excludeId=null, limit=8){
     p.name.toLowerCase().includes(q) ||
     p.party.toLowerCase().includes(q) ||
     p.region.toLowerCase().includes(q) ||
-    (p.constituency||"").toLowerCase().includes(q)
+    (p.constituency||"").toLowerCase().includes(q) ||
+    (p.jurisdiction||"").toLowerCase().includes(q) ||
+    (p.office||"").toLowerCase().includes(q)
   )).slice(0,limit);
 }
 
 function suggestionHTML(p){
   return `<div class="suggestion" data-id="${p.id}">
     <div class="suggestion-avatar">${politicianPhotoHTML(p.name,p.id)}</div>
-    <div><div class="suggestion-name">${p.name} 의원 ${p.isReal?'<span class="real-chip">REAL</span>':''}</div><div class="suggestion-meta">${p.party} · ${p.constituency||p.region} · 현재 ${p.rank}위</div></div>
+    <div><div class="suggestion-name">${p.name} · ${entityLabel(p)} ${p.isReal?'<span class="real-chip">REAL</span>':''}</div><div class="suggestion-meta">${p.party} · ${p.jurisdiction||p.constituency||p.region} · ${entityLabel(p)} ${p.rank}위</div></div>
   </div>`;
 }
 
@@ -10541,7 +10492,7 @@ function setupCompareSearch(side){
       const p=people.find(x=>x.id===Number(el.dataset.id));
       if(side==="A")compareSelectedA=p; else compareSelectedB=p;
       input.value=p.name;
-      preview.innerHTML=`선택됨 · <b>${p.name} 의원</b> · ${p.party} · ${p.region} · 현재 ${p.rank}위`;
+      preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · 현재 ${p.rank}위`;
       preview.classList.add("show");
       box.classList.remove("show");
     }));
@@ -10571,7 +10522,7 @@ function initComparePage(){
       const preview=document.getElementById(`selectedPreview${side}`);
       input.value=p?.name||"";
       if(p){
-        preview.innerHTML=`선택됨 · <b>${p.name} 의원</b> · ${p.party} · ${p.region} · 현재 ${p.rank}위`;
+        preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · 현재 ${p.rank}위`;
         preview.classList.add("show");
       }else preview.classList.remove("show");
     });
@@ -10598,7 +10549,7 @@ document.getElementById('search')?.addEventListener('input',e=>{
 
 window.NOW_LIVE_READY=false;
 window.NOW_CURRENT_PUBLICATION_ID=null;
-const NOW_PUBLIC_CACHE_KEY='jjdd_now_public_snapshot_v148';
+const NOW_PUBLIC_CACHE_KEY='jjdd_now_public_snapshot_v22_local';
 const NOW_EXPECTED_PUBLICATION_KEY='jjdd_now_expected_publication';
 let nowPhotoHydratorStarted=false;
 
@@ -10625,11 +10576,28 @@ function nowSnapshotStamp(snap){
 }
 function snapshotMatchesRoster(snap){
   if(!snap||String(snap.rosterVersion||'')!==NOW_ROSTER_VERSION||!Array.isArray(snap.members))return false;
+  const active=snap.members.filter(x=>Number(x.id)!==300&&String(x.party||'')!=='공석');
+  const counts=active.reduce((m,x)=>(m[entityTypeOf(x)]=(m[entityTypeOf(x)]||0)+1,m),{});
+  if((counts.assembly||0)!==299||(counts.metro||0)!==16||(counts.local||0)!==227)return false;
   const byId=new Map(snap.members.map(x=>[Number(x.id),x]));
+  // Preserve the hard-coded Assembly identity safety gate as well.
   return people.filter(p=>Number(p.id)>=1&&Number(p.id)<=299).every(p=>{
-    const s=byId.get(Number(p.id));
-    return !!s && String(s.name||'')===String(p.name||'') && String(s.constituency||'')===String(p.constituency||'');
+    const row=byId.get(Number(p.id));
+    return !!row && String(row.name||'')===String(p.name||'') && String(row.constituency||'')===String(p.constituency||'');
   });
+}
+function livePersonFromSnapshot(s){
+  const type=String(s?.entityType||'assembly');
+  const defaultMetrics=[['대중 관심도','D',0],['뉴스 급상승','D',0],['포털·SNS 확산','D',0],['이슈 중심성','D',0],['신선도·가속도','D',0]];
+  return {
+    id:Number(s.id),rank:Number(s.rank||9999),overallRank:Number.isFinite(Number(s.overallRank))?Number(s.overallRank):null,categoryRank:Number(s.categoryRank||s.rank||9999),
+    name:String(s.name||''),party:String(s.party||'무소속'),region:String(s.region||''),constituency:String(s.constituency||s.jurisdiction||''),jurisdiction:String(s.jurisdiction||s.constituency||''),office:String(s.office|| (type==='metro'?'광역단체장':type==='local'?'기초단체장':'국회의원')),entityType:type,
+    terms:type==='assembly'?'공식자료 연동':'민선9기',termStart:type==='assembly'?'공식자료 연동':'2026.07.01',committee:type==='assembly'?'국회 공식자료 연동':'해당 없음',
+    grade:s.grade||'D',delta:0,issue:false,isReal:true,simulation:false,dataSource:type==='assembly'?'현역 국회의원 공개명단':'제9회 전국동시지방선거 당선인·지방정부 현직',
+    photoVerified:s.photoVerified===true,officialPhoto:s.photoVerified===true?s.officialPhoto||null:null,officialProfileUrl:s.officialProfileUrl||null,photoPolicy:s.photoPolicy||'official-only',
+    journey:type==='assembly'?[]:[["2026.06.03","제9회 전국동시지방선거","당선인"],["2026.07.01",String(s.office||'지방자치단체장'),String(s.jurisdiction||s.region||'')+" 민선9기"]],
+    metrics:Array.isArray(s.metrics)&&s.metrics.length?s.metrics:defaultMetrics
+  };
 }
 function readNowPublicCache(){
   try{
@@ -10663,11 +10631,16 @@ function applyPublishedNowRank(snap,{checking=false}={}){
   window.NOW_WHY_CANDIDATE_CACHE=new Map();
   window.NOW_WHY_KEYWORD_CACHE=new Map();
   const byId=new Map(snap.members.map(x=>[Number(x.id),x]));
+  // v2.2: local-government leaders are published by the backend roster, so create their client records from the verified snapshot rather than name-searching the web.
+  const existingIds=new Set(people.map(p=>Number(p.id)));
+  snap.members.forEach(row=>{if(!existingIds.has(Number(row.id)) && Number(row.id)!==300){people.push(livePersonFromSnapshot(row));existingIds.add(Number(row.id));}});
   people.forEach(p=>{
     const s=byId.get(Number(p.id)); if(!s || String(s.name||'')!==String(p.name||''))return;
-    p.rank=s.rank;p.rank2Score=s.score;p.rank2RawScore=s.rawScore;p.grade=s.grade||p.grade;p.snapshot=snap.timestamp;
-    p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;
-    p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);
+    p.entityType=s.entityType||p.entityType||'assembly';p.office=s.office||p.office||'국회의원';p.jurisdiction=s.jurisdiction||p.jurisdiction||p.constituency||'';
+    p.photoVerified=s.photoVerified===true;p.officialPhoto=s.photoVerified===true?s.officialPhoto||null:null;p.officialProfileUrl=s.officialProfileUrl||p.officialProfileUrl||null;p.photoPolicy=s.photoPolicy||p.photoPolicy||'official-only';
+    p.rank=s.rank;p.categoryRank=Number.isFinite(s.categoryRank)?s.categoryRank:s.rank;p.overallRank=Number.isFinite(s.overallRank)?s.overallRank:null;p.rank2Score=s.score;p.rank2RawScore=s.rawScore;p.grade=s.grade||p.grade;p.snapshot=snap.timestamp;
+    p.previousRank=Number.isFinite(s.previousRank)?s.previousRank:null;p.previousOverallRank=Number.isFinite(s.previousOverallRank)?s.previousOverallRank:null;
+    p.changeRefresh=Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null);p.changeOverallRefresh=Number.isFinite(s.changeOverallRefresh)?s.changeOverallRefresh:null;
     p.delta=Number.isFinite(p.changeRefresh)?p.changeRefresh:0;
     p.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null;p.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null;p.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
     p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
@@ -10678,10 +10651,10 @@ function applyPublishedNowRank(snap,{checking=false}={}){
     p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];p.articles=Array.isArray(s.articles)?s.articles:[];p.news=Array.isArray(s.news)?s.news:[];
     if(s.nowComponents)p.nowComponents=s.nowComponents;
     const meta=nowRankById[String(p.id)]||{};
-    Object.assign(meta,{rank:s.rank,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
+    Object.assign(meta,{entityType:s.entityType||p.entityType,office:s.office||p.office,jurisdiction:s.jurisdiction||p.jurisdiction,rank:s.rank,categoryRank:Number.isFinite(s.categoryRank)?s.categoryRank:s.rank,overallRank:Number.isFinite(s.overallRank)?s.overallRank:null,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,previousOverallRank:Number.isFinite(s.previousOverallRank)?s.previousOverallRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),changeOverallRefresh:Number.isFinite(s.changeOverallRefresh)?s.changeOverallRefresh:null,searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
     nowRankById[String(p.id)]=meta;
   });
-  people.sort((a,b)=>a.rank-b.rank);
+  people.sort((a,b)=>(Number.isFinite(a.overallRank)?a.overallRank:99999)-(Number.isFinite(b.overallRank)?b.overallRank:99999));
   window.NOW_LIVE_READY=true;
   updateNowStatus(snap,checking);
   renderRank();
@@ -10724,7 +10697,7 @@ async function loadPublishedNowRank(){
     console.warn('published snapshot revalidation unavailable',e);
     if(cached){updateNowStatus(cached,false);return true;}
     if(String(e?.message||'')==='ROSTER_REFRESH_REQUIRED'){
-      renderNowRankLoadingState('현역 명단이 변경되었습니다. 관리자에서 Refresh → 게시를 한 번 실행해주세요.');
+      renderNowRankLoadingState('정치인 명단이 확장되었습니다. 관리자에서 Refresh → 게시를 한 번 실행해주세요.');
       return false;
     }
     renderNowRankUnavailable();return false;
@@ -10799,7 +10772,7 @@ function plusWatchButtonHTML(x){
   const saved=(plusState().politicianIds||[]).includes(Number(x.id));
   const allowed=hasPlusAccess();
   const cls=`plus-action ${saved?'saved':''} ${allowed?'':'locked'}`;
-  const label=allowed?(saved?'★ 관심 의원 저장됨':'☆ 관심 의원 저장'):'☆ 관심 의원 · PLUS';
+  const label=allowed?(saved?'★ 관심 정치인 저장됨':'☆ 관심 정치인 저장'):'☆ 관심 정치인 · PLUS';
   return `<button id="plusWatchBtn-${Number(x.id)}" class="${cls}" onclick="handlePlusPoliticianWatch(${Number(x.id)})">${label}</button>`;
 }
 function refreshDetailWatchButton(id){
@@ -10807,12 +10780,12 @@ function refreshDetailWatchButton(id){
   const tmp=document.createElement('div');tmp.innerHTML=plusWatchButtonHTML(x);old.replaceWith(tmp.firstElementChild);
 }
 async function handlePlusPoliticianWatch(id){
-  if(!ensurePlusAccess('관심 의원 저장'))return;
+  if(!ensurePlusAccess('관심 정치인 저장'))return;
   const saved=(plusState().politicianIds||[]).includes(Number(id));
   try{
     const j=await accountApi('/api/account/watchlist',{method:'POST',body:JSON.stringify({action:saved?'removePolitician':'addPolitician',memberId:Number(id)})});
     window.JJDD_PLUS_STATE=j.state||window.JJDD_PLUS_STATE;refreshDetailWatchButton(id);renderPlusDashboard();
-  }catch(e){alert(e.message||'관심 의원 저장에 실패했습니다.');}
+  }catch(e){alert(e.message||'관심 정치인 저장에 실패했습니다.');}
 }
 window.handlePlusPoliticianWatch=handlePlusPoliticianWatch;
 function issueSaved(issue){const q=String(issue||'').trim().toLowerCase();return (plusState().issues||[]).some(v=>String(v).toLowerCase()===q);}
@@ -10844,12 +10817,12 @@ function renderPlusDashboard(){
   const watched=(plusState().politicianIds||[]).map(id=>people.find(p=>Number(p.id)===Number(id))).filter(Boolean);
   const brief=document.getElementById('myPlusBrief');
   if(brief){
-    const sorted=[...watched].sort((a,b)=>Math.abs(Number(refreshRankChange(b).change||0))-Math.abs(Number(refreshRankChange(a).change||0))).slice(0,6);
-    brief.innerHTML=sorted.length?sorted.map(x=>{const r=refreshChangeText(x),why=whyNowKeywords(x)[0];return `<div class="plus-brief-item"><b>${accountEsc(x.name)} · ${x.rank}위 <span class="change ${r.cls}" style="display:inline;margin:0">${r.text}</span></b><span>${accountEsc(x.party)}${why?` · #${accountEsc(why)}`:''} · ${accountEsc(r.route)}</span></div>`;}).join(''):'<div class="plus-empty">아직 관심 의원이 없습니다.<br>의원 상세페이지에서 ☆ 관심 의원 저장을 눌러보세요.</div>';
+    const sorted=[...watched].sort((a,b)=>Math.abs(Number(refreshRankChange(b,entityTypeOf(b)).change||0))-Math.abs(Number(refreshRankChange(a,entityTypeOf(a)).change||0))).slice(0,6);
+    brief.innerHTML=sorted.length?sorted.map(x=>{const r=refreshChangeText(x,entityTypeOf(x)),why=whyNowKeywords(x)[0];return `<div class="plus-brief-item"><b>${accountEsc(x.name)} · ${accountEsc(entityLabel(x))} ${x.rank}위 <span class="change ${r.cls}" style="display:inline;margin:0">${r.text}</span></b><span>${accountEsc(x.party)}${why?` · #${accountEsc(why)}`:''} · ${accountEsc(r.route)}</span></div>`;}).join(''):'<div class="plus-empty">아직 관심 정치인이 없습니다.<br>정치인 상세페이지에서 ☆ 관심 정치인 저장을 눌러보세요.</div>';
   }
   const list=document.getElementById('myPlusPoliticians');
   if(list){
-    list.innerHTML=watched.length?watched.map(x=>{const r=refreshChangeText(x);return `<div class="plus-watch-row"><div><b>${accountEsc(x.name)} · ${x.rank}위 <span class="change ${r.cls}" style="display:inline">${r.text}</span></b><span>${accountEsc(x.party)} · ${accountEsc(x.constituency||x.region)}</span></div><div class="plus-watch-actions"><button class="plus-mini-btn" data-open-member="${x.id}">상세</button><button class="plus-mini-btn remove" data-remove-member="${x.id}">삭제</button></div></div>`;}).join(''):'<div class="plus-empty">저장된 관심 의원이 없습니다.</div>';
+    list.innerHTML=watched.length?watched.map(x=>{const r=refreshChangeText(x,entityTypeOf(x));return `<div class="plus-watch-row"><div><b>${accountEsc(x.name)} · ${accountEsc(entityLabel(x))} ${x.rank}위 <span class="change ${r.cls}" style="display:inline">${r.text}</span></b><span>${accountEsc(x.party)} · ${accountEsc(x.jurisdiction||x.constituency||x.region)}</span></div><div class="plus-watch-actions"><button class="plus-mini-btn" data-open-member="${x.id}">상세</button><button class="plus-mini-btn remove" data-remove-member="${x.id}">삭제</button></div></div>`;}).join(''):'<div class="plus-empty">저장된 관심 정치인이 없습니다.</div>';
     list.querySelectorAll('[data-open-member]').forEach(b=>b.addEventListener('click',()=>openDetail(Number(b.dataset.openMember))));
     list.querySelectorAll('[data-remove-member]').forEach(b=>b.addEventListener('click',()=>handlePlusPoliticianWatch(Number(b.dataset.removeMember))));
   }
@@ -10956,7 +10929,7 @@ refreshAccountSession();
 <div class="account-overlay" id="billingModal" onclick="if(event.target===this)closePlusUpgrade()" aria-hidden="true">
   <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="billingTitle">
     <div class="account-dialog-head"><div><div class="kicker">JJDD PLUS</div><h2 id="billingTitle">PLUS 구독</h2></div><button class="account-close" onclick="closePlusUpgrade()">✕</button></div>
-    <div class="billing-plan"><div class="sub" style="margin:0">개인 정치 인텔리전스</div><strong>월 5,000원</strong><div class="sub" style="margin-top:6px">관심 의원·이슈 저장 · 30일/1년 히스토리 · 정치인 비교 · 개인 대시보드</div></div>
+    <div class="billing-plan"><div class="sub" style="margin:0">개인 정치 인텔리전스</div><strong>월 5,000원</strong><div class="sub" style="margin-top:6px">관심 정치인·이슈 저장 · 30일/1년 히스토리 · 정치인 비교 · 개인 대시보드</div></div>
     <div class="account-note">결제 방식은 CMS를 연결할 예정입니다. 이번 빌드의 버튼은 결제 요청 API 계약과 구독 의사 기록까지만 준비되어 있으며 실제 출금·결제는 발생하지 않습니다.</div>
     <button class="account-submit mint" id="billingCheckoutBtn" style="width:100%;margin-top:14px" onclick="requestPlusCheckout()">결제하기 · CMS 연결 준비중</button>
     <div class="billing-status" id="billingStatus" style="margin-top:10px"></div>

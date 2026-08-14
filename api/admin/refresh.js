@@ -8,13 +8,15 @@ const {collectGlobalKeyless}=require('../../lib/keyless');
 const {mark,STATES}=require('../../lib/observation');
 const {credentials:searchAdCreds,queryKeywords,searchScaleScore}=require('../../lib/naver_searchad');
 const {credentials:bigKindsCreds}=require('../../lib/bigkinds');
-const roster=require('../../data/roster.json');
+const {getAllRoster,activeRoster,counts:rosterCounts}=require('../../lib/political_roster');
+const roster=getAllRoster();
 const {memberKey}=require('../../lib/member_key');
+const {titleTerm}=require('../../lib/political_entity');
 
 const DRAFT_TTL=12*60*60;
 function id(){return `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;}
 function body(req){return req.body||{};}
-function active(){return roster.filter(x=>x.id!==300&&x.party!=='공석');}
+function active(){return activeRoster();}
 
 const ADMIN_SENSOR_LABELS={
   namePulse:'NAVER Name Pulse',googleTrends:'Google 급상승',news:'뉴스',bigKinds:'BIG KINDS',wiki:'Wikipedia',
@@ -32,7 +34,7 @@ function compactSensor(key,s={}){
 }
 function adminMemberView(x){
   const ch=x?.signal?.channels||{};const sensors=Object.keys(ADMIN_SENSOR_LABELS).map(k=>compactSensor(k,ch[k]||{}));
-  return {id:x.id,name:x.name,party:x.party,region:x.region,constituency:x.constituency,rank:x.rank,score:x.score,rawScore:x.rawScore,grade:x.grade,previousRank:x.previousRank,changeRefresh:x.changeRefresh,change6h:x.change6h,searchRank:x.searchRank,searchScore:x.searchScore,searchRaw:x.searchRaw,mediaRank:x.mediaRank,mediaScore:x.mediaScore,mediaRaw:x.mediaRaw,sourceCount:x.sourceCount,evidenceConfidence:x.evidenceConfidence,collection:x.collection||{},sourceBadges:x.sourceBadges||[],metrics:x.metrics||[],audit:x.audit||{},signal:{count6:x.signal?.count6||0,count24:x.signal?.count24||0,count7d:x.signal?.count7d||0,sources6:x.signal?.sources6||0,event6:x.signal?.event6||0,autoEvent:x.signal?.autoEvent||0,globalEvent:x.signal?.globalEvent||0,manualEvent:x.signal?.manualEvent||0,bigKindsRelatedWords:(x.signal?.bigKindsRelatedWords||[]).slice(0,10),headlines:(x.signal?.headlines||[]).slice(0,5).map(h=>({title:h.title||'',source:h.source||'',ts:h.ts||null})),bigKindsHeadlines:(x.signal?.bigKindsHeadlines||[]).slice(0,5).map(h=>({title:h.title||'',source:h.source||'',ts:h.ts||null}))},sensors};
+  return {id:x.id,entityType:x.entityType||'assembly',office:x.office||'국회의원',jurisdiction:x.jurisdiction||x.constituency||'',name:x.name,party:x.party,region:x.region,constituency:x.constituency,photoVerified:x.photoVerified===true,officialPhoto:x.photoVerified===true?x.officialPhoto||null:null,officialProfileUrl:x.officialProfileUrl||null,overallRank:x.overallRank,rank:x.rank,categoryRank:x.categoryRank??x.rank,score:x.score,rawScore:x.rawScore,grade:x.grade,previousRank:x.previousRank,previousOverallRank:x.previousOverallRank,changeRefresh:x.changeRefresh,changeOverallRefresh:x.changeOverallRefresh,change6h:x.change6h,searchRank:x.searchRank,searchScore:x.searchScore,searchRaw:x.searchRaw,mediaRank:x.mediaRank,mediaScore:x.mediaScore,mediaRaw:x.mediaRaw,sourceCount:x.sourceCount,evidenceConfidence:x.evidenceConfidence,collection:x.collection||{},sourceBadges:x.sourceBadges||[],metrics:x.metrics||[],audit:x.audit||{},signal:{count6:x.signal?.count6||0,count24:x.signal?.count24||0,count7d:x.signal?.count7d||0,sources6:x.signal?.sources6||0,event6:x.signal?.event6||0,autoEvent:x.signal?.autoEvent||0,globalEvent:x.signal?.globalEvent||0,manualEvent:x.signal?.manualEvent||0,bigKindsRelatedWords:(x.signal?.bigKindsRelatedWords||[]).slice(0,10),headlines:(x.signal?.headlines||[]).slice(0,5).map(h=>({title:h.title||'',source:h.source||'',ts:h.ts||null})),bigKindsHeadlines:(x.signal?.bigKindsHeadlines||[]).slice(0,5).map(h=>({title:h.title||'',source:h.source||'',ts:h.ts||null}))},sensors};
 }
 
 function aggregateSourceHealth(draft){
@@ -71,16 +73,19 @@ module.exports=async function handler(req,res){
       if(!draft.namePulse.configured){
         for(const m of batch)draft.namePulse.signals[memberKey(m)]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0},'naver-search-ads-keywordstool',STATES.MISSING,'NAVER Search Ads credentials not configured');
       }else{
-        const rows=await queryKeywords(batch.map(m=>m.name));
+        // 지방단체장은 이름 단독 검색량을 쓰지 않는다. `이름 + 공식 직책`으로 조회해
+        // 배우·기업인 등 외부 동명이인의 검색량이 정치인에게 귀속되는 것을 막는다.
+        const queryTerms=batch.map(m=>['metro','local'].includes(String(m.entityType||'assembly'))?`${m.name} ${titleTerm(m)}`:m.name);
+        const rows=await queryKeywords(queryTerms);
         rows.forEach((row,i)=>{
-          const member=batch[i],name=member.name,k=memberKey(member);
+          const member=batch[i],name=member.name,queryTerm=queryTerms[i],k=memberKey(member);
           if(row?.ok){
             const total=row.found?Math.max(0,Number(row.monthlyTotalQcCnt)||0):0;
             // 이름만 제공되는 검색광고 키워드 도구는 동명이인을 구별할 수 없습니다.
             // 두 박지원 의원에게 동일 검색량을 중복 반영하지 않고, 보조 정보만 보존합니다.
             const ambiguous=Boolean(member.ambiguousName),score=ambiguous?0:searchScaleScore(total);
             const detail=ambiguous?'동명이인 이름 검색량 · 인물별 순위 반영 제외':(row.found?'':'API 정상 · 정확 의원명 키워드 미반환(검색량 0으로 처리)');
-            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score,matchedKeyword:row.found?(row.matchedKeyword||name):null,monthlyPcQcCnt:ambiguous?0:(row.found?(Number(row.monthlyPcQcCnt)||0):0),monthlyMobileQcCnt:ambiguous?0:(row.found?(Number(row.monthlyMobileQcCnt)||0):0),monthlyTotalQcCnt:ambiguous?0:total,sharedNameMonthlyTotalQcCnt:ambiguous?total:null,ambiguousName:ambiguous,found:Boolean(row.found),fetchedAt:row.fetchedAt||new Date().toISOString()},'naver-search-ads-keywordstool',ambiguous?STATES.ZERO:(total>0?STATES.OBSERVED:STATES.ZERO),detail);
+            draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score,matchedKeyword:row.found?(row.matchedKeyword||queryTerm):null,monthlyPcQcCnt:ambiguous?0:(row.found?(Number(row.monthlyPcQcCnt)||0):0),monthlyMobileQcCnt:ambiguous?0:(row.found?(Number(row.monthlyMobileQcCnt)||0):0),monthlyTotalQcCnt:ambiguous?0:total,sharedNameMonthlyTotalQcCnt:ambiguous?total:null,ambiguousName:ambiguous,found:Boolean(row.found),fetchedAt:row.fetchedAt||new Date().toISOString()},'naver-search-ads-keywordstool',ambiguous?STATES.ZERO:(total>0?STATES.OBSERVED:STATES.ZERO),detail);
           }else{
             draft.namePulse.signals[k]=mark({provider:'naver-search-ads-keywordstool',score:0,monthlyPcQcCnt:0,monthlyMobileQcCnt:0,monthlyTotalQcCnt:0,found:false},'naver-search-ads-keywordstool',STATES.MISSING,row?.error||'Name Pulse request failed');
           }
@@ -107,7 +112,7 @@ module.exports=async function handler(req,res){
       const ranked=active().map(m=>({key:memberKey(m),id:m.id,name:m.name,heat:preliminaryHeat(draft.signals[memberKey(m)])})).sort((a,b)=>b.heat-a.heat);
       const eventKeys=ranked.filter(x=>{const c=draft.signals[x.key]?.channels||{};return Object.values(c).some(s=>(s?.event6||s?.eventHits||0)>0);}).map(x=>x.key);
       const trendKeys=active().filter(m=>(draft.globalSignals?.trends?.signals?.[memberKey(m)]?.score||0)>0).sort((a,b)=>(draft.globalSignals?.trends?.signals?.[memberKey(b)]?.score||0)-(draft.globalSignals?.trends?.signals?.[memberKey(a)]?.score||0)).map(m=>memberKey(m));
-      const previous=await store.getJSON('jjdd:current').catch(()=>null),previousTop=(previous?.members||[]).filter(x=>x.id!==300).sort((a,b)=>a.rank-b.rank).slice(0,40).map(x=>`id:${Number(x.id)}`);
+      const previous=await store.getJSON('jjdd:current').catch(()=>null),previousTop=(previous?.members||[]).filter(x=>x.id!==300).sort((a,b)=>(Number(a.overallRank)||Number(a.rank)||9999)-(Number(b.overallRank)||Number(b.rank)||9999)).slice(0,40).map(x=>`id:${Number(x.id)}`);
       const rotationSize=Math.min(35,n),rotationStart=(Math.floor(Date.now()/(6*3600000))*rotationSize)%active().length,rotation=[...active().slice(rotationStart),...active().slice(0,rotationStart)].slice(0,rotationSize).map(memberKey);
       draft.enrichmentNames=[...new Set([...eventKeys,...trendKeys.slice(0,35),...previousTop,...rotation,...ranked.slice(0,35).map(x=>x.key)])].filter(k=>draft.signals[k]).slice(0,n);
       const youtubeCap=Math.max(0,Math.min(25,Number(process.env.YOUTUBE_ENRICH_TOP_N)||20)),xCap=Math.max(0,Math.min(50,Number(process.env.X_ENRICH_TOP_N)||20)),bigKindsCap=Math.max(0,Math.min(40,Number(process.env.BIGKINDS_ENRICH_TOP_N)||30));
@@ -130,8 +135,8 @@ module.exports=async function handler(req,res){
       const previous=await store.getJSON('jjdd:current'),traffic=await readTrafficSignals(active());
       draft.sourceHealth=aggregateSourceHealth(draft);
       draft.preview=computeSnapshot(roster,draft.signals,{eventTitle:draft.eventTitle,eventKeywords:draft.eventKeywords,sourceHealth:draft.sourceHealth,globalSignals:draft.globalSignals,globalNews:draft.globalNews},previous,traffic);draft.status='preview';draft.updatedAt=new Date().toISOString();await store.setJSON(key,draft,DRAFT_TTL);
-      const allMembers=draft.preview.members.slice(0,299).map(adminMemberView),movers=allMembers.filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,20);
-      return res.status(200).json({ok:true,draftId,preview:{version:draft.preview.version,modelVersion:draft.preview.modelVersion,comparisonCompatible:draft.preview.comparisonCompatible,timestamp:draft.preview.timestamp,members:allMembers,top30:allMembers.slice(0,30),movers,quality:draft.preview.quality,configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth,globalNews:draft.preview.globalNews}});
+      const allMembers=draft.preview.members.filter(x=>Number(x.id)!==300&&String(x.party||'')!=='공석').map(adminMemberView),movers=allMembers.filter(x=>Number.isFinite(x.change6h)).sort((a,b)=>Math.abs(b.change6h)-Math.abs(a.change6h)).slice(0,20);
+      return res.status(200).json({ok:true,draftId,preview:{version:draft.preview.version,modelVersion:draft.preview.modelVersion,comparisonCompatible:draft.preview.comparisonCompatible,timestamp:draft.preview.timestamp,members:allMembers,top30:allMembers.slice(0,30),movers,quality:draft.preview.quality,photoIntegrity:{localTotal:active().filter(x=>x.entityType==='metro'||x.entityType==='local').length,verified:active().filter(x=>(x.entityType==='metro'||x.entityType==='local')&&x.photoVerified===true&&x.officialPhoto).length,safeFallback:active().filter(x=>(x.entityType==='metro'||x.entityType==='local')&&!(x.photoVerified===true&&x.officialPhoto)).length},configuredSources:draft.preview.configuredSources,detectedIssues:draft.preview.detectedIssues,sourceHealth:draft.preview.sourceHealth,globalNews:draft.preview.globalNews}});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}
