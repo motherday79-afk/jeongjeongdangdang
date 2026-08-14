@@ -1,3 +1,7 @@
+# CURRENT RELEASE
+
+- v2.2.2 Redis 10MB Refresh Hotfix: `README_V2_2_2_REDIS_10MB_HOTFIX.md`
+
 # CURRENT RELEASE: v2.2.1 · 관리자 비밀번호 변경
 
 관리자 페이지에서 현재 비밀번호를 확인한 뒤 8자 이상의 새 비밀번호로 직접 변경할 수 있습니다. 변경값은 Redis에 scrypt 해시로 저장되며 이후 로그인에 우선 적용됩니다. 자세한 내용은 `README_V2_2_1_ADMIN_PASSWORD_CHANGE.md`를 확인하세요.

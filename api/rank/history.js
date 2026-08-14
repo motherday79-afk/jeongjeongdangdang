@@ -9,7 +9,7 @@ function disableCache(res){
   res.setHeader('Pragma','no-cache');
   res.setHeader('Expires','0');
 }
-function parseJSON(v){try{return v==null?null:JSON.parse(v)}catch(e){return null}}
+function parseJSON(v){return store.parseJSONValue(v)}
 function snapshotStamp(s){return stampOf(s)}
 function findMember(snapshot,{id,name}){
   const rows=snapshot?.members||[];

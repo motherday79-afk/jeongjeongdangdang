@@ -3,7 +3,7 @@ const store=require('../../lib/store');
 const {publicSnapshot}=require('../../lib/public_snapshot');
 const {appendRankHistory}=require('../../lib/rank_history');
 const ROSTER_VERSION='2026-08-15-national-local-v1';
-function parseJSON(v){try{return v==null?null:JSON.parse(v)}catch(e){return null}}
+function parseJSON(v){return store.parseJSONValue(v)}
 module.exports=async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'POST only'});
   if(!requireAdmin(req,res)) return;
