@@ -71,7 +71,7 @@ module.exports=async function(req,res){
     const real=[];
     for(const id of (ids||[]).slice(0,1000)){
       const u=await getUser(id);
-      if(u) real.push({...publicUser(u,{includePreference:false}),isSynthetic:false});
+      if(u) real.push({...publicUser(u,{includePreference:true}),isSynthetic:false});
     }
     const demos=syntheticUsers();
     const list=[...real,...demos];
@@ -91,7 +91,7 @@ module.exports=async function(req,res){
       if(!ROLES.includes(role)) return res.status(400).json({ok:false,error:'유효하지 않은 등급입니다.'});
       u.role=role;u.updatedAt=new Date().toISOString();u.adminAccountUpdatedAt=u.updatedAt;u.adminAccountUpdatedBy=String(admin.id||'admin');
       await setJSON(userKey(u.id),u);
-      return res.json({ok:true,user:publicUser(u,{includePreference:false})});
+      return res.json({ok:true,user:publicUser(u,{includePreference:true})});
     }
 
     if(action==='update-account'){
@@ -123,7 +123,7 @@ module.exports=async function(req,res){
         if(reservedNew) await cmd(['DEL',usernameIndexKey(nextUsername)]).catch(()=>{});
         throw e;
       }
-      return res.json({ok:true,user:publicUser(u,{includePreference:false}),usernameChanged});
+      return res.json({ok:true,user:publicUser(u,{includePreference:true}),usernameChanged});
     }
 
     if(action==='reset-password'){

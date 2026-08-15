@@ -298,6 +298,8 @@ a{text-decoration:none;color:inherit}
 .rapid-rise-delta small{display:block;margin-top:2px;color:#94a3b8;font-size:9px;font-weight:800}
 .rapid-rise-empty{padding:14px 4px 4px;color:#7b8794;font-size:12px;line-height:1.6}
 .rapid-rise-note{margin-top:10px;padding-top:10px;border-top:1px solid #eef3f2;color:#94a3b8;font-size:10px;line-height:1.5}
+.survey-question-title{font-size:15px;font-weight:950;line-height:1.45;margin:4px 0 7px}
+.survey-subtitle{font-size:12px;line-height:1.6;color:#66736f;margin:0 0 12px}.survey-options{display:grid;gap:8px}.survey-option{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:1px solid #e3ebe8;border-radius:12px;background:#fbfdfc;cursor:pointer;font-size:12px;line-height:1.45}.survey-option input{margin-top:2px}.survey-option:hover{border-color:#9ed8cd;background:#f5fffc}.survey-submit{width:100%;margin-top:10px;border:0;border-radius:12px;padding:10px 12px;background:#0d9b7f;color:#fff;font-weight:950;cursor:pointer}.survey-submit:disabled{opacity:.5;cursor:not-allowed}.survey-status{margin-top:9px;font-size:11px;line-height:1.5;color:#71807b}.survey-result{margin-top:8px}.survey-result-head{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:850}.survey-result-bar{height:6px;margin-top:4px;background:#edf2f0;border-radius:99px;overflow:hidden}.survey-result-bar span{display:block;height:100%;background:#0d9b7f;border-radius:99px}.survey-total{margin-top:9px;padding-top:8px;border-top:1px solid #edf2f0;font-size:10px;color:#87928f}
 
 .news-list{display:flex;flex-direction:column}
 .news-row{
@@ -1064,6 +1066,7 @@ a{text-decoration:none;color:inherit}
 
         <section class="mobile-now-flow" id="mobileNowFlow" aria-label="모바일 NOW 요약">
           <div id="mobileNowIssuePortal"></div>
+          <div id="mobileSurveyPortal"></div>
           <div id="mobileRapidRisePortal"></div>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
@@ -1129,41 +1132,33 @@ a{text-decoration:none;color:inherit}
             <h3>NOW ISSUE</h3>
             <div class="more" style="cursor:default">NOW</div>
           </div>
-          <div class="issue-box">
-            <div class="issue-labels">
-              
-              <span class="tinylabel" style="background:#fff5e9;color:#b45309">민주당 8·17 전당대회</span>
+          <div class="issue-box" id="nowIssueContent">
+            <div class="issue-labels"><span class="tinylabel" id="nowIssueLabel" style="background:#fff5e9;color:#b45309">민주당 8·17 전당대회</span></div>
+            <div class="issue-question" id="nowIssueHeadline">당대표 본선 3파전 · 8월 17일 대전</div>
+            <div class="sub" id="nowIssueSummary" style="margin:0 0 12px;font-size:12px;line-height:1.6">김민석·정청래·송영길 후보가 본경선에 진출했습니다. 민주당은 예비경선 후보별 득표율을 공개하지 않았습니다.</div>
+            <div class="issue-question" id="nowIssueDataTitle" style="font-size:15px;margin:0 0 8px">NBS 당대표 적합도 · 7.27~29 전체 응답</div>
+            <div id="nowIssueRows">
+              <div class="candidate"><div class="candline"><span>정청래</span><b>21%</b></div><div class="bar"><span style="width:100%"></span></div></div>
+              <div class="candidate"><div class="candline"><span>김민석</span><b>19%</b></div><div class="bar"><span style="width:90.5%"></span></div></div>
+              <div class="candidate"><div class="candline"><span>송영길</span><b>6%</b></div><div class="bar"><span style="width:28.6%"></span></div></div>
             </div>
-            <div class="issue-question">당대표 본선 3파전 · 8월 17일 대전</div>
-            <div class="sub" style="margin:0 0 12px;font-size:12px;line-height:1.6">
-              김민석·정청래·송영길 후보가 본경선에 진출했습니다. 민주당은 예비경선 후보별 득표율을 공개하지 않았습니다.
-            </div>
-
-            <div class="issue-question" style="font-size:15px;margin:0 0 8px">NBS 당대표 적합도 · 7.27~29 전체 응답</div>
-            <div class="candidate">
-              <div class="candline"><span>정청래</span><b>21%</b></div>
-              <div class="bar"><span style="width:100%"></span></div>
-            </div>
-            <div class="candidate">
-              <div class="candline"><span>김민석</span><b>19%</b></div>
-              <div class="bar"><span style="width:90.5%"></span></div>
-            </div>
-            <div class="candidate">
-              <div class="candline"><span>송영길</span><b>6%</b></div>
-              <div class="bar"><span style="width:28.6%"></span></div>
-            </div>
-
             <div class="issue-foot" style="display:block;line-height:1.55;margin-top:12px">
-              <div><b>민주당 지지층:</b> 정청래 34% · 김민석 29% · 송영길 9%</div>
-              <div style="margin-top:5px;color:#64748b">NBS 2026.07.27~29 · 표본 1,000명 · 95% 신뢰수준 ±3.1%p</div>
-              <div style="margin-top:5px;color:#64748b">※ 여론조사 적합도이며 경선 득표율이 아닙니다.</div>
+              <div id="nowIssueFooter"><b>민주당 지지층:</b> 정청래 34% · 김민석 29% · 송영길 9%</div>
+              <div id="nowIssueSource" style="margin-top:5px;color:#64748b">NBS 2026.07.27~29 · 표본 1,000명 · 95% 신뢰수준 ±3.1%p</div>
+              <div id="nowIssueNote" style="margin-top:5px;color:#64748b">※ 여론조사 적합도이며 경선 득표율이 아닙니다.</div>
             </div>
-
             <div style="height:1px;background:#e9efee;margin:14px 0 12px"></div>
             <div class="sub" id="serverUpdateStatus" style="margin:0;font-size:11px;line-height:1.55;color:#64748b">
               NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다. 백엔드 연결 전에는 마지막 내장 스냅샷을 표시합니다.
             </div>
           </div>
+        </section>
+
+
+        <section class="card cardpad" id="surveyCard">
+          <div class="side-title"><h3>정참시 자체 설문조사</h3><div class="more" style="cursor:default">POLL</div></div>
+          <div class="survey-question-title" id="surveyTitle">설문을 불러오는 중입니다.</div>
+          <div id="surveyBody"><div class="survey-subtitle" id="surveySubtitle"></div></div>
         </section>
 
         <section class="card cardpad" id="rapidRiseCard">
@@ -1385,7 +1380,11 @@ a{text-decoration:none;color:inherit}
           <div class="formgrid" style="margin-top:14px">
             <div class="field"><label>아이디</label><input id="myUsername" maxlength="20" autocomplete="username" placeholder="apple12"/></div>
             <div class="field"><label>닉네임</label><input id="myNickname" maxlength="20"/></div>
-            <div class="field" style="grid-column:1 / -1"><label>이메일</label><input id="myEmail" readonly/></div>
+            <div class="field"><label>전화번호</label><input id="myPhone" inputmode="tel" maxlength="13" placeholder="010-1234-5678"/></div>
+            <div class="field"><label>이메일 <span style="font-weight:700;color:#87928f">(선택)</span></label><input id="myEmail" readonly/></div>
+            <div class="field"><label>지역 · 시/도</label><select id="myRegionMain"></select></div>
+            <div class="field"><label>지역 · 시/군/구</label><select id="myRegionSub"></select></div>
+            <div class="field" id="myRegionDistrictWrap" style="grid-column:1 / -1"><label>지역 · 구</label><select id="myRegionDistrict"></select></div>
           </div>
           <div class="account-note" id="myUsernameNote" style="margin-top:10px">아이디는 로그인에 사용하며 가입 후 변경할 수 없습니다.</div>
           <div class="profile-meta-grid">
@@ -1426,11 +1425,11 @@ a{text-decoration:none;color:inherit}
         <div id="my-preference" class="mytab" style="display:none">
           <h2 class="h2" style="font-size:28px">내 정치 관심사</h2>
           <div class="sub">공개 NOW Rank는 모든 이용자에게 동일합니다. 아래 선택은 향후 <b>FOR YOU</b> 개인화 영역에만 사용합니다.</div>
-          <div class="privacy-callout" style="margin-top:16px"><b>선택적 민감정보</b><br>관심 정당은 정치적 견해와 관련될 수 있어 별도 동의를 받은 경우에만 저장합니다. 선택하지 않아도 기본 서비스 이용에는 제한이 없습니다.</div>
+          <div class="privacy-callout" style="margin-top:16px"><b>정치적 관심정보</b><br>선호정당은 개인화 데이터로 사용하며 별도 동의와 함께 저장합니다. 특정 정당을 선호하지 않는 경우에는 <b>특정 정당 없음</b>을 선택할 수 있습니다.</div>
           <div class="formgrid" style="margin-top:14px">
-            <div class="field" style="grid-column:1 / -1"><label>관심 정당</label><select id="myPartyPreference"><option value="">선택하지 않음</option><option>더불어민주당</option><option>국민의힘</option><option>조국혁신당</option><option>개혁신당</option><option>진보당</option><option>기본소득당</option><option>사회민주당</option><option>무소속</option><option>기타</option><option>특정 정당 없음</option></select></div>
+            <div class="field" style="grid-column:1 / -1"><label>선호정당</label><select id="myPartyPreference"><option value="">선택해주세요</option><option>더불어민주당</option><option>국민의힘</option><option>조국혁신당</option><option>개혁신당</option><option>진보당</option><option>기본소득당</option><option>사회민주당</option><option>무소속</option><option>기타</option><option>특정 정당 없음</option></select></div>
           </div>
-          <label class="account-check" style="margin-top:12px"><input type="checkbox" id="mySensitiveConsent"><span><b>[선택] 정치적 관심정보 수집·이용에 동의합니다.</b><br>수집항목: 선택한 관심 정당 · 목적: 개인화 콘텐츠 제공 · 보유: 동의 철회/설정 삭제 또는 회원탈퇴 시까지. <a href="/privacy.html" target="_blank">자세히 보기</a></span></label>
+          <label class="account-check" style="margin-top:12px"><input type="checkbox" id="mySensitiveConsent"><span><b>정치적 관심정보 수집·이용에 동의합니다.</b><br>수집항목: 선호정당 · 목적: 개인화 콘텐츠 제공 및 서비스 통계 · 보유: 설정 변경 또는 회원탈퇴 시까지. <a href="/privacy.html" target="_blank">자세히 보기</a></span></label>
           <div class="savebar"><span class="sub" id="myPreferenceStatus" style="margin:0"></span><button class="primary" id="saveMyPreference">저장</button></div>
         </div>
 
@@ -1478,16 +1477,21 @@ a{text-decoration:none;color:inherit}
       <button class="account-submit" type="submit">로그인</button><div class="account-status" id="loginAccountStatus"></div>
     </form>
     <form class="account-form hidden-account" id="signupForm">
-      <div class="account-field"><label>아이디</label><input id="signupUsername" maxlength="20" minlength="4" pattern="[A-Za-z0-9_]{4,20}" autocomplete="username" required placeholder="apple12 · 영문/숫자/_ 4~20자"></div>
-      <div class="account-field"><label>닉네임</label><input id="signupNickname" maxlength="20" autocomplete="nickname" required placeholder="2~20자"></div>
-      <div class="account-field"><label>이메일 <span style="font-weight:700;color:#87928f">(필수 정보)</span></label><input id="signupEmail" type="email" autocomplete="email" required placeholder="계정 확인·운영용"></div>
+      <div class="account-field"><label>아이디</label><input id="signupUsername" maxlength="20" minlength="4" pattern="[A-Za-z0-9_]{4,20}" autocomplete="username" required placeholder="apple12 · 영문/숫자/_ 4~20자"><div class="account-note" style="margin-top:6px;padding:8px 10px">가입 시 아이디가 최초 닉네임으로 자동 설정됩니다. 가입 후 MY에서 닉네임을 바꿀 수 있습니다.</div></div>
       <div class="account-field"><label>비밀번호</label><input id="signupPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="조합 조건 없이 8자 이상"></div>
       <div class="account-field"><label>비밀번호 확인</label><input id="signupPassword2" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></div>
+      <div class="account-field"><label>전화번호 <span style="font-weight:850;color:#b45309">(필수)</span></label><input id="signupPhone" inputmode="tel" maxlength="13" autocomplete="tel" required placeholder="010-1234-5678"></div>
+      <div class="account-field"><label>이메일 <span style="font-weight:700;color:#87928f">(선택)</span></label><input id="signupEmail" type="email" autocomplete="email" placeholder="계정 안내용 · 입력하지 않아도 가입 가능"></div>
+      <div class="account-field"><label>지역 · 시/도 <span style="font-weight:850;color:#b45309">(필수)</span></label><select id="signupRegionMain" required></select></div>
+      <div class="account-field"><label>지역 · 시/군/구 <span style="font-weight:850;color:#b45309">(필수)</span></label><select id="signupRegionSub"></select></div>
+      <div class="account-field" id="signupRegionDistrictWrap"><label>지역 · 구 <span style="font-weight:850;color:#b45309">(해당 지역)</span></label><select id="signupRegionDistrict"></select></div>
+      <div class="account-field"><label>선호정당 <span style="font-weight:850;color:#b45309">(필수)</span></label><select id="signupPartyPreference" required><option value="">선택해주세요</option><option>더불어민주당</option><option>국민의힘</option><option>조국혁신당</option><option>개혁신당</option><option>진보당</option><option>기본소득당</option><option>사회민주당</option><option>무소속</option><option>기타</option><option>특정 정당 없음</option></select></div>
+      <label class="account-check"><input type="checkbox" id="signupSensitiveConsent" required><span><b>[필수]</b> 선호정당 등 정치적 관심정보 수집·이용에 동의합니다. <a href="/privacy.html" target="_blank">자세히 보기</a></span></label>
       <label class="account-check"><input type="checkbox" id="signupAge14" required><span><b>[필수]</b> 만 14세 이상입니다.</span></label>
       <label class="account-check"><input type="checkbox" id="signupTerms" required><span><b>[필수]</b> <a href="/terms.html" target="_blank">이용약관</a>에 동의합니다.</span></label>
       <label class="account-check"><input type="checkbox" id="signupPrivacy" required><span><b>[필수]</b> <a href="/privacy.html" target="_blank">개인정보 수집·이용 및 개인정보처리방침</a>을 확인하고 동의합니다.</span></label>
       <button class="account-submit mint" type="submit">FREE 회원가입</button><div class="account-status" id="signupAccountStatus"></div>
-      <div class="account-note">로그인은 간단한 아이디로 합니다. 비밀번호는 대문자·소문자·숫자·특수문자 조합 조건 없이 8자 이상이면 됩니다. 관심 정당은 가입 후 MY에서 선택할 수 있습니다.</div>
+      <div class="account-note">필수 회원 데이터는 아이디·비밀번호·전화번호·지역·선호정당입니다. 이메일은 선택사항이며, 닉네임은 아이디로 자동 생성됩니다.</div>
     </form>
   </div>
 </div>
@@ -1507,6 +1511,7 @@ a{text-decoration:none;color:inherit}
 
 <script>
 
+const JJDD_REGION_DATA={"version":"2026-08","regions":[{"code":"서울","label":"서울","fullName":"서울특별시","subregions":["종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],"districts":{}},{"code":"부산","label":"부산","fullName":"부산광역시","subregions":["중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],"districts":{}},{"code":"대구","label":"대구","fullName":"대구광역시","subregions":["중구","동구","서구","남구","북구","수성구","달서구","달성군","군위군"],"districts":{}},{"code":"인천","label":"인천","fullName":"인천광역시","subregions":["제물포구","영종구","미추홀구","연수구","남동구","부평구","계양구","서구","검단구","강화군","옹진군"],"districts":{}},{"code":"광주","label":"광주","fullName":"광주광역시","subregions":["동구","서구","남구","북구","광산구"],"districts":{}},{"code":"대전","label":"대전","fullName":"대전광역시","subregions":["동구","중구","서구","유성구","대덕구"],"districts":{}},{"code":"울산","label":"울산","fullName":"울산광역시","subregions":["중구","남구","동구","북구","울주군"],"districts":{}},{"code":"세종","label":"세종","fullName":"세종특별자치시","subregions":[],"districts":{}},{"code":"경기","label":"경기","fullName":"경기도","subregions":["수원시","성남시","의정부시","안양시","부천시","광명시","평택시","동두천시","안산시","고양시","과천시","구리시","남양주시","오산시","시흥시","군포시","의왕시","하남시","용인시","파주시","이천시","안성시","김포시","화성시","광주시","양주시","포천시","여주시","연천군","가평군","양평군"],"districts":{"수원시":["장안구","권선구","팔달구","영통구"],"성남시":["수정구","중원구","분당구"],"안양시":["만안구","동안구"],"부천시":["원미구","소사구","오정구"],"안산시":["상록구","단원구"],"고양시":["덕양구","일산동구","일산서구"],"용인시":["처인구","기흥구","수지구"],"화성시":["만세구","효행구","병점구","동탄구"]}},{"code":"강원","label":"강원","fullName":"강원특별자치도","subregions":["춘천시","원주시","강릉시","동해시","태백시","속초시","삼척시","홍천군","횡성군","영월군","평창군","정선군","철원군","화천군","양구군","인제군","고성군","양양군"],"districts":{}},{"code":"충북","label":"충북","fullName":"충청북도","subregions":["청주시","충주시","제천시","보은군","옥천군","영동군","증평군","진천군","괴산군","음성군","단양군"],"districts":{"청주시":["상당구","서원구","흥덕구","청원구"]}},{"code":"충남","label":"충남","fullName":"충청남도","subregions":["천안시","공주시","보령시","아산시","서산시","논산시","계룡시","당진시","금산군","부여군","서천군","청양군","홍성군","예산군","태안군"],"districts":{"천안시":["동남구","서북구"]}},{"code":"전북","label":"전북","fullName":"전북특별자치도","subregions":["전주시","군산시","익산시","정읍시","남원시","김제시","완주군","진안군","무주군","장수군","임실군","순창군","고창군","부안군"],"districts":{"전주시":["완산구","덕진구"]}},{"code":"전남","label":"전남","fullName":"전라남도","subregions":["목포시","여수시","순천시","나주시","광양시","담양군","곡성군","구례군","고흥군","보성군","화순군","장흥군","강진군","해남군","영암군","무안군","함평군","영광군","장성군","완도군","진도군","신안군"],"districts":{}},{"code":"경북","label":"경북","fullName":"경상북도","subregions":["포항시","경주시","김천시","안동시","구미시","영주시","영천시","상주시","문경시","경산시","의성군","청송군","영양군","영덕군","청도군","고령군","성주군","칠곡군","예천군","봉화군","울진군","울릉군"],"districts":{"포항시":["남구","북구"]}},{"code":"경남","label":"경남","fullName":"경상남도","subregions":["창원시","진주시","통영시","사천시","김해시","밀양시","거제시","양산시","의령군","함안군","창녕군","고성군","남해군","하동군","산청군","함양군","거창군","합천군"],"districts":{"창원시":["의창구","성산구","마산합포구","마산회원구","진해구"]}},{"code":"제주","label":"제주","fullName":"제주특별자치도","subregions":["제주시","서귀포시"],"districts":{}}]};
 const firstNames=["민준","서준","도윤","예준","시우","하준","주원","지호","지후","준서","서연","서윤","지우","서현","민서","하은","하윤","윤서","지유","지민"];
 const lastNames=["김","이","박","최","정","강","조","윤","장","임","한","오","서","신","권","황","안","송","전","홍"];
 const parties=["더불어민주당","국민의힘","조국혁신당","개혁신당","진보당","사회민주당","무소속","프로토타입"];
@@ -9363,21 +9368,24 @@ function renderMobileRankHeading(){
 
 function syncResponsiveContent(){
   const issue=document.getElementById('nowIssueCard');
+  const survey=document.getElementById('surveyCard');
   const rise=document.getElementById('rapidRiseCard');
   const news=document.getElementById('sideNewsCard');
   const track=document.querySelector('#page-ranking .side-track');
   const issuePortal=document.getElementById('mobileNowIssuePortal');
+  const surveyPortal=document.getElementById('mobileSurveyPortal');
   const risePortal=document.getElementById('mobileRapidRisePortal');
   const newsPortal=document.getElementById('mobileNewsPortal');
-  if(!issue || !rise || !news || !track || !issuePortal || !risePortal || !newsPortal) return;
+  if(!issue || !survey || !rise || !news || !track || !issuePortal || !surveyPortal || !risePortal || !newsPortal) return;
   const compact=window.matchMedia('(max-width:1120px)').matches;
   if(compact){
     if(issue.parentElement!==issuePortal) issuePortal.appendChild(issue);
+    if(survey.parentElement!==surveyPortal) surveyPortal.appendChild(survey);
     if(rise.parentElement!==risePortal) risePortal.appendChild(rise);
     if(news.parentElement!==newsPortal) newsPortal.appendChild(news);
   }else{
-    // Keep the desktop sidebar order deterministic even after mobile portal moves.
     track.appendChild(issue);
+    track.appendChild(survey);
     track.appendChild(rise);
     track.appendChild(news);
   }
@@ -11104,10 +11112,50 @@ drawVotes();
 syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
 loadPublishedNowRank();
+loadSiteSettings();
 // 메인 순위 first paint를 막지 않도록 의원 기본정보 검증은 뒤에서 시작합니다.
 setTimeout(()=>loadMemberMasterIntegrity(),700);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWhyNow()});
 
+
+// ===== v2.2.17 Admin-controlled NOW ISSUE + Jeongchamsi Survey =====
+window.JJDD_SITE_SETTINGS=null;
+function siteEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function renderNowIssueSetting(issue){
+  const card=document.getElementById('nowIssueCard');if(!card||!issue)return;
+  card.style.display=issue.enabled===false?'none':'';
+  const text=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v||'');};
+  text('nowIssueLabel',issue.label);text('nowIssueHeadline',issue.headline);text('nowIssueSummary',issue.summary);text('nowIssueDataTitle',issue.dataTitle);text('nowIssueFooter',issue.footer);text('nowIssueSource',issue.source);text('nowIssueNote',issue.note);
+  const box=document.getElementById('nowIssueRows'),rows=Array.isArray(issue.rows)?issue.rows:[];
+  if(box){const nums=rows.map(r=>Number(String(r.value||'').replace(/[^0-9.]/g,''))).filter(Number.isFinite),mx=Math.max(1,...nums);box.innerHTML=rows.map(r=>{const n=Number(String(r.value||'').replace(/[^0-9.]/g,'')),w=Number.isFinite(n)?Math.max(4,Math.min(100,(n/mx)*100)):100;return `<div class="candidate"><div class="candline"><span>${siteEsc(r.label)}</span><b>${siteEsc(r.value)}</b></div><div class="bar"><span style="width:${w.toFixed(1)}%"></span></div></div>`;}).join('');}
+}
+function renderSurveySetting(survey,loggedIn){
+  const card=document.getElementById('surveyCard'),title=document.getElementById('surveyTitle'),body=document.getElementById('surveyBody');if(!card||!body||!survey)return;
+  card.style.display=survey.active===false?'none':'';if(title)title.textContent=survey.title||'설문조사';
+  const opts=Array.isArray(survey.options)?survey.options:[],stats=survey.stats||{},counts=Array.isArray(stats.counts)?stats.counts:opts.map(()=>0),total=Number(stats.total||0),voted=Number.isInteger(stats.userVote);
+  let html=`<div class="survey-subtitle">${siteEsc(survey.subtitle||'')}</div>`;
+  if(voted){
+    html+=opts.map((o,i)=>{const c=Number(counts[i]||0),pct=total?c/total*100:0;return `<div class="survey-result"><div class="survey-result-head"><span>${i===stats.userVote?'✓ ':''}${siteEsc(o)}</span><b>${pct.toFixed(1)}%</b></div><div class="survey-result-bar"><span style="width:${pct}%"></span></div></div>`;}).join('');
+    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료</div>`;
+  }else{
+    html+=`<div class="survey-options">${opts.map((o,i)=>`<label class="survey-option"><input type="radio" name="jjddSurveyOption" value="${i}"><span>${siteEsc(o)}</span></label>`).join('')}</div><button class="survey-submit" id="surveySubmitBtn" type="button">설문 참여</button><div class="survey-status" id="surveyStatus">${loggedIn?'1계정당 1회 참여할 수 있습니다.':'로그인 후 설문에 참여할 수 있습니다.'}</div>`;
+  }
+  body.innerHTML=html;
+  const btn=document.getElementById('surveySubmitBtn');if(btn)btn.onclick=submitSurveyVote;
+}
+async function loadSiteSettings(){
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);syncResponsiveContent();syncSidebarWithPage();}
+  catch(e){console.warn('site settings unavailable',e);}
+}
+async function submitSurveyVote(){
+  const selected=document.querySelector('input[name="jjddSurveyOption"]:checked'),st=document.getElementById('surveyStatus');
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='ranking';openAccountModal('login');if(st)st.textContent='로그인 후 설문에 참여해주세요.';return;}
+  if(!selected){if(st)st.textContent='설문 문항을 하나 선택해주세요.';return;}
+  const btn=document.getElementById('surveySubmitBtn');if(btn)btn.disabled=true;if(st)st.textContent='응답 저장 중...';
+  try{const j=await accountApi('/api/site-settings',{method:'POST',body:JSON.stringify({action:'vote-survey',optionIndex:Number(selected.value)})});if(window.JJDD_SITE_SETTINGS)window.JJDD_SITE_SETTINGS.survey=j.survey;renderSurveySetting(j.survey,true);}
+  catch(e){if(st)st.textContent=e.message;if(btn)btn.disabled=false;}
+}
+window.loadSiteSettings=loadSiteSettings;
 
 // ===== v2.0.1 Simple ID Login & 8-char Password =====
 window.JJDD_ACCOUNT_USER=null;
@@ -11254,6 +11302,32 @@ function openAccountModal(tab='login'){
 function closeAccountModal(){const m=document.getElementById('accountModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
 window.openAccountModal=openAccountModal;window.closeAccountModal=closeAccountModal;
 document.querySelectorAll('[data-account-tab]').forEach(b=>b.addEventListener('click',()=>setAccountTab(b.dataset.accountTab)));
+function regionEntry(code){return (JJDD_REGION_DATA.regions||[]).find(r=>r.code===code)||null;}
+function fillRegionMain(select,value=''){
+  if(!select)return;select.innerHTML='<option value="">시/도 선택</option>'+(JJDD_REGION_DATA.regions||[]).map(r=>`<option value="${r.code}">${r.label}</option>`).join('');select.value=value||'';
+}
+function fillRegionSub(mainSel,subSel,districtSel,wrap,valueSub='',valueDistrict=''){
+  const r=regionEntry(mainSel?.value);const subs=r?.subregions||[];
+  if(subSel){subSel.innerHTML=subs.length?'<option value="">시/군/구 선택</option>'+subs.map(v=>`<option>${v}</option>`).join(''):'<option value="">하위 지역 없음</option>';subSel.disabled=!subs.length;subSel.value=valueSub||'';}
+  fillRegionDistrict(mainSel,subSel,districtSel,wrap,valueDistrict);
+}
+function fillRegionDistrict(mainSel,subSel,districtSel,wrap,value=''){
+  const r=regionEntry(mainSel?.value),arr=r?.districts?.[subSel?.value]||[];
+  if(districtSel){districtSel.innerHTML=arr.length?'<option value="">구 선택</option>'+arr.map(v=>`<option>${v}</option>`).join(''):'<option value="">추가 구 선택 없음</option>';districtSel.disabled=!arr.length;districtSel.value=value||'';}
+  if(wrap)wrap.style.display=arr.length?'block':'none';
+}
+function bindRegionCascade(prefix){
+  const main=document.getElementById(prefix+'RegionMain'),sub=document.getElementById(prefix+'RegionSub'),dist=document.getElementById(prefix+'RegionDistrict'),wrap=document.getElementById(prefix+'RegionDistrictWrap');if(!main||!sub||!dist)return;
+  fillRegionMain(main);main.addEventListener('change',()=>fillRegionSub(main,sub,dist,wrap));sub.addEventListener('change',()=>fillRegionDistrict(main,sub,dist,wrap));fillRegionSub(main,sub,dist,wrap);
+}
+function setRegionCascade(prefix,region){
+  const main=document.getElementById(prefix+'RegionMain'),sub=document.getElementById(prefix+'RegionSub'),dist=document.getElementById(prefix+'RegionDistrict'),wrap=document.getElementById(prefix+'RegionDistrictWrap');if(!main||!sub||!dist)return;
+  fillRegionMain(main,region?.main||'');fillRegionSub(main,sub,dist,wrap,region?.sub||'',region?.district||'');
+}
+function regionPayload(prefix){return {regionMain:document.getElementById(prefix+'RegionMain')?.value||'',regionSub:document.getElementById(prefix+'RegionSub')?.value||'',regionDistrict:document.getElementById(prefix+'RegionDistrict')?.value||''};}
+bindRegionCascade('signup');bindRegionCascade('my');
+function formatPhoneInput(el){if(!el)return;const d=String(el.value||'').replace(/\D/g,'').slice(0,11);el.value=d.length<=3?d:d.length<=7?`${d.slice(0,3)}-${d.slice(3)}`:`${d.slice(0,3)}-${d.slice(3,d.length-4)}-${d.slice(-4)}`;}
+['signupPhone','myPhone'].forEach(id=>document.getElementById(id)?.addEventListener('input',e=>formatPhoneInput(e.target)));
 function setAccountUI(user){
   window.JJDD_ACCOUNT_USER=user||null;
   const loginBtn=document.getElementById('accountLoginBtn');
@@ -11268,7 +11342,7 @@ function setAccountUI(user){
   const nick=user.nickname||'회원',role=roleLabel(user.role),pref=user.preference||{};
   const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   setText('myAvatar',nick.slice(0,1));setText('myNicknameHead',`${nick} 님`);setText('myRoleText',role);setText('myRoleBox',role);setText('myCreatedAt',accountDate(user.createdAt));setText('myLastLogin',accountDate(user.lastLoginAt));
-  const un=document.getElementById('myUsername');if(un){un.value=user.username||'';un.readOnly=Boolean(user.username);un.placeholder=user.username?'':'기존 계정: 사용할 아이디를 한 번 설정하세요';}const unNote=document.getElementById('myUsernameNote');if(unNote)unNote.textContent=user.username?'아이디는 로그인에 사용하며 가입 후 변경할 수 없습니다.':'v2.0 기존 계정입니다. 사용할 아이디를 한 번 설정하면 이후부터 아이디로 로그인할 수 있습니다.';const n=document.getElementById('myNickname');if(n)n.value=nick;const e=document.getElementById('myEmail');if(e)e.value=user.email||'';
+  const un=document.getElementById('myUsername');if(un){un.value=user.username||'';un.readOnly=Boolean(user.username);un.placeholder=user.username?'':'기존 계정: 사용할 아이디를 한 번 설정하세요';}const unNote=document.getElementById('myUsernameNote');if(unNote)unNote.textContent=user.username?'아이디는 로그인에 사용하며 가입 후 변경할 수 없습니다.':'v2.0 기존 계정입니다. 사용할 아이디를 한 번 설정하면 이후부터 아이디로 로그인할 수 있습니다.';const n=document.getElementById('myNickname');if(n)n.value=nick;const e=document.getElementById('myEmail');if(e)e.value=user.email||'';const ph=document.getElementById('myPhone');if(ph){ph.value=user.phone||'';formatPhoneInput(ph);}setRegionCascade('my',user.region||null);
   const p=document.getElementById('myPartyPreference');if(p)p.value=pref.party||'';const c=document.getElementById('mySensitiveConsent');if(c)c.checked=Boolean(pref.sensitiveConsent);
   document.querySelectorAll('[data-role-card]').forEach(card=>card.classList.toggle('current',card.dataset.roleCard===role || (role==='ADMIN'&&card.dataset.roleCard==='PRO')));
   updatePlusAccessUI();
@@ -11281,28 +11355,28 @@ async function refreshAccountSession(){
 }
 document.getElementById('loginForm')?.addEventListener('submit',async e=>{
   e.preventDefault();const st=document.getElementById('loginAccountStatus');st.textContent='로그인 중...';
-  try{const j=await accountApi('/api/account/login',{method:'POST',body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});setAccountUI(j.user);st.textContent='';closeAccountModal();const next=window.JJDD_ACCOUNT_RETURN_PAGE||'my';window.JJDD_ACCOUNT_RETURN_PAGE=null;showPage(next);}
+  try{const j=await accountApi('/api/account/login',{method:'POST',body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});setAccountUI(j.user);loadSiteSettings();st.textContent='';closeAccountModal();const next=window.JJDD_ACCOUNT_RETURN_PAGE||'my';window.JJDD_ACCOUNT_RETURN_PAGE=null;showPage(next);}
   catch(err){st.textContent=err.message;}
 });
 document.getElementById('signupForm')?.addEventListener('submit',async e=>{
   e.preventDefault();const st=document.getElementById('signupAccountStatus'),p1=document.getElementById('signupPassword').value,p2=document.getElementById('signupPassword2').value;if(p1!==p2){st.textContent='비밀번호 확인이 일치하지 않습니다.';return;}st.textContent='회원가입 중...';
-  try{const j=await accountApi('/api/account/signup',{method:'POST',body:JSON.stringify({username:document.getElementById('signupUsername').value,nickname:document.getElementById('signupNickname').value,email:document.getElementById('signupEmail').value,password:p1,age14:document.getElementById('signupAge14').checked,agreeTerms:document.getElementById('signupTerms').checked,agreePrivacy:document.getElementById('signupPrivacy').checked})});setAccountUI(j.user);st.textContent='';closeAccountModal();const next=window.JJDD_ACCOUNT_RETURN_PAGE||'my';window.JJDD_ACCOUNT_RETURN_PAGE=null;showPage(next);}
+  try{const rp=regionPayload('signup');const j=await accountApi('/api/account/signup',{method:'POST',body:JSON.stringify({username:document.getElementById('signupUsername').value,email:document.getElementById('signupEmail').value,password:p1,phone:document.getElementById('signupPhone').value,...rp,partyPreference:document.getElementById('signupPartyPreference').value,sensitiveConsent:document.getElementById('signupSensitiveConsent').checked,age14:document.getElementById('signupAge14').checked,agreeTerms:document.getElementById('signupTerms').checked,agreePrivacy:document.getElementById('signupPrivacy').checked})});setAccountUI(j.user);loadSiteSettings();st.textContent='';closeAccountModal();const next=window.JJDD_ACCOUNT_RETURN_PAGE||'my';window.JJDD_ACCOUNT_RETURN_PAGE=null;showPage(next);}
   catch(err){st.textContent=err.message;}
 });
 document.getElementById('saveMyProfile')?.addEventListener('click',async()=>{
-  const st=document.getElementById('myProfileStatus');st.textContent='저장 중...';try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({username:document.getElementById('myUsername').value,nickname:document.getElementById('myNickname').value})});setAccountUI(j.user);st.textContent='저장되었습니다.';}catch(e){st.textContent=e.message;}
+  const st=document.getElementById('myProfileStatus');st.textContent='저장 중...';try{const rp=regionPayload('my');const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({username:document.getElementById('myUsername').value,nickname:document.getElementById('myNickname').value,phone:document.getElementById('myPhone').value,...rp})});setAccountUI(j.user);st.textContent='저장되었습니다.';}catch(e){st.textContent=e.message;}
 });
 document.getElementById('saveMyPreference')?.addEventListener('click',async()=>{
-  const st=document.getElementById('myPreferenceStatus'),party=document.getElementById('myPartyPreference').value,consent=document.getElementById('mySensitiveConsent').checked;if(party && !consent){st.textContent='관심 정당을 저장하려면 선택적 민감정보 동의가 필요합니다.';return;}st.textContent='저장 중...';
-  try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({partyPreference:party,sensitiveConsent:consent})});setAccountUI(j.user);st.textContent=party?'관심 정당이 저장되었습니다.':'관심 정당 정보가 삭제되었습니다.';}catch(e){st.textContent=e.message;}
+  const st=document.getElementById('myPreferenceStatus'),party=document.getElementById('myPartyPreference').value,consent=document.getElementById('mySensitiveConsent').checked;if(!party){st.textContent='선호정당을 선택해주세요.';return;}if(!consent){st.textContent='선호정당을 저장하려면 정치적 관심정보 동의가 필요합니다.';return;}st.textContent='저장 중...';
+  try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({partyPreference:party,sensitiveConsent:consent})});setAccountUI(j.user);st.textContent='선호정당이 저장되었습니다.';}catch(e){st.textContent=e.message;}
 });
 document.getElementById('myPlusIssueAdd')?.addEventListener('click',async()=>{const input=document.getElementById('myPlusIssueInput'),st=document.getElementById('myPlusStatus');if(!input)return;const q=input.value.trim();if(q.length<2){if(st)st.textContent='관심 이슈를 2자 이상 입력해주세요.';return;}if(await mutatePlusIssue(q,false)){input.value='';if(st)st.textContent='관심 이슈가 저장되었습니다.';}});
 document.getElementById('myPlusIssueInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('myPlusIssueAdd')?.click();}});
-async function logoutAccount(){try{await accountApi('/api/account/logout',{method:'POST',body:'{}'});}catch(_){}setAccountUI(null);showPage('ranking');}
+async function logoutAccount(){try{await accountApi('/api/account/logout',{method:'POST',body:'{}'});}catch(_){}setAccountUI(null);loadSiteSettings();showPage('ranking');}
 document.getElementById('myLogoutBtn')?.addEventListener('click',logoutAccount);
 document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
-  try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
+  try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);loadSiteSettings();st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
 // ===== v2.2.7 Global search + account notification preference =====
 function globalSearchEsc(v){return accountEsc(v);}

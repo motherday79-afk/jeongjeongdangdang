@@ -143,3 +143,9 @@ Wikipedia / NAVER VIEW HTML / Daum Blog HTML / YouTube / X 같은 무거운 보�
 
 ## v2.2.16
 - 관리자 전체 인물 사진 검수(542명) + roster 사진 Vercel 서버 프록시 통합. 자세한 내용은 README_V2_2_16_PHOTO_FULL_AUDIT.md 참고.
+
+## v2.2.17
+- 회원가입 필수 데이터(ID·비밀번호·전화번호·지역·선호정당), 이메일 선택, ID→초기 닉네임 자동 설정 및 MY 수정 기능.
+- 관리자 `NOW ISSUE 관리` 메뉴 추가.
+- 메인 오른쪽 `정참시 자체 설문조사` + 관리자 설문 편집/집계 기능 추가.
+- 자세한 내용: `README_V2_2_17_MEMBER_NOWISSUE_SURVEY.md`
