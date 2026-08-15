@@ -553,6 +553,8 @@ a{text-decoration:none;color:inherit}
 .record-item{display:flex;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px solid #edf2f0;font-size:13px}
 .record-item:last-child{border-bottom:0;padding-bottom:0}
 .record-item span{color:#697480}
+.record-pro-card{position:relative;overflow:hidden;min-height:265px;background:linear-gradient(145deg,#fbfffe,#f6fbfa)}
+.record-pro-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.record-pro-chip{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#111827;color:#fff;font-size:9px;font-weight:950;letter-spacing:.05em}.record-pro-copy{font-size:11px;line-height:1.6;color:#6b7280;margin:-2px 0 11px}.pro-analysis-preview{position:relative;border:1px solid #e4ece9;border-radius:14px;background:#fff;padding:12px;overflow:hidden}.pro-analysis-preview.locked .pro-analysis-inner{filter:blur(5.5px);opacity:.62;user-select:none;pointer-events:none}.pro-analysis-bars{display:grid;gap:8px}.pro-analysis-row{display:grid;grid-template-columns:92px 1fr 38px;gap:8px;align-items:center;font-size:10px;color:#64748b}.pro-analysis-track{height:7px;border-radius:999px;background:#edf3f1;overflow:hidden}.pro-analysis-track i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#0f766e,#45c5ae)}.pro-analysis-row b{font-size:10px;color:#334155;text-align:right}.pro-analysis-suggestions{display:grid;gap:6px;margin-top:11px}.pro-analysis-suggestion{padding:7px 8px;border-radius:9px;background:#f4f8f7;font-size:10px;line-height:1.45;color:#52615d}.pro-lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.20),rgba(248,252,251,.80))}.pro-lock-panel{max-width:310px;text-align:center;padding:14px 15px;border:1px solid #dce7e3;border-radius:14px;background:rgba(255,255,255,.94);box-shadow:0 12px 30px rgba(15,23,42,.10)}.pro-lock-panel b{display:block;font-size:14px}.pro-lock-panel span{display:block;margin-top:5px;font-size:10px;line-height:1.5;color:#6b7280}.pro-lock-panel button{margin-top:9px;border:0;border-radius:10px;background:#111827;color:#fff;font-size:10px;font-weight:900;padding:8px 10px;cursor:pointer}.pro-analysis-live-note{margin-top:10px;padding:8px 9px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;line-height:1.5;font-weight:800}
 .asset-chart{height:150px;margin-top:8px}
 .asset-chart svg{width:100%;height:100%;display:block}
 .source-note{
@@ -10389,6 +10391,35 @@ window.addEventListener('popstate',(event)=>{
   else jjddHardCloseModal();
 });
 
+function hasProAccess(){return Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro);}
+function proAnalysisUpgrade(){
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='ranking';openAccountModal('login');return;}
+  closeModal();showPage('my');
+  setTimeout(()=>{const b=document.querySelector('.mymenu[data-my="membership"]');if(b)b.click();},40);
+}
+function proDetailAnalysisCardHTML(x){
+  const pro=hasProAccess();
+  const confidence=Math.max(18,Math.min(96,Number.isFinite(Number(x?.evidenceConfidence))?Number(x.evidenceConfidence):62));
+  const sourceScore=Math.max(20,Math.min(94,28+Math.min(18,Number(x?.sourceCount||0))*3.2));
+  const searchScore=Number.isFinite(Number(x?.searchRank))?Math.max(24,Math.min(92,94-Number(x.searchRank)*1.25)):55;
+  const mediaScore=Number.isFinite(Number(x?.mediaRank))?Math.max(24,Math.min(92,94-Number(x.mediaRank)*1.25)):58;
+  const bars=[['근거 밀도',confidence],['출처 다양성',sourceScore],['검색 신호',searchScore],['언론 신호',mediaScore]];
+  const metricNames=(Array.isArray(x?.metrics)?x.metrics:[]).slice().sort((a,b)=>Number(b?.[2]||0)-Number(a?.[2]||0)).slice(0,2).map(m=>String(m?.[0]||'')).filter(Boolean);
+  const suggestions=[
+    `${metricNames[0]||'주요 이슈축'} 관련 근거 출처를 시계열로 확장해 변화 원인을 더 세밀하게 추적`,
+    `${metricNames[1]||'검색·언론 신호'}와 공식 기록의 연결도를 높여 단기 이슈와 장기 이력을 분리 분석`,
+    `지역·상임위·정책 키워드별 비교 표본을 확장해 유사 정치인 대비 해석력을 개선`
+  ];
+  return `<div class="record-card record-pro-card">
+    <div class="record-pro-head"><h4>정참시 상세 분석 및 데이터 개선방향 제안</h4><span class="record-pro-chip">PRO</span></div>
+    <div class="record-pro-copy">현재 관측 신호를 바탕으로 데이터 밀도와 비교 가능성을 진단하고, 다음 수집·분석 방향을 제안합니다.</div>
+    <div class="pro-analysis-preview ${pro?'':'locked'}"><div class="pro-analysis-inner">
+      <div class="pro-analysis-bars">${bars.map(([name,val])=>`<div class="pro-analysis-row"><span>${name}</span><div class="pro-analysis-track"><i style="width:${Math.round(val)}%"></i></div><b>${Math.round(val)}</b></div>`).join('')}</div>
+      <div class="pro-analysis-suggestions">${suggestions.map(s=>`<div class="pro-analysis-suggestion">${s}</div>`).join('')}</div>
+    </div>${pro?'':`<div class="pro-lock-overlay"><div class="pro-lock-panel"><b>PRO 회원 전용 분석</b><span>상세 분석과 데이터 개선방향 제안은 PRO 등급부터 이용할 수 있습니다.</span><button onclick="proAnalysisUpgrade()">PRO 기능 보기</button></div></div>`}</div>
+    ${pro?'<div class="pro-analysis-live-note">PRO 권한으로 상세 분석 미리보기가 열렸습니다. 향후 데이터 축이 확장되면 이 영역에서 심층 제안이 계속 고도화됩니다.</div>':''}
+  </div>`;
+}
 function entityRecordCardsHTML(x){
   const type=entityTypeOf(x);
   if(type==='assembly'){
@@ -10463,7 +10494,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.7 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.12 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -10482,6 +10513,7 @@ function openDetail(id,opts={}){
           ${entityRecordCardsHTML(x)}
           <div class="record-card"><h4>정참시 데이터 구분</h4><div class="record-list"><div class="record-item"><span>신상·소속·직위</span><b>공식정보 우선</b></div><div class="record-item"><span>NOW Rank·5축</span><b>실시간 이슈 분석</b></div><div class="record-item"><span>검색 관심·언론 주목</span><b>관측 데이터</b></div><div class="record-item"><span>사진 신원</span><b>${type==='assembly'?'국회 공식사진 우선':'지방정부·공식협의회 사진만 허용'}</b></div></div></div>
           <div class="record-card"><h4>공식 기록 원칙</h4><div class="record-list"><div class="record-item"><span>성과 평가</span><b>NOW Rank와 분리</b></div><div class="record-item"><span>선거·임기 이력</span><b>공식 원문 우선</b></div><div class="record-item"><span>사진 불확실</span><b>기본 이미지로 대체</b></div><div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div></div><div class="why" style="margin-top:12px"><h4>정참시의 원칙</h4><p>RECORD는 공식 기록을, NOW는 현재의 모멘텀을 보여줍니다. 확인되지 않은 사진이나 이력을 억지로 채우지 않습니다.</p></div></div>
+          ${proDetailAnalysisCardHTML(x)}
         </div>
       </section>
     </div>`;
