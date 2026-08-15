@@ -5,8 +5,8 @@ const {photoRoster,findEntity}=require('../../lib/political_roster');
 const {auditMember,repairMember,recheckMember,summarize}=require('../../lib/photo_audit');
 
 const TTL=24*60*60;
-const LATEST='jjdd:photo-audit:latest:v2-government';
-function key(id){return `jjdd:photo-audit:run:${id}:v2-government`;}
+const LATEST='jjdd:photo-audit:latest:v3-safe-nondestructive';
+function key(id){return `jjdd:photo-audit:run:${id}:v3-safe-nondestructive`;}
 function runId(){return `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;}
 async function saveRun(run){await store.setJSON(key(run.id),run,TTL);await store.setJSON(LATEST,run,TTL);return run;}
 function mergeResults(run,rows,rosterLength){const byId=new Map((run.results||[]).map(x=>[String(x.id),x]));for(const x of rows||[])byId.set(String(x.id),x);const results=[...byId.values()].sort((a,b)=>Number(a.id)-Number(b.id));return {...run,results,summary:summarize(results,rosterLength),updatedAt:new Date().toISOString()};}

@@ -1581,9 +1581,9 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   // v2.2.20: 랭킹 정치인과 정부 주요 인사는 모두 Vercel 서버 프록시를 통해 사진을 받습니다.
   // 브라우저가 Wikidata/Wikipedia/Bing 등의 외부 검색을 직접 수행하지 않습니다.
   if(member){
-    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=7`;
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=8`;
     const title='사진 출처: 정참시 서버 검증 · 이름/직위/지역 교차검증 · 원본 프록시';
-    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v7" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v8" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -1846,55 +1846,82 @@ function registerPoliticianPhotoSlots(root=document){
 async function handlePoliticianPhotoError(img){
   const name=(()=>{try{return decodeURIComponent(img.dataset.photoName||'')}catch(e){return img.dataset.photoName||''}})();
   const seed=Number(img.dataset.photoSeed||1); const source=img.dataset.photoSource||'';
-  const member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===seed&&p.name===name):null;
-  if(seed) delete politicianPhotoCache[String(seed)]; savePoliticianPhotoCache();
+  let member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===seed&&p.name===name):null;
+  if(!member){try{member=(typeof governmentOfficials!=='undefined')?governmentOfficials.find(p=>Number(p.id)===seed&&p.name===name):null;}catch(_){member=null;}}
   const slot=img.closest('.politician-photo');
-  // 서버 프록시는 내부에서 깨진 URL 캐시 폐기 + 1회 재검색까지 끝낸 뒤 실패합니다.
-  // roster 인물은 여기서 다시 브라우저 외부검색으로 우회하지 않고 안전 기본이미지로 종료합니다.
+  const quality=img.dataset.photoQuality||'standard';
+  const absolute=(u)=>{try{return new URL(String(u||''),location.href).href}catch(_){return String(u||'')}};
+  const replaceWithResult=(result,label)=>{
+    if(!slot||!result?.url)return false;
+    const next=document.createElement('img');
+    next.src=result.url;next.alt=`${name} 사진`;next.title=result.title||label||'검증 사진';
+    next.dataset.photoSource=result.source||label||'photo-fallback';next.dataset.photoQuality=quality;
+    next.dataset.photoName=encodeURIComponent(name);next.dataset.photoSeed=String(seed);
+    next.loading='lazy';next.decoding='async';next.referrerPolicy='no-referrer';next.onerror=()=>handlePoliticianPhotoError(next);
+    slot.classList.add('is-loading');slot.replaceChildren(next);return true;
+  };
+
+  // v2.2.23: 서버 프록시 실패는 '사진 삭제'가 아니라 비상 경로 전환 신호입니다.
+  // 정상 client cache를 먼저 지우지 않고 서버재시도 → last-known-good → 국회공식/Wikimedia 순서로 복구합니다.
   if(slot?.dataset.photoServer==='1'){
-    // v2.2.22: 서버 사진이 일시적으로 404/timeout이 나더라도 즉시 기본 이미지로 확정하지 않습니다.
-    // 동일 인물 프록시를 캐시버스터와 함께 한 번 더 호출해 CDN/원본의 순간 장애를 흡수합니다.
-    if(slot.dataset.photoServerRetry!=='1'){
-      slot.dataset.photoServerRetry='1';
-      const retryImg=document.createElement('img');
-      retryImg.src=`/api/person-photo?id=${encodeURIComponent(seed)}&v=7&retry=1&t=${Date.now()}`;
-      retryImg.alt=`${name} 사진`;
-      retryImg.title='사진 출처: 정참시 서버 검증 · 자동 복구 재시도';
-      retryImg.dataset.photoSource='server-person-photo-v7-retry';
-      retryImg.dataset.photoQuality=img.dataset.photoQuality||'standard';
-      retryImg.dataset.photoName=encodeURIComponent(name);
-      retryImg.dataset.photoSeed=String(seed);
-      retryImg.loading='lazy'; retryImg.decoding='async'; retryImg.referrerPolicy='no-referrer';
-      retryImg.onerror=()=>handlePoliticianPhotoError(retryImg);
-      slot.classList.add('is-loading');
-      slot.replaceChildren(retryImg);
-      return;
+    let stage=Number(slot.dataset.photoFallbackStage||0);
+    if(stage===0){
+      slot.dataset.photoFallbackStage='1';
+      return replaceWithResult({url:`/api/person-photo?id=${encodeURIComponent(seed)}&v=8&retry=1&t=${Date.now()}`,source:'server-person-photo-v8-retry',title:'사진 출처: 정참시 서버 검증 · 자동 복구 재시도'},'서버 재시도');
     }
+
+    const cached=seed?politicianPhotoCache[String(seed)]:null;
+    // 방금 실패한 것이 client known-good 자체였다면 그 URL 하나만 제거합니다. 다른 캐시는 건드리지 않습니다.
+    if(stage>=2&&cached?.url&&absolute(cached.url)===absolute(img.src)){
+      delete politicianPhotoCache[String(seed)];savePoliticianPhotoCache();
+    }
+    if(stage===1){
+      slot.dataset.photoFallbackStage='2';
+      if(cached?.url&&absolute(cached.url)!==absolute(img.src)){
+        return replaceWithResult({...cached,source:'client-last-known-good',title:cached.title||'사진 출처: 정참시 마지막 정상 사진'},'마지막 정상 사진');
+      }
+      stage=2;
+    }
+
+    if(stage===2){
+      slot.dataset.photoFallbackStage='3';
+      let result=null;
+      const type=String(member?.entityType||'');
+      try{
+        if(type==='assembly'){
+          result=await resolveAssemblyPhoto(name,member); // v2.2.15에서 검증된 국회 공식 API 비상경로
+          if(!result)result=await resolveWikidataPhotoHQ(name,member);
+        }else if(type==='government'){
+          if(member?.officialPhoto)result={url:member.officialPhoto,source:'government-official',title:'사진 출처: 대한민국 정부 공식 프로필'};
+          if(!result)result=await resolveWikidataPhotoHQ(name,member);
+          if(!result)result=await resolveWikipediaPagePhotoHQ(name,member);
+        }
+      }catch(_){result=null;}
+      if(result?.url&&absolute(result.url)!==absolute(img.src)){
+        if(seed){politicianPhotoCache[String(seed)]={...result};savePoliticianPhotoCache();}
+        return replaceWithResult(result,type==='assembly'?'대한민국 국회 공식 사진':'정부 인사 검증 사진');
+      }
+    }
+
     slot.classList.remove('is-loading');
     slot.innerHTML=personSVG(seed);
-    slot.title='검증 가능한 사진을 찾지 못해 기본 이미지를 표시합니다.';
+    slot.title='서버·마지막 정상사진·공식 비상경로까지 확인했지만 현재 표시 가능한 사진을 찾지 못했습니다.';
     return;
   }
+
+  // 비서버 이미지가 실패했을 때도 현재 실패한 URL과 동일한 cache만 지우고 다른 정상 기록은 보존합니다.
+  const cached=seed?politicianPhotoCache[String(seed)]:null;
+  if(cached?.url&&absolute(cached.url)===absolute(img.src)){delete politicianPhotoCache[String(seed)];savePoliticianPhotoCache();}
   if(slot && slot.dataset.photoFallbackTried!=='1'){
-    slot.dataset.photoFallbackTried='1';
-    slot.classList.add('is-loading');
-    const quality=img.dataset.photoQuality||'standard';
+    slot.dataset.photoFallbackTried='1';slot.classList.add('is-loading');
     const result=(quality==='high')
       ? await resolvePoliticianPhotoHigh(name,member)
       : await resolvePoliticianPhoto(name,{skipAssembly:/assembly/i.test(source),member});
-    if(result?.url && result.url!==img.src){
-      applyPoliticianPhoto(name,result,quality,member?seed:null);
-      slot.classList.remove('is-loading');
-      return;
+    if(result?.url && absolute(result.url)!==absolute(img.src)){
+      applyPoliticianPhoto(name,result,quality,member?seed:null);slot.classList.remove('is-loading');return;
     }
   }
-  if(slot){
-    slot.classList.remove('is-loading');
-    slot.innerHTML=personSVG(seed);
-    slot.title=(member&&['metro','local'].includes(String(member.entityType||'')))
-      ? '검증 가능한 고해상도 사진을 찾지 못해 기본 이미지를 표시합니다.'
-      : '검증 가능한 고해상도 사진을 찾지 못해 기본 이미지를 표시합니다.';
-  }
+  if(slot){slot.classList.remove('is-loading');slot.innerHTML=personSVG(seed);slot.title='검증 가능한 사진을 찾지 못해 기본 이미지를 표시합니다.';}
 }
 window.handlePoliticianPhotoError=handlePoliticianPhotoError;
 function initPoliticianPhotoHydrator(){
@@ -9105,6 +9132,27 @@ function governmentReferenceMetrics(g){
 governmentOfficials.forEach((g,i)=>{
   g.id=910000+i;g.entityType='government';g.office=g.role;g.party='대한민국 정부';g.region='대한민국';g.jurisdiction=g.ministry;g.metrics=governmentReferenceMetrics(g);g.grade='비랭킹';g.referenceProfile=true;
 });
+// v2.2.23 · 정부 인사 공식 프로필 비상경로. 서버 사진 검색이 순간 실패해도 공식 페이지/Wikimedia로 복구합니다.
+const GOVERNMENT_OFFICIAL_PROFILE_URLS={
+  "한성숙":"https://www.opm.go.kr/opm/prime/profile.do",
+  "배경훈":"https://www.msit.go.kr/user/mnstrSchdl/mnstr.do?mId=313&mPid=312&sCode=user",
+  "최교진":"https://www.moe.go.kr/mnstrInsa.do",
+  "조현":"https://nic.mofa.go.kr/minister/wpge/m_20035/contents.do",
+  "정동영":"https://unikorea.go.kr/web/minister/contents/introduce_minister",
+  "정성호":"https://www.moj.go.kr/bbs/minister/443/606691/artclView.do",
+  "안규백":"https://mnd.go.kr/mnd/325/subview.do",
+  "윤호중":"https://mois.go.kr/mns/a01/mnsMain.do",
+  "권오을":"https://www.mpva.go.kr/mpva/selectBbsNttView.do?bbsNo=25&key=93&nttNo=266877",
+  "최휘영":"https://www.mcst.go.kr/web/s_notice/news/newsView.jsp?pSeq=5804",
+  "송미령":"https://mafra.go.kr/home/5300/subview.do",
+  "정은경":"https://www.mohw.go.kr/gallery.es?act=view&bid=0003&list_no=379598&mid=a10605040000",
+  "김윤덕":"https://molit.go.kr/USR/cyberPhoto/m_36405/lst.jsp?category=&hongbo_gbn_cd=3&lcmspage=1&master_seq=4667",
+  "김정관":"https://www.motir.go.kr/kor/contents/70",
+  "황종우":"https://www.mof.go.kr/page/ko/selectPage.do?listUpdtDt=2026-06-15++10%3A00&menuSeq=469&pageSeq=440"
+};
+governmentOfficials.forEach(g=>{if(GOVERNMENT_OFFICIAL_PROFILE_URLS[g.name])g.officialProfileUrl=GOVERNMENT_OFFICIAL_PROFILE_URLS[g.name];});
+const _pm=governmentOfficials.find(g=>g.name==='한성숙');if(_pm){_pm.photoVerified=true;_pm.officialPhoto='https://www.opm.go.kr/_res/opm/img/prime/img-greetings06%28hss%29.png';}
+
 
 const president = {
   id:900000,

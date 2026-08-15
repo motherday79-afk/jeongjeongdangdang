@@ -39,7 +39,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "과학기술·AI",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.msit.go.kr/user/mnstrSchdl/mnstr.do?mId=313&mPid=312&sCode=user"
   },
   {
     "id": 910003,
@@ -52,7 +53,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "교육",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.moe.go.kr/mnstrInsa.do"
   },
   {
     "id": 910004,
@@ -65,7 +67,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "외교",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://nic.mofa.go.kr/minister/wpge/m_20035/contents.do"
   },
   {
     "id": 910005,
@@ -78,7 +81,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "통일",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://unikorea.go.kr/web/minister/contents/introduce_minister"
   },
   {
     "id": 910006,
@@ -91,7 +95,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "법무",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.moj.go.kr/bbs/minister/443/606691/artclView.do"
   },
   {
     "id": 910007,
@@ -104,7 +109,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "국방",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://mnd.go.kr/mnd/325/subview.do"
   },
   {
     "id": 910008,
@@ -117,7 +123,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "행정·안전",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://mois.go.kr/mns/a01/mnsMain.do"
   },
   {
     "id": 910009,
@@ -130,7 +137,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "보훈",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.mpva.go.kr/mpva/selectBbsNttView.do?bbsNo=25&key=93&nttNo=266877"
   },
   {
     "id": 910010,
@@ -143,7 +151,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "문화·체육·관광",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.mcst.go.kr/web/s_notice/news/newsView.jsp?pSeq=5804"
   },
   {
     "id": 910011,
@@ -156,7 +165,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "농림·식품",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://mafra.go.kr/home/5300/subview.do"
   },
   {
     "id": 910012,
@@ -169,7 +179,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "산업·통상",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.motir.go.kr/kor/contents/70"
   },
   {
     "id": 910013,
@@ -182,7 +193,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "보건·복지",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.mohw.go.kr/gallery.es?act=view&bid=0003&list_no=379598&mid=a10605040000"
   },
   {
     "id": 910014,
@@ -234,7 +246,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "국토·교통",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://molit.go.kr/USR/cyberPhoto/m_36405/lst.jsp?category=&hongbo_gbn_cd=3&lcmspage=1&master_seq=4667"
   },
   {
     "id": 910018,
@@ -247,7 +260,8 @@
     "region": "대한민국",
     "party": "대한민국 정부",
     "status": "해양·수산",
-    "photoPolicy": "verified-web"
+    "photoPolicy": "verified-web",
+    "officialProfileUrl": "https://www.mof.go.kr/page/ko/selectPage.do?listUpdtDt=2026-06-15++10%3A00&menuSeq=469&pageSeq=440"
   },
   {
     "id": 910019,

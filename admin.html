@@ -82,7 +82,7 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
 
         <div class="admin-page" data-admin-page="photos">
           <section class="card">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">전체 인물 사진 검수 · 복구</h2><div class="status">정참시 DB의 현역 정치인 542명 + 정부 주요 인사 20명, <b>총 562명</b>을 검사하고, 검토 필요/실패 항목은 바로 자동 복구하거나 관리자가 직접 사진을 등록할 수 있습니다.</div></div><div class="actions" style="margin-top:0"><button class="mint" id="startPhotoAuditBtn">562명 전체 검수 시작</button><button class="primary" id="repairProblemPhotosBtn" disabled>문제 항목 자동 복구</button></div></div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">전체 인물 사진 검수 · 복구</h2><div class="status">정참시 DB의 현역 정치인 542명 + 정부 주요 인사 20명, <b>총 562명</b>을 검사합니다. <b>검수·자동복구 과정에서 기존 정상 사진은 먼저 삭제하지 않으며</b>, 검증된 새 후보가 확보된 경우에만 교체합니다.</div></div><div class="actions" style="margin-top:0"><button class="mint" id="startPhotoAuditBtn">562명 전체 검수 시작</button><button class="primary" id="repairProblemPhotosBtn" disabled>문제 항목 자동 복구</button></div></div>
             <div class="progress"><span id="photoAuditBar"></span></div><div class="status" id="photoAuditStatus">아직 전체 검수를 실행하지 않았습니다.</div>
             <div class="kpis" id="photoAuditKpis" style="grid-template-columns:repeat(5,minmax(120px,1fr));margin-top:12px"></div>
             <div class="actions" id="photoAuditFilters" style="margin-top:12px"><button class="ghost" data-photo-filter="ALL">전체</button><button class="ghost" data-photo-filter="OK">정상</button><button class="ghost" data-photo-filter="IMPROVED">자동 개선</button><button class="ghost" data-photo-filter="REVIEW">검토 필요</button><button class="ghost" data-photo-filter="FAILED">실패</button></div>
@@ -294,7 +294,7 @@ function renderPhotoAudit(run){
 }
 async function loadPhotoAudit(){const j=await api('/api/admin/photo-audit');renderPhotoAudit(j.run);return j;}
 async function startPhotoAudit(){
-  if(photoAuditRunning||photoRepairRunning)return;if(!confirm('정참시 DB 현역 정치인 542명 + 정부 주요 인사 20명, 총 562명 사진 검수를 시작할까요? 정상 사진은 유지하고 문제 인물만 자동 재검색합니다.'))return;
+  if(photoAuditRunning||photoRepairRunning)return;if(!confirm('정참시 DB 현역 정치인 542명 + 정부 주요 인사 20명, 총 562명 사진 검수를 시작할까요? 정상 사진과 마지막 정상 캐시는 보존하고 문제 인물만 안전하게 재검증합니다.'))return;
   const btn=$('#startPhotoAuditBtn');photoAuditRunning=true;btn.disabled=true;btn.textContent='전체 검수 진행 중…';updatePhotoRepairButton();
   try{
     const start=await api('/api/admin/photo-audit',{method:'POST',body:JSON.stringify({action:'start'})});let offset=0,total=start.total,run={id:start.runId,total,processed:0,results:[],summary:start.summary};renderPhotoAudit(run);

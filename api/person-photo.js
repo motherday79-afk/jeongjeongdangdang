@@ -18,11 +18,11 @@ async function fetchImage(photo){
   return null;
 }
 module.exports=async function(req,res){
-  if(req.method!=='GET')return res.status(405).end();
-  const id=Number(req.query?.id||0);if(!id)return res.status(400).end();
+  if(req.method!=='GET'){res.setHeader('Cache-Control','no-store');return res.status(405).end();}
+  const id=Number(req.query?.id||0);if(!id){res.setHeader('Cache-Control','no-store');return res.status(400).end();}
   try{
     // v2.2.22: last-known-good 사진 메타데이터를 새 후보가 실제로 성공하기 전에는 버리지 않습니다.
-    const previous=await resolvePersonPhoto(id);if(!previous?.url)return res.status(404).end();
+    const previous=await resolvePersonPhoto(id);if(!previous?.url){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     let photo=previous;
     let got=await fetchImage(previous);
     if(!got){
@@ -40,10 +40,10 @@ module.exports=async function(req,res){
         if(previousRetry){photo=previous;got=previousRetry;}
       }
     }
-    if(!got)return res.status(404).end();
+    if(!got){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     res.setHeader('Content-Type',got.ct);
     res.setHeader('Cache-Control','public, max-age=86400, s-maxage=2592000, stale-while-revalidate=2592000');
     res.setHeader('X-JJDD-Photo-Source',String(photo.source||'verified-search').replace(/[^\x20-\x7E]/g,'').slice(0,120)||'verified-search');
     return res.status(200).send(got.buf);
-  }catch(_){return res.status(404).end();}
+  }catch(_){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
 };

@@ -1,3 +1,16 @@
+# 정참시 배포 패키지
+
+## v2.2.23 · 전체 사진 회귀 복구 / 비파괴 검수
+
+- 국회의원 299명 + 지방단체장 243명 + 정부 주요 인사 20명 = 사진 대상 562명
+- 서버 사진 단일 장애 시 국회 공식 API / client last-known-good / Wikimedia 비상경로 복구
+- 인물별 Redis last-known-good 영구 보존, 기존 v5 정상 positive cache 유지
+- 대량 실패 negative cache는 v6로 분리
+- 전체검수/자동복구가 기존 사진을 먼저 삭제하지 않도록 비파괴 방식으로 변경
+- 562명 strict live 사진 검사 스크립트 포함
+
+자세한 내용: `README_V2_2_23_FULL_PHOTO_REGRESSION_RECOVERY.md`
+
 # 정참시 v2.2.20 · 회원 전체수정 + 정부 주요 인사 사진 + 순위 뉴스 한 줄
 
 v2.2.19까지의 기능을 유지하면서 다음 세 가지 운영 기능을 추가했습니다.
