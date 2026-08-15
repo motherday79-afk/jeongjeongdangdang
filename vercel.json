@@ -38,5 +38,11 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/finalize-visitors",
+      "schedule": "0 15 * * *"
+    }
   ]
 }

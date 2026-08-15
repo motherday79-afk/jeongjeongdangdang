@@ -26,6 +26,7 @@ const routes = {
   'site-settings': require('./site-settings'),
   'billing/checkout': require('./billing/checkout'),
   'stats/visit': require('./stats/visit'),
+  'cron/finalize-visitors': require('./cron/finalize-visitors'),
   'community': require('./community'),
   'news': require('./news'),
   'local-photo': require('./local-photo'),
