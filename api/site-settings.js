@@ -1,12 +1,12 @@
 const {authenticate,requireUser,rateLimit}=require('../lib/user_auth');
-const {getNowIssue,getSurvey,surveyStats,voteSurvey}=require('../lib/site_settings');
+const {getNowIssue,getRapidRise,getSurvey,surveyStats,voteSurvey}=require('../lib/site_settings');
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
   try{
     if(req.method==='GET'){
-      const [nowIssue,survey,me]=await Promise.all([getNowIssue(),getSurvey(),authenticate(req).catch(()=>null)]);
+      const [nowIssue,rapidRise,survey,me]=await Promise.all([getNowIssue(),getRapidRise(),getSurvey(),authenticate(req).catch(()=>null)]);
       const stats=await surveyStats(survey,me?.id||null);
-      return res.json({ok:true,nowIssue,survey:{...survey,stats},loggedIn:Boolean(me)});
+      return res.json({ok:true,nowIssue,rapidRise,survey:{...survey,stats},loggedIn:Boolean(me)});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     const b=req.body||{};if(String(b.action||'')!=='vote-survey')return res.status(400).json({ok:false,error:'지원하지 않는 작업입니다.'});
