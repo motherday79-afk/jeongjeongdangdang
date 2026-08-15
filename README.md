@@ -1,3 +1,7 @@
+# v2.2.9 · 관리자 시연회원 150명
+
+자세한 내용은 `README_V2_2_9_SYNTHETIC_MEMBERS.md`를 참고하세요.
+
 # 정참시 v2.2.8
 
 관리자 워크스페이스 메뉴화와 회원 아이디/비밀번호 복구 관리 기능을 추가했습니다. 자세한 내용은 `README_V2_2_8_ADMIN_WORKSPACE_USER_RECOVERY.md`를 참고하세요.
