@@ -11234,7 +11234,7 @@ function renderSurveySetting(survey,loggedIn){
   let html=`<div class="survey-subtitle">${siteEsc(survey.subtitle||'')}</div>`;
   if(voted){
     html+=opts.map((o,i)=>{const c=Number(counts[i]||0),pct=total?c/total*100:0;return `<div class="survey-result"><div class="survey-result-head"><span>${i===stats.userVote?'✓ ':''}${siteEsc(o)}</span><b>${pct.toFixed(1)}%</b></div><div class="survey-result-bar"><span style="width:${pct}%"></span></div></div>`;}).join('');
-    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료${stats.adminAdjusted?' · 관리자 보정 포함':''}</div>`;
+    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료</div>`;
   }else{
     html+=`<div class="survey-options">${opts.map((o,i)=>`<label class="survey-option"><input type="radio" name="jjddSurveyOption" value="${i}"><span>${siteEsc(o)}</span></label>`).join('')}</div><button class="survey-submit" id="surveySubmitBtn" type="button">설문 참여</button><div class="survey-status" id="surveyStatus">${loggedIn?'1계정당 1회 참여할 수 있습니다.':'로그인 후 설문에 참여할 수 있습니다.'}</div>`;
   }
