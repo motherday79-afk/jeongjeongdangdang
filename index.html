@@ -312,7 +312,7 @@ a{text-decoration:none;color:inherit}
 }
 .news-meta{margin-top:8px;font-size:12px;color:#94a3b8}
 .thumb{
-  width:112px;height:84px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-soft);border:1px solid #edf3f1;background:#d9eeea
+  width:112px;height:63px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-soft);border:1px solid #edf3f1;background:#d9eeea
 }
 .thumb svg{width:100%;height:100%;display:block}
 
@@ -356,6 +356,15 @@ a{text-decoration:none;color:inherit}
   margin-bottom:14px;height:44px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer;
   box-shadow:var(--shadow-soft);
 }
+.news-upload-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.news-hero .news-upload-image,.thumb .news-upload-image{width:100%;height:100%}
+.article-hero.has-upload{aspect-ratio:16/9}
+.news-section-title{align-items:flex-end}.news-pro-mark{padding:7px 10px;border-radius:999px;background:#111827;color:#fff;font-size:10px;font-weight:950;letter-spacing:.06em;white-space:nowrap}
+.news-writer-card{margin:0 0 18px;padding:20px;border:1px solid #dfe9e6;border-radius:22px;background:#fff;box-shadow:var(--shadow-soft)}
+.news-writer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.news-writer-head h2{margin:4px 0 5px;font-size:23px}.news-writer-head p{margin:0;color:#71807b;font-size:11px;line-height:1.55}.news-writer-toggle{border:1px solid #dfe8e5;background:#f7faf9;color:#53615d;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:900;cursor:pointer}
+.news-form-grid{display:grid;grid-template-columns:160px minmax(0,1fr);gap:10px;margin-top:16px}.news-form-grid label,.news-form-block{display:block}.news-form-grid span,.news-form-block>span{display:block;margin-bottom:5px;font-size:11px;font-weight:900;color:#53615d}.news-form-grid input,.news-form-grid select,.news-form-block textarea{width:100%;border:1px solid #dce6e3;border-radius:11px;padding:10px 11px;font:inherit;outline:none;background:#fff}.news-form-block{margin-top:10px}.news-form-block textarea{resize:vertical}.news-form-block #newsExcerpt{min-height:78px}.news-form-block #newsContent{min-height:220px;line-height:1.6}
+.news-image-row{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:14px;align-items:center}.news-image-upload b{font-size:12px}.news-image-upload p{margin:6px 0 10px;color:#71807b;font-size:11px;line-height:1.55}.news-image-actions{display:flex;gap:7px}.news-file-button,.news-image-clear{display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:900;cursor:pointer}.news-file-button{background:#111827;color:#fff}.news-image-clear{border:1px solid #dfe8e5;background:#fff;color:#64748b}.news-image-status{margin-top:7px;min-height:16px;font-size:10px;color:#71807b}.news-image-preview{aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#f2f6f5;border:1px dashed #cfdcd8;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:10px}.news-image-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.news-publish-row{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:14px}.news-write-status{font-size:11px;color:#64748b;min-height:16px}.news-publish-btn{border:0;border-radius:11px;background:#111827;color:#fff;padding:11px 16px;font-weight:950;cursor:pointer}.news-publish-btn:disabled{opacity:.55;cursor:wait}.news-load-status{padding:12px;text-align:center;color:#94a3b8;font-size:11px}
 
 .live-layout{
   display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;
@@ -825,7 +834,7 @@ a{text-decoration:none;color:inherit}
 
   #mobileNewsPortal .news-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,82vw);gap:10px;overflow-x:auto;padding:2px 1px 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   #mobileNewsPortal .news-row{display:flex;flex-direction:column-reverse;gap:10px;border:1px solid #e8efed!important;border-radius:16px;padding:10px;background:#fff;scroll-snap-align:start}
-  #mobileNewsPortal .news-row .thumb{width:100%;height:auto;aspect-ratio:16/8.5;border-radius:13px}
+  #mobileNewsPortal .news-row .thumb{width:100%;height:auto;aspect-ratio:16/9;border-radius:13px}
   #mobileNewsPortal .news-row h4{font-size:15px}
   #mobileNewsPortal .news-row p{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
@@ -971,7 +980,7 @@ a{text-decoration:none;color:inherit}
 .local-now-brand span{font-weight:800}
 @media(max-width:780px){.local-now-brand{margin-top:11px}.local-now-brand span{font-size:10px}}
 
-/* ===== v2.2.5 JEONGCHAMSI Brand Final ===== */
+/* ===== v2.2.6 JEONGCHAMSI Brand Final ===== */
 .visitor-strip{max-width:1180px;margin:10px auto 0;padding:0 18px;display:flex;justify-content:flex-end;align-items:center;gap:8px;color:#66736f}
 .visitor-stat{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid #e2ebe8;background:#fff;border-radius:999px;font-size:11px;box-shadow:0 3px 12px rgba(15,23,42,.035)}
 .visitor-stat b{font-size:12px;color:#13211e}.visitor-stat small{font-size:10px;font-weight:800}.visitor-dot{width:7px;height:7px;border-radius:50%;background:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.12)}
@@ -979,7 +988,9 @@ a{text-decoration:none;color:inherit}
 .community-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px}.community-main,.community-compose-card,.community-guide{background:#fff;border:1px solid #e2ebe8;border-radius:20px}.community-main{padding:18px}.community-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.community-cats{display:flex;gap:7px;flex-wrap:wrap}.community-cat,.community-reload{border:0;border-radius:999px;background:#eef5f3;color:#52625d;padding:8px 11px;font-size:11px;font-weight:900;cursor:pointer}.community-cat.active{background:#111827;color:#fff}.community-reload{border-radius:10px}.community-list{display:grid;gap:8px}.community-post{border:1px solid #e8efed;border-radius:14px;padding:14px 15px;cursor:pointer;background:#fff;transition:.15s}.community-post:hover{background:#f8fbfa;border-color:#cfe7e0}.community-post-top{display:flex;align-items:center;gap:8px;font-size:10px;color:#71807b}.community-badge{display:inline-flex;padding:4px 7px;border-radius:999px;background:#eef8f5;color:#087b67;font-weight:900}.community-post h3{margin:8px 0 5px;font-size:16px}.community-post p{margin:0;color:#64748b;font-size:12px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.community-post-meta{margin-top:9px;font-size:10px;color:#8b9894}.community-empty{padding:48px 15px;text-align:center;color:#87948f}.community-side{display:grid;gap:12px;align-content:start}.community-compose-card{padding:18px;position:sticky;top:82px}.community-compose-card h2{margin:4px 0 12px}.community-compose-card label{display:block;font-size:11px;font-weight:900;color:#53615d;margin:11px 0 5px}.community-compose-card input,.community-compose-card select,.community-compose-card textarea,.community-comment-compose textarea{width:100%;border:1px solid #dce6e3;border-radius:11px;padding:10px 11px;font:inherit;outline:none}.community-compose-card textarea{min-height:150px;resize:vertical}.community-write-btn,.community-comment-compose button{width:100%;border:0;border-radius:11px;background:#111827;color:#fff;padding:11px 12px;font-weight:900;cursor:pointer;margin-top:10px}.community-login-note,.community-status{font-size:11px;line-height:1.55;color:#71807b;min-height:17px}.community-guide{padding:15px 16px;font-size:11px;line-height:1.65;color:#64748b}.community-guide b{color:#24332f}.community-guide p{margin:6px 0 0}.community-detail{border:1px solid #e2ebe8;border-radius:18px;padding:20px;background:#fff}.community-detail h2{font-size:25px;margin:10px 0}.community-detail-body{white-space:pre-wrap;line-height:1.75;font-size:14px;color:#334155;margin-top:18px}.community-comments{margin-top:14px;border:1px solid #e2ebe8;border-radius:18px;padding:18px}.community-comments h3{margin:0 0 12px}.community-comment-list{display:grid;gap:8px}.community-comment{padding:11px 12px;background:#f8fbfa;border-radius:12px}.community-comment b{font-size:11px}.community-comment span{display:block;margin-top:3px;font-size:10px;color:#94a3b8}.community-comment p{margin:7px 0 0;white-space:pre-wrap;font-size:12px;line-height:1.6}.community-comment-compose{margin-top:12px}.community-comment-compose textarea{min-height:82px;resize:vertical}.community-comment-compose button{width:auto;padding:9px 13px}.community-comment-empty{padding:18px;text-align:center;color:#94a3b8;font-size:11px}
 @media(max-width:900px){.visitor-strip{justify-content:center;padding:0 10px;gap:5px;flex-wrap:wrap}.visitor-stat-note{display:none}.community-shell{grid-template-columns:1fr}.community-side{order:-1}.community-compose-card{position:static}.community-toolbar{align-items:flex-start;flex-direction:column}.community-reload{align-self:flex-end}.community-compose-card textarea{min-height:110px}}
 @media(max-width:520px){.visitor-strip{margin-top:6px}.visitor-stat{padding:5px 7px}.visitor-stat small{font-size:9px}.community-main{padding:11px;border-radius:16px}.community-compose-card{padding:14px;border-radius:16px}.community-post{padding:12px}.community-detail{padding:15px}.community-cats{gap:5px}.community-cat{padding:7px 9px}}
-/* ===== /v2.2.5 ===== */
+@media(max-width:900px){.news-form-grid{grid-template-columns:1fr}.news-image-row{grid-template-columns:1fr}.news-image-preview{max-width:560px;width:100%}.news-writer-head{flex-direction:column}.news-writer-toggle{align-self:flex-end}.news-section-title{align-items:flex-start}}
+@media(max-width:520px){.news-writer-card{padding:14px;border-radius:16px}.news-form-block #newsContent{min-height:180px}.news-publish-row{align-items:stretch;flex-direction:column}.news-publish-btn{width:100%}}
+/* ===== /v2.2.6 ===== */
 </style>
 </head>
 <body>
@@ -1107,11 +1118,11 @@ a{text-decoration:none;color:inherit}
         <section class="card cardpad" id="nowIssueCard">
           <div class="side-title">
             <h3>NOW ISSUE</h3>
-            <div class="more" style="cursor:default">REAL DATA</div>
+            <div class="more" style="cursor:default">NOW</div>
           </div>
           <div class="issue-box">
             <div class="issue-labels">
-              <span class="tinylabel">실데이터</span>
+              
               <span class="tinylabel" style="background:#fff5e9;color:#b45309">민주당 8·17 전당대회</span>
             </div>
             <div class="issue-question">당대표 본선 3파전 · 8월 17일 대전</div>
@@ -1172,14 +1183,42 @@ a{text-decoration:none;color:inherit}
   <!-- News -->
   <section class="page" id="page-news">
     <div id="newsListView">
-      <div class="section-title">
+      <div class="section-title news-section-title">
         <div>
-          <div class="kicker">Jeongjeong News</div>
+          <div class="kicker">Jeongchamsi News</div>
           <h1 class="h1">정정뉴스</h1>
-          <div class="sub">뉴스 페이지도 실제 서비스처럼 보이도록 정치·국회 느낌의 시각 요소와 기사형 문구를 함께 반영했습니다.</div>
+          <div class="sub">정치·정책·지역 현안을 정참시의 시선으로 정리하는 뉴스 공간입니다.</div>
         </div>
+        <div class="news-pro-mark" id="newsProMark" style="display:none">PRO PUBLISHING</div>
       </div>
+
+      <section class="news-writer-card" id="newsWriterCard" style="display:none">
+        <div class="news-writer-head">
+          <div><div class="kicker">PRO PUBLISHING</div><h2>정정뉴스 작성</h2><p>정정뉴스 발행 권한은 PRO 이상 회원과 관리자에게 제공됩니다.</p></div>
+          <button type="button" class="news-writer-toggle" id="newsWriterToggle">작성창 닫기</button>
+        </div>
+        <div id="newsWriterForm">
+          <div class="news-form-grid">
+            <label><span>분류</span><select id="newsCategory"><option>정치</option><option>국회</option><option>정책</option><option>지역</option><option>데이터</option><option>현장</option></select></label>
+            <label><span>제목</span><input id="newsTitle" maxlength="100" placeholder="기사 제목을 입력하세요"></label>
+          </div>
+          <label class="news-form-block"><span>요약</span><textarea id="newsExcerpt" maxlength="260" placeholder="목록에 표시할 짧은 요약입니다. 비워두면 본문 앞부분으로 자동 생성됩니다."></textarea></label>
+          <label class="news-form-block"><span>본문</span><textarea id="newsContent" maxlength="12000" placeholder="기사 본문을 입력하세요. 문단 사이를 한 줄 비우면 기사 화면에서도 문단으로 구분됩니다."></textarea></label>
+          <div class="news-image-row">
+            <div class="news-image-upload">
+              <b>대표 사진</b>
+              <p>업로드하면 1200×675(16:9)로 중앙 크롭·최적화합니다. 목록과 기사에서 이 영역 밖으로 사진이 노출되지 않습니다.</p>
+              <div class="news-image-actions"><label class="news-file-button">사진 선택<input id="newsImageInput" type="file" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" id="newsImageClear" class="news-image-clear">사진 제거</button></div>
+              <div class="news-image-status" id="newsImageStatus"></div>
+            </div>
+            <div class="news-image-preview" id="newsImagePreview"><span>16:9 대표 이미지 미리보기</span></div>
+          </div>
+          <div class="news-publish-row"><div class="news-write-status" id="newsWriteStatus"></div><button type="button" id="newsPublishBtn" class="news-publish-btn">정정뉴스 발행</button></div>
+        </div>
+      </section>
+
       <div class="grid-news" id="newsGrid"></div>
+      <div class="news-load-status" id="newsLoadStatus"></div>
     </div>
 
     <div id="articleView" style="display:none">
@@ -1259,7 +1298,7 @@ a{text-decoration:none;color:inherit}
       <div>
         <div class="kicker">Politician Compare</div>
         <h1 class="h1">비교분석</h1>
-        <div class="sub">두 정치인을 직접 검색해 NOW Rank와 5개 NOW 지표를 한 화면에서 비교합니다. 실존 정치인의 기본 프로필은 REAL DATA이며, Rank와 그래프는 공개된 실제 데이터를 정참시 방식으로 재구성한 분석 표현입니다.</div>
+        <div class="sub">두 정치인을 직접 검색해 NOW Rank와 5개 NOW 지표를 한 화면에서 비교합니다. 기본 프로필과 공개 데이터를 정참시 방식으로 재구성한 분석 화면입니다.</div>
       </div>
     </div>
 
@@ -1370,7 +1409,7 @@ a{text-decoration:none;color:inherit}
           <div class="membership-grid" id="membershipGrid">
             <div class="membership-card" data-role-card="FREE"><span class="membership-state">기본</span><h3>FREE</h3><div class="price">무료</div><ul><li>NOW Rank 공개정보</li><li>정정뉴스·커뮤니티</li><li>7일 이내 순위 변화</li></ul></div>
             <div class="membership-card plus-feature" data-role-card="PLUS"><span class="membership-state">이용 가능</span><h3>정참시 PLUS</h3><div class="price">월 5,000원</div><ul><li>관심 정치인·이슈 저장</li><li>30일·1년 히스토리</li><li>정치인 비교</li><li>개인 관심 대시보드</li></ul><button class="plus-pay-btn" id="plusSubscribeBtn" onclick="openPlusUpgrade('멤버십')">정참시 PLUS 구독하기</button></div>
-            <div class="membership-card" data-role-card="PRO"><span class="membership-state">준비중</span><h3>PRO</h3><div class="price">별도 문의</div><ul><li>정치·정책 인텔리전스</li><li>맞춤 모니터링</li><li>AI 리서치</li><li>의원실·조직 업무용</li></ul></div>
+            <div class="membership-card" data-role-card="PRO"><span class="membership-state">준비중</span><h3>PRO</h3><div class="price">별도 문의</div><ul><li>정정뉴스 작성·발행</li><li>정치·정책 인텔리전스</li><li>맞춤 모니터링</li><li>AI 리서치</li><li>의원실·조직 업무용</li></ul></div>
           </div>
           <div class="account-note" style="margin-top:14px">CMS 결제는 아직 연결하지 않았으므로 실제 금액이 청구되지 않습니다. 현재 테스트는 관리자 콘솔에서 회원 등급을 PLUS로 변경해 진행할 수 있습니다.</div>
         </div>
@@ -1511,7 +1550,7 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   if((type==='metro'||type==='local')){
     const src=(member?.photoVerified===true && member?.officialPhoto)?member.officialPhoto:`/api/local-photo?id=${encodeURIComponent(memberId)}`;
     const source=(member?.photoVerified===true && member?.officialPhoto)?'local-government-official':'local-association-official';
-    const title=(member?.photoVerified===true && member?.officialPhoto)?'사진 출처: 지방정부 공식 프로필 · 신원 검증 완료':'사진 출처: 지방자치단체장 공식 협의회 회원 프로필 · 이름/직위 검증';
+    const title=(member?.photoVerified===true && member?.officialPhoto)?'사진 출처: 지방정부 · 신원 검증 완료':'사진 출처: 지방자치단체장 공식 협의회 회원 프로필 · 이름/직위 검증';
     return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="${source}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
@@ -8960,7 +8999,7 @@ const president = {
   ]
 };
 
-const newsArticles = [
+const demoNewsArticles = [
   {
     title:"국회, 민생경제 회복을 위한 추경안 처리",
     cat:"정책",
@@ -9032,6 +9071,12 @@ const newsArticles = [
     type:"housing"
   }
 ];
+
+let newsArticles=[...demoNewsArticles];
+let publishedNewsPosts=[];
+let newsCanWrite=false;
+let newsPreparedImageData='';
+let newsWriterCollapsed=false;
 
 function newsArt(type){
   if(type==="assembly") return `
@@ -9741,7 +9786,6 @@ function renderRank(){
     const refresh=refreshChangeText(x,mode);
     const firstCell=(Number(x.id)===300||x.party==='공석')?'―':viewRank(x,mode);
     const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x);
-    const sourceMeta=entityTypeOf(x)==='assembly'?'국회 공식 프로필':(x.photoVerified?'지방정부 공식 프로필 · 사진 검증':'공식 단체장 명부 · 협의회 사진 자동확인');
     const fifth=`<div class="change ${refresh.cls}">${refresh.text}<span class="refresh-route">${refresh.route}</span></div>`;
     const sixth=`<div><span class="rankpill rank-${x.grade}">${x.grade}</span>${Number.isFinite(x.rank2Score)?`<span style="display:block;margin-top:3px;font-size:11px;color:#64748b;font-weight:800">${x.rank2Score.toFixed(1)}</span>`:""}</div>`;
     html += `<div class="row" onclick="openDetail(${x.id})">
@@ -9751,7 +9795,6 @@ function renderRank(){
         <div class="person-copy">
           <div class="pname">${x.name}<span class="entity-chip">${entityLabel(x)}</span></div>
           <div class="mobile-party-line ${partyClass[x.party]||"party-gray"}">${x.party}</div>
-          <div class="pmeta">${sourceMeta}<span class="real-chip">REAL</span></div>
           ${(Number(x.id)!==300&&viewRank(x,mode)<=30)?`<div class="person-keywords">${whyNowKeywords(x).map(k=>`<button class="person-keyword" title="왜 지금?" onclick="event.stopPropagation();openWhyNow(${x.id},'${String(k).replace(/'/g,"\\'")}')">${k}</button>`).join('')}</div>`:''}
         </div>
       </div>
@@ -9808,51 +9851,107 @@ if(logoHome){
   });
 }
 
+function newsEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function newsDate(v){
+  if(!v)return '';try{return new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(_){return String(v||'');}
+}
+function newsVisual(a){
+  if(a?.imageUrl)return `<img class="news-upload-image" src="${newsEsc(a.imageUrl)}" alt="${newsEsc(a.title||'정정뉴스 대표 이미지')}" loading="lazy" decoding="async">`;
+  return newsArt(a?.type||'assembly');
+}
+function normalizePublishedNews(p){
+  const content=String(p?.content||'').trim();
+  return {
+    id:p?.id||null,title:String(p?.title||''),cat:String(p?.category||'정치'),author:String(p?.author||'정참시'),role:String(p?.role||'PRO'),
+    createdAt:p?.createdAt||null,date:newsDate(p?.createdAt),excerpt:String(p?.excerpt||content.slice(0,150)),body:content?content.split(/\n\s*\n/).map(v=>v.trim()).filter(Boolean):[],
+    type:'published',imageUrl:p?.imageUrl||null,published:true
+  };
+}
 function renderSideNews(){
-  document.getElementById("sideNews").innerHTML = newsArticles.slice(0,3).map((a,i)=>`
+  const el=document.getElementById('sideNews');if(!el)return;
+  el.innerHTML = newsArticles.slice(0,3).map((a,i)=>`
     <div class="news-row" onclick="openArticle(${i})">
       <div>
-        <h4>${a.title}</h4>
-        <p>${a.excerpt}</p>
-        <div class="news-meta">${a.author} · ${a.date}</div>
+        <h4>${newsEsc(a.title)}</h4>
+        <p>${newsEsc(a.excerpt)}</p>
+        <div class="news-meta">${newsEsc(a.author)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
       </div>
-      <div class="thumb">${newsArt(a.type)}</div>
+      <div class="thumb">${newsVisual(a)}</div>
     </div>
-  `).join("");
+  `).join('');
 }
-
 function renderNewsGrid(){
-  document.getElementById("newsGrid").innerHTML = newsArticles.map((a,i)=>`
+  const el=document.getElementById('newsGrid');if(!el)return;
+  el.innerHTML = newsArticles.map((a,i)=>`
     <article class="news-card" onclick="openArticle(${i})">
-      <div class="news-hero">${newsArt(a.type)}</div>
+      <div class="news-hero">${newsVisual(a)}</div>
       <div class="news-body">
-        <div class="news-cat">${a.cat}</div>
-        <div class="news-title">${a.title}</div>
-        <div class="news-excerpt">${a.excerpt}</div>
-        <div class="news-meta">${a.author} · ${a.date}</div>
+        <div class="news-cat">${newsEsc(a.cat)}</div>
+        <div class="news-title">${newsEsc(a.title)}</div>
+        <div class="news-excerpt">${newsEsc(a.excerpt)}</div>
+        <div class="news-meta">${newsEsc(a.author)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
       </div>
     </article>
-  `).join("");
+  `).join('');
 }
 function openArticle(idx){
-  const a=newsArticles[idx];
-  document.getElementById("newsListView").style.display="none";
-  document.getElementById("articleView").style.display="block";
-  document.getElementById("articleHero").innerHTML = newsArt(a.type);
-  document.getElementById("articleContent").innerHTML = `
-    <div class="kicker">${a.cat}</div>
-    <h1>${a.title}</h1>
-    <div class="article-meta">${a.author} · ${a.date}</div>
-    ${a.body.map(p=>`<p>${p}</p>`).join("")}
+  const a=newsArticles[idx];if(!a)return;
+  document.getElementById('newsListView').style.display='none';
+  document.getElementById('articleView').style.display='block';
+  const hero=document.getElementById('articleHero');hero.classList.toggle('has-upload',Boolean(a.imageUrl));hero.innerHTML=newsVisual(a);
+  const paras=(Array.isArray(a.body)?a.body:[String(a.content||'')]).filter(Boolean);
+  document.getElementById('articleContent').innerHTML = `
+    <div class="kicker">${newsEsc(a.cat)}</div>
+    <h1>${newsEsc(a.title)}</h1>
+    <div class="article-meta">${newsEsc(a.author)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
+    ${paras.map(p=>`<p>${newsEsc(p)}</p>`).join('')}
   `;
-  showPage("news");
+  showPage('news');
 }
 window.openArticle = openArticle;
 function backToNews(){
-  document.getElementById("newsListView").style.display="block";
-  document.getElementById("articleView").style.display="none";
+  document.getElementById('newsListView').style.display='block';
+  document.getElementById('articleView').style.display='none';
+  const hero=document.getElementById('articleHero');if(hero)hero.classList.remove('has-upload');
 }
 window.backToNews = backToNews;
+async function newsApi(url='/api/news',init){
+  const r=await fetch(url,{credentials:'same-origin',...(init||{})});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||`HTTP ${r.status}`);return j;
+}
+function setNewsWriterAccess(canWrite,me){
+  newsCanWrite=Boolean(canWrite);const card=document.getElementById('newsWriterCard'),mark=document.getElementById('newsProMark');
+  if(card)card.style.display=newsCanWrite?'block':'none';if(mark)mark.style.display=newsCanWrite?'inline-flex':'none';
+  const status=document.getElementById('newsWriteStatus');if(status&&newsCanWrite&&me?.role)status.textContent=`${me.nickname||'작성자'} · ${me.role} 권한`;
+}
+async function loadPublishedNews(force=false){
+  const st=document.getElementById('newsLoadStatus');if(st&&force)st.textContent='정정뉴스를 불러오는 중입니다…';
+  try{
+    const j=await newsApi('/api/news?limit=60');publishedNewsPosts=Array.isArray(j.posts)?j.posts:[];setNewsWriterAccess(j.canWrite,j.me);
+    newsArticles=publishedNewsPosts.length?publishedNewsPosts.map(normalizePublishedNews):[...demoNewsArticles];renderSideNews();renderNewsGrid();if(st)st.textContent=publishedNewsPosts.length?'':'아직 발행된 정정뉴스가 없어 샘플 화면을 표시하고 있습니다.';
+  }catch(e){newsArticles=[...demoNewsArticles];renderSideNews();renderNewsGrid();if(st)st.textContent='정정뉴스 저장소 연결을 확인해주세요.';}
+}
+function blobToDataURL(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('이미지를 읽지 못했습니다.'));r.readAsDataURL(blob);});}
+function loadLocalImage(file){return new Promise((resolve,reject)=>{const u=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(u);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(u);reject(new Error('지원되는 이미지 파일인지 확인해주세요.'))};img.src=u;});}
+async function prepareNewsImage(file){
+  if(!file)return '';if(!/^image\/(jpeg|png|webp)$/i.test(file.type||''))throw new Error('JPG, PNG, WEBP 이미지만 첨부할 수 있습니다.');if(file.size>15*1024*1024)throw new Error('원본 이미지는 15MB 이하만 업로드할 수 있습니다.');
+  const img=await loadLocalImage(file),W=1200,H=675,target=W/H,src=img.naturalWidth/img.naturalHeight;let sx=0,sy=0,sw=img.naturalWidth,sh=img.naturalHeight;
+  if(src>target){sw=sh*target;sx=(img.naturalWidth-sw)/2}else if(src<target){sh=sw/target;sy=(img.naturalHeight-sh)/2}
+  const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);ctx.drawImage(img,sx,sy,sw,sh,0,0,W,H);
+  let blob=null;for(const q of [.84,.76,.68,.60,.52]){blob=await new Promise(r=>canvas.toBlob(r,'image/webp',q));if(blob&&blob.size<=900*1024)break;}
+  if(!blob){blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.76));}if(!blob||blob.size>1200*1024)throw new Error('이미지 최적화에 실패했습니다. 다른 사진을 선택해주세요.');
+  return {data:await blobToDataURL(blob),bytes:blob.size,width:W,height:H};
+}
+function clearNewsImage(){newsPreparedImageData='';const input=document.getElementById('newsImageInput');if(input)input.value='';const preview=document.getElementById('newsImagePreview');if(preview)preview.innerHTML='<span>16:9 대표 이미지 미리보기</span>';const st=document.getElementById('newsImageStatus');if(st)st.textContent='';}
+document.getElementById('newsImageInput')?.addEventListener('change',async e=>{const f=e.target.files?.[0],st=document.getElementById('newsImageStatus'),preview=document.getElementById('newsImagePreview');if(!f)return;try{if(st)st.textContent='1200×675로 사진을 최적화하는 중…';const out=await prepareNewsImage(f);newsPreparedImageData=out.data;if(preview)preview.innerHTML=`<img src="${out.data}" alt="대표 이미지 미리보기">`;if(st)st.textContent=`1200×675 · ${(out.bytes/1024).toFixed(0)}KB로 준비되었습니다.`;}catch(err){clearNewsImage();if(st)st.textContent=err.message;}});
+document.getElementById('newsImageClear')?.addEventListener('click',clearNewsImage);
+document.getElementById('newsWriterToggle')?.addEventListener('click',()=>{newsWriterCollapsed=!newsWriterCollapsed;const form=document.getElementById('newsWriterForm'),btn=document.getElementById('newsWriterToggle');if(form)form.style.display=newsWriterCollapsed?'none':'block';if(btn)btn.textContent=newsWriterCollapsed?'작성창 열기':'작성창 닫기';});
+document.getElementById('newsPublishBtn')?.addEventListener('click',async()=>{
+  if(!newsCanWrite)return;const title=document.getElementById('newsTitle').value.trim(),excerpt=document.getElementById('newsExcerpt').value.trim(),content=document.getElementById('newsContent').value.trim(),category=document.getElementById('newsCategory').value,st=document.getElementById('newsWriteStatus'),btn=document.getElementById('newsPublishBtn');
+  if(title.length<2||content.length<2){if(st)st.textContent='제목과 본문을 2자 이상 입력해주세요.';return;}btn.disabled=true;if(st)st.textContent='기사 발행 중…';
+  try{await newsApi('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',title,excerpt,content,category,imageData:newsPreparedImageData||null})});document.getElementById('newsTitle').value='';document.getElementById('newsExcerpt').value='';document.getElementById('newsContent').value='';clearNewsImage();if(st)st.textContent='정정뉴스가 발행되었습니다.';await loadPublishedNews(true);}
+  catch(e){if(st)st.textContent=e.message;}finally{btn.disabled=false;}
+});
 
 function pointsFor(metrics){
   const cx=170, cy=170, maxR=116, n=metrics.length;
@@ -10213,7 +10312,7 @@ function entityRecordCardsHTML(x){
   if(type==='assembly'){
     return `
       <div class="record-card">
-        <h4>국회 공식 프로필 <span class="real-chip">REAL</span></h4>
+        <h4>기본정보</h4>
         <div class="record-list">
           <div class="record-item"><span>소속 정당</span><b>${x.party}</b></div>
           <div class="record-item"><span>선거구</span><b>${x.constituency||x.region}</b></div>
@@ -10221,21 +10320,17 @@ function entityRecordCardsHTML(x){
           <div class="record-item"><span>22대 의원 임기 시작</span><b>${x.termStart||'공식자료 연동'}</b></div>
           <div class="record-item"><span>현재 확인 상임위</span><b>${x.committee||'국회 공식자료 연동'}</b></div>
         </div>
-        <div class="source-note">국회의원 기본정보와 당선 횟수는 대한민국 국회 공개 프로필을 우선 기준으로 사용합니다. 사진도 국회 공식 신원 확인 경로만 허용합니다.</div>
       </div>`;
   }
-  const photoState=x.photoVerified===true&&x.officialPhoto?'지방정부 공식사진 직접 검증':'공식 협의회 회원사진 자동 확인 · 실패 시 안전 기본이미지';
   return `
     <div class="record-card">
-      <h4>${entityLabel(x)} 공식 기본정보 <span class="real-chip">REAL</span></h4>
+      <h4>기본정보</h4>
       <div class="record-list">
         <div class="record-item"><span>소속 정당</span><b>${x.party}</b></div>
         <div class="record-item"><span>직위</span><b>${entityOffice(x)}</b></div>
         <div class="record-item"><span>관할 지역</span><b>${x.jurisdiction||x.region}</b></div>
         <div class="record-item"><span>민선9기 임기 시작</span><b>${x.termStart||'2026.07.01'}</b></div>
-        <div class="record-item"><span>프로필 사진</span><b>${photoState}</b></div>
       </div>
-      <div class="source-note">제9회 전국동시지방선거 당선인과 현직 지방정부 정보를 기준으로 구성합니다. 단체장 사진은 지방정부 공식 프로필 또는 대한민국시도지사협의회·대한민국시장군수구청장협의회 공식 회원 페이지에서 인물·직위·지역이 함께 확인된 경우만 사용하며, 확인에 실패하면 다른 웹 인물 사진을 추정하지 않습니다.</div>
     </div>`;
 }
 function openDetail(id,opts={}){
@@ -10256,7 +10351,7 @@ function openDetail(id,opts={}){
       <div class="detail-identity">
         <div class="bigavatar">${politicianPhotoHTML(x.name,x.id,"high")}</div>
         <div class="detail-identity-info">
-          <h2 class="h2" style="font-size:32px">${x.name}${suffix} <span class="real-chip">REAL DATA</span></h2>
+          <h2 class="h2" style="font-size:32px">${x.name}${suffix}</h2>
           <div class="sub" style="margin-top:6px">${x.party} · ${place}</div>
           ${type!=='assembly'&&!(x.photoVerified&&x.officialPhoto)?'<div class="photo-safe-note">● 지방자치단체장 공식 협의회 사진 자동 확인 · 미확인 시 안전 기본이미지</div>':''}
           <div class="detail-member-actions">${plusWatchButtonHTML(x)}</div>
@@ -10278,7 +10373,7 @@ function openDetail(id,opts={}){
 
     <div class="detail-flow">
       <section class="detail-section" id="detail-now">
-        <div class="detail-section-head"><span class="detail-section-index">NOW</span><h3>지금 이 인물은 <span class="real-chip">REAL DATA 기반 분석</span></h3></div>
+        <div class="detail-section-head"><span class="detail-section-index">NOW</span><h3>지금 이 인물은</h3></div>
         <div class="profile" style="margin-top:0">
           <div>
             <div class="ranks">${(x.metrics||[]).map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]==="NA"?"N/A":m[1]}${Number.isFinite(m[2])?` · ${m[2].toFixed(1)}`:""}</b></div>`).join("")}</div>
@@ -10286,7 +10381,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.5 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.6 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -10495,7 +10590,7 @@ function politicianMatches(query, excludeId=null, limit=8){
 function suggestionHTML(p){
   return `<div class="suggestion" data-id="${p.id}">
     <div class="suggestion-avatar">${politicianPhotoHTML(p.name,p.id)}</div>
-    <div><div class="suggestion-name">${p.name} · ${entityLabel(p)} ${p.isReal?'<span class="real-chip">REAL</span>':''}</div><div class="suggestion-meta">${p.party} · ${p.jurisdiction||p.constituency||p.region} · ${entityLabel(p)} ${p.rank}위</div></div>
+    <div><div class="suggestion-name">${p.name} · ${entityLabel(p)}</div><div class="suggestion-meta">${p.party} · ${p.jurisdiction||p.constituency||p.region} · ${entityLabel(p)} ${p.rank}위</div></div>
   </div>`;
 }
 
@@ -10752,6 +10847,7 @@ renderGovernment();
 if(!readNowPublicCache())renderNowRankLoadingState();
 renderSideNews();
 renderNewsGrid();
+loadPublishedNews(true);
 drawVotes();
 syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
@@ -10924,6 +11020,7 @@ function setAccountUI(user){
   document.querySelectorAll('[data-role-card]').forEach(card=>card.classList.toggle('current',card.dataset.roleCard===role || (role==='ADMIN'&&card.dataset.roleCard==='PRO')));
   updatePlusAccessUI();
   refreshPlusState();
+  if(typeof loadPublishedNews==='function')loadPublishedNews(false);
 }
 async function refreshAccountSession(){
   try{const j=await accountApi('/api/account/me');setAccountUI(j.user);}
@@ -10954,7 +11051,7 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
-// ===== v2.2.5 Visitor statistics + Community + JEONGCHAMSI branding =====
+// ===== v2.2.6 Visitor statistics + Community + JEONGCHAMSI branding =====
 const JJDD_VISITOR_KEY='jjdd_visitor_session_v1';
 function jjddVisitorSession(){
   let v='';try{v=localStorage.getItem(JJDD_VISITOR_KEY)||'';}catch(_){}
@@ -11023,7 +11120,7 @@ document.getElementById('communityCommentBtn')?.addEventListener('click',async()
   try{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'comments',postId:communitySelectedPost.id,content})}});input.value='';st.textContent='';await loadCommunityComments(communitySelectedPost.id);await loadCommunity(true);}
   catch(e){st.textContent=e.message;}
 });
-// ===== /v2.2.5 =====
+// ===== /v2.2.6 =====
 const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
 refreshAccountSession();
 // ===== /v2.0.1 Simple ID Login & 8-char Password =====

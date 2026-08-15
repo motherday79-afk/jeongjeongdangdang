@@ -1,3 +1,7 @@
+# 정참시 v2.2.6 · Clean Profile + PRO News Publisher
+
+최신 변경사항은 `README_V2_2_6_CLEAN_PROFILE_PRO_NEWS.md`를 확인하세요.
+
 # 정참시 v2.2.5 · BRAND FINAL
 
 서비스 브랜드를 **정참시(정치에 참여할 시간)**로 전환했습니다. 메인 좌측 상단은 `정참시 / 정치에 참여할 시간` 2단 로고로 표시하며, `정참시 NOW Rank`, `WHY NOW`, `LOCAL NOW`, `정참시 커뮤니티`, `정참시 PLUS`를 현재 브랜드 모듈명으로 사용합니다. 자세한 내용은 `README_V2_2_5_JEONGCHAMSI_REBRAND.md`를 확인하세요.

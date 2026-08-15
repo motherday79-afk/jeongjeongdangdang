@@ -22,6 +22,7 @@ const routes = {
   'billing/checkout': require('./billing/checkout'),
   'stats/visit': require('./stats/visit'),
   'community': require('./community'),
+  'news': require('./news'),
   'local-photo': require('./local-photo'),
   'rank/current': require('./rank/current'),
   'rank/history': require('./rank/history'),
