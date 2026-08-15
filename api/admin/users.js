@@ -8,22 +8,53 @@ const {
 async function getUser(id){ return id ? getJSON(userKey(id)) : null; }
 
 const DEMO_MEMBER_COUNT=150;
-const DEMO_NICK_A=['차분한','오늘의','동네','정책','새벽','한걸음','소소한','든든한','맑은','푸른','따뜻한','느긋한','반듯한','활기찬','생각하는'];
-const DEMO_NICK_B=['산책러','기록자','한표','독자','이웃','관찰자','토론러','시민','메모장','나침반'];
-const DEMO_USER_ROOTS=['seoulwalk','dailyview','policylog','townnote','greenroad','morningread','civicday','localtalk','slowstep','clearview','happynote','mapreader','citywalk','todaypick','openmind','goodneighbor','smalltalk','dayrecord','newroute','townwalk','freshnote','dailylog','wiseview','lightstep','nearbytalk','readtoday','citynote','simpleview','goodday','localview'];
+const DEMO_NICKS=[
+  '오늘도맑음','소소한일상','한강산책','책읽는곰','동네한바퀴','커피한잔','아침산책','파란하늘','초록나무','마음산책',
+  '퇴근길','주말등산','동네소식','한표의무게','보통시민','집앞카페','느린기록','생각노트','서쪽하늘','봄날',
+  '가을바람','여름밤','노을','라온','하루','모모','윤슬','해솔','다온','마루','호두','단비','두부','몽실','낮달',
+  '새벽공기','오후네시','작은숲','바람결','온기','산책중','뉴스읽기','정책메모','우리동네','도시산책','주말기록',
+  '고양이집사','강아지산책','커피좋아','책한권','오늘의기록','느린오후','서울살이','경기남부','인천바람','부산갈매기',
+  '대전사람','광주일상','제주바람','수원시민','용인사는사람','고양일상','성남산책','화성살이','안양사람','김포라이프',
+  '준호아빠','서연맘','민준파파','지우네','수진씨','현우네','재민아빠','도윤맘','하린이네','상민형','은채맘','승우아빠','예진네',
+  'bluebird','sunnyday','coffee77','mango','olive','maple','riverwalk','dailynote','citywalker','slowday','morninglog','skyblue','greenmile','weekend'
+];
+const ID_ROOTS=['hanriver','marunote','greenstep','westsky','afternoon','townwalk','bluehour','moonlight','summerrain','coffeeone','morningray','sunsetnote','smallforest','springday','windline','sodam','yoonseul','raonday','haesol','daonlog','lurinote','river','mango','bluejay','urbanread','oliveview','maplelog','jpark','hkim','mlee','schoi','minpark','dailywalk','citynote','goodday','nearby','slowstep','sunnylog','openmind','weekend'];
+function seeded(n){let x=(n+1)*2654435761>>>0;return()=>{x=(x*1664525+1013904223)>>>0;return x/4294967296;};}
+function pick(a,r){return a[Math.floor(r()*a.length)%a.length];}
+function digits(r,min=10,max=99){return Math.floor(min+r()*(max-min+1));}
+function maskLocal(local){const s=String(local||'user').replace(/[^a-z0-9._-]/gi,'').toLowerCase()||'user';if(s.length<=3)return `${s[0]||'u'}***`;return `${s.slice(0,Math.min(3,s.length-1))}${'*'.repeat(Math.min(4,Math.max(2,s.length-3)))}`;}
 function demoMember(i){
-  const n=Number(i)||0;
-  const serial=String(n+1).padStart(3,'0');
-  const nick=`${DEMO_NICK_A[Math.floor(n/DEMO_NICK_B.length)%DEMO_NICK_A.length]}${DEMO_NICK_B[n%DEMO_NICK_B.length]}`;
-  const username=`${DEMO_USER_ROOTS[n%DEMO_USER_ROOTS.length]}${String(17+n*7).padStart(3,'0')}`.slice(0,20);
-  const provider=(n%5===0||n%5===3)?'gmail.com':'naver.com';
-  const createdBase=Date.UTC(2026,3,12,1,0,0);
-  const createdAt=new Date(createdBase+n*19*60*60*1000).toISOString();
-  const lastLoginAt=new Date(Date.UTC(2026,7,14,23,20,0)-((n*53)%4320)*60*1000).toISOString();
-  const role=n%31===0?'PRO':(n%6===0?'PLUS':'FREE');
+  const n=Number(i)||0,r=seeded(n+2718);
+  let nickname=DEMO_NICKS[n%DEMO_NICKS.length];
+  if(n>=DEMO_NICKS.length){
+    const style=n%3;
+    nickname=style===0?`${nickname}${digits(r,2,88)}`:style===1?`${pick(['오늘','동네','우리','작은','푸른','느린'],r)}${nickname}`:`${nickname}_${digits(r,2,77)}`;
+  }
+  const root=ID_ROOTS[n%ID_ROOTS.length];
+  const cycle=Math.floor(n/ID_ROOTS.length);
+  let username=root;
+  if(cycle===1)username=`${root}${digits(r,11,98)}`;
+  else if(cycle===2)username=`${root}_${digits(r,2,88)}`;
+  else if(cycle>=3)username=`${root}${digits(r,100,999)}`;
+  username=username.slice(0,20);
+
+  const provider=r()<0.56?'naver.com':'gmail.com';
+  const mailRoots=['min','jisu','jh','yuna','seojun','haneul','mira','doyun','eunji','hyun','sora','jin','sun','young','park','kim','lee','choi','han','seo'];
+  const mailLocal=`${pick(mailRoots,r)}${r()<0.55?digits(r,2,99):''}`;
+  const emailDisplay=`${maskLocal(mailLocal)}@${provider}`;
+  const email=`demo-member-${(n*53+107).toString(36)}@example.com`;
+
+  const now=Date.UTC(2026,7,14,23,50,0);
+  const ageDays=Math.floor(3+Math.pow(r(),0.72)*205);
+  const minuteOffset=Math.floor(r()*1440);
+  const createdAt=new Date(now-ageDays*86400000-minuteOffset*60000).toISOString();
+  const loginAgeMinutes=Math.floor(Math.pow(r(),2.2)*60*24*72);
+  const lastLoginAt=new Date(now-loginAgeMinutes*60000).toISOString();
+  const p=r();
+  const role=p<0.79?'FREE':p<0.95?'PLUS':'PRO';
   return {
-    id:`synthetic-${serial}`,username,email:`${username}@${provider}`,nickname:nick,role,status:'ACTIVE',
-    createdAt,updatedAt:lastLoginAt,lastLoginAt,agreements:{},notifications:{enabled:n%4!==0,updatedAt:lastLoginAt},
+    id:`synthetic-${String(n+1).padStart(3,'0')}`,username,email,emailDisplay,nickname,role,status:'ACTIVE',
+    createdAt,updatedAt:lastLoginAt,lastLoginAt,agreements:{},notifications:{enabled:r()>0.22,updatedAt:lastLoginAt},
     capabilities:{free:true,plus:['PLUS','PRO'].includes(role),pro:role==='PRO',admin:false},
     isSynthetic:true,syntheticMark:'*'
   };
@@ -50,7 +81,7 @@ module.exports=async function(req,res){
 
   if(req.method==='POST'){
     const b=req.body||{};
-    if(isSyntheticId(b.userId)) return res.status(400).json({ok:false,error:'* 표시 임의회원은 시연용 데이터라 실제 계정 변경 대상이 아닙니다.'});
+    if(isSyntheticId(b.userId)) return res.status(400).json({ok:false,error:'* 표시 시연 데이터는 실제 계정 변경 대상이 아닙니다.'});
     const u=await getUser(b.userId);
     if(!u) return res.status(404).json({ok:false,error:'회원을 찾을 수 없습니다.'});
     const action=String(b.action||'role');
