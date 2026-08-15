@@ -1553,6 +1553,7 @@ function presidentPortraitSVG(){
 const POLITICIAN_PHOTO_CACHE_KEY="jjdd_politician_photo_v23_verified_search_hq";
 const PHOTO_AMBIGUOUS_MEMBER_IDS=new Set([26,211]);
 const PHOTO_MEMBER_DISAMBIG={26:['전남','해남','완도','진도'],211:['전북','군산','김제','부안']};
+const LOCAL_WEB_PHOTO_EXTRA_QUERIES={"이상일":["용인시장"],"박승원":["광명시장"],"신동화":["구리시장"],"김성제":["의왕시장"],"김보라":["안성시장"],"서강석":["송파구청장"],"전성수":["서초구청장"],"이동석":["충주시장"],"김태성":["신안군수"],"김산":["무안군수"],"사순문":["장흥군수"],"박형우":["계양구청장"],"이수희":["강동구청장"],"박종원":["담양군수"],"박준희":["관악구청장"],"김한종":["장성군수"],"서영학":["여수시장"],"김현기":["강남구청장","강남"],"강석주":["통영시장"],"구재용":["서구청장","대전 서구청장"],"김진규":["검단구청장","검단"],"이남오":["함평군수"],"배낙호":["김천시장"],"성수석":["이천시장"],"박정주":["홍성군수"],"서태원":["가평군수"],"김성수":["해운대구청장"],"박성현":["광양시장"],"손훈모":["순천시장"],"백영현":["포천시장"],"강성휘":["목포시장"],"박병규":["광주 광산구청장","광산구청장"],"윤병태":["나주시장"],"장길선":["구례군수"],"임지락":["화순군수"],"공영민":["고흥군수"],"우승희":["영암군수"],"강진원":["강진군수"],"조상래":["곡성군수"],"임택":["광주 동구청장","동구청장"],"장세일":["영광군수"],"김찬진":["제물포구청장","인천"],"명현관":["해남군수"],"김용판":["달서구청장"],"신수정":["광주 북구청장","북구청장"],"이충우":["여주시장"],"김덕현":["연천군수"],"김철우":["보성군수"],"주석수":["연제구청장"],"김이강":["광주 서구청장","서구청장"],"전진선":["영평군수","양평군수","양평"],"박형덕":["동두천시장"],"박동식":["사천시장"],"김병내":["광주 남구청장","남구청장"],"남한권":["울릉군수"],"황이주":["울진군수"]};
 const ASSEMBLY_MEMBER_API="https://open.assembly.go.kr/portal/openapi/ALLNAMEMBER";
 let politicianPhotoCache={};
 let politicianPhotoPromises=new Map();
@@ -1577,10 +1578,16 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   // 시도지사협의회/시장군수구청장협의회 공식 회원 페이지에서 이름+직위/지역을 함께 확인한 사진만 프록시합니다.
   // 확인 실패 시 onerror가 안전 기본이미지로 즉시 되돌립니다. 이름 기반 일반 웹 사진은 사용하지 않습니다.
   if((type==='metro'||type==='local')){
-    const src=(member?.photoVerified===true && member?.officialPhoto)?member.officialPhoto:`/api/local-photo?id=${encodeURIComponent(memberId)}`;
-    const source=(member?.photoVerified===true && member?.officialPhoto)?'local-government-official':'local-association-official';
-    const title=(member?.photoVerified===true && member?.officialPhoto)?'사진 출처: 지방정부 · 신원 검증 완료':'사진 출처: 지방자치단체장 공식 협의회 회원 프로필 · 이름/직위 검증';
-    return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="${source}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    if(member?.photoVerified===true && member?.officialPhoto){
+      const src=member.officialPhoto;
+      const title='사진 출처: 지방정부 · 신원 검증 완료';
+      return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="local-government-official" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    }
+    const cachedLocal=politicianPhotoCache[String(memberId)];
+    if(cachedLocal?.url){
+      return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(cachedLocal.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cachedLocal.title||'검증된 고해상도 인물 사진')}" data-photo-source="${photoAttr(cachedLocal.source||'verified-web-cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    }
+    return `<span class="politician-photo local-official-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1">${personSVG(seedv)}</span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -1692,9 +1699,12 @@ async function ensureAssemblyPhotoDirectory(){
 }
 function memberPhotoClues(member){
   if(!member)return [];
-  if(PHOTO_MEMBER_DISAMBIG[Number(member.id)])return PHOTO_MEMBER_DISAMBIG[Number(member.id)];
-  const raw=[member.region,member.constituency].filter(Boolean).join(' ');
-  return [...new Set(raw.split(/[\s·,()]+/).map(x=>x.replace(/[갑을병정]$/,'').trim()).filter(x=>x.length>=2&&!['대한민국','국회의원'].includes(x)))];
+  const manual=LOCAL_WEB_PHOTO_EXTRA_QUERIES[String(member.name||'')]||[];
+  const seeded=[];
+  if(PHOTO_MEMBER_DISAMBIG[Number(member.id)]) seeded.push(...PHOTO_MEMBER_DISAMBIG[Number(member.id)]);
+  const raw=[member.region,member.constituency,member.jurisdiction,member.office].filter(Boolean).join(' ');
+  const auto=raw.split(/[\s·,()]+/).map(x=>x.replace(/[갑을병정]$/,'').trim()).filter(x=>x.length>=2&&!['대한민국','국회의원','광역단체장','기초단체장'].includes(x));
+  return [...new Set([...seeded,...manual,...auto])];
 }
 function assemblyRowContextScore(row,member){
   const txt=JSON.stringify(row||{}).replace(/\s+/g,'');
