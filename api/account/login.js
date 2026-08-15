@@ -8,7 +8,7 @@ module.exports=async function(req,res){
   // v2.0 기존 테스트 계정은 아이디가 없으므로 이메일 로그인을 조용히 호환합니다.
   let user=await getUserByUsername(identifier);
   if(!user && identifier.includes('@')) user=await getUserByEmail(identifier);
-  const ok=user && user.status!=='DELETED' && await verifyPassword(b.password,user.passwordHash);
+  const ok=user && String(user.status||'ACTIVE')==='ACTIVE' && await verifyPassword(b.password,user.passwordHash);
   if(!ok) return res.status(401).json({ok:false,error:'아이디 또는 비밀번호가 올바르지 않습니다.'});
   user.lastLoginAt=new Date().toISOString();
   await saveUser(user);

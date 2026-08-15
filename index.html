@@ -51,13 +51,12 @@ a{text-decoration:none;color:inherit}
 .logo-title{font-size:29px;font-weight:950;letter-spacing:-1.8px}
 .logo-subtitle{margin-top:5px;font-size:10px;font-weight:850;letter-spacing:-.25px;color:#66736f}
 .logo-mark{
-  width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,var(--mint),var(--mint-dark));
-  position:relative;box-shadow:0 8px 18px rgba(40,183,162,.2);
+  width:58px;height:34px;border-radius:13px 13px 13px 6px;background:linear-gradient(135deg,#35c7b1 0%,var(--mint-dark) 100%);
+  position:relative;display:grid;place-items:center;box-shadow:0 9px 20px rgba(17,154,135,.22);isolation:isolate;
 }
-.logo-mark:before,.logo-mark:after{content:"";position:absolute;bottom:5px;background:white;border-radius:2px}
-.logo-mark:before{left:6px;width:5px;height:11px}
-.logo-mark:after{left:14px;width:5px;height:18px}
-.logo-mark i{position:absolute;left:22px;bottom:5px;width:5px;height:8px;border-radius:2px;background:#fff;display:block}
+.logo-mark:after{content:"";position:absolute;left:8px;bottom:-5px;width:11px;height:8px;background:var(--mint-dark);clip-path:polygon(0 0,100% 0,0 100%);z-index:-1}
+.logo-monogram{color:#fff;font-size:15px;font-weight:1000;letter-spacing:-1.3px;line-height:1;transform:translateY(-.5px)}
+.logo-live-dot{position:absolute;right:6px;top:5px;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.16)}
 .navlinks{display:flex;gap:8px;flex:1}
 .navbtn{
   border:0;background:transparent;padding:11px 16px;border-radius:12px;
@@ -799,7 +798,7 @@ a{text-decoration:none;color:inherit}
   .nav{height:62px;padding:0 12px;gap:10px}
   .logo-title{font-size:21px;letter-spacing:-1.1px}
   .logo-subtitle{font-size:8px;margin-top:4px}
-  .logo-mark{width:25px;height:25px}
+  .logo-mark{width:48px;height:29px;border-radius:11px 11px 11px 5px}.logo-monogram{font-size:13px}.logo-live-dot{right:5px;top:4px}
   .navlinks{display:none}
   .navright{margin-left:auto;gap:6px}
   .navright .loginbtn{display:none}
@@ -1007,7 +1006,7 @@ a{text-decoration:none;color:inherit}
 <div class="topbar">
   <div class="nav">
     <div class="logo" id="logoHome" style="cursor:pointer" aria-label="정참시 · 정치에 참여할 시간">
-      <div class="logo-mark"><i></i></div>
+      <div class="logo-mark" aria-hidden="true"><span class="logo-monogram">ㅈㅊㅅ</span><i class="logo-live-dot"></i></div>
       <div class="logo-copy"><div class="logo-title">정참시</div><div class="logo-subtitle">정치에 참여할 시간</div></div>
     </div>
     <div class="navlinks">
@@ -11235,7 +11234,7 @@ function renderSurveySetting(survey,loggedIn){
   let html=`<div class="survey-subtitle">${siteEsc(survey.subtitle||'')}</div>`;
   if(voted){
     html+=opts.map((o,i)=>{const c=Number(counts[i]||0),pct=total?c/total*100:0;return `<div class="survey-result"><div class="survey-result-head"><span>${i===stats.userVote?'✓ ':''}${siteEsc(o)}</span><b>${pct.toFixed(1)}%</b></div><div class="survey-result-bar"><span style="width:${pct}%"></span></div></div>`;}).join('');
-    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료</div>`;
+    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료${stats.adminAdjusted?' · 관리자 보정 포함':''}</div>`;
   }else{
     html+=`<div class="survey-options">${opts.map((o,i)=>`<label class="survey-option"><input type="radio" name="jjddSurveyOption" value="${i}"><span>${siteEsc(o)}</span></label>`).join('')}</div><button class="survey-submit" id="surveySubmitBtn" type="button">설문 참여</button><div class="survey-status" id="surveyStatus">${loggedIn?'1계정당 1회 참여할 수 있습니다.':'로그인 후 설문에 참여할 수 있습니다.'}</div>`;
   }

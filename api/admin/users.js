@@ -143,6 +143,17 @@ module.exports=async function(req,res){
       return res.json({ok:true,user:publicUser(u,{includePreference:true}),usernameChanged,emailChanged});
     }
 
+    if(action==='set-status'){
+      const status=String(b.status||'').toUpperCase();
+      if(!['ACTIVE','SUSPENDED'].includes(status)) return res.status(400).json({ok:false,error:'회원 상태는 ACTIVE 또는 SUSPENDED만 설정할 수 있습니다.'});
+      if(String(u.role||'')==='ADMIN' && status==='SUSPENDED') return res.status(400).json({ok:false,error:'관리자 계정은 이 화면에서 정지할 수 없습니다.'});
+      u.status=status;
+      if(status==='SUSPENDED') u.sessionVersion=Number(u.sessionVersion||1)+1;
+      u.updatedAt=new Date().toISOString();u.adminStatusUpdatedAt=u.updatedAt;u.adminStatusUpdatedBy=String(admin.id||'admin');
+      await setJSON(userKey(u.id),u);
+      return res.json({ok:true,user:publicUser(u,{includePreference:true}),sessionInvalidated:status==='SUSPENDED'});
+    }
+
     if(action==='reset-password'){
       const p=String(b.newPassword||'');
       if(!validatePassword(p)) return res.status(400).json({ok:false,error:'새 비밀번호는 8자 이상 128자 이하로 입력해주세요.'});
