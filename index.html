@@ -980,7 +980,7 @@ a{text-decoration:none;color:inherit}
 .local-now-brand span{font-weight:800}
 @media(max-width:780px){.local-now-brand{margin-top:11px}.local-now-brand span{font-size:10px}}
 
-/* ===== v2.2.6 JEONGCHAMSI Brand Final ===== */
+/* ===== v2.2.7 JEONGCHAMSI Reference Compare + Search + Alerts ===== */
 .visitor-strip{max-width:1180px;margin:10px auto 0;padding:0 18px;display:flex;justify-content:flex-end;align-items:center;gap:8px;color:#66736f}
 .visitor-stat{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid #e2ebe8;background:#fff;border-radius:999px;font-size:11px;box-shadow:0 3px 12px rgba(15,23,42,.035)}
 .visitor-stat b{font-size:12px;color:#13211e}.visitor-stat small{font-size:10px;font-weight:800}.visitor-dot{width:7px;height:7px;border-radius:50%;background:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.12)}
@@ -990,6 +990,13 @@ a{text-decoration:none;color:inherit}
 @media(max-width:520px){.visitor-strip{margin-top:6px}.visitor-stat{padding:5px 7px}.visitor-stat small{font-size:9px}.community-main{padding:11px;border-radius:16px}.community-compose-card{padding:14px;border-radius:16px}.community-post{padding:12px}.community-detail{padding:15px}.community-cats{gap:5px}.community-cat{padding:7px 9px}}
 @media(max-width:900px){.news-form-grid{grid-template-columns:1fr}.news-image-row{grid-template-columns:1fr}.news-image-preview{max-width:560px;width:100%}.news-writer-head{flex-direction:column}.news-writer-toggle{align-self:flex-end}.news-section-title{align-items:flex-start}}
 @media(max-width:520px){.news-writer-card{padding:14px;border-radius:16px}.news-form-block #newsContent{min-height:180px}.news-publish-row{align-items:stretch;flex-direction:column}.news-publish-btn{width:100%}}
+
+/* ===== v2.2.7 Search + Notification + Reference Compare ===== */
+.notification-btn{position:relative}.notification-btn i{position:absolute;right:7px;top:7px;width:8px;height:8px;border-radius:50%;background:#cbd5e1;border:2px solid #fff;box-sizing:content-box}.notification-btn.is-on i{background:#15a98b;box-shadow:0 0 0 2px rgba(21,169,139,.12)}
+.global-search-overlay{position:fixed;inset:0;z-index:10120;background:rgba(15,23,42,.48);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;padding:92px 18px 30px}.global-search-overlay.show{display:flex}.global-search-box{width:min(680px,100%);max-height:min(680px,78vh);background:#fff;border:1px solid #dfe9e6;border-radius:24px;box-shadow:0 30px 90px rgba(15,23,42,.25);overflow:hidden;display:flex;flex-direction:column}.global-search-head{padding:18px 20px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf2f0}.global-search-input{flex:1;min-width:0;height:48px;border:1px solid #d8e5e1;border-radius:14px;padding:0 15px;font:inherit;font-weight:750;outline:none}.global-search-input:focus{border-color:#15a98b;box-shadow:0 0 0 3px rgba(21,169,139,.10)}.global-search-close{width:42px;height:42px;border:0;border-radius:50%;background:#f1f5f4;cursor:pointer;font-size:17px}.global-search-help{padding:9px 20px;color:#7b8783;font-size:11px;border-bottom:1px solid #f0f4f2}.global-search-results{padding:10px;overflow:auto}.global-search-empty{padding:30px 18px;text-align:center;color:#87948f;font-size:13px}.global-search-result{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:11px;padding:10px;border-radius:14px;cursor:pointer;border:1px solid transparent}.global-search-result:hover{background:#f6fbf9;border-color:#e0eeea}.global-search-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#eef3f2}.global-search-avatar svg,.global-search-avatar img,.global-search-avatar .politician-photo{width:100%;height:100%;display:block;object-fit:cover}.global-search-name{font-size:14px;font-weight:950}.global-search-meta{margin-top:3px;font-size:11px;color:#71807b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.global-search-type{font-size:10px;font-weight:900;color:#087b67;background:#eaf8f4;padding:6px 8px;border-radius:999px;white-space:nowrap}
+.notification-popover{position:fixed;z-index:10130;right:max(18px,calc((100vw - 1480px)/2 + 28px));top:72px;width:min(340px,calc(100vw - 24px));display:none;background:#fff;border:1px solid #dde8e5;border-radius:18px;box-shadow:0 22px 60px rgba(15,23,42,.20);padding:16px}.notification-popover.show{display:block}.notification-popover h3{margin:0;font-size:17px}.notification-popover p{margin:6px 0 13px;color:#71807b;font-size:11px;line-height:1.55}.notification-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#f7faf9;border-radius:13px;padding:12px}.notification-toggle-copy b{display:block;font-size:13px}.notification-toggle-copy span{display:block;margin-top:3px;font-size:10px;color:#7b8783}.notification-switch{position:relative;width:48px;height:28px;border:0;border-radius:999px;background:#cbd5e1;cursor:pointer;transition:.18s}.notification-switch:before{content:"";position:absolute;left:4px;top:4px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(15,23,42,.16);transition:.18s}.notification-switch.on{background:#15a98b}.notification-switch.on:before{transform:translateX(20px)}.notification-status{min-height:17px;margin-top:9px;font-size:10px;color:#697873}.reference-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f7faf9;color:#71807b;font-size:11px;line-height:1.6}
+@media(max-width:780px){.global-search-overlay{align-items:flex-end;padding:0}.global-search-box{width:100%;max-height:88vh;border-radius:22px 22px 0 0}.global-search-head{padding:15px}.global-search-help{padding:8px 15px}.notification-popover{top:64px;right:12px}.global-search-result{grid-template-columns:40px minmax(0,1fr) auto}.global-search-avatar{width:40px;height:40px}}
+/* ===== /v2.2.7 ===== */
 /* ===== /v2.2.6 ===== */
 </style>
 </head>
@@ -1008,8 +1015,8 @@ a{text-decoration:none;color:inherit}
       <button class="navbtn" data-page="my">MY</button>
     </div>
     <div class="navright">
-      <button class="iconbtn">🔎</button>
-      <button class="iconbtn">🔔</button>
+      <button class="iconbtn" id="globalSearchBtn" aria-label="통합 검색" title="정치인·정부 주요 인사 검색">🔎</button>
+      <button class="iconbtn notification-btn" id="notificationBtn" aria-label="알림 설정" title="알림 설정"><span>🔔</span><i id="notificationStateDot" aria-hidden="true"></i></button>
       <button class="loginbtn" id="accountLoginBtn">로그인</button>
     </div>
   </div>
@@ -1030,12 +1037,12 @@ a{text-decoration:none;color:inherit}
         <section class="president" onclick="openPresident()">
           <div class="portrait" id="presPortrait"></div>
           <div class="pres-text">
-            <div class="mini">President Now · Out of Rank</div>
+            <div class="mini">President Now · Term</div>
             <h2>이재명 대통령 <span class="real-chip">공식정보</span></h2>
-            <p>제21대 대한민국 대통령. 대통령은 국회의원 300인 순위에 참여하지 않고, 정치권 전체의 관심도와 영향력을 비교하는 기준 인물로 별도 표시됩니다.</p>
+            <p>제21대 대한민국 대통령. 대통령은 NOW Rank 순위에는 참여하지 않고, 정치권 전체의 관심도와 영향력을 비교하는 기준 인물로 별도 표시됩니다.</p>
             <div class="meta-pills">
               <div class="meta-pill">📅 취임 2025.06.04</div>
-              <div class="meta-pill">🏛️ OUT OF RANK</div>
+              <div class="meta-pill" id="presidentTermRemaining">⏳ 임기 계산 중</div>
               <div class="meta-pill">📊 여론조사 비교 보기</div>
             </div>
           </div>
@@ -1298,15 +1305,15 @@ a{text-decoration:none;color:inherit}
       <div>
         <div class="kicker">Politician Compare</div>
         <h1 class="h1">비교분석</h1>
-        <div class="sub">두 정치인을 직접 검색해 NOW Rank와 5개 NOW 지표를 한 화면에서 비교합니다. 기본 프로필과 공개 데이터를 정참시 방식으로 재구성한 분석 화면입니다.</div>
+        <div class="sub">두 인물을 직접 검색해 NOW Rank와 8개 비교지표를 한 화면에서 비교합니다. 대통령·현 정부 주요 인사도 비랭킹 참고 프로필로 함께 비교할 수 있습니다.</div>
       </div>
     </div>
 
-    <div class="plus-gate" id="comparePlusGate" style="display:flex"><div><b>정치인 비교는 PLUS 기능입니다.</b><p>PLUS 회원은 두 정치인의 NOW Rank와 5개 NOW 지표를 한 화면에서 비교할 수 있습니다.</p></div><button onclick="openPlusUpgrade('정치인 비교')">PLUS 월 5,000원 보기</button></div>
+    <div class="plus-gate" id="comparePlusGate" style="display:flex"><div><b>정치인 비교는 PLUS 기능입니다.</b><p>PLUS 회원은 랭킹 정치인과 대통령·정부 주요 인사의 8개 비교지표를 한 화면에서 비교할 수 있습니다.</p></div><button onclick="openPlusUpgrade('정치인 비교')">PLUS 월 5,000원 보기</button></div>
     <section class="compare-page-card plus-locked-surface" id="comparePageCard">
       <div class="compare-search-grid">
         <div class="person-search">
-          <label>정치인 A</label>
+          <label>인물 A</label>
           <input id="compareSearchA" autocomplete="off" placeholder="이름을 입력해 검색하세요" />
           <div class="search-suggestions" id="suggestionsA"></div>
           <div class="selected-preview" id="selectedPreviewA"></div>
@@ -1315,7 +1322,7 @@ a{text-decoration:none;color:inherit}
         <button class="swap-btn" id="swapCompare" title="두 정치인 바꾸기">⇄</button>
 
         <div class="person-search">
-          <label>정치인 B</label>
+          <label>인물 B</label>
           <input id="compareSearchB" autocomplete="off" placeholder="이름을 입력해 검색하세요" />
           <div class="search-suggestions" id="suggestionsB"></div>
           <div class="selected-preview" id="selectedPreviewB"></div>
@@ -1439,6 +1446,26 @@ a{text-decoration:none;color:inherit}
   </section>
 </div>
 
+<div class="global-search-overlay" id="globalSearchModal" aria-hidden="true" onclick="if(event.target===this)closeGlobalSearch()">
+  <div class="global-search-box" role="dialog" aria-modal="true" aria-labelledby="globalSearchTitle">
+    <div class="global-search-head">
+      <input class="global-search-input" id="globalSearchInput" autocomplete="off" placeholder="정치인·정부 주요 인사를 검색하세요" aria-label="통합 검색어">
+      <button class="global-search-close" id="globalSearchClose" aria-label="검색 닫기">✕</button>
+    </div>
+    <div class="global-search-help" id="globalSearchTitle">국회의원 · 광역/기초단체장 · 대통령 · 현 정부 주요 인사를 한 번에 검색합니다.</div>
+    <div class="global-search-results" id="globalSearchResults"><div class="global-search-empty">이름, 정당, 지역 또는 직위를 입력해보세요.</div></div>
+  </div>
+</div>
+<div class="notification-popover" id="notificationPopover" aria-hidden="true">
+  <h3>알림 설정</h3>
+  <p id="notificationDescription">로그인하면 정참시 알림 수신 여부를 저장할 수 있습니다.</p>
+  <div class="notification-toggle-row">
+    <div class="notification-toggle-copy"><b>정참시 알림</b><span id="notificationToggleLabel">OFF</span></div>
+    <button class="notification-switch" id="notificationSwitch" type="button" role="switch" aria-checked="false" aria-label="정참시 알림 켜기/끄기"></button>
+  </div>
+  <div class="notification-status" id="notificationStatus"></div>
+</div>
+
 <div class="account-overlay" id="accountModal" onclick="if(event.target===this) closeAccountModal()" aria-hidden="true">
   <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="accountDialogTitle">
     <div class="account-dialog-head"><div><div class="kicker">JEONGCHAMSI MEMBER</div><h2 id="accountDialogTitle">정참시 계정</h2></div><button class="account-close" onclick="closeAccountModal()">✕</button></div>
@@ -1495,7 +1522,7 @@ const regions=["서울","경기","인천","부산","대구","광주","대전","�
 const rankLetters=["S","A","B","C","D"];
 function seeded(i,n=100){ return (Math.sin(i*91.17)*43758.5453%1+1)%1*n }
 function gradeFromScore(score){ return score>=91?"S":score>=81?"A":score>=71?"B":score>=60?"C":"D"; }
-function m(vals){ const labs=["언론 주목도","대중 관심도","디지털 영향력","대중 반응도","정책 활동도","의정 활동도","정치 영향력","인지도"]; return labs.map((l,i)=>[l,vals[i]]); }
+function m(vals){ const labs=["언론 주목도","대중 관심도","디지털 영향력","대중 반응도","정책 활동도","의정 활동도","정치 영향력","인지도"],score={S:95,A:85,B:75,C:65,D:50}; return labs.map((l,i)=>[l,vals[i],score[vals[i]]||50]); }
 
 function personSVG(seedv){
   const hair = ["#1f2937","#111827","#374151","#2d2f36"][Math.floor(seeded(seedv+7,4))];
@@ -8973,11 +9000,40 @@ governmentOfficials.find(x=>x.name==="김윤덕").journey=[["2000s", "지방의�
 governmentOfficials.find(x=>x.name==="황종우").journey=[["1990s~", "해양·수산 분야 경력", "해양수산 정책과 산업 현장 경험"], ["2020s", "해양수산 분야 주요 보직", "정책·조직 운영 경력"], ["2026~", "해양수산부 장관", "해양·수산 정책 총괄"]];
 governmentOfficials.find(x=>x.name==="노용석").journey=[["1990s~", "중소벤처 정책 공무원", "중소기업·소상공인 정책 경력"], ["2025~", "중소벤처기업부 제1차관", "부처 정책·조직 운영"], ["2026", "중소벤처기업부 장관 직무대행", "장관 공석 기간 직무 수행"]];
 
+const REFERENCE_METRIC_LABELS=["언론 주목도","대중 관심도","디지털 영향력","대중 반응도","정책 활동도","의정 활동도","정치 영향력","인지도"];
+function metricLetterFromValue(v){return v>=90?'S':v>=80?'A':v>=70?'B':v>=60?'C':'D';}
+function governmentReferenceMetrics(g){
+  const journey=(g.journey||[]).flat().join(' ');
+  const isPm=/국무총리/.test(g.role||'');
+  const isDeputy=/부총리/.test(g.role||'');
+  const isActing=/직무대행/.test(g.role||'');
+  let vals=isPm?[86,80,72,76,94,78,93,87]:isDeputy?[80,74,70,72,92,74,87,81]:isActing?[62,56,56,58,82,67,65,61]:[72,66,64,65,88,70,77,73];
+  vals=[...vals];
+  if(/국회의원|당대표|원내대표|대통령 후보|비상대책위원장/.test(journey)){vals[0]+=4;vals[1]+=4;vals[6]+=7;vals[7]+=6;}
+  if(/대표이사|기업|NHN|네이버|AI연구원/.test(journey)){vals[2]+=7;vals[7]+=3;}
+  if(/언론인|방송|미디어/.test(journey)){vals[0]+=4;vals[2]+=3;vals[7]+=4;}
+  if(/교육감|구청장|장관|청장|국무조정실장/.test(journey)){vals[4]+=3;vals[5]+=3;}
+  vals=vals.map(v=>Math.max(45,Math.min(97,v)));
+  return REFERENCE_METRIC_LABELS.map((label,i)=>[label,metricLetterFromValue(vals[i]),vals[i]]);
+}
+governmentOfficials.forEach((g,i)=>{
+  g.id=910000+i;g.entityType='government';g.office=g.role;g.party='대한민국 정부';g.region='대한민국';g.jurisdiction=g.ministry;g.metrics=governmentReferenceMetrics(g);g.grade='비랭킹';g.referenceProfile=true;
+});
+
 const president = {
+  id:900000,
   name:"이재명 대통령",
+  entityType:"president",
+  office:"대한민국 대통령",
+  party:"대한민국 정부",
+  region:"대한민국",
+  jurisdiction:"대한민국",
   title:"제21대 대한민국 대통령",
   inaugurated:"2025.06.04",
-  rank:"OUT OF RANK",
+  termEnd:"2030.06.03",
+  rank:null,
+  grade:"비랭킹",
+  referenceProfile:true,
   journey:[
     ["2005~2006","정치권 본격 진입","시민운동·변호사 활동을 바탕으로 성남시장 선거 도전"],
     ["2010","성남시장 당선","민선 5기 성남시장"],
@@ -8988,10 +9044,9 @@ const president = {
     ["2024","제22대 국회의원","인천 계양을 재선"],
     ["2025","제21대 대통령","2025년 6월 4일 취임"]
   ],
-  rank:"OUT OF RANK",
   metrics:[
-    ["언론 주목도","S"],["대중 관심도","S"],["디지털 영향력","A"],["대중 반응도","A"],
-    ["정책 활동도","S"],["의정 활동도","A"],["정치 영향력","S"],["인지도","S"]
+    ["언론 주목도","S",96],["대중 관심도","S",95],["디지털 영향력","A",88],["대중 반응도","A",86],
+    ["정책 활동도","S",94],["의정 활동도","A",84],["정치 영향력","S",97],["인지도","S",98]
   ],
   polls:[
     {source:"리얼미터",date:"2026.08.03~08.07",positive:43.3,negative:53.0,method:"무선 ARS · 2,514명 · 95% 신뢰수준 ±2.0%p · 응답률 4.0%"},
@@ -9200,13 +9255,29 @@ function liveSVG(){
   </svg>`;
 }
 
+function presidentTermRemaining(){
+  const now=new Date();
+  const kst=new Date(now.getTime()+9*60*60*1000);
+  const y=kst.getUTCFullYear(),m=kst.getUTCMonth(),d=kst.getUTCDate();
+  const endY=2030,endM=5,endD=3;
+  let totalMonths=(endY-y)*12+(endM-m);
+  if(endD<d)totalMonths-=1;
+  totalMonths=Math.max(0,totalMonths);
+  const years=Math.floor(totalMonths/12),months=totalMonths%12;
+  const todayUtc=Date.UTC(y,m,d), endUtc=Date.UTC(endY,endM,endD);
+  const days=Math.max(0,Math.ceil((endUtc-todayUtc)/86400000));
+  const human=days<=0?'임기 만료':`임기 ${years?years+'년 ':''}${months?months+'개월 ':''}남음`.replace(/\s+남음/,' 남음');
+  return {days,years,months,human,short:days<=0?'임기 만료':`${human} · D-${days.toLocaleString('ko-KR')}`};
+}
+function renderPresidentTerm(){const el=document.getElementById('presidentTermRemaining');if(el)el.textContent=`⏳ ${presidentTermRemaining().short}`;}
+
 document.getElementById("presPortrait").innerHTML = presidentPortraitSVG();
 document.getElementById("govIcon").innerHTML = govSVG();
 const liveVisualEl=document.getElementById("liveVisual");if(liveVisualEl)liveVisualEl.innerHTML=liveSVG();
 
 let mode="all";
 let keywordMode="all";
-const ENTITY_LABELS={all:'전체',assembly:'국회의원',metro:'광역단체장',local:'기초단체장'};
+const ENTITY_LABELS={all:'전체',assembly:'국회의원',metro:'광역단체장',local:'기초단체장',president:'대통령',government:'정부 주요인사'};
 function entityTypeOf(x){return String(x?.entityType||'assembly');}
 function entityLabel(x){return ENTITY_LABELS[entityTypeOf(x)]||'정치인';}
 function entityOffice(x){return String(x?.office|| (entityTypeOf(x)==='assembly'?'국회의원':'정치인'));}
@@ -10006,15 +10077,26 @@ function assetSVG(id){
   </svg>`;
 }
 
+function comparisonPool(){return [...people,president,...governmentOfficials];}
+function findComparisonPerson(id){return comparisonPool().find(p=>String(p.id)===String(id))||null;}
+function isReferencePerson(p){return ['president','government'].includes(entityTypeOf(p))||p?.referenceProfile===true;}
+function comparisonRankText(p){return isReferencePerson(p)?'비랭킹':(Number.isFinite(Number(p?.rank))?`${Number(p.rank)}위`:'-');}
+function comparisonStatusText(p){return isReferencePerson(p)?'비랭킹 참고지표':'NOW Rank 지표';}
+function comparisonPhotoHTML(p,quality='standard'){
+  if(entityTypeOf(p)==='president')return presidentPortraitSVG();
+  if(entityTypeOf(p)==='government')return personSVG(Number(p.id)||700);
+  return politicianPhotoHTML(p.name,p.id,quality);
+}
 function resolvePersonByQuery(query, excludeId=null){
   const q=(query||"").trim().toLowerCase();
   if(!q)return null;
-  const exact=people.filter(p=>p.id!==excludeId && p.name.toLowerCase()===q);
+  const pool=comparisonPool().filter(p=>String(p.id)!==String(excludeId));
+  const exact=pool.filter(p=>String(p.name||'').toLowerCase()===q || String(p.name||'').replace(/ 대통령$/,'').toLowerCase()===q);
   if(exact.length===1)return exact[0];
-  if(exact.length>1)return null; // 동명이인은 반드시 지역구가 보이는 제안 목록에서 직접 선택
-  const matches=people.filter(p=>p.id!==excludeId && (
-    p.name.toLowerCase().includes(q) ||
-    `${p.party} ${p.region} ${p.constituency||''} ${p.jurisdiction||''} ${p.office||''}`.toLowerCase().includes(q)
+  if(exact.length>1)return null;
+  const matches=pool.filter(p=>(
+    String(p.name||'').toLowerCase().includes(q) ||
+    `${p.party||''} ${p.region||''} ${p.constituency||''} ${p.jurisdiction||''} ${p.office||''} ${p.ministry||''} ${p.role||''}`.toLowerCase().includes(q)
   ));
   return matches.length===1?matches[0]:null;
 }
@@ -10033,15 +10115,15 @@ function combinedRadarSVG(a,b){
 
 function compareResultHTML(a,b,showBack=false){
   const rows=[
-    ["NOW Rank",`${a.rank}위`,`${b.rank}위`],
-    ["NOW 등급",a.grade,b.grade],
-    ...a.metrics.map((m,i)=>[m[0],m[1],b.metrics[i][1]])
+    ["NOW Rank",comparisonRankText(a),comparisonRankText(b)],
+    ["분석 구분",comparisonStatusText(a),comparisonStatusText(b)],
+    ...a.metrics.map((m,i)=>[m[0],m[1],b.metrics?.[i]?.[1]||'-'])
   ];
   return `
     <div class="compare-head">
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(a.name,a.id)}</div><div><h3 style="margin:0">${a.name} · ${entityOffice(a)}</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.jurisdiction||a.constituency||a.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${comparisonPhotoHTML(a)}</div><div><h3 style="margin:0">${a.name} · ${entityOffice(a)}</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.jurisdiction||a.constituency||a.region}</div></div></div></div>
       <div class="vs">VS</div>
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${politicianPhotoHTML(b.name,b.id)}</div><div><h3 style="margin:0">${b.name} · ${entityOffice(b)}</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.jurisdiction||b.constituency||b.region}</div></div></div></div>
+      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${comparisonPhotoHTML(b)}</div><div><h3 style="margin:0">${b.name} · ${entityOffice(b)}</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.jurisdiction||b.constituency||b.region}</div></div></div></div>
     </div>
 
     <div class="combined-radar-wrap">
@@ -10051,17 +10133,17 @@ function compareResultHTML(a,b,showBack=false){
           <div class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>${b.name}</div>
         </div>
         ${combinedRadarSVG(a,b)}
-        <div class="sub" style="text-align:center;font-size:13px">두 정치인의 5개 NOW 축을 같은 좌표계에서 비교합니다.</div>
+        <div class="sub" style="text-align:center;font-size:13px">두 인물의 8개 비교 축을 같은 좌표계에서 비교합니다.</div>
       </div>
       <div class="compare-summary">
         <div class="compare-person">
           <div class="kicker">${a.name}</div>
-          <h3 style="margin:4px 0">${a.rank}위 · ${a.grade} Rank</h3>
+          <h3 style="margin:4px 0">${comparisonRankText(a)} · ${isReferencePerson(a)?'참고 비교 프로필':a.grade+' Rank'}</h3>
           <div class="sub" style="margin-top:4px">${a.party} · ${entityLabel(a)} · ${a.jurisdiction||a.constituency||a.region}</div>
         </div>
         <div class="compare-person">
           <div class="kicker" style="color:#7c3aed">${b.name}</div>
-          <h3 style="margin:4px 0">${b.rank}위 · ${b.grade} Rank</h3>
+          <h3 style="margin:4px 0">${comparisonRankText(b)} · ${isReferencePerson(b)?'참고 비교 프로필':b.grade+' Rank'}</h3>
           <div class="sub" style="margin-top:4px">${b.party} · ${entityLabel(b)} · ${b.jurisdiction||b.constituency||b.region}</div>
         </div>
       </div>
@@ -10071,17 +10153,17 @@ function compareResultHTML(a,b,showBack=false){
       ${rows.map(r=>`<div class="compare-row"><div class="left">${r[1]}</div><div class="label">${r[0]}</div><div class="right">${r[2]}</div></div>`).join("")}
     </div>
 
-    <div class="why"><h4>비교 기능의 원칙</h4><p>실존 정치인의 공개 데이터를 바탕으로 두 인물의 현재 순위·Rank·5개 NOW 축을 같은 좌표계에서 비교합니다. Rank는 정참시의 분석 표현이며, 어느 쪽이 더 ‘좋은 정치인’인지 결론내리지 않고 판단에 필요한 차이만 보여줍니다.</p></div>
+    <div class="why"><h4>비교 기능의 원칙</h4><p>랭킹 참여 정치인은 NOW Rank 지표를, 대통령·정부 주요 인사는 랭킹에서 제외한 채 공개 이력과 현재 직책을 바탕으로 만든 비랭킹 참고 프로필을 같은 8개 축에서 비교합니다. 참고 프로필은 공식 평가점수나 직무수행 성적표가 아니며, 어느 쪽이 더 ‘좋은 정치인’인지 결론내리지 않습니다.</p></div>
     ${showBack?`<div style="margin-top:14px"><button class="secondary" onclick="openDetail(${a.id})">← ${a.name} 상세로 돌아가기</button></div>`:""}
   `;
 }
 
 function openCompare(id){
   if(!ensurePlusAccess('정치인 비교')) return;
-  const a=people.find(p=>p.id===id);
+  const a=findComparisonPerson(id);
   const input=document.getElementById("compareDetailSearch");
   const selectedId=Number(input?.dataset.selectedId||0);
-  const b=selectedId ? people.find(p=>p.id===selectedId) : resolvePersonByQuery(input?.value,id);
+  const b=selectedId ? findComparisonPerson(selectedId) : resolvePersonByQuery(input?.value,id);
   if(!a||!b){
     if(input){ input.focus(); input.style.borderColor="#ef4444"; setTimeout(()=>input.style.borderColor="",1000); }
     return;
@@ -10381,7 +10463,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.6 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.7 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -10418,19 +10500,19 @@ function openPresident(opts={}){
       <div class="detail-identity">
         <div class="bigavatar"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Lee_Jae-myung%27s_Portrait_%282024.2%29.jpg" alt="이재명 대통령 사진" title="사진 출처: 대한민국 국회 · Wikimedia Commons" referrerpolicy="no-referrer"></div>
         <div class="detail-identity-info">
-          <h2 class="h2" style="font-size:32px">${president.name} <span class="real-chip">공식정보</span></h2>
+          <h2 class="h2" style="font-size:32px">${president.name}</h2>
           <div class="sub" style="margin-top:6px">${president.title} · ${president.inaugurated} 취임</div>
         </div>
       </div>
       <div class="detail-stats">
-        <div class="stat"><strong>OUT</strong><span>국회의원 랭킹 제외</span></div>
-        <div class="stat"><strong>21대</strong><span>대한민국 대통령</span></div>
+        <div class="stat"><strong>${presidentTermRemaining().years}년 ${presidentTermRemaining().months}개월</strong><span>오늘 기준 남은 임기 · D-${presidentTermRemaining().days.toLocaleString('ko-KR')}</span></div>
+        <div class="stat"><strong>21대</strong><span>대한민국 대통령 · ${president.termEnd}까지</span></div>
       </div>
     </div>
 
     <div class="why" style="margin-top:16px">
       <h4>대통령 데이터 원칙</h4>
-      <p>대통령은 국회의원 300인 순위에 넣지 않습니다. 여론조사 결과는 조사기관·조사방법·시점에 따라 달라질 수 있으므로 하나의 숫자를 ‘정답’으로 만들지 않고 서로 다른 조사 결과를 나란히 보여줍니다.</p>
+      <p>대통령은 NOW Rank 순위에는 넣지 않지만 비교 기능에서는 별도 참고 프로필로 확인할 수 있습니다. 여론조사 결과는 조사기관·조사방법·시점에 따라 달라질 수 있으므로 하나의 숫자를 ‘정답’으로 만들지 않고 서로 다른 조사 결과를 나란히 보여줍니다.</p>
     </div>
 
     ${journeyHTML(president.journey)}
@@ -10458,7 +10540,7 @@ function openPresident(opts={}){
           <div class="ranks">
             ${president.metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]}</b></div>`).join("")}
           </div>
-          <div class="source-note">이 8개 Rank는 공개된 실제 정보와 여론 흐름을 정참시의 5개 NOW 축으로 재구성한 프로토타입 분석 표현입니다. 정부가 발표한 공식 평가점수는 아니며, 실제 여론조사 수치와는 별도로 표시합니다.</div>
+          <div class="source-note">이 8개 지표는 공개된 이력·현재 직책과 여론 흐름을 비교용으로 재구성한 비랭킹 참고 프로필입니다. 정부가 발표한 공식 평가점수나 직무수행 성적표가 아니며, 실제 여론조사 수치와는 별도로 표시합니다.</div>
         </div>
         <div class="radarbox">
           <svg viewBox="0 0 340 340">
@@ -10469,7 +10551,7 @@ function openPresident(opts={}){
             <polygon points="${pointsFor(president.metrics)}" fill="rgba(15,118,110,.16)" stroke="#0f766e" stroke-width="3"/>
             ${labels(president.metrics)}
           </svg>
-          <div class="sub" style="text-align:center;font-size:13px">실제 조사값과 DEMO 분석지표를 분리해서 표시합니다.</div>
+          <div class="sub" style="text-align:center;font-size:13px">실제 조사값과 비랭킹 참고 비교지표를 분리해서 표시합니다.</div>
         </div>
       </div>
     </div>
@@ -10511,7 +10593,7 @@ function openGovPerson(i,opts={}){
       <div class="detail-identity">
         <div class="bigavatar">${politicianPhotoHTML(g.name,700+i,"high")}</div>
         <div class="detail-identity-info">
-          <h2 class="h2" style="font-size:32px">${g.name} <span class="real-chip">2026.08.11 기준</span></h2>
+          <h2 class="h2" style="font-size:32px">${g.name}</h2>
           <div class="sub" style="margin-top:6px">${g.ministry} · ${g.role}</div>
         </div>
       </div>
@@ -10521,9 +10603,16 @@ function openGovPerson(i,opts={}){
       <div class="gov-detail-item"><span>기관</span><b>${g.ministry}</b></div>
       <div class="gov-detail-item"><span>직위</span><b>${g.role}</b></div>
       <div class="gov-detail-item"><span>상태</span><b>${g.status}</b></div>
-      <div class="gov-detail-item"><span>랭킹</span><b>국회의원 300인 랭킹 대상 아님</b></div>
+      <div class="gov-detail-item"><span>NOW Rank</span><b>비랭킹 주요 인사</b></div>
     </div>
-    <div class="why"><h4>왜 상단에 따로 보여주나요?</h4><p>장관과 국무총리는 정치적 영향력이 큰 인물이지만 국회의원 300인 랭킹과는 신분과 역할이 다릅니다. 정참시에서는 정부 주요 인사로 별도 추적해 혼동 없이 보여주는 구조를 가정합니다.</p></div>`;
+    <div class="detail-section" style="margin-top:20px">
+      <div class="detail-section-head"><span class="detail-section-index">REFERENCE</span><h3>비랭킹 비교 프로필</h3></div>
+      <div class="profile" style="margin-top:0">
+        <div><div class="ranks">${g.metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]}</b></div>`).join("")}</div><div class="reference-note">공개 이력과 현재 직책을 같은 8개 비교 축으로 정리한 참고 프로필입니다. NOW Rank 순위에는 반영되지 않으며 공식 평가점수나 업무 성과평가가 아닙니다.</div></div>
+        <div class="radarbox"><svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,g.metrics.length)}"/><polygon points="${gridPoly(92,g.metrics.length)}"/><polygon points="${gridPoly(68,g.metrics.length)}"/><polygon points="${gridPoly(44,g.metrics.length)}"/><polygon points="${gridPoly(20,g.metrics.length)}"/>${radarAxes(g.metrics)}</g><polygon points="${pointsFor(g.metrics)}" fill="rgba(15,118,110,.16)" stroke="#0f766e" stroke-width="3"/>${labels(g.metrics)}</svg><div class="sub" style="text-align:center;font-size:13px">대통령·정부 주요 인사도 비교분석에서 함께 선택할 수 있습니다.</div></div>
+      </div>
+    </div>
+    <div class="why"><h4>왜 상단에 따로 보여주나요?</h4><p>장관과 국무총리는 정치적 영향력이 큰 인물이지만 국회의원·지방단체장 NOW Rank와는 신분과 역할이 다릅니다. 순위에서는 제외하되 상세 지표와 비교 기능에서는 별도 참고 인물로 제공합니다.</p></div>`;
   document.getElementById("modal").classList.add("show");
 }
 window.openGovPerson=openGovPerson;
@@ -10577,20 +10666,22 @@ window.addEventListener('resize', syncSidebarWithPage);
 function politicianMatches(query, excludeId=null, limit=8){
   const q=(query||"").trim().toLowerCase();
   if(!q)return [];
-  return people.filter(p=>p.id!==excludeId && (
-    p.name.toLowerCase().includes(q) ||
-    p.party.toLowerCase().includes(q) ||
-    p.region.toLowerCase().includes(q) ||
-    (p.constituency||"").toLowerCase().includes(q) ||
-    (p.jurisdiction||"").toLowerCase().includes(q) ||
-    (p.office||"").toLowerCase().includes(q)
+  return comparisonPool().filter(p=>String(p.id)!==String(excludeId) && (
+    String(p.name||'').toLowerCase().includes(q) ||
+    String(p.party||'').toLowerCase().includes(q) ||
+    String(p.region||'').toLowerCase().includes(q) ||
+    String(p.constituency||"").toLowerCase().includes(q) ||
+    String(p.jurisdiction||"").toLowerCase().includes(q) ||
+    String(p.office||"").toLowerCase().includes(q) ||
+    String(p.ministry||"").toLowerCase().includes(q) ||
+    String(p.role||"").toLowerCase().includes(q)
   )).slice(0,limit);
 }
 
 function suggestionHTML(p){
   return `<div class="suggestion" data-id="${p.id}">
-    <div class="suggestion-avatar">${politicianPhotoHTML(p.name,p.id)}</div>
-    <div><div class="suggestion-name">${p.name} · ${entityLabel(p)}</div><div class="suggestion-meta">${p.party} · ${p.jurisdiction||p.constituency||p.region} · ${entityLabel(p)} ${p.rank}위</div></div>
+    <div class="suggestion-avatar">${comparisonPhotoHTML(p)}</div>
+    <div><div class="suggestion-name">${p.name} · ${entityLabel(p)}</div><div class="suggestion-meta">${p.party||''} · ${p.jurisdiction||p.constituency||p.region||''} · ${comparisonRankText(p)}</div></div>
   </div>`;
 }
 
@@ -10604,7 +10695,7 @@ function setupDetailCompareSearch(excludeId){
     box.innerHTML=matches.map(suggestionHTML).join("");
     box.classList.toggle("show",matches.length>0);
     box.querySelectorAll(".suggestion").forEach(el=>el.addEventListener("click",()=>{
-      const p=people.find(x=>x.id===Number(el.dataset.id));
+      const p=findComparisonPerson(el.dataset.id);
       input.value=p.name;
       input.dataset.selectedId=p.id;
       box.classList.remove("show");
@@ -10628,10 +10719,10 @@ function setupCompareSearch(side){
     box.innerHTML=matches.map(suggestionHTML).join("");
     box.classList.toggle("show",matches.length>0);
     box.querySelectorAll(".suggestion").forEach(el=>el.addEventListener("click",()=>{
-      const p=people.find(x=>x.id===Number(el.dataset.id));
+      const p=findComparisonPerson(el.dataset.id);
       if(side==="A")compareSelectedA=p; else compareSelectedB=p;
       input.value=p.name;
-      preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · 현재 ${p.rank}위`;
+      preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · ${comparisonRankText(p)}`;
       preview.classList.add("show");
       box.classList.remove("show");
     }));
@@ -10661,7 +10752,7 @@ function initComparePage(){
       const preview=document.getElementById(`selectedPreview${side}`);
       input.value=p?.name||"";
       if(p){
-        preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · 현재 ${p.rank}위`;
+        preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · ${comparisonRankText(p)}`;
         preview.classList.add("show");
       }else preview.classList.remove("show");
     });
@@ -11011,6 +11102,7 @@ function setAccountUI(user){
   }
   document.getElementById('myLoggedOut')?.classList.toggle('hidden-account',Boolean(user));
   document.getElementById('myLoggedIn')?.classList.toggle('hidden-account',!user);
+  if(typeof renderNotificationUI==='function')renderNotificationUI();
   if(!user){window.JJDD_PLUS_STATE={politicianIds:[],issues:[],updatedAt:null};updatePlusAccessUI();return;}
   const nick=user.nickname||'회원',role=roleLabel(user.role),pref=user.preference||{};
   const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
@@ -11051,6 +11143,61 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
+// ===== v2.2.7 Global search + account notification preference =====
+function globalSearchEsc(v){return accountEsc(v);}
+function openGlobalSearch(){
+  const modal=document.getElementById('globalSearchModal');if(!modal)return;
+  document.getElementById('notificationPopover')?.classList.remove('show');
+  modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  const input=document.getElementById('globalSearchInput');if(input){input.value='';renderGlobalSearchResults('');setTimeout(()=>input.focus(),40);}
+}
+function closeGlobalSearch(){const modal=document.getElementById('globalSearchModal');if(!modal)return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+window.openGlobalSearch=openGlobalSearch;window.closeGlobalSearch=closeGlobalSearch;
+function globalSearchResultPhoto(item){return comparisonPhotoHTML(item,'standard');}
+function openGlobalSearchResult(item){
+  closeGlobalSearch();
+  const t=entityTypeOf(item);
+  if(t==='president'){openPresident();return;}
+  if(t==='government'){const idx=governmentOfficials.findIndex(g=>String(g.id)===String(item.id));if(idx>=0)openGovPerson(idx);return;}
+  openDetail(Number(item.id));
+}
+function renderGlobalSearchResults(query){
+  const box=document.getElementById('globalSearchResults');if(!box)return;const q=String(query||'').trim().toLowerCase();
+  if(!q){box.innerHTML='<div class="global-search-empty">이름, 정당, 지역 또는 직위를 입력해보세요.</div>';return;}
+  const rows=comparisonPool().filter(p=>`${p.name||''} ${p.party||''} ${p.region||''} ${p.constituency||''} ${p.jurisdiction||''} ${p.office||''} ${p.ministry||''} ${p.role||''}`.toLowerCase().includes(q)).slice(0,30);
+  if(!rows.length){box.innerHTML='<div class="global-search-empty">검색 결과가 없습니다.</div>';return;}
+  box.innerHTML=rows.map(p=>`<div class="global-search-result" data-global-search-id="${globalSearchEsc(p.id)}"><div class="global-search-avatar">${globalSearchResultPhoto(p)}</div><div><div class="global-search-name">${globalSearchEsc(p.name)}</div><div class="global-search-meta">${globalSearchEsc([p.party,p.jurisdiction||p.constituency||p.region,entityOffice(p)].filter(Boolean).join(' · '))}</div></div><div class="global-search-type">${globalSearchEsc(entityLabel(p))}</div></div>`).join('');
+  box.querySelectorAll('[data-global-search-id]').forEach(el=>el.addEventListener('click',()=>{const item=findComparisonPerson(el.dataset.globalSearchId);if(item)openGlobalSearchResult(item);}));
+}
+document.getElementById('globalSearchBtn')?.addEventListener('click',openGlobalSearch);
+document.getElementById('globalSearchClose')?.addEventListener('click',closeGlobalSearch);
+document.getElementById('globalSearchInput')?.addEventListener('input',e=>renderGlobalSearchResults(e.target.value));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeGlobalSearch();document.getElementById('notificationPopover')?.classList.remove('show');}});
+
+function accountNotificationEnabled(){return Boolean(window.JJDD_ACCOUNT_USER?.notifications?.enabled);}
+function renderNotificationUI(){
+  const user=window.JJDD_ACCOUNT_USER,enabled=Boolean(user?.notifications?.enabled),btn=document.getElementById('notificationBtn'),sw=document.getElementById('notificationSwitch'),label=document.getElementById('notificationToggleLabel'),desc=document.getElementById('notificationDescription');
+  btn?.classList.toggle('is-on',Boolean(user&&enabled));if(btn)btn.title=user?`알림 ${enabled?'ON':'OFF'}`:'로그인 후 알림 설정';
+  sw?.classList.toggle('on',Boolean(user&&enabled));if(sw){sw.setAttribute('aria-checked',String(Boolean(user&&enabled)));sw.disabled=!user;}
+  if(label)label.textContent=user?(enabled?'ON':'OFF'):'로그인 필요';
+  if(desc)desc.textContent=user?`${user.nickname||user.username} 님의 정참시 알림 설정입니다. 이 설정은 계정에 저장됩니다.`:'로그인하면 정참시 알림 수신 여부를 ON/OFF로 저장할 수 있습니다.';
+}
+function toggleNotificationPopover(){
+  const pop=document.getElementById('notificationPopover');if(!pop)return;
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE=window.JJDD_ACCOUNT_RETURN_PAGE||'ranking';openAccountModal('login');return;}
+  pop.classList.toggle('show');pop.setAttribute('aria-hidden',pop.classList.contains('show')?'false':'true');renderNotificationUI();
+}
+document.getElementById('notificationBtn')?.addEventListener('click',e=>{e.stopPropagation();toggleNotificationPopover();});
+document.getElementById('notificationPopover')?.addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('click',()=>document.getElementById('notificationPopover')?.classList.remove('show'));
+document.getElementById('notificationSwitch')?.addEventListener('click',async()=>{
+  if(!window.JJDD_ACCOUNT_USER){openAccountModal('login');return;}
+  const next=!accountNotificationEnabled(),st=document.getElementById('notificationStatus');if(st)st.textContent='저장 중…';
+  try{const j=await accountApi('/api/account/profile',{method:'POST',body:JSON.stringify({notificationsEnabled:next})});setAccountUI(j.user);if(st)st.textContent=`알림을 ${next?'켰습니다.':'껐습니다.'}`;}catch(e){if(st)st.textContent=e.message||'알림 설정을 저장하지 못했습니다.';}
+});
+renderPresidentTerm();
+// ===== /v2.2.7 =====
+
 // ===== v2.2.6 Visitor statistics + Community + JEONGCHAMSI branding =====
 const JJDD_VISITOR_KEY='jjdd_visitor_session_v1';
 function jjddVisitorSession(){

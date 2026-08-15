@@ -1,4 +1,6 @@
-# 정참시 v2.2.6 · Clean Profile + PRO News Publisher
+> 최신 UI/기능 패치: `README_V2_2_7_REFERENCE_COMPARE_SEARCH_ALERTS.md`
+
+# 정참시 v2.2.7 · Reference Compare + Search + Alerts
 
 최신 변경사항은 `README_V2_2_6_CLEAN_PROFILE_PRO_NEWS.md`를 확인하세요.
 

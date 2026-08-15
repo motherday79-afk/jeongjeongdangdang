@@ -11,6 +11,11 @@ module.exports=async function(req,res){
     if(!validateNickname(b.nickname)) return res.status(400).json({ok:false,error:'닉네임은 2~20자로 입력해주세요.'});
     user.nickname=String(b.nickname).trim();
   }
+  if(Object.prototype.hasOwnProperty.call(b,'notificationsEnabled')){
+    if(typeof b.notificationsEnabled!=='boolean') return res.status(400).json({ok:false,error:'알림 설정값이 올바르지 않습니다.'});
+    user.notificationsEnabled=b.notificationsEnabled;
+    user.notificationsUpdatedAt=new Date().toISOString();
+  }
   if(Object.prototype.hasOwnProperty.call(b,'partyPreference') || Object.prototype.hasOwnProperty.call(b,'sensitiveConsent')){
     const consent=b.sensitiveConsent===true;
     const party=String(b.partyPreference||'').trim();
