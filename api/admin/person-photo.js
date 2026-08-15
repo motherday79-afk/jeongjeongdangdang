@@ -8,7 +8,7 @@ function key(id){return `jjdd:local-photo:override:${id}`;}
 module.exports=async function(req,res){
   if(!requireAdmin(req,res))return;
   const id=Number(req.body?.id||req.query?.id||0),m=findEntity(id);
-  if(!m||Number(m.id)===300||String(m.party||'')==='공석')return res.status(404).json({ok:false,error:'정치인을 찾을 수 없습니다.'});
+  if(!m||Number(m.id)===300||String(m.party||'')==='공석')return res.status(404).json({ok:false,error:'인물을 찾을 수 없습니다.'});
   if(req.method==='GET'){
     const override=await getJSON(key(id)).catch(()=>null);
     return res.json({ok:true,member:{id:m.id,name:m.name,party:m.party,entityType:m.entityType,office:m.office,jurisdiction:m.jurisdiction||m.constituency||m.region||''},photo:override});

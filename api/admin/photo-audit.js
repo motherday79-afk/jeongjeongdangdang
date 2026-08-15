@@ -1,18 +1,18 @@
 const crypto=require('crypto');
 const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
-const {activeRoster,findEntity}=require('../../lib/political_roster');
+const {photoRoster,findEntity}=require('../../lib/political_roster');
 const {auditMember,repairMember,recheckMember,summarize}=require('../../lib/photo_audit');
 
 const TTL=24*60*60;
-const LATEST='jjdd:photo-audit:latest:v1';
-function key(id){return `jjdd:photo-audit:run:${id}:v1`;}
+const LATEST='jjdd:photo-audit:latest:v2-government';
+function key(id){return `jjdd:photo-audit:run:${id}:v2-government`;}
 function runId(){return `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;}
 async function saveRun(run){await store.setJSON(key(run.id),run,TTL);await store.setJSON(LATEST,run,TTL);return run;}
 function mergeResults(run,rows,rosterLength){const byId=new Map((run.results||[]).map(x=>[String(x.id),x]));for(const x of rows||[])byId.set(String(x.id),x);const results=[...byId.values()].sort((a,b)=>Number(a.id)-Number(b.id));return {...run,results,summary:summarize(results,rosterLength),updatedAt:new Date().toISOString()};}
 module.exports=async function(req,res){
   if(!requireAdmin(req,res))return;
-  const roster=activeRoster();
+  const roster=photoRoster();
   if(req.method==='GET'){
     const latest=await store.getJSON(LATEST).catch(()=>null);
     return res.json({ok:true,total:roster.length,run:latest||null});

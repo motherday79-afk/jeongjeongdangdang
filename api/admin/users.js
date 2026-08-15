@@ -1,8 +1,9 @@
 const {requireAdmin}=require('../../lib/auth');
 const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {
-  ROLES,userKey,publicUser,normalizeUsername,validateUsername,validatePassword,
-  usernameIndexKey,hashPassword
+  ROLES,PARTY_OPTIONS,userKey,publicUser,normalizeUsername,normalizeEmail,normalizePhone,
+  validateUsername,validateEmail,validateNickname,validatePassword,validatePhone,validateRegion,validatePartyPreference,
+  usernameIndexKey,emailIndexKey,hashPassword,encryptSensitive,decryptSensitive
 }=require('../../lib/user_auth');
 
 async function getUser(id){ return id ? getJSON(userKey(id)) : null; }
@@ -98,32 +99,48 @@ module.exports=async function(req,res){
       const role=String(b.role||u.role||'FREE').toUpperCase();
       if(!ROLES.includes(role)) return res.status(400).json({ok:false,error:'유효하지 않은 등급입니다.'});
       const nextUsername=normalizeUsername(b.username);
+      const nextEmail=normalizeEmail(b.email);
+      const nextNickname=String(b.nickname||'').trim();
+      const nextPhone=normalizePhone(b.phone);
+      const nextRegion=validateRegion(b.regionMain,b.regionSub,b.regionDistrict);
+      const nextParty=String(b.partyPreference||'').trim();
       if(!validateUsername(nextUsername)) return res.status(400).json({ok:false,error:'아이디는 영문·숫자·밑줄(_)만 사용해 4~20자로 입력해주세요.'});
-      const prevUsername=normalizeUsername(u.username||'');
-      const usernameChanged=prevUsername!==nextUsername;
-      let reservedNew=false;
+      if(nextEmail && !validateEmail(nextEmail)) return res.status(400).json({ok:false,error:'이메일 형식을 확인해주세요.'});
+      if(!validateNickname(nextNickname)) return res.status(400).json({ok:false,error:'닉네임은 2~20자로 입력해주세요.'});
+      if(!validatePhone(nextPhone)) return res.status(400).json({ok:false,error:'전화번호를 확인해주세요.'});
+      if(!nextRegion) return res.status(400).json({ok:false,error:'지역을 시·도부터 시·군·구까지 선택해주세요.'});
+      if(!validatePartyPreference(nextParty)) return res.status(400).json({ok:false,error:'선호정당을 선택해주세요.'});
+
+      const prevUsername=normalizeUsername(u.username||''),prevEmail=normalizeEmail(u.email||'');
+      const usernameChanged=prevUsername!==nextUsername,emailChanged=prevEmail!==nextEmail;
+      let reservedUsername=false,reservedEmail=false;
       if(usernameChanged){
-        const idx=usernameIndexKey(nextUsername);
-        const existing=await cmd(['GET',idx]);
+        const idx=usernameIndexKey(nextUsername),existing=await cmd(['GET',idx]);
         if(existing && String(existing)!==String(u.id)) return res.status(409).json({ok:false,error:'이미 사용 중인 아이디입니다.'});
-        if(!existing){
-          const r=await cmd(['SET',idx,u.id,'NX']);
-          if(r!=='OK') return res.status(409).json({ok:false,error:'이미 사용 중인 아이디입니다.'});
-          reservedNew=true;
-        }
+        if(!existing){const r=await cmd(['SET',idx,u.id,'NX']);if(r!=='OK')return res.status(409).json({ok:false,error:'이미 사용 중인 아이디입니다.'});reservedUsername=true;}
       }
-      const before={username:u.username,role:u.role};
+      if(emailChanged&&nextEmail){
+        const idx=emailIndexKey(nextEmail),existing=await cmd(['GET',idx]);
+        if(existing && String(existing)!==String(u.id)){if(reservedUsername)await cmd(['DEL',usernameIndexKey(nextUsername)]).catch(()=>{});return res.status(409).json({ok:false,error:'이미 가입된 이메일입니다.'});}
+        if(!existing){const r=await cmd(['SET',idx,u.id,'NX']);if(r!=='OK'){if(reservedUsername)await cmd(['DEL',usernameIndexKey(nextUsername)]).catch(()=>{});return res.status(409).json({ok:false,error:'이미 가입된 이메일입니다.'});}reservedEmail=true;}
+      }
+      const old={username:u.username,email:u.email,nickname:u.nickname,role:u.role,profileDataEnc:u.profileDataEnc,politicalPreferenceEnc:u.politicalPreferenceEnc};
       try{
-        u.username=nextUsername;u.role=role;u.updatedAt=new Date().toISOString();
-        u.adminAccountUpdatedAt=u.updatedAt;u.adminAccountUpdatedBy=String(admin.id||'admin');
+        const pref=decryptSensitive(u.politicalPreferenceEnc)||{};
+        u.username=nextUsername;u.email=nextEmail||null;u.nickname=nextNickname;u.role=role;
+        u.profileDataEnc=encryptSensitive({phone:nextPhone,region:nextRegion});
+        u.politicalPreferenceEnc=encryptSensitive({...pref,party:nextParty,adminCorrectedAt:new Date().toISOString(),adminCorrectedBy:String(admin.id||'admin')});
+        u.updatedAt=new Date().toISOString();u.adminAccountUpdatedAt=u.updatedAt;u.adminAccountUpdatedBy=String(admin.id||'admin');
         await setJSON(userKey(u.id),u);
-        if(usernameChanged && prevUsername) await cmd(['DEL',usernameIndexKey(prevUsername)]);
+        if(usernameChanged&&prevUsername)await cmd(['DEL',usernameIndexKey(prevUsername)]).catch(()=>{});
+        if(emailChanged&&prevEmail)await cmd(['DEL',emailIndexKey(prevEmail)]).catch(()=>{});
       }catch(e){
-        u.username=before.username;u.role=before.role;
-        if(reservedNew) await cmd(['DEL',usernameIndexKey(nextUsername)]).catch(()=>{});
+        Object.assign(u,old);
+        if(reservedUsername)await cmd(['DEL',usernameIndexKey(nextUsername)]).catch(()=>{});
+        if(reservedEmail&&nextEmail)await cmd(['DEL',emailIndexKey(nextEmail)]).catch(()=>{});
         throw e;
       }
-      return res.json({ok:true,user:publicUser(u,{includePreference:true}),usernameChanged});
+      return res.json({ok:true,user:publicUser(u,{includePreference:true}),usernameChanged,emailChanged});
     }
 
     if(action==='reset-password'){
