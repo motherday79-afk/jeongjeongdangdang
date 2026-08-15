@@ -1578,16 +1578,10 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   // 시도지사협의회/시장군수구청장협의회 공식 회원 페이지에서 이름+직위/지역을 함께 확인한 사진만 프록시합니다.
   // 확인 실패 시 onerror가 안전 기본이미지로 즉시 되돌립니다. 이름 기반 일반 웹 사진은 사용하지 않습니다.
   if((type==='metro'||type==='local')){
-    if(member?.photoVerified===true && member?.officialPhoto){
-      const src=member.officialPhoto;
-      const title='사진 출처: 지방정부 · 신원 검증 완료';
-      return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="local-government-official" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
-    }
-    const cachedLocal=politicianPhotoCache[String(memberId)];
-    if(cachedLocal?.url){
-      return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(cachedLocal.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cachedLocal.title||'검증된 고해상도 인물 사진')}" data-photo-source="${photoAttr(cachedLocal.source||'verified-web-cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
-    }
-    return `<span class="politician-photo local-official-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1">${personSVG(seedv)}</span>`;
+    const src=(member?.photoVerified===true && member?.officialPhoto)?member.officialPhoto:`/api/local-photo?id=${encodeURIComponent(memberId)}&v=5`;
+    const source=(member?.photoVerified===true && member?.officialPhoto)?'local-government-official':'local-photo-search-v5';
+    const title=(member?.photoVerified===true && member?.officialPhoto)?'사진 출처: 지방정부 · 신원 검증 완료':'사진 출처: 정참시 고해상도 인물사진 검색 · 이름/직위/지역 교차검증';
+    return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="${source}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -9957,33 +9951,64 @@ document.querySelectorAll('[data-keyword-category]').forEach(t=>t.addEventListen
   renderNowKeywordStrip();
 }));
 
+const JJDD_UI_HISTORY_KEY='__jjddUi';
+let JJDD_RESTORING_UI_HISTORY=false;
+function jjddActivePageName(){
+  const p=document.querySelector('.page.active');
+  return p?.id?.replace(/^page-/,'')||'ranking';
+}
+function jjddUiHistoryState(src=history.state){
+  return src&&typeof src==='object'&&src[JJDD_UI_HISTORY_KEY]&&typeof src[JJDD_UI_HISTORY_KEY]==='object'?src[JJDD_UI_HISTORY_KEY]:null;
+}
+function jjddWriteUiHistory(state,{replace=false}={}){
+  try{
+    const base=(history.state&&typeof history.state==='object')?{...history.state}:{};
+    delete base[JJDD_MODAL_HISTORY_KEY];
+    const next={...base,[JJDD_UI_HISTORY_KEY]:state};
+    if(replace)history.replaceState(next,document.title);else history.pushState(next,document.title);
+  }catch(_){ }
+}
+function jjddEnsureUiHistory(){
+  if(jjddUiHistoryState())return;
+  jjddWriteUiHistory({page:jjddActivePageName(),view:'list'},{replace:true});
+}
+function jjddSetNewsListSurface(){
+  const list=document.getElementById('newsListView'),article=document.getElementById('articleView');
+  if(list)list.style.display='block';if(article)article.style.display='none';
+  const hero=document.getElementById('articleHero');if(hero)hero.classList.remove('has-upload');
+}
+function jjddSetCommunityListSurface(){
+  const list=document.getElementById('communityListView'),detail=document.getElementById('communityDetailView');
+  if(list)list.style.display='block';if(detail)detail.style.display='none';communitySelectedPost=null;
+}
 document.querySelectorAll(".navbtn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    showPage(btn.dataset.page);
-  });
+  btn.addEventListener("click",()=>showPage(btn.dataset.page));
 });
-function showPage(name){
+function showPage(name,opts={}){
   if(name==='my' && !window.JJDD_ACCOUNT_USER){ openAccountModal('login'); return; }
+  jjddEnsureUiHistory();
+  const preserveSubview=Boolean(opts.preserveSubview);
+  if(!opts.skipHistory&&!JJDD_RESTORING_UI_HISTORY){
+    const cur=jjddUiHistoryState();
+    const next={page:name,view:'list'};
+    if(!cur||cur.page!==next.page||cur.view!==next.view)jjddWriteUiHistory(next);
+  }
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const target=document.getElementById("page-"+name);
   if(!target)return;
   target.classList.add("active");
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
   setMobileNavActive(name);
+  if(!preserveSubview){
+    if(name==='news')jjddSetNewsListSurface();
+    if(name==='community')jjddSetCommunityListSurface();
+  }
   if(name==='community')loadCommunity().catch(()=>{});
-  window.scrollTo({top:0,behavior:"smooth"});
+  if(opts.scroll!==false)window.scrollTo({top:0,behavior:opts.instant?'auto':'smooth'});
 }
 window.showPage = showPage;
 const logoHome = document.getElementById("logoHome");
-if(logoHome){
-  logoHome.addEventListener("click", ()=>{
-    document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
-    const firstNav = document.querySelector('.navbtn[data-page="ranking"]');
-    if(firstNav) firstNav.classList.add("active");
-    showPage("ranking");
-  });
-}
+if(logoHome)logoHome.addEventListener("click",()=>showPage("ranking"));
 
 function newsEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function newsDate(v){
@@ -10028,8 +10053,17 @@ function renderNewsGrid(){
     </article>
   `).join('');
 }
-function openArticle(idx){
+function newsArticleRouteKey(a,idx){return String(a?.id||`idx:${idx}:${a?.title||''}`)}
+function findNewsArticleIndexByRoute(st){
+  if(!st)return -1;
+  if(st.articleId!=null){const byId=newsArticles.findIndex(a=>String(a?.id||'')===String(st.articleId));if(byId>=0)return byId;}
+  if(st.articleKey){const byKey=newsArticles.findIndex((a,i)=>newsArticleRouteKey(a,i)===String(st.articleKey));if(byKey>=0)return byKey;}
+  if(Number.isFinite(Number(st.articleIndex))&&newsArticles[Number(st.articleIndex)])return Number(st.articleIndex);
+  return -1;
+}
+function openArticle(idx,opts={}){
   const a=newsArticles[idx];if(!a)return;
+  showPage('news',{skipHistory:true,preserveSubview:true,scroll:false});
   document.getElementById('newsListView').style.display='none';
   document.getElementById('articleView').style.display='block';
   const hero=document.getElementById('articleHero');hero.classList.toggle('has-upload',Boolean(a.imageUrl));hero.innerHTML=newsVisual(a);
@@ -10040,13 +10074,18 @@ function openArticle(idx){
     <div class="article-meta">${newsEsc(a.author)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
     ${paras.map(p=>`<p>${newsEsc(p)}</p>`).join('')}
   `;
-  showPage('news');
+  if(!opts.skipHistory&&!JJDD_RESTORING_UI_HISTORY){
+    jjddEnsureUiHistory();
+    jjddWriteUiHistory({page:'news',view:'article',articleId:a?.id??null,articleKey:newsArticleRouteKey(a,idx),articleIndex:Number(idx)});
+  }
+  if(opts.scroll!==false)window.scrollTo({top:0,behavior:opts.instant?'auto':'smooth'});
 }
 window.openArticle = openArticle;
 function backToNews(){
-  document.getElementById('newsListView').style.display='block';
-  document.getElementById('articleView').style.display='none';
-  const hero=document.getElementById('articleHero');if(hero)hero.classList.remove('has-upload');
+  const st=jjddUiHistoryState();
+  if(st?.page==='news'&&st?.view==='article'){try{history.back();return;}catch(_){ }}
+  jjddSetNewsListSurface();
+  jjddWriteUiHistory({page:'news',view:'list'},{replace:true});
 }
 window.backToNews = backToNews;
 async function newsApi(url='/api/news',init){
@@ -10446,10 +10485,33 @@ function jjddRestoreModalFromHistory(st){
   if(st.type==='government' && Number.isFinite(Number(st.index))){openGovPerson(Number(st.index),{skipHistory:true});return;}
   jjddHardCloseModal();
 }
+async function jjddRestoreUiFromHistory(st){
+  JJDD_RESTORING_UI_HISTORY=true;
+  try{
+    const route=st&&typeof st==='object'?st:{page:'ranking',view:'list'};
+    const page=route.page||'ranking';
+    if(page==='news'&&route.view==='article'){
+      if(!newsArticles.length)await loadPublishedNews(false);
+      const idx=findNewsArticleIndexByRoute(route);
+      if(idx>=0)openArticle(idx,{skipHistory:true,instant:true});
+      else showPage('news',{skipHistory:true,instant:true});
+      return;
+    }
+    if(page==='community'&&route.view==='post'){
+      showPage('community',{skipHistory:true,preserveSubview:true,instant:true});
+      if(!communityPosts.length)await loadCommunity(false);
+      const ok=await openCommunityPost(route.postId,{skipHistory:true,instant:true});
+      if(!ok)showPage('community',{skipHistory:true,instant:true});
+      return;
+    }
+    showPage(page,{skipHistory:true,instant:true});
+  }finally{JJDD_RESTORING_UI_HISTORY=false;}
+}
 window.addEventListener('popstate',(event)=>{
-  const st=event.state && typeof event.state==='object' ? event.state[JJDD_MODAL_HISTORY_KEY] : null;
-  if(st)jjddRestoreModalFromHistory(st);
-  else jjddHardCloseModal();
+  const modalState=event.state&&typeof event.state==='object'?event.state[JJDD_MODAL_HISTORY_KEY]:null;
+  if(modalState){jjddRestoreModalFromHistory(modalState);return;}
+  jjddHardCloseModal();
+  jjddRestoreUiFromHistory(event.state&&typeof event.state==='object'?event.state[JJDD_UI_HISTORY_KEY]:null).catch(()=>{});
 });
 
 function hasProAccess(){return Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro);}
@@ -10555,7 +10617,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.12 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.15 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -11334,22 +11396,32 @@ async function loadCommunity(force=false){
   try{const j=await communityApi({url:'/api/community?limit=60'});communityPosts=Array.isArray(j.posts)?j.posts:[];renderCommunityPosts();}
   catch(e){if(el)el.innerHTML=`<div class="community-empty">정뮤니티를 불러오지 못했습니다.<br>${accountEsc(e.message)}</div>`;}
 }
-async function openCommunityPost(id){
-  const p=communityPosts.find(x=>String(x.id)===String(id));if(!p)return;communitySelectedPost=p;
-  const list=document.getElementById('communityListView'),detail=document.getElementById('communityDetailView'),box=document.getElementById('communityDetail');if(!list||!detail||!box)return;
+async function openCommunityPost(id,opts={}){
+  showPage('community',{skipHistory:true,preserveSubview:true,scroll:false});
+  let p=communityPosts.find(x=>String(x.id)===String(id));
+  if(!p&&opts.skipHistory){await loadCommunity(false);p=communityPosts.find(x=>String(x.id)===String(id));}
+  if(!p)return false;communitySelectedPost=p;
+  const list=document.getElementById('communityListView'),detail=document.getElementById('communityDetailView'),box=document.getElementById('communityDetail');if(!list||!detail||!box)return false;
   list.style.display='none';detail.style.display='block';box.innerHTML=`<div class="community-post-top"><span class="community-badge">${accountEsc(p.category)}</span><span>${accountEsc(p.author)} · ${accountEsc(p.role||'FREE')} · ${communityDate(p.createdAt)}</span></div><h2>${accountEsc(p.title)}</h2><div class="community-detail-body">${accountEsc(p.content)}</div>`;
   document.getElementById('communityCommentInput').value='';document.getElementById('communityCommentStatus').textContent='';renderCommunityLoginState();
+  if(!opts.skipHistory&&!JJDD_RESTORING_UI_HISTORY){jjddEnsureUiHistory();jjddWriteUiHistory({page:'community',view:'post',postId:String(p.id)});}
   await loadCommunityComments(p.id);
+  if(opts.scroll!==false)window.scrollTo({top:0,behavior:opts.instant?'auto':'smooth'});
+  return true;
 }
 async function loadCommunityComments(postId){
   const el=document.getElementById('communityCommentList'),cnt=document.getElementById('communityCommentCount');if(el)el.innerHTML='<div class="community-comment-empty">댓글을 불러오는 중입니다…</div>';
   try{const j=await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'comments',mode:'list',postId})}}),rows=Array.isArray(j.comments)?j.comments:[];if(cnt)cnt.textContent=String(rows.length);if(el)el.innerHTML=rows.length?rows.map(c=>`<div class="community-comment"><b>${accountEsc(c.author)} · ${accountEsc(c.role||'FREE')}</b><span>${communityDate(c.createdAt)}</span><p>${accountEsc(c.content)}</p></div>`).join(''):'<div class="community-comment-empty">첫 댓글을 남겨보세요.</div>';}
   catch(e){if(el)el.innerHTML=`<div class="community-comment-empty">${accountEsc(e.message)}</div>`;}
 }
-function backCommunityList(){document.getElementById('communityDetailView').style.display='none';document.getElementById('communityListView').style.display='block';communitySelectedPost=null;}
+function backCommunityList(){
+  const st=jjddUiHistoryState();
+  if(st?.page==='community'&&st?.view==='post'){try{history.back();return;}catch(_){ }}
+  jjddSetCommunityListSurface();jjddWriteUiHistory({page:'community',view:'list'},{replace:true});
+}
 document.getElementById('communityBackBtn')?.addEventListener('click',backCommunityList);
 document.getElementById('communityReloadBtn')?.addEventListener('click',()=>loadCommunity(true));
-document.querySelectorAll('[data-community-cat]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-community-cat]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');communityCategoryFilter=btn.dataset.communityCat||'all';backCommunityList();renderCommunityPosts();}));
+document.querySelectorAll('[data-community-cat]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-community-cat]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');communityCategoryFilter=btn.dataset.communityCat||'all';jjddSetCommunityListSurface();renderCommunityPosts();const st=jjddUiHistoryState();if(st?.page==='community'&&st?.view!=='list')jjddWriteUiHistory({page:'community',view:'list'},{replace:true});}));
 document.getElementById('communityWriteBtn')?.addEventListener('click',async()=>{
   if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='community';openAccountModal('login');return;}const st=document.getElementById('communityWriteStatus'),title=document.getElementById('communityTitle').value.trim(),content=document.getElementById('communityContent').value.trim(),category=document.getElementById('communityCategory').value;if(title.length<2||content.length<2){st.textContent='제목과 내용을 2자 이상 입력해주세요.';return;}st.textContent='등록 중…';
   try{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',title,content,category})}});document.getElementById('communityTitle').value='';document.getElementById('communityContent').value='';st.textContent='등록되었습니다.';await loadCommunity(true);}
@@ -11362,6 +11434,7 @@ document.getElementById('communityCommentBtn')?.addEventListener('click',async()
 });
 // ===== /v2.2.6 =====
 const accountLoginButton=document.getElementById('accountLoginBtn');if(accountLoginButton)accountLoginButton.onclick=()=>window.JJDD_ACCOUNT_USER?showPage('my'):openAccountModal('login');
+jjddEnsureUiHistory();
 refreshAccountSession();
 // ===== /v2.0.1 Simple ID Login & 8-char Password =====
 </script>
