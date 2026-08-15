@@ -9,8 +9,11 @@
     "jurisdiction": "국무조정실",
     "region": "대한민국",
     "party": "대한민국 정부",
-    "status": "제50대 국무총리 · 2026.07.02 취임",
-    "photoPolicy": "verified-web"
+    "status": "제50대 국무총리 · 2026.07.01 취임",
+    "photoPolicy": "official-preferred",
+    "photoVerified": true,
+    "officialPhoto": "https://www.opm.go.kr/_res/opm/img/prime/img-greetings06%28hss%29.png",
+    "officialProfileUrl": "https://www.opm.go.kr/opm/prime/profile.do"
   },
   {
     "id": 910001,

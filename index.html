@@ -51,12 +51,13 @@ a{text-decoration:none;color:inherit}
 .logo-title{font-size:29px;font-weight:950;letter-spacing:-1.8px}
 .logo-subtitle{margin-top:5px;font-size:10px;font-weight:850;letter-spacing:-.25px;color:#66736f}
 .logo-mark{
-  width:58px;height:34px;border-radius:13px 13px 13px 6px;background:linear-gradient(135deg,#35c7b1 0%,var(--mint-dark) 100%);
-  position:relative;display:grid;place-items:center;box-shadow:0 9px 20px rgba(17,154,135,.22);isolation:isolate;
+  width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,var(--mint),var(--mint-dark));
+  position:relative;box-shadow:0 8px 18px rgba(40,183,162,.2);
 }
-.logo-mark:after{content:"";position:absolute;left:8px;bottom:-5px;width:11px;height:8px;background:var(--mint-dark);clip-path:polygon(0 0,100% 0,0 100%);z-index:-1}
-.logo-monogram{color:#fff;font-size:15px;font-weight:1000;letter-spacing:-1.3px;line-height:1;transform:translateY(-.5px)}
-.logo-live-dot{position:absolute;right:6px;top:5px;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.16)}
+.logo-mark:before,.logo-mark:after{content:"";position:absolute;bottom:5px;background:white;border-radius:2px}
+.logo-mark:before{left:6px;width:5px;height:11px}
+.logo-mark:after{left:14px;width:5px;height:18px}
+.logo-mark i{position:absolute;left:22px;bottom:5px;width:5px;height:8px;border-radius:2px;background:#fff;display:block}
 .navlinks{display:flex;gap:8px;flex:1}
 .navbtn{
   border:0;background:transparent;padding:11px 16px;border-radius:12px;
@@ -798,7 +799,7 @@ a{text-decoration:none;color:inherit}
   .nav{height:62px;padding:0 12px;gap:10px}
   .logo-title{font-size:21px;letter-spacing:-1.1px}
   .logo-subtitle{font-size:8px;margin-top:4px}
-  .logo-mark{width:48px;height:29px;border-radius:11px 11px 11px 5px}.logo-monogram{font-size:13px}.logo-live-dot{right:5px;top:4px}
+  .logo-mark{width:25px;height:25px}
   .navlinks{display:none}
   .navright{margin-left:auto;gap:6px}
   .navright .loginbtn{display:none}
@@ -1006,7 +1007,7 @@ a{text-decoration:none;color:inherit}
 <div class="topbar">
   <div class="nav">
     <div class="logo" id="logoHome" style="cursor:pointer" aria-label="정참시 · 정치에 참여할 시간">
-      <div class="logo-mark" aria-hidden="true"><span class="logo-monogram">ㅈㅊㅅ</span><i class="logo-live-dot"></i></div>
+      <div class="logo-mark"><i></i></div>
       <div class="logo-copy"><div class="logo-title">정참시</div><div class="logo-subtitle">정치에 참여할 시간</div></div>
     </div>
     <div class="navlinks">
@@ -1580,9 +1581,9 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   // v2.2.20: 랭킹 정치인과 정부 주요 인사는 모두 Vercel 서버 프록시를 통해 사진을 받습니다.
   // 브라우저가 Wikidata/Wikipedia/Bing 등의 외부 검색을 직접 수행하지 않습니다.
   if(member){
-    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=6`;
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=7`;
     const title='사진 출처: 정참시 서버 검증 · 이름/직위/지역 교차검증 · 원본 프록시';
-    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v6" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v7" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -1851,6 +1852,24 @@ async function handlePoliticianPhotoError(img){
   // 서버 프록시는 내부에서 깨진 URL 캐시 폐기 + 1회 재검색까지 끝낸 뒤 실패합니다.
   // roster 인물은 여기서 다시 브라우저 외부검색으로 우회하지 않고 안전 기본이미지로 종료합니다.
   if(slot?.dataset.photoServer==='1'){
+    // v2.2.22: 서버 사진이 일시적으로 404/timeout이 나더라도 즉시 기본 이미지로 확정하지 않습니다.
+    // 동일 인물 프록시를 캐시버스터와 함께 한 번 더 호출해 CDN/원본의 순간 장애를 흡수합니다.
+    if(slot.dataset.photoServerRetry!=='1'){
+      slot.dataset.photoServerRetry='1';
+      const retryImg=document.createElement('img');
+      retryImg.src=`/api/person-photo?id=${encodeURIComponent(seed)}&v=7&retry=1&t=${Date.now()}`;
+      retryImg.alt=`${name} 사진`;
+      retryImg.title='사진 출처: 정참시 서버 검증 · 자동 복구 재시도';
+      retryImg.dataset.photoSource='server-person-photo-v7-retry';
+      retryImg.dataset.photoQuality=img.dataset.photoQuality||'standard';
+      retryImg.dataset.photoName=encodeURIComponent(name);
+      retryImg.dataset.photoSeed=String(seed);
+      retryImg.loading='lazy'; retryImg.decoding='async'; retryImg.referrerPolicy='no-referrer';
+      retryImg.onerror=()=>handlePoliticianPhotoError(retryImg);
+      slot.classList.add('is-loading');
+      slot.replaceChildren(retryImg);
+      return;
+    }
     slot.classList.remove('is-loading');
     slot.innerHTML=personSVG(seed);
     slot.title='검증 가능한 사진을 찾지 못해 기본 이미지를 표시합니다.';
@@ -9025,7 +9044,7 @@ people = people.map(p => {
 // ===== /NOW Rank v1 =====
 
 const governmentOfficials = [
- {role:"국무총리",name:"한성숙",ministry:"국무조정실",status:"제50대 국무총리 · 2026.07.02 취임"},
+ {role:"국무총리",name:"한성숙",ministry:"국무조정실",status:"제50대 국무총리 · 2026.07.01 취임"},
  {role:"부총리 겸 장관",name:"구윤철",ministry:"재정경제부",status:"경제부총리"},
  {role:"부총리 겸 장관",name:"배경훈",ministry:"과학기술정보통신부",status:"과학기술·AI"},
  {role:"장관",name:"최교진",ministry:"교육부",status:"교육"},
@@ -9046,7 +9065,7 @@ const governmentOfficials = [
  {role:"장관",name:"황종우",ministry:"해양수산부",status:"해양·수산"},
  {role:"장관 직무대행",name:"노용석",ministry:"중소벤처기업부",status:"제1차관 · 장관 직무대행"}
 ];
-governmentOfficials.find(x=>x.name==="한성숙").journey=[["2017~2022", "네이버 대표이사", "국내 대표 플랫폼 기업을 이끈 IT·경영 경력"], ["2025", "중소벤처기업부 장관", "중소기업·스타트업 정책 총괄"], ["2026", "제50대 국무총리", "2026년 7월 2일 취임"]];
+governmentOfficials.find(x=>x.name==="한성숙").journey=[["2017~2022", "네이버 대표이사", "국내 대표 플랫폼 기업을 이끈 IT·경영 경력"], ["2025", "중소벤처기업부 장관", "중소기업·스타트업 정책 총괄"], ["2026", "제50대 국무총리", "2026년 7월 1일 취임"]];
 governmentOfficials.find(x=>x.name==="구윤철").journey=[["2017~2020", "기획재정부 예산·재정 핵심 보직", "예산실장과 제2차관 등 경제관료 경력"], ["2020~2022", "국무조정실장", "범정부 정책 조정"], ["2025~", "경제부총리", "재정·경제 정책 총괄"]];
 governmentOfficials.find(x=>x.name==="배경훈").journey=[["2010s~2025", "AI 연구자·기업인", "초거대 AI 연구·상용화 분야 경력"], ["2020s", "LG AI연구원장", "산업 AI 연구개발 주도"], ["2025~", "과학기술정보통신부 장관", "AI·과학기술 정책 총괄"]];
 governmentOfficials.find(x=>x.name==="최교진").journey=[["1981~", "교사·교육운동", "교직과 교육 시민사회 활동"], ["2014~2025", "세종특별자치시교육감", "2·3·4대 교육감"], ["2025~", "교육부 장관", "국가 교육정책 총괄"]];
@@ -9512,50 +9531,35 @@ function refreshChangeText(x,viewMode=mode){
   const route=finiteValue(r.oldRank)&&finiteValue(r.currentRank)?`${r.oldRank}위 → ${r.currentRank}위`:'직전 갱신 대비';
   return {text,cls,route};
 }
-function automaticRapidRiseCandidates(){
-  return people
-    .filter(x=>x && entityCategoryMatch(x,mode) && x.id!==300 && x.party!=='공석')
-    .map(x=>{const r=refreshRankChange(x,mode);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null,currentRank:finiteValue(r.currentRank)?Number(r.currentRank):viewRank(x,mode),manual:false};})
-    .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.currentRank))
-    .sort((a,b)=>(b.change-a.change)||(a.currentRank-b.currentRank)||String(a.x.name).localeCompare(String(b.x.name),'ko'));
-}
-function configuredRapidRiseCandidates(autoCandidates){
-  const cfg=window.JJDD_SITE_SETTINGS?.rapidRise||null;
-  if(!cfg||cfg.mode!=='manual')return autoCandidates.slice(0,10);
-  const slots=Array.isArray(cfg.slots)?cfg.slots:[],out=[],used=new Set();
-  slots.slice(0,10).forEach(slot=>{
-    const id=Number(slot?.id||slot);if(!Number.isInteger(id)||used.has(id))return;
-    const x=people.find(p=>Number(p.id)===id);if(!x||!entityCategoryMatch(x,mode)||x.party==='공석'||x.id===300)return;
-    const actual=refreshRankChange(x,mode),currentRank=finiteValue(actual.currentRank)?Number(actual.currentRank):viewRank(x,mode);
-    if(!Number.isFinite(currentRank))return;
-    const override=slot&&typeof slot==='object'&&finiteValue(slot.change)?Math.max(0,Number(slot.change)):null;
-    const change=override!=null?override:(finiteValue(actual.change)?Number(actual.change):0);
-    const oldRank=override!=null?currentRank+change:(finiteValue(actual.oldRank)?Number(actual.oldRank):(change>0?currentRank+change:null));
-    out.push({x,change,oldRank,currentRank,manual:true});used.add(id);
-  });
-  for(const v of autoCandidates){if(out.length>=10)break;if(used.has(Number(v.x.id)))continue;out.push(v);used.add(Number(v.x.id));}
-  return out.slice(0,10);
-}
 function renderRapidRiseTop10(){
-  const card=document.getElementById('rapidRiseCard'),box=document.getElementById('rapidRiseList');
+  const box=document.getElementById('rapidRiseList');
   if(!box) return;
-  const cfg=window.JJDD_SITE_SETTINGS?.rapidRise;
-  if(card)card.style.display=cfg?.enabled===false?'none':'';
-  if(cfg?.enabled===false)return;
-  const auto=automaticRapidRiseCandidates(),movers=configuredRapidRiseCandidates(auto);
+  const movers=people
+    .filter(x=>x && entityCategoryMatch(x,mode) && x.id!==300 && x.party!=='공석')
+    .map(x=>{const r=refreshRankChange(x,mode);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null,currentRank:finiteValue(r.currentRank)?Number(r.currentRank):viewRank(x,mode)};})
+    .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.currentRank))
+    .sort((a,b)=>(b.change-a.change)||(a.currentRank-b.currentRank)||String(a.x.name).localeCompare(String(b.x.name),'ko'))
+    .slice(0,10);
+
   if(!movers.length){
     const comparable=people.filter(x=>entityCategoryMatch(x,mode)).some(x=>finiteValue(refreshRankChange(x,mode).change));
     box.innerHTML=`<div class="rapid-rise-empty">${comparable?'이번 갱신에서 순위가 오른 정치인이 없습니다.':'비교 가능한 직전 게시 스냅샷이 아직 없습니다.<br>다음 Refresh/Publish부터 실제 상승폭이 표시됩니다.'}</div>`;
     return;
   }
+
   box.innerHTML=movers.map((v,i)=>{
-    const x=v.x,tags=whyNowKeywords(x),reason=tags.length?tags[0]:((x.eventLabel&&!String(x.eventLabel).includes('연계 없음')&&!String(x.eventLabel).includes('현재 주요 정치 이슈'))?x.eventLabel:'');
-    const meta=[`${v.currentRank}위`,entityLabel(x),x.party,reason].filter(Boolean).join(' · '),delta=Number(v.change||0);
+    const x=v.x;
+    const tags=whyNowKeywords(x);
+    const reason=tags.length?tags[0]:((x.eventLabel&&!String(x.eventLabel).includes('연계 없음')&&!String(x.eventLabel).includes('현재 주요 정치 이슈'))?x.eventLabel:'');
+    const meta=[`${v.currentRank}위`,entityLabel(x),x.party,reason].filter(Boolean).join(' · ');
     return `<div class="rapid-rise-row" onclick="openDetail(${x.id})" title="${String(x.name).replace(/"/g,'&quot;')} 상세 보기">
       <div class="rapid-rise-order">${i+1}</div>
       <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
-      <div class="rapid-rise-copy"><div class="rapid-rise-name">${x.name}</div><div class="rapid-rise-meta">${meta}</div></div>
-      <div class="rapid-rise-delta">${delta>0?'▲ '+delta:'―'}<small>${v.oldRank??'?'} → ${v.currentRank}</small></div>
+      <div class="rapid-rise-copy">
+        <div class="rapid-rise-name">${x.name}</div>
+        <div class="rapid-rise-meta">${meta}</div>
+      </div>
+      <div class="rapid-rise-delta">▲ ${v.change}<small>${v.oldRank??'?'} → ${v.currentRank}</small></div>
     </div>`;
   }).join('');
 }
@@ -10679,7 +10683,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.21 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.2.15 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -11176,7 +11180,6 @@ function renderNowIssueSetting(issue){
   const box=document.getElementById('nowIssueRows'),rows=Array.isArray(issue.rows)?issue.rows:[];
   if(box){const nums=rows.map(r=>Number(String(r.value||'').replace(/[^0-9.]/g,''))).filter(Number.isFinite),mx=Math.max(1,...nums);box.innerHTML=rows.map(r=>{const n=Number(String(r.value||'').replace(/[^0-9.]/g,'')),w=Number.isFinite(n)?Math.max(4,Math.min(100,(n/mx)*100)):100;return `<div class="candidate"><div class="candline"><span>${siteEsc(r.label)}</span><b>${siteEsc(r.value)}</b></div><div class="bar"><span style="width:${w.toFixed(1)}%"></span></div></div>`;}).join('');}
 }
-function renderRapidRiseSetting(cfg){const card=document.getElementById('rapidRiseCard');if(card)card.style.display=cfg?.enabled===false?'none':'';renderRapidRiseTop10();}
 function renderSurveySetting(survey,loggedIn){
   const card=document.getElementById('surveyCard'),title=document.getElementById('surveyTitle'),body=document.getElementById('surveyBody');if(!card||!body||!survey)return;
   card.style.display=survey.active===false?'none':'';if(title)title.textContent=survey.title||'설문조사';
@@ -11192,7 +11195,7 @@ function renderSurveySetting(survey,loggedIn){
   const btn=document.getElementById('surveySubmitBtn');if(btn)btn.onclick=submitSurveyVote;
 }
 async function loadSiteSettings(){
-  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseSetting(j.rapidRise);syncResponsiveContent();syncSidebarWithPage();}
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);syncResponsiveContent();syncSidebarWithPage();}
   catch(e){console.warn('site settings unavailable',e);}
 }
 async function submitSurveyVote(){

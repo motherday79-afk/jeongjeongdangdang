@@ -1,4 +1,4 @@
-const {resolvePersonPhoto,invalidatePersonPhoto}=require('../lib/local_photo');
+const {resolvePersonPhoto,cachePersonPhotoRecord}=require('../lib/local_photo');
 
 async function fetchImage(photo){
   const tries=[
@@ -21,12 +21,24 @@ module.exports=async function(req,res){
   if(req.method!=='GET')return res.status(405).end();
   const id=Number(req.query?.id||0);if(!id)return res.status(400).end();
   try{
-    let photo=await resolvePersonPhoto(id);if(!photo?.url)return res.status(404).end();
-    let got=await fetchImage(photo);
+    // v2.2.22: last-known-good 사진 메타데이터를 새 후보가 실제로 성공하기 전에는 버리지 않습니다.
+    const previous=await resolvePersonPhoto(id);if(!previous?.url)return res.status(404).end();
+    let photo=previous;
+    let got=await fetchImage(previous);
     if(!got){
-      await invalidatePersonPhoto(id);
-      photo=await resolvePersonPhoto(id,{force:true});
-      if(photo?.url)got=await fetchImage(photo);
+      const replacement=await resolvePersonPhoto(id,{force:true,searchMode:'repair',persist:false}).catch(()=>null);
+      if(replacement?.url){
+        const replacementGot=await fetchImage(replacement);
+        if(replacementGot){
+          photo=replacement;got=replacementGot;
+          await cachePersonPhotoRecord(id,replacement).catch(()=>{});
+        }
+      }
+      // 새 후보도 실패한 경우 기존 known-good 메타데이터는 유지하고 원본을 한 번 더 재시도합니다.
+      if(!got){
+        const previousRetry=await fetchImage(previous);
+        if(previousRetry){photo=previous;got=previousRetry;}
+      }
     }
     if(!got)return res.status(404).end();
     res.setHeader('Content-Type',got.ct);
