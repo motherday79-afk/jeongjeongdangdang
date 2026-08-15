@@ -1573,20 +1573,17 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   const enc=encodeURIComponent(name||"");
   const memberId=Number(seedv)||0;
   const member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===memberId&&p.name===name):null;
-  const type=String(member?.entityType||'assembly');
-  // v2.2.3 local photo: 등록된 지방정부 공식사진을 우선하고, 없으면
-  // 시도지사협의회/시장군수구청장협의회 공식 회원 페이지에서 이름+직위/지역을 함께 확인한 사진만 프록시합니다.
-  // 확인 실패 시 onerror가 안전 기본이미지로 즉시 되돌립니다. 이름 기반 일반 웹 사진은 사용하지 않습니다.
-  if((type==='metro'||type==='local')){
-    const src=(member?.photoVerified===true && member?.officialPhoto)?member.officialPhoto:`/api/local-photo?id=${encodeURIComponent(memberId)}&v=5`;
-    const source=(member?.photoVerified===true && member?.officialPhoto)?'local-government-official':'local-photo-search-v5';
-    const title=(member?.photoVerified===true && member?.officialPhoto)?'사진 출처: 지방정부 · 신원 검증 완료':'사진 출처: 정참시 고해상도 인물사진 검색 · 이름/직위/지역 교차검증';
-    return `<span class="politician-photo local-official-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-local="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="${source}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+  // v2.2.16: DB roster 인물은 모두 Vercel 서버 프록시를 통해 사진을 받습니다.
+  // 브라우저가 Wikidata/Wikipedia/Bing 등의 외부 검색을 직접 수행하지 않습니다.
+  if(member){
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=6`;
+    const title='사진 출처: 정참시 서버 검증 · 이름/직위/지역 교차검증 · 원본 프록시';
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v6" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
   if(cached?.url){
-    return `<span class="politician-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-ambiguous="${ambiguous?'1':'0'}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'대한민국 국회 공식 사진')}" data-photo-source="${photoAttr(cached.source||'assembly-cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-ambiguous="${ambiguous?'1':'0'}"><img src="${photoAttr(cached.url)}" alt="${photoAttr(name)} 사진" title="${photoAttr(cached.title||'실제 인물 사진')}" data-photo-source="${photoAttr(cached.source||'photo-cache')}" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   return `<span class="politician-photo is-loading" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-ambiguous="${ambiguous?'1':'0'}">${personSVG(seedv)}</span>`;
 }
@@ -1837,6 +1834,7 @@ function registerPoliticianPhotoSlots(root=document){
   slots.forEach(slot=>{
     if(slot.dataset.photoRegistered==='1') return;
     slot.dataset.photoRegistered='1';
+    if(slot.dataset.photoServer==='1') return;
     if(politicianPhotoObserver) politicianPhotoObserver.observe(slot); else hydratePhotoSlot(slot);
   });
 }
@@ -1846,6 +1844,14 @@ async function handlePoliticianPhotoError(img){
   const member=(typeof people!=='undefined')?people.find(p=>Number(p.id)===seed&&p.name===name):null;
   if(seed) delete politicianPhotoCache[String(seed)]; savePoliticianPhotoCache();
   const slot=img.closest('.politician-photo');
+  // 서버 프록시는 내부에서 깨진 URL 캐시 폐기 + 1회 재검색까지 끝낸 뒤 실패합니다.
+  // roster 인물은 여기서 다시 브라우저 외부검색으로 우회하지 않고 안전 기본이미지로 종료합니다.
+  if(slot?.dataset.photoServer==='1'){
+    slot.classList.remove('is-loading');
+    slot.innerHTML=personSVG(seed);
+    slot.title='검증 가능한 사진을 찾지 못해 기본 이미지를 표시합니다.';
+    return;
+  }
   if(slot && slot.dataset.photoFallbackTried!=='1'){
     slot.dataset.photoFallbackTried='1';
     slot.classList.add('is-loading');
@@ -10589,7 +10595,7 @@ function openDetail(id,opts={}){
         <div class="detail-identity-info">
           <h2 class="h2" style="font-size:32px">${x.name}${suffix}</h2>
           <div class="sub" style="margin-top:6px">${x.party} · ${place}</div>
-          ${type!=='assembly'&&!(x.photoVerified&&x.officialPhoto)?'<div class="photo-safe-note">● 지방자치단체장 공식 협의회 사진 자동 확인 · 미확인 시 안전 기본이미지</div>':''}
+          <div class="photo-safe-note">● Vercel 서버 사진 검증 · 이름/직위/지역 교차확인 · 미확인 시 안전 기본이미지</div>
           <div class="detail-member-actions">${plusWatchButtonHTML(x)}</div>
         </div>
       </div>

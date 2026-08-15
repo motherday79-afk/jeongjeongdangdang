@@ -140,3 +140,6 @@ Wikipedia / NAVER VIEW HTML / Daum Blog HTML / YouTube / X 같은 무거운 보�
 ## v1.14.9 추가
 - 상세 NOW Rank 장기 변화 추적: 실제 게시마다 초경량 순위 이력 누적, 24h/7d/30d/1y 그래프.
 - 자세한 내용: README_V1_14_9_LONGTERM_RANK_HISTORY.md
+
+## v2.2.16
+- 관리자 전체 인물 사진 검수(542명) + roster 사진 Vercel 서버 프록시 통합. 자세한 내용은 README_V2_2_16_PHOTO_FULL_AUDIT.md 참고.
