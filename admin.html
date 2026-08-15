@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>정참시 관리자 · NOW Rank v2.2.7</title>
+<title>정참시 관리자 · v2.2.8</title>
 <style>
 :root{--bg:#f3f7f6;--panel:#fff;--ink:#111827;--muted:#64748b;--mint:#28b7a2;--mint2:#0f766e;--line:#dfe8e5;--danger:#b91c1c;--warn:#b45309;--blue:#1d4ed8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -17,12 +17,12 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
 .detail{margin-top:14px;border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}.detailHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:16px 17px;border-bottom:1px solid var(--line);background:#fbfdfc}.detailHead h3{margin:0 0 4px;font-size:20px}.close{background:#eef2f0;padding:8px 10px}.detailBody{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}.panel{border:1px solid var(--line);border-radius:14px;padding:13px}.panel h4{margin:0 0 11px;font-size:13px}.miniKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}.mini{background:#f8fafc;border-radius:10px;padding:9px}.mini span{display:block;font-size:9px;color:var(--muted);font-weight:800}.mini b{font-size:16px}.axis{margin:10px 0}.axisTop{display:flex;justify-content:space-between;gap:8px;font-size:11px}.bar{height:7px;background:#edf2f0;border-radius:99px;margin-top:5px;overflow:hidden}.bar span{display:block;height:100%;background:#334155;border-radius:99px}.axis small{color:var(--muted)}.sensorTable{font-size:11px}.sensorTable th{position:static}.sensorTable td,.sensorTable th{padding:7px 6px}.headline{padding:8px 0;border-bottom:1px solid #edf2f0;font-size:11px;line-height:1.45}.headline:last-child{border:0}.headline small{display:block;color:var(--muted);margin-top:3px}.capNote{font-size:11px;padding:8px 10px;border-radius:10px;background:#f8fafc;color:#475569;margin-top:8px}.legend{font-size:10px;color:var(--muted);line-height:1.5}.empty{padding:35px;text-align:center;color:var(--muted)}
 @media(max-width:1050px){.kpis{grid-template-columns:repeat(3,1fr)}.detailBody{grid-template-columns:1fr}.tools{grid-template-columns:1fr 1fr}.shown{grid-column:1/-1}.tableWrap{max-height:none}}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.wrap{padding:13px 9px 40px}.head{align-items:flex-start;flex-direction:column}.card{padding:13px;border-radius:16px}.kpis{grid-template-columns:1fr 1fr}.tools{grid-template-columns:1fr}.miniKpis{grid-template-columns:1fr 1fr}.auditToolbar{position:static}.tableWrap{border-radius:10px}.detailBody{padding:10px}.sources{max-width:180px}}
-.user-admin-list{display:grid;gap:8px;margin-top:12px}.user-admin-row{display:grid;grid-template-columns:minmax(220px,1fr) 130px 150px;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:10px 12px}.user-admin-row small{display:block;color:var(--muted);margin-top:3px}.user-admin-row select{padding:8px 9px}.user-admin-meta{text-align:right;font-size:11px;color:var(--muted)}@media(max-width:760px){.user-admin-row{grid-template-columns:1fr}.user-admin-meta{text-align:left}}
+.admin-shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px;align-items:start}.admin-nav{position:sticky;top:14px;background:#0f172a;color:#fff;border-radius:18px;padding:12px;max-height:calc(100vh - 28px);overflow:auto;box-shadow:0 12px 30px rgba(15,23,42,.12)}.admin-nav-title{padding:8px 9px 11px;font-size:11px;color:#94a3b8;font-weight:900;letter-spacing:.06em}.admin-nav button{width:100%;display:flex;align-items:center;gap:9px;text-align:left;background:transparent;color:#cbd5e1;border-radius:11px;padding:10px 11px;margin:2px 0}.admin-nav button:hover{background:#1e293b;color:#fff}.admin-nav button.active{background:#fff;color:#0f172a}.admin-nav .nav-sep{height:1px;background:#334155;margin:10px 5px}.admin-nav .nav-logout{color:#fca5a5}.admin-page{display:none}.admin-page.active{display:block}.admin-content{min-width:0}.user-admin-list{display:grid;gap:8px;margin-top:12px}.user-admin-row{display:grid;grid-template-columns:minmax(220px,1fr) 110px 130px 90px;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:10px 12px}.user-admin-row small{display:block;color:var(--muted);margin-top:3px}.user-admin-meta{text-align:right;font-size:11px;color:var(--muted)}.user-detail{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:14px;background:#fbfdfc}.user-detail h3{margin:0 0 5px}.privacy-note{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);padding:10px 12px;border-radius:12px;font-size:12px;color:#475569;margin-top:10px}.admin-top-actions{display:flex;gap:8px;align-items:center}.admin-top-actions button{padding:9px 12px}.mobile-admin-menu{display:none}@media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;max-height:none;overflow-x:auto;overflow-y:hidden;border-radius:14px;padding:7px}.admin-nav-title,.admin-nav .nav-sep{display:none}.admin-nav button{width:auto;flex:0 0 auto;white-space:nowrap;margin:0;padding:9px 11px}.admin-nav .nav-logout{margin-left:auto}.user-admin-row{grid-template-columns:1fr 110px 90px}.user-admin-meta{display:none}}@media(max-width:760px){.user-admin-row{grid-template-columns:1fr 1fr}.user-admin-row>div:first-child{grid-column:1/-1}.user-admin-meta{text-align:left}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.2.7 · JEONGCHAMSI</div></div>
+  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.2.8 · ADMIN WORKSPACE</div></div>
 
   <section class="card" id="loginCard">
     <h2 style="margin-top:0">관리자 로그인</h2>
@@ -31,68 +31,80 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
   </section>
 
   <div id="adminArea" class="hidden">
-    <section class="card">
-      <h2 style="margin-top:0">1. 데이터 Refresh</h2>
-      <div class="grid"><div><label>현재 핵심 이슈 제목</label><input id="eventTitle" value="민주당 8·17 전당대회"></div><div><label>이벤트 키워드 (쉼표 구분)</label><input id="eventKeywords" value="더불어민주당 전당대회,8·17 전당대회,당대표 경선"></div></div>
-      <div class="notice" style="margin-top:12px"><b>v2.2.7 정참시 REFERENCE COMPARE + SEARCH + ALERTS</b>는 국회의원 299명에 광역단체장 16명·기초단체장 227명을 더해 <b>현역 정치인 542명</b>을 동일한 ID 기반으로 수집합니다. 동명이인은 이름 검색 신호를 중복 귀속하지 않고 지역·직책 단서로 분리합니다. 지방단체장 사진은 <b>공식 지방정부 출처에서 인물 확인이 끝난 사진만</b> 허용하며, 검증 전에는 다른 동명이인 사진 대신 안전 기본이미지를 사용합니다.</div>
-      <div class="actions"><button class="mint" id="refreshBtn">NOW Rank 새로고침</button><button class="ghost" id="logoutBtn">로그아웃</button></div>
-      <div class="progress"><span id="bar"></span></div><div class="status" id="refreshStatus">대기 중</div>
-    </section>
+    <div class="admin-shell">
+      <aside class="admin-nav" aria-label="관리자 메뉴">
+        <div class="admin-nav-title">ADMIN MENU</div>
+        <button class="active" data-admin-nav="refresh">↻ <span>NOW Rank Refresh</span></button>
+        <button data-admin-nav="security">🔐 <span>관리자 보안</span></button>
+        <button data-admin-nav="visitors">◉ <span>방문자 표시 관리</span></button>
+        <button data-admin-nav="users">👤 <span>회원 관리</span></button>
+        <button data-admin-nav="status">● <span>운영 상태</span></button>
+        <div class="nav-sep"></div>
+        <button class="nav-logout" id="logoutBtn">↪ <span>로그아웃</span></button>
+      </aside>
 
-    <section class="card hidden" id="previewCard">
-      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
-        <div><h2 style="margin:0">2. 현역 정치인 542명 결과 감사</h2><div class="status" id="previewMeta"></div></div>
-        <div class="actions" style="margin:0"><button class="primary" id="publishBtn">게시</button><button class="danger" id="rollbackBtn">이전 스냅샷으로 롤백</button></div>
-      </div>
-      <div id="baselineWarning" class="notice warnbox hidden" style="margin-top:12px"></div>
-      <div class="kpis" id="qualityKpis"></div>
+      <main class="admin-content">
+        <div class="admin-page active" data-admin-page="refresh">
+          <section class="card">
+            <h2 style="margin-top:0">NOW Rank Refresh</h2>
+            <div class="grid"><div><label>현재 핵심 이슈 제목</label><input id="eventTitle" value="민주당 8·17 전당대회"></div><div><label>이벤트 키워드 (쉼표 구분)</label><input id="eventKeywords" value="더불어민주당 전당대회,8·17 전당대회,당대표 경선"></div></div>
+            <div class="notice" style="margin-top:12px"><b>정참시 NOW Rank</b>는 국회의원 299명·광역단체장 16명·기초단체장 227명, 총 <b>현역 정치인 542명</b>을 동일한 ID 기반으로 수집합니다. Refresh 결과는 게시 전 반드시 미리보기에서 데이터 품질을 확인하세요.</div>
+            <div class="actions"><button class="mint" id="refreshBtn">NOW Rank 새로고침</button></div>
+            <div class="progress"><span id="bar"></span></div><div class="status" id="refreshStatus">대기 중</div>
+          </section>
 
-      <div class="auditToolbar">
-        <div class="filterRow" id="filterRow">
-          <button class="chip active" data-filter="all">전체 542</button><button class="chip" data-filter="top30">전체 TOP 30</button><button class="chip" data-filter="top50">전체 TOP 50</button><button class="chip" data-filter="top100">전체 TOP 100</button><button class="chip" data-filter="rise">급등</button><button class="chip" data-filter="fall">급락</button><button class="chip" data-filter="anomaly">데이터 이상</button>
+          <section class="card hidden" id="previewCard">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+              <div><h2 style="margin:0">현역 정치인 542명 결과 감사</h2><div class="status" id="previewMeta"></div></div>
+              <div class="actions" style="margin:0"><button class="primary" id="publishBtn">게시</button><button class="danger" id="rollbackBtn">이전 스냅샷으로 롤백</button></div>
+            </div>
+            <div id="baselineWarning" class="notice warnbox hidden" style="margin-top:12px"></div>
+            <div class="kpis" id="qualityKpis"></div>
+            <div class="auditToolbar">
+              <div class="filterRow" id="filterRow"><button class="chip active" data-filter="all">전체 542</button><button class="chip" data-filter="top30">전체 TOP 30</button><button class="chip" data-filter="top50">전체 TOP 50</button><button class="chip" data-filter="top100">전체 TOP 100</button><button class="chip" data-filter="rise">급등</button><button class="chip" data-filter="fall">급락</button><button class="chip" data-filter="anomaly">데이터 이상</button></div>
+              <div class="tools"><input id="memberSearch" placeholder="이름·정당·지역·직책 검색"><select id="entityFilter"><option value="">전체 구분</option><option value="assembly">국회의원</option><option value="metro">광역단체장</option><option value="local">기초단체장</option></select><select id="partyFilter"><option value="">전체 정당</option></select><select id="sortBy"><option value="rank">전체 순위순</option><option value="categoryRank">분류 순위순</option><option value="changeDesc">전체 상승폭 큰 순</option><option value="changeAsc">전체 하락폭 큰 순</option><option value="rawDesc">RAW 높은 순</option><option value="confidenceAsc">신뢰도 낮은 순</option><option value="newsDesc">6h 뉴스 많은 순</option><option value="namePulseDesc">Name Pulse 검색량순</option><option value="sourcesAsc">원천 적은 순</option></select><div class="shown" id="shownCount">0명 표시</div></div>
+            </div>
+            <div class="tableWrap"><table><thead><tr><th>전체순위</th><th>분류순위</th><th>구분</th><th>인물</th><th>정당</th><th>NOW</th><th>RAW</th><th>전체 변화</th><th>6H 뉴스</th><th>월 검색량</th><th>원천군</th><th>신뢰도</th><th>수집상태</th><th>근거 원천</th></tr></thead><tbody id="previewBody"></tbody></table></div>
+            <div id="auditDetail" class="detail hidden"></div>
+          </section>
         </div>
-        <div class="tools"><input id="memberSearch" placeholder="이름·정당·지역·직책 검색"><select id="entityFilter"><option value="">전체 구분</option><option value="assembly">국회의원</option><option value="metro">광역단체장</option><option value="local">기초단체장</option></select><select id="partyFilter"><option value="">전체 정당</option></select><select id="sortBy"><option value="rank">전체 순위순</option><option value="categoryRank">분류 순위순</option><option value="changeDesc">전체 상승폭 큰 순</option><option value="changeAsc">전체 하락폭 큰 순</option><option value="rawDesc">RAW 높은 순</option><option value="confidenceAsc">신뢰도 낮은 순</option><option value="newsDesc">6h 뉴스 많은 순</option><option value="namePulseDesc">Name Pulse 검색량순</option><option value="sourcesAsc">원천 적은 순</option></select><div class="shown" id="shownCount">0명 표시</div></div>
-      </div>
 
-      <div class="tableWrap"><table><thead><tr><th>전체순위</th><th>분류순위</th><th>구분</th><th>인물</th><th>정당</th><th>NOW</th><th>RAW</th><th>전체 변화</th><th>6H 뉴스</th><th>월 검색량</th><th>원천군</th><th>신뢰도</th><th>수집상태</th><th>근거 원천</th></tr></thead><tbody id="previewBody"></tbody></table></div>
-      <div id="auditDetail" class="detail hidden"></div>
-    </section>
+        <div class="admin-page" data-admin-page="security">
+          <section class="card" id="adminSecurityCard">
+            <div><h2 style="margin:0">관리자 보안</h2><div class="status">관리자 로그인 비밀번호를 이 화면에서 변경합니다. 새 비밀번호는 8자 이상이면 됩니다.</div></div>
+            <div class="grid" style="margin-top:12px"><div><label>현재 비밀번호</label><input id="adminCurrentPw" type="password" autocomplete="current-password" placeholder="현재 관리자 비밀번호"></div><div><label>새 비밀번호</label><input id="adminNewPw" type="password" autocomplete="new-password" minlength="8" placeholder="8자 이상"></div></div>
+            <div class="grid" style="margin-top:10px"><div><label>새 비밀번호 확인</label><input id="adminNewPwConfirm" type="password" autocomplete="new-password" minlength="8" placeholder="새 비밀번호 다시 입력"></div><div><label>변경 상태</label><div class="status" id="adminPasswordStatus" style="padding:11px 0">현재 로그인 비밀번호를 확인한 뒤 변경합니다.</div></div></div>
+            <div class="actions"><button class="primary" id="changeAdminPwBtn">관리자 비밀번호 변경</button></div>
+            <div class="notice" style="margin-top:12px">변경 비밀번호는 평문으로 저장하지 않고 해시로 저장합니다. 완료되면 관리자 세션이 종료되고 새 비밀번호로 다시 로그인합니다.</div>
+          </section>
+        </div>
 
+        <div class="admin-page" data-admin-page="visitors">
+          <section class="card" id="visitorAdminCard">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">방문자 표시 관리</h2><div class="status">현재 접속은 실제 최근 5분 활동만 표시합니다. 오늘 방문·누적 방문은 실제 집계를 기본으로 두고 필요한 표시값을 보정할 수 있습니다.</div></div><button class="ghost" id="reloadVisitorStatsBtn">현재값 새로고침</button></div>
+            <div class="kpis" id="visitorAdminKpis" style="grid-template-columns:repeat(5,minmax(120px,1fr));margin-bottom:10px"></div>
+            <div class="grid"><div><label>오늘 방문 표시값</label><input id="visitorTodayTarget" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 128"></div><div><label>누적 방문 표시값</label><input id="visitorTotalTarget" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 3240"></div></div>
+            <div class="actions"><button class="primary" id="saveVisitorStatsBtn">방문자 표시값 저장</button><button class="ghost" id="resetVisitorStatsBtn">실제 집계값으로 초기화</button></div>
+            <div class="status" id="visitorAdminStatus">이 메뉴에 들어오면 방문자 집계를 불러옵니다.</div>
+            <div class="notice" style="margin-top:12px">저장값은 실제 방문자를 덮어쓰지 않고 보정값만 저장합니다. 이후 실제 방문자가 늘어나면 화면 숫자도 함께 증가합니다.</div>
+          </section>
+        </div>
 
-    <section class="card" id="visitorAdminCard">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-        <div><h2 style="margin:0">방문자 표시 관리</h2><div class="status">현재 접속은 실제 최근 5분 활동만 표시합니다. 오늘 방문·누적 방문은 실제 집계를 기본으로 두고, 초기 서비스 공개 전 필요한 표시값을 관리자에서 보정할 수 있습니다.</div></div>
-        <button class="ghost" id="reloadVisitorStatsBtn">현재값 새로고침</button>
-      </div>
-      <div class="kpis" id="visitorAdminKpis" style="grid-template-columns:repeat(5,minmax(120px,1fr));margin-bottom:10px"></div>
-      <div class="grid">
-        <div><label>오늘 방문 표시값</label><input id="visitorTodayTarget" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 128"></div>
-        <div><label>누적 방문 표시값</label><input id="visitorTotalTarget" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 3240"></div>
-      </div>
-      <div class="actions"><button class="primary" id="saveVisitorStatsBtn">방문자 표시값 저장</button><button class="ghost" id="resetVisitorStatsBtn">실제 집계값으로 초기화</button></div>
-      <div class="status" id="visitorAdminStatus">방문자 집계를 불러오는 중...</div>
-      <div class="notice" style="margin-top:12px">저장한 값은 실제 방문자를 덮어쓰지 않습니다. 저장 시점의 실제 집계와의 차이만 보정값으로 보관하므로, 이후 실제 방문자가 늘어나면 화면 숫자도 함께 증가합니다. 실제 집계보다 낮은 값은 설정할 수 없습니다.</div>
-    </section>
+        <div class="admin-page" data-admin-page="users">
+          <section class="card" id="memberAdminCard">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">회원 관리</h2><div class="status">회원 정보는 이 메뉴에 진입했을 때만 조회합니다. 운영자는 등급을 관리하고, 본인 확인이 어려운 회원의 아이디를 변경하거나 새 비밀번호를 설정할 수 있습니다.</div></div><button class="ghost" id="reloadUsersBtn">회원 새로고침</button></div>
+            <div class="privacy-note"><b>🔒</b><span>회원의 기존 비밀번호는 관리자도 볼 수 없습니다. 비밀번호 지원이 필요한 경우 <b>새 비밀번호를 설정</b>하는 방식으로만 처리하며, 변경 즉시 기존 로그인 세션을 무효화합니다.</span></div>
+            <div class="grid" style="margin-top:12px"><div><label>회원 검색</label><input id="userAdminSearch" placeholder="아이디 · 이메일 · 닉네임"></div><div><label>가입 현황</label><div class="status" id="userAdminSummary" style="padding:11px 0">회원 관리 메뉴에서 조회합니다.</div></div></div>
+            <div class="user-admin-list" id="userAdminList"></div>
+            <div class="user-detail hidden" id="userAdminDetail"></div>
+          </section>
+        </div>
 
-    <section class="card" id="adminSecurityCard">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-        <div><h2 style="margin:0">관리자 보안</h2><div class="status">Vercel 환경변수를 매번 수정하지 않고 이 화면에서 관리자 비밀번호를 변경할 수 있습니다. 새 비밀번호는 8자 이상이면 됩니다.</div></div>
-      </div>
-      <div class="grid" style="margin-top:12px">
-        <div><label>현재 비밀번호</label><input id="adminCurrentPw" type="password" autocomplete="current-password" placeholder="현재 관리자 비밀번호"></div>
-        <div><label>새 비밀번호</label><input id="adminNewPw" type="password" autocomplete="new-password" minlength="8" placeholder="8자 이상"></div>
-      </div>
-      <div class="grid" style="margin-top:10px">
-        <div><label>새 비밀번호 확인</label><input id="adminNewPwConfirm" type="password" autocomplete="new-password" minlength="8" placeholder="새 비밀번호 다시 입력"></div>
-        <div><label>변경 상태</label><div class="status" id="adminPasswordStatus" style="padding:11px 0">현재 로그인 비밀번호를 확인한 뒤 변경합니다.</div></div>
-      </div>
-      <div class="actions"><button class="primary" id="changeAdminPwBtn">관리자 비밀번호 변경</button></div>
-      <div class="notice" style="margin-top:12px">변경한 비밀번호는 평문으로 저장하지 않고 해시로 저장합니다. 변경이 완료되면 현재 관리자 세션은 로그아웃되며 새 비밀번호로 다시 로그인합니다.</div>
-    </section>
-
-    <section class="card" id="memberAdminCard"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">회원 / 등급 관리</h2><div class="status">v2.1 PLUS 기반 · 아이디 기반 회원과 FREE / PLUS / PRO / ADMIN 등급을 운영자가 직접 관리할 수 있습니다. 관심 정당 정보는 이 화면에 노출하지 않습니다.</div></div><button class="ghost" id="reloadUsersBtn">회원 새로고침</button></div><div class="grid" style="margin-top:12px"><div><label>회원 검색</label><input id="userAdminSearch" placeholder="아이디 · 이메일 · 닉네임"></div><div><label>가입 현황</label><div class="status" id="userAdminSummary" style="padding:11px 0">불러오는 중...</div></div></div><div class="user-admin-list" id="userAdminList"></div></section>
-
-    <section class="card"><h2 style="margin-top:0">운영 상태</h2><div class="status" id="serverStatus">확인 중...</div></section>
+        <div class="admin-page" data-admin-page="status">
+          <section class="card"><h2 style="margin-top:0">운영 상태</h2><div class="status" id="serverStatus">확인 중...</div></section>
+        </div>
+      </main>
+    </div>
   </div>
 </div>
 <script>
@@ -100,8 +112,19 @@ let draftId=null,lastPreview=null,allMembers=[],currentFilter='all';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function api(url,opts={}){const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||`HTTP ${r.status}`);return j;}
-function setLogin(ok,msg=''){$('#loginCard').classList.toggle('hidden',ok);$('#adminArea').classList.toggle('hidden',!ok);$('#loginStatus').textContent=msg;}
-async function status(){try{const s=await api('/api/admin/status');setLogin(true);loadAdminUsers().catch(()=>{});loadVisitorAdminStats().catch(()=>{});const src=s.sources||{};const core=[['NAVER Name Pulse',src.naverNamePulse],['Google News',src.googleNews],['Google Trends',src.googleTrends],['Wikimedia',src.wikimedia],['Daum HTML',src.daumHtml],['NAVER 뉴스 API',src.naverNews],['Kakao/Daum API',src.kakao],['정참시 내부',src.internal]];const optional=[['BIG KINDS',src.bigKinds],['YouTube API',src.youtube],['X',src.x]];const coreHtml=core.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'미설정'}</b>`).join(' · ');const optHtml=optional.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'키 미설정'}</b>`).join(' · ');$('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>핵심 원천: ${coreHtml}<br>보강 원천: ${optHtml}<br>최근 게시: <b>${esc(s.current?.timestamp||'아직 없음')}</b>`;if(s.defaults){if(s.defaults.eventTitle)$('#eventTitle').value=s.defaults.eventTitle;if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length)$('#eventKeywords').value=s.defaults.eventKeywords.join(',');}}catch(e){setLogin(false);}}
+let activeAdminPage='refresh',usersLoaded=false,visitorsLoaded=false;
+async function openAdminPage(page,{updateHash=true}={}){
+  const allowed=['refresh','security','visitors','users','status'];if(!allowed.includes(page))page='refresh';activeAdminPage=page;
+  $$('[data-admin-page]').forEach(x=>x.classList.toggle('active',x.dataset.adminPage===page));
+  $$('[data-admin-nav]').forEach(x=>x.classList.toggle('active',x.dataset.adminNav===page));
+  if(updateHash)history.replaceState(null,'','#admin-'+page);
+  if(page==='users'&&!usersLoaded){usersLoaded=true;await loadAdminUsers().catch(e=>{$('#userAdminSummary').textContent='회원 조회 오류: '+e.message;usersLoaded=false;});}
+  if(page==='visitors'&&!visitorsLoaded){visitorsLoaded=true;await loadVisitorAdminStats().catch(e=>{$('#visitorAdminStatus').textContent='조회 오류: '+e.message;visitorsLoaded=false;});}
+}
+$$('[data-admin-nav]').forEach(btn=>btn.onclick=()=>openAdminPage(btn.dataset.adminNav));
+function initialAdminPage(){const m=location.hash.match(/^#admin-(refresh|security|visitors|users|status)$/);return m?m[1]:'refresh';}
+function setLogin(ok,msg=''){$('#loginCard').classList.toggle('hidden',ok);$('#adminArea').classList.toggle('hidden',!ok);$('#loginStatus').textContent=msg;if(ok)openAdminPage(initialAdminPage(),{updateHash:false}).catch(()=>{});}
+async function status(){try{const s=await api('/api/admin/status');setLogin(true);const src=s.sources||{};const core=[['NAVER Name Pulse',src.naverNamePulse],['Google News',src.googleNews],['Google Trends',src.googleTrends],['Wikimedia',src.wikimedia],['Daum HTML',src.daumHtml],['NAVER 뉴스 API',src.naverNews],['Kakao/Daum API',src.kakao],['정참시 내부',src.internal]];const optional=[['BIG KINDS',src.bigKinds],['YouTube API',src.youtube],['X',src.x]];const coreHtml=core.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'미설정'}</b>`).join(' · ');const optHtml=optional.map(([n,on])=>`<b class="${on?'good':'warn'}">${n} ${on?'ON':'키 미설정'}</b>`).join(' · ');$('#serverStatus').innerHTML=`DB 연결: <b class="good">정상</b><br>핵심 원천: ${coreHtml}<br>보강 원천: ${optHtml}<br>최근 게시: <b>${esc(s.current?.timestamp||'아직 없음')}</b>`;if(s.defaults){if(s.defaults.eventTitle)$('#eventTitle').value=s.defaults.eventTitle;if(Array.isArray(s.defaults.eventKeywords)&&s.defaults.eventKeywords.length)$('#eventKeywords').value=s.defaults.eventKeywords.join(',');}}catch(e){setLogin(false);}}
 $('#loginBtn').onclick=async()=>{$('#loginStatus').textContent='로그인 중...';try{await api('/api/admin/login',{method:'POST',body:JSON.stringify({id:$('#adminId').value,password:$('#adminPw').value})});await status();}catch(e){$('#loginStatus').textContent=e.message;}};
 $('#logoutBtn').onclick=async()=>{await api('/api/admin/logout',{method:'POST',body:'{}'}).catch(()=>{});location.reload();};
 $('#changeAdminPwBtn').onclick=async()=>{const btn=$('#changeAdminPwBtn'),st=$('#adminPasswordStatus');const current=$('#adminCurrentPw').value,newPw=$('#adminNewPw').value,confirmPw=$('#adminNewPwConfirm').value;if(!current){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(newPw.length<8){st.textContent='새 비밀번호는 8자 이상이어야 합니다.';return;}if(newPw!==confirmPw){st.textContent='새 비밀번호 확인이 일치하지 않습니다.';return;}if(!confirm('관리자 비밀번호를 변경할까요? 변경 후 새 비밀번호로 다시 로그인해야 합니다.'))return;btn.disabled=true;st.textContent='비밀번호 변경 중...';try{await api('/api/admin/password',{method:'POST',body:JSON.stringify({currentPassword:current,newPassword:newPw})});alert('관리자 비밀번호가 변경되었습니다. 새 비밀번호로 다시 로그인해주세요.');location.reload();}catch(e){st.textContent=e.message;}finally{btn.disabled=false;}};
@@ -135,14 +158,52 @@ function showDetail(m){if(!m)return;const d=$('#auditDetail'),a=m.audit||{},vals
 function renderPreview(p){lastPreview=p;allMembers=(p.members||p.top30||[]);currentFilter='all';$('#previewCard').classList.remove('hidden');const q=p.quality||{},h=p.sourceHealth||{},cfg=p.configuredSources||{},pi=p.photoIntegrity||{},cc=q.categoryCounts||{};const total=Number(q.totalActive||allMembers.length||542);const hs=x=>{const st=x?.state||'UNKNOWN',good=['OK','READY','ADVISORY_DISALLOW','ADVISORY_UNKNOWN','DEGRADED'].includes(st);return `<b class="${good?'good':'warn'}">${st}</b>${x?.detail?`(${esc(x.detail)})`:''}`};const bk=cfg.bigKinds?'<b class="good">ON</b>':'<b class="warn">키 미설정</b>';$('#previewMeta').innerHTML=`${esc(p.version||'')} · 계산시각 ${esc(p.timestamp)}<br>대상: 국회의원 <b>${cc.assembly??299}</b> · 광역단체장 <b>${cc.metro??16}</b> · 기초단체장 <b>${cc.local??227}</b> · 총 <b>${total}</b>명<br>수집 진단: Google Trends ${hs(h.googleTrends)} · Wikipedia ${hs(h.wiki)} · Daum HTML ${hs(h.daumHtml)} · YouTube HTML ${hs(h.youtubeHtml)} · BIG KINDS ${bk}`;const bw=$('#baselineWarning');if(p.comparisonCompatible===false){bw.classList.remove('hidden');bw.innerHTML='⚠ <b>정치인 명단·순위 모델 기준선이 바뀌어 이전 버전과의 변동을 비교하지 않습니다.</b> 이번 결과를 게시한 다음 스냅샷부터 새 기준으로 정상적인 순위 변동이 계산됩니다.';}else bw.classList.add('hidden');const cs=q.collectionStatus||{},coverageGoal=Math.max(1,Math.floor(total*.95));$('#qualityKpis').innerHTML=`<div class="kpi"><span>전체 정치인</span><b>${total}명</b></div><div class="kpi"><span>Name Pulse 처리</span><b class="${(q.namePulseCoverage||0)>=coverageGoal?'good':'warn'}">${q.namePulseCoverage??0}/${total}</b></div><div class="kpi"><span>검색량 신호</span><b>${q.namePulseSignalCoverage??0}/${total}</b></div><div class="kpi"><span>TOP30 다중원천</span><b>${q.top30MultiSource??0}/30</b></div><div class="kpi"><span>수집 양호</span><b class="good">${cs.GOOD??0}명</b></div><div class="kpi"><span>중립 / 미비</span><b class="${(cs.POOR||0)>Math.max(10,total*.04)?'bad':'warn'}">${cs.NEUTRAL??0} / ${cs.POOR??0}</b></div><div class="kpi"><span>직접 등록 공식사진</span><b>${pi.verified??0}/${pi.localTotal??243}</b></div><div class="kpi"><span>공식 협의회 자동사진</span><b class="good">${pi.localTotal??243}명 경로</b></div>`;$('#previewMeta').innerHTML+=`<br><span class="good">사진 정책: 직접 등록 공식사진 ${pi.verified??0}명 · 나머지는 시도지사협의회/시장군수구청장협의회 공식 회원사진을 자동 확인하고 실패할 때만 안전 기본이미지를 표시합니다.</span>`;if(q.warning)$('#previewMeta').innerHTML+=`<br><span class="warn">⚠ ${esc(q.warning)}</span>`;populateParty();$$('#filterRow .chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));$('#memberSearch').value='';$('#entityFilter').value='';$('#partyFilter').value='';$('#sortBy').value='rank';$('#auditDetail').classList.add('hidden');renderRows();}
 $$('#filterRow .chip').forEach(btn=>btn.onclick=()=>{currentFilter=btn.dataset.filter;$$('#filterRow .chip').forEach(x=>x.classList.toggle('active',x===btn));if(currentFilter==='rise')$('#sortBy').value='changeDesc';else if(currentFilter==='fall')$('#sortBy').value='changeAsc';else if(currentFilter==='anomaly')$('#sortBy').value='confidenceAsc';else $('#sortBy').value='rank';renderRows();});
 $('#memberSearch').oninput=renderRows;$('#entityFilter').onchange=renderRows;$('#partyFilter').onchange=renderRows;$('#sortBy').onchange=renderRows;
-$('#refreshBtn').onclick=async()=>{const btn=$('#refreshBtn');btn.disabled=true;$('#previewCard').classList.add('hidden');$('#bar').style.width='0%';try{const start=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'start',eventTitle:$('#eventTitle').value.trim(),eventKeywords:$('#eventKeywords').value.split(',').map(x=>x.trim()).filter(Boolean)})});draftId=start.draftId;const gn=start.globalNews||{},np=start.namePulse||{},bk=start.bigKinds||{};$('#refreshStatus').textContent=`원천 점검 완료 · Name Pulse ${np.configured?'READY':'미설정'} · BIG KINDS ${bk.configured?'READY':'키 미설정'} · 이벤트뉴스 ${gn.eventArticles||0}건/${gn.eventSources||0}출처`;let npo=0,npt=start.total;if(np.configured){while(npo<npt){$('#refreshStatus').textContent=`0차 Name Pulse ${npt}명 처리 · ${npo}/${npt}`;const nb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'name-pulse-batch',draftId,offset:npo,size:10})});npo=nb.nextOffset;$('#bar').style.width=`${Math.round((npo/npt)*20)}%`;}}let offset=0,total=start.total;while(offset<total){$('#refreshStatus').textContent=`1차 뉴스·포털 공통 수집 · ${offset}/${total} · Google News + Daum/포털`;const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:4})});offset=b.nextOffset;$('#bar').style.width=`${20+Math.round((offset/total)*55)}%`;}const prep=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'prepare-enrichment',draftId})});let eo=0,et=prep.total||0;if(et&&(prep.configured?.keyless||prep.configured?.youtube||prep.configured?.x||prep.configured?.bigKinds)){while(eo<et){$('#refreshStatus').textContent=`2차 상위·급등·이벤트 심층 보강 · ${eo}/${et}${prep.configured?.bigKinds?' · BIG KINDS 포함':''}`;const eb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'enrich',draftId,offset:eo,size:4})});eo=eb.nextOffset;$('#bar').style.width=`${75+Math.round((eo/Math.max(1,et))*17)}%`;}}$('#refreshStatus').textContent=`Name Pulse 합산 · 이슈 군집 분석 · ${total}명 NOW Rank 계산 중...`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent='v2.2.7 · 정참시 최신 빌드 미리보기 완료 · 아직 공개되지 않았습니다.';renderPreview(fin.preview);}catch(e){$('#refreshStatus').textContent='오류: '+e.message;}finally{btn.disabled=false;}};
+$('#refreshBtn').onclick=async()=>{const btn=$('#refreshBtn');btn.disabled=true;$('#previewCard').classList.add('hidden');$('#bar').style.width='0%';try{const start=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'start',eventTitle:$('#eventTitle').value.trim(),eventKeywords:$('#eventKeywords').value.split(',').map(x=>x.trim()).filter(Boolean)})});draftId=start.draftId;const gn=start.globalNews||{},np=start.namePulse||{},bk=start.bigKinds||{};$('#refreshStatus').textContent=`원천 점검 완료 · Name Pulse ${np.configured?'READY':'미설정'} · BIG KINDS ${bk.configured?'READY':'키 미설정'} · 이벤트뉴스 ${gn.eventArticles||0}건/${gn.eventSources||0}출처`;let npo=0,npt=start.total;if(np.configured){while(npo<npt){$('#refreshStatus').textContent=`0차 Name Pulse ${npt}명 처리 · ${npo}/${npt}`;const nb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'name-pulse-batch',draftId,offset:npo,size:10})});npo=nb.nextOffset;$('#bar').style.width=`${Math.round((npo/npt)*20)}%`;}}let offset=0,total=start.total;while(offset<total){$('#refreshStatus').textContent=`1차 뉴스·포털 공통 수집 · ${offset}/${total} · Google News + Daum/포털`;const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:4})});offset=b.nextOffset;$('#bar').style.width=`${20+Math.round((offset/total)*55)}%`;}const prep=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'prepare-enrichment',draftId})});let eo=0,et=prep.total||0;if(et&&(prep.configured?.keyless||prep.configured?.youtube||prep.configured?.x||prep.configured?.bigKinds)){while(eo<et){$('#refreshStatus').textContent=`2차 상위·급등·이벤트 심층 보강 · ${eo}/${et}${prep.configured?.bigKinds?' · BIG KINDS 포함':''}`;const eb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'enrich',draftId,offset:eo,size:4})});eo=eb.nextOffset;$('#bar').style.width=`${75+Math.round((eo/Math.max(1,et))*17)}%`;}}$('#refreshStatus').textContent=`Name Pulse 합산 · 이슈 군집 분석 · ${total}명 NOW Rank 계산 중...`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent='v2.2.8 · 정참시 관리자 워크스페이스 미리보기 완료 · 아직 공개되지 않았습니다.';renderPreview(fin.preview);}catch(e){$('#refreshStatus').textContent='오류: '+e.message;}finally{btn.disabled=false;}};
 $('#publishBtn').onclick=async()=>{if(!draftId)return alert('먼저 Refresh를 실행해주세요.');if(!confirm('이 미리보기를 공개 NOW Rank로 게시할까요?'))return;try{const p=await api('/api/admin/publish',{method:'POST',body:JSON.stringify({draftId})});if(p.publicSnapshot){try{localStorage.setItem('jjdd_now_public_snapshot_v22_local',JSON.stringify(p.publicSnapshot));localStorage.setItem('jjdd_now_expected_publication',String(p.publicationId||''));}catch(_){}}alert(`게시 완료: ${p.timestamp}`);await status();}catch(e){alert(e.message);}};
 $('#rollbackBtn').onclick=async()=>{if(!confirm('현재 공개 순위를 직전 게시 스냅샷으로 되돌릴까요?'))return;try{const r=await api('/api/admin/rollback',{method:'POST',body:'{}'});if(r.publicSnapshot){try{localStorage.setItem('jjdd_now_public_snapshot_v22_local',JSON.stringify(r.publicSnapshot));localStorage.setItem('jjdd_now_expected_publication',String(r.publicationId||''));}catch(_){}}alert(`롤백 완료: ${r.timestamp}`);await status();}catch(e){alert(e.message);}};
 
-let adminUsers=[];
-function renderAdminUsers(){const q=String($('#userAdminSearch')?.value||'').trim().toLowerCase();const data=adminUsers.filter(u=>!q||String(u.username||'').toLowerCase().includes(q)||String(u.email||'').toLowerCase().includes(q)||String(u.nickname||'').toLowerCase().includes(q));const counts=adminUsers.reduce((a,u)=>(a[u.role]=(a[u.role]||0)+1,a),{});$('#userAdminSummary').innerHTML=`전체 <b>${adminUsers.length}</b> · FREE ${counts.FREE||0} · PLUS ${counts.PLUS||0} · PRO ${counts.PRO||0} · ADMIN ${counts.ADMIN||0}`;$('#userAdminList').innerHTML=data.slice(0,500).map(u=>`<div class="user-admin-row"><div><b>${esc(u.nickname||'회원')}</b><small>@${esc(u.username||'legacy')} · ${esc(u.email||'')} · ${esc(u.id||'')}</small></div><select data-user-role="${esc(u.id)}"><option ${u.role==='FREE'?'selected':''}>FREE</option><option ${u.role==='PLUS'?'selected':''}>PLUS</option><option ${u.role==='PRO'?'selected':''}>PRO</option><option ${u.role==='ADMIN'?'selected':''}>ADMIN</option></select><div class="user-admin-meta">가입 ${u.createdAt?new Date(u.createdAt).toLocaleString('ko-KR'):'-'}</div></div>`).join('')||'<div class="status">표시할 회원이 없습니다.</div>';$$('[data-user-role]').forEach(sel=>sel.onchange=async()=>{const before=adminUsers.find(x=>x.id===sel.dataset.userRole)?.role;try{const r=await api('/api/admin/users',{method:'POST',body:JSON.stringify({userId:sel.dataset.userRole,role:sel.value})});const i=adminUsers.findIndex(x=>x.id===r.user.id);if(i>=0)adminUsers[i]=r.user;renderAdminUsers();}catch(e){alert(e.message);sel.value=before||'FREE';}});}
-async function loadAdminUsers(){try{const j=await api('/api/admin/users');adminUsers=j.users||[];renderAdminUsers();}catch(e){if($('#userAdminSummary'))$('#userAdminSummary').textContent='회원 조회 오류: '+e.message;}}
-$('#reloadUsersBtn').onclick=loadAdminUsers;$('#userAdminSearch').oninput=renderAdminUsers;
+let adminUsers=[],selectedAdminUserId=null;
+function adminUserById(id){return adminUsers.find(x=>String(x.id)===String(id))||null;}
+function renderAdminUsers(){
+  const q=String($('#userAdminSearch')?.value||'').trim().toLowerCase();
+  const data=adminUsers.filter(u=>!q||String(u.username||'').toLowerCase().includes(q)||String(u.email||'').toLowerCase().includes(q)||String(u.nickname||'').toLowerCase().includes(q));
+  const counts=adminUsers.reduce((a,u)=>(a[u.role]=(a[u.role]||0)+1,a),{});
+  $('#userAdminSummary').innerHTML=`전체 <b>${adminUsers.length}</b> · FREE ${counts.FREE||0} · PLUS ${counts.PLUS||0} · PRO ${counts.PRO||0} · ADMIN ${counts.ADMIN||0}`;
+  $('#userAdminList').innerHTML=data.slice(0,500).map(u=>`<div class="user-admin-row"><div><b>${esc(u.nickname||'회원')}</b><small>@${esc(u.username||'legacy')}</small></div><div><span class="state st-OBSERVED">${esc(u.role||'FREE')}</span></div><div class="user-admin-meta">가입 ${u.createdAt?new Date(u.createdAt).toLocaleDateString('ko-KR'):'-'}</div><button class="ghost" data-user-manage="${esc(u.id)}">관리</button></div>`).join('')||'<div class="status">표시할 회원이 없습니다.</div>';
+  $$('[data-user-manage]').forEach(btn=>btn.onclick=()=>openAdminUserDetail(btn.dataset.userManage));
+}
+function openAdminUserDetail(id){
+  const u=adminUserById(id);if(!u)return;selectedAdminUserId=u.id;
+  const box=$('#userAdminDetail');box.classList.remove('hidden');
+  box.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div><h3>${esc(u.nickname||'회원')} 회원 상세</h3><div class="status">회원번호 ${esc(u.id)} · 가입 ${u.createdAt?new Date(u.createdAt).toLocaleString('ko-KR'):'-'}</div></div><button class="ghost" id="closeUserAdminDetail">닫기</button></div>
+  <div class="grid" style="margin-top:12px"><div><label>아이디</label><input id="adminEditUsername" value="${esc(u.username||'')}" placeholder="영문·숫자·밑줄 4~20자"></div><div><label>이메일 · 조회 전용</label><input value="${esc(u.email||'')}" readonly></div></div>
+  <div class="grid" style="margin-top:10px"><div><label>닉네임 · 조회 전용</label><input value="${esc(u.nickname||'')}" readonly></div><div><label>회원 등급</label><select id="adminEditRole"><option ${u.role==='FREE'?'selected':''}>FREE</option><option ${u.role==='PLUS'?'selected':''}>PLUS</option><option ${u.role==='PRO'?'selected':''}>PRO</option><option ${u.role==='ADMIN'?'selected':''}>ADMIN</option></select></div></div>
+  <div class="actions"><button class="primary" id="saveAdminUserAccount">아이디 / 등급 저장</button></div>
+  <div style="border-top:1px solid var(--line);margin:16px 0 12px"></div>
+  <h3 style="font-size:15px">비밀번호 재설정</h3><div class="status">기존 비밀번호는 확인할 수 없습니다. 회원 본인 확인 후 새 비밀번호를 직접 지정하세요.</div>
+  <div class="grid" style="margin-top:10px"><div><label>새 비밀번호</label><input id="adminResetUserPw" type="password" minlength="8" autocomplete="new-password" placeholder="8자 이상"></div><div><label>새 비밀번호 확인</label><input id="adminResetUserPw2" type="password" minlength="8" autocomplete="new-password" placeholder="다시 입력"></div></div>
+  <div class="actions"><button class="danger" id="resetAdminUserPw">회원 새 비밀번호 설정</button></div><div class="status" id="adminUserEditStatus"></div>`;
+  $('#closeUserAdminDetail').onclick=()=>box.classList.add('hidden');
+  $('#saveAdminUserAccount').onclick=saveAdminUserAccount;
+  $('#resetAdminUserPw').onclick=resetAdminUserPassword;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+async function saveAdminUserAccount(){
+  const u=adminUserById(selectedAdminUserId);if(!u)return;const st=$('#adminUserEditStatus');
+  const username=String($('#adminEditUsername').value||'').trim().toLowerCase(),role=$('#adminEditRole').value;
+  if(!/^[a-z0-9_]{4,20}$/.test(username)){st.textContent='아이디는 영문·숫자·밑줄(_) 4~20자로 입력해주세요.';return;}
+  if(!confirm(`회원 ${u.nickname||u.username}의 아이디/등급 정보를 저장할까요?`))return;
+  try{const r=await api('/api/admin/users',{method:'POST',body:JSON.stringify({action:'update-account',userId:u.id,username,role})});const i=adminUsers.findIndex(x=>x.id===r.user.id);if(i>=0)adminUsers[i]=r.user;renderAdminUsers();openAdminUserDetail(r.user.id);$('#adminUserEditStatus').innerHTML='<b class="good">저장 완료</b>';}catch(e){st.textContent=e.message;}
+}
+async function resetAdminUserPassword(){
+  const u=adminUserById(selectedAdminUserId);if(!u)return;const st=$('#adminUserEditStatus'),p1=$('#adminResetUserPw').value,p2=$('#adminResetUserPw2').value;
+  if(p1.length<8){st.textContent='새 비밀번호는 8자 이상이어야 합니다.';return;}if(p1!==p2){st.textContent='새 비밀번호 확인이 일치하지 않습니다.';return;}
+  if(!confirm(`회원 ${u.nickname||u.username}의 비밀번호를 새 값으로 재설정할까요?\n기존 로그인 세션은 즉시 종료됩니다.`))return;
+  try{await api('/api/admin/users',{method:'POST',body:JSON.stringify({action:'reset-password',userId:u.id,newPassword:p1})});$('#adminResetUserPw').value='';$('#adminResetUserPw2').value='';st.innerHTML='<b class="good">비밀번호 재설정 완료 · 기존 로그인 세션 무효화</b>';}catch(e){st.textContent=e.message;}
+}
+async function loadAdminUsers(){const j=await api('/api/admin/users');adminUsers=j.users||[];renderAdminUsers();}
+$('#reloadUsersBtn').onclick=async()=>{usersLoaded=true;try{await loadAdminUsers();}catch(e){usersLoaded=false;$('#userAdminSummary').textContent='회원 조회 오류: '+e.message;}};$('#userAdminSearch').oninput=renderAdminUsers;
+window.addEventListener('hashchange',()=>{if(!$('#adminArea').classList.contains('hidden'))openAdminPage(initialAdminPage(),{updateHash:false}).catch(()=>{});});
 status();
 </script>
 </body>
