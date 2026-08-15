@@ -9677,6 +9677,7 @@ function whyNowArticleTitles(x){
 function rankHeadlineEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function rankHeadlineFor(x){
   if(!x||Number(x.id)===300||x.party==='공석')return '';
+  if(String(x.rankHeadline||'').trim())return String(x.rankHeadline).trim();
   const now=currentSnapshotTime?currentSnapshotTime():Date.now(),name=String(x.name||'').trim(),signal=x.signal||{};
   const items=[];
   const push=(v,base=0)=>{
@@ -9687,6 +9688,7 @@ function rankHeadlineFor(x){
     items.push({title,ts,source,base});
   };
   (Array.isArray(signal.headlines)?signal.headlines:[]).forEach(v=>push(v,28));
+  (Array.isArray(signal.headlineCandidates)?signal.headlineCandidates:[]).forEach(v=>push(v,25));
   (Array.isArray(signal.bigKindsHeadlines)?signal.bigKindsHeadlines:[]).forEach(v=>push(v,32));
   (Array.isArray(x.articleTitles)?x.articleTitles:[]).forEach(v=>push(v,14));
   (Array.isArray(x.newsTitles)?x.newsTitles:[]).forEach(v=>push(v,12));
@@ -9702,7 +9704,7 @@ function rankHeadlineFor(x){
     if(/오늘의|주요뉴스|정치권 소식|브리핑|사진|포토|영상/.test(t))score-=12;
     return {...it,title:t,score};
   }).filter(x=>x.score>-500).sort((a,b)=>b.score-a.score||b.ts-a.ts);
-  const best=scored[0];if(!best)return '';
+  const best=scored[0];if(!best)return Number(x.overallRank||x.rank||9999)<=30?'최근 주요 뉴스 확인 중':'';
   let title=best.title;
   if(name&&title.startsWith(name)){const trimmed=title.slice(name.length).replace(/^[\s,·:;|\-–—]+/,'').trim();if(trimmed.length>=8)title=trimmed;}
   if(title.length>88)title=title.slice(0,86).replace(/\s+\S*$/,'')+'…';return title;
@@ -11142,13 +11144,13 @@ function applyPublishedNowRank(snap,{checking=false}={}){
     p.searchRank=Number.isFinite(s.searchRank)?s.searchRank:null;p.searchScore=Number.isFinite(s.searchScore)?s.searchScore:null;p.searchRaw=Number.isFinite(s.searchRaw)?s.searchRaw:null;
     p.mediaRank=Number.isFinite(s.mediaRank)?s.mediaRank:null;p.mediaScore=Number.isFinite(s.mediaScore)?s.mediaScore:null;p.mediaRaw=Number.isFinite(s.mediaRaw)?s.mediaRaw:null;
     if(Array.isArray(s.metrics))p.metrics=s.metrics;
-    p.eventLabel=s.eventLabel||p.eventLabel;p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;p.latest=s.latest||s.signal?.latest||p.latest;p.signal=s.signal||null;
+    p.eventLabel=s.eventLabel||p.eventLabel;p.sourceCount=s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??p.sourceCount;p.latest=s.latest||s.signal?.latest||p.latest;p.signal=s.signal||null;p.rankHeadline=s.rankHeadline||'';p.rankHeadlineSource=s.rankHeadlineSource||'';p.rankHeadlineAt=s.rankHeadlineAt||null;p.rankHeadlineKind=s.rankHeadlineKind||'';
     p.evidenceConfidence=Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null;p.collectionStatus=s.collectionStatus||null;
     p.whyNow=s.whyNow||null;p.whyNowKeywords=Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[];
     p.articleTitles=Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]);p.newsTitles=Array.isArray(s.newsTitles)?s.newsTitles:[];p.articles=Array.isArray(s.articles)?s.articles:[];p.news=Array.isArray(s.news)?s.news:[];
     if(s.nowComponents)p.nowComponents=s.nowComponents;
     const meta=nowRankById[String(p.id)]||{};
-    Object.assign(meta,{entityType:s.entityType||p.entityType,office:s.office||p.office,jurisdiction:s.jurisdiction||p.jurisdiction,rank:s.rank,categoryRank:Number.isFinite(s.categoryRank)?s.categoryRank:s.rank,overallRank:Number.isFinite(s.overallRank)?s.overallRank:null,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,previousOverallRank:Number.isFinite(s.previousOverallRank)?s.previousOverallRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),changeOverallRefresh:Number.isFinite(s.changeOverallRefresh)?s.changeOverallRefresh:null,searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
+    Object.assign(meta,{entityType:s.entityType||p.entityType,office:s.office||p.office,jurisdiction:s.jurisdiction||p.jurisdiction,rank:s.rank,categoryRank:Number.isFinite(s.categoryRank)?s.categoryRank:s.rank,overallRank:Number.isFinite(s.overallRank)?s.overallRank:null,score:s.score,rawScore:s.rawScore,grade:s.grade,previousRank:Number.isFinite(s.previousRank)?s.previousRank:null,previousOverallRank:Number.isFinite(s.previousOverallRank)?s.previousOverallRank:null,changeRefresh:Number.isFinite(s.changeRefresh)?s.changeRefresh:(Number.isFinite(s.change6h)?s.change6h:null),changeOverallRefresh:Number.isFinite(s.changeOverallRefresh)?s.changeOverallRefresh:null,searchRank:Number.isFinite(s.searchRank)?s.searchRank:null,searchScore:Number.isFinite(s.searchScore)?s.searchScore:null,searchRaw:Number.isFinite(s.searchRaw)?s.searchRaw:null,mediaRank:Number.isFinite(s.mediaRank)?s.mediaRank:null,mediaScore:Number.isFinite(s.mediaScore)?s.mediaScore:null,mediaRaw:Number.isFinite(s.mediaRaw)?s.mediaRaw:null,evidenceConfidence:Number.isFinite(Number(s.evidenceConfidence))?Number(s.evidenceConfidence):null,collectionStatus:s.collectionStatus||null,snapshot:snap.timestamp,metrics:s.metrics||meta.metrics,eventLabel:s.eventLabel||meta.eventLabel,sourceCount:s.sourceCount??s.signal?.sourceCount??s.signal?.sources?.length??meta.sourceCount,latest:s.latest||s.signal?.latest||meta.latest,rankHeadline:s.rankHeadline||'',rankHeadlineSource:s.rankHeadlineSource||'',rankHeadlineAt:s.rankHeadlineAt||null,rankHeadlineKind:s.rankHeadlineKind||'',signal:s.signal||null,whyNow:s.whyNow||null,whyNowKeywords:Array.isArray(s.whyNowKeywords)?s.whyNowKeywords:[],articleTitles:Array.isArray(s.articleTitles)?s.articleTitles:(Array.isArray(s.newsTitles)?s.newsTitles:[]),articles:Array.isArray(s.articles)?s.articles:[],news:Array.isArray(s.news)?s.news:[]});
     nowRankById[String(p.id)]=meta;
   });
   people.sort((a,b)=>(Number.isFinite(a.overallRank)?a.overallRank:99999)-(Number.isFinite(b.overallRank)?b.overallRank:99999));
