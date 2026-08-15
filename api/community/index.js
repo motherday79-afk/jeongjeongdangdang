@@ -1,6 +1,7 @@
 const crypto=require('crypto');
 const {cmd}=require('../../lib/store');
 const {authenticate,requireUser,rateLimit}=require('../../lib/user_auth');
+const {flushDue}=require('../../lib/editorial');
 const POSTS='jjdd:community:posts:v1';
 const COMMENT_COUNTS='jjdd:community:comment-counts:v1';
 function escText(v,max){return String(v||'').replace(/\u0000/g,'').trim().slice(0,max);}
@@ -23,6 +24,7 @@ module.exports=async function(req,res){
   const b=req.body||{},action=String(b.action||req.query?.action||'list');
   try{
     if(req.method==='GET'||action==='list'){
+      await flushDue(12).catch(()=>{});
       const posts=await listPosts(Number(req.query?.limit||60));
       const me=await authenticate(req).catch(()=>null);
       return res.json({ok:true,posts,canWrite:Boolean(me),me:me?{nickname:me.nickname,role:me.role}:null});

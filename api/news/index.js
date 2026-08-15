@@ -2,6 +2,7 @@ const crypto=require('crypto');
 const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {authenticate,capabilities,rateLimit}=require('../../lib/user_auth');
 const {getSession}=require('../../lib/auth');
+const {flushDue}=require('../../lib/editorial');
 
 const POSTS='jjdd:news:posts:v1';
 const IMAGE_PREFIX='jjdd:news:image:v1:';
@@ -42,11 +43,12 @@ module.exports=async function(req,res){
       const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control','public, max-age=31536000, immutable');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);
     }
     if(req.method==='GET'||action==='list'){
+      await flushDue(12).catch(()=>{});
       const [posts,writer]=await Promise.all([listPosts(req.query?.limit||60),writerContext(req)]);return res.json({ok:true,posts,canWrite:Boolean(writer),me:writer?{nickname:writer.nickname,role:writer.role}:null,minimumRole:'PRO'});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     if(action==='create'){
-      const writer=await writerContext(req);if(!writer)return res.status(403).json({ok:false,error:'정정뉴스 작성은 PRO 이상 회원만 가능합니다.'});
+      const writer=await writerContext(req);if(!writer)return res.status(403).json({ok:false,error:'정참시News 작성은 PRO 이상 회원만 가능합니다.'});
       const lim=await rateLimit(req,'news-create',20,3600);if(!lim.ok)return res.status(429).json({ok:false,error:'짧은 시간에 기사 발행이 너무 많습니다. 잠시 후 다시 시도해주세요.'});
       const b=req.body||{},title=cleanText(b.title,100),content=cleanText(b.content,12000);let excerpt=cleanText(b.excerpt,260);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 본문을 2자 이상 입력해주세요.'});if(!excerpt)excerpt=content.replace(/\s+/g,' ').slice(0,180);
       const id=`n_${Date.now().toString(36)}_${crypto.randomBytes(4).toString('hex')}`,image=parseImageData(b.imageData),createdAt=new Date().toISOString();
