@@ -1584,9 +1584,9 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
   // v2.2.20: 랭킹 정치인과 정부 주요 인사는 모두 Vercel 서버 프록시를 통해 사진을 받습니다.
   // 브라우저가 Wikidata/Wikipedia/Bing 등의 외부 검색을 직접 수행하지 않습니다.
   if(member){
-    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=8`;
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&v=230`;
     const title='사진 출처: 정참시 서버 검증 · 이름/직위/지역 교차검증 · 원본 프록시';
-    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v8" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="server-person-photo-v230" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -1870,7 +1870,7 @@ async function handlePoliticianPhotoError(img){
     let stage=Number(slot.dataset.photoFallbackStage||0);
     if(stage===0){
       slot.dataset.photoFallbackStage='1';
-      return replaceWithResult({url:`/api/person-photo?id=${encodeURIComponent(seed)}&v=8&retry=1&t=${Date.now()}`,source:'server-person-photo-v8-retry',title:'사진 출처: 정참시 서버 검증 · 자동 복구 재시도'},'서버 재시도');
+      return replaceWithResult({url:`/api/person-photo?id=${encodeURIComponent(seed)}&v=230&retry=1`,source:'server-person-photo-v230-retry',title:'사진 출처: 정참시 서버 검증 · 자동 복구 재시도'},'서버 재시도');
     }
 
     const cached=seed?politicianPhotoCache[String(seed)]:null;

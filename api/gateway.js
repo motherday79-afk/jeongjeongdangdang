@@ -7,10 +7,8 @@ const routes = {
   'admin/refresh': require('./admin/refresh'),
   'admin/publish': require('./admin/publish'),
   'admin/rollback': require('./admin/rollback'),
-  'admin/name-pulse': require('./admin/name-pulse'),
   'admin/users': require('./admin/users'),
   'admin/password': require('./admin/password'),
-  'admin/local-photo': require('./admin/local-photo'),
   'admin/person-photo': require('./admin/person-photo'),
   'admin/photo-audit': require('./admin/photo-audit'),
   'admin/member-metrics': require('./admin/member-metrics'),
@@ -30,13 +28,9 @@ const routes = {
   'cron/finalize-visitors': require('./cron/finalize-visitors'),
   'community': require('./community'),
   'news': require('./news'),
-  'local-photo': require('./local-photo'),
-  'person-photo': require('./person-photo'),
-  'rank/current': require('./rank/current'),
   'rank/history': require('./rank/history'),
   'member-master': require('./member-master'),
-  'track': require('./track'),
-  'name-pulse-test': require('./name-pulse-test')
+  'track': require('./track')
 };
 
 function cleanPath(v){

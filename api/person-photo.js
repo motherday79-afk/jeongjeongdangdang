@@ -42,7 +42,12 @@ module.exports=async function(req,res){
     }
     if(!got){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     res.setHeader('Content-Type',got.ct);
-    res.setHeader('Cache-Control','public, max-age=86400, s-maxage=2592000, stale-while-revalidate=2592000');
+    // v2.3.0 performance: browser는 6시간 재사용, Vercel CDN은 동일 인물 URL을 최대 1년 보존합니다.
+    // 사진 변경 시 프론트의 photo cache version을 올려 새 URL로 즉시 우회합니다.
+    res.setHeader('Cache-Control','public, max-age=21600, stale-while-revalidate=604800');
+    res.setHeader('CDN-Cache-Control','public, max-age=2592000, stale-while-revalidate=31536000');
+    res.setHeader('Vercel-CDN-Cache-Control','public, max-age=31536000, stale-while-revalidate=31536000');
+    res.setHeader('X-JJDD-Photo-Cache','v2.3.0');
     res.setHeader('X-JJDD-Photo-Source',String(photo.source||'verified-search').replace(/[^\x20-\x7E]/g,'').slice(0,120)||'verified-search');
     return res.status(200).send(got.buf);
   }catch(_){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}

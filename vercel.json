@@ -1,48 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    {
-      "src": "api/public-current.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/gateway.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    }
+    { "src": "api/rank/current.js", "use": "@vercel/node" },
+    { "src": "api/person-photo.js", "use": "@vercel/node" },
+    { "src": "api/gateway.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/api/rank/current",
-      "dest": "/api/public-current.js"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/gateway.js?__path=$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/admin",
-      "dest": "/admin.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "/api/rank/current", "dest": "/api/rank/current.js" },
+    { "src": "/api/person-photo", "dest": "/api/person-photo.js" },
+    { "src": "/api/(.*)", "dest": "/api/gateway.js?__path=$1" },
+    { "handle": "filesystem" },
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/admin", "dest": "/admin.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "crons": [
-    {
-      "path": "/api/cron/finalize-visitors",
-      "schedule": "0 15 * * *"
-    }
+    { "path": "/api/cron/finalize-visitors", "schedule": "0 15 * * *" }
   ]
 }
