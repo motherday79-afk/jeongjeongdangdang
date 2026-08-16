@@ -1457,6 +1457,105 @@ body:before{
 }
 /* ===== /v2.3.2 ===== */
 
+
+
+/* ===== v2.3.3 · SIGNAL HIERARCHY + NEWSROOM + COMMUNITY + COMPARE ARENA ===== */
+/* TOP3: stronger visual hierarchy */
+.ranktable .row.rank-top-1{min-height:126px;padding-top:21px;padding-bottom:21px;background:radial-gradient(circle at 74% 50%,rgba(47,207,179,.18),transparent 30%),linear-gradient(100deg,#dff6f0 0%,#f4fbf9 34%,#fff 68%);box-shadow:inset 5px 0 0 #0ba184,0 10px 30px rgba(13,112,93,.055)}
+.ranktable .row.rank-top-1:after{right:102px;font-size:104px;color:rgba(6,98,81,.06)}
+.ranktable .row.rank-top-1 .ranknum{font-size:48px;letter-spacing:-3px;text-shadow:0 8px 24px rgba(15,118,110,.12)}
+.ranktable .row.rank-top-1 .person .avatar{width:76px;height:76px;flex-basis:76px;border-radius:23px;border-width:3px;box-shadow:0 18px 38px rgba(9,102,84,.2)}
+.ranktable .row.rank-top-1 .pname{font-size:20px}.ranktable .row.rank-top-1 .person-headline{max-width:550px;font-size:12px;line-height:1.48}
+.ranktable .row.rank-top-2,.ranktable .row.rank-top-3{min-height:102px;padding-top:18px;padding-bottom:18px}
+.ranktable .row.rank-top-2{background:linear-gradient(90deg,#f0f6f4 0%,#fff 58%)}.ranktable .row.rank-top-3{background:linear-gradient(90deg,#faf6ef 0%,#fff 58%)}
+.ranktable .row.rank-top-2:after,.ranktable .row.rank-top-3:after{font-size:82px;color:rgba(26,66,57,.045)}
+.ranktable .row.rank-top-2 .person .avatar,.ranktable .row.rank-top-3 .person .avatar{width:61px;height:61px;flex-basis:61px;border-radius:19px}
+.ranktable .row.rank-top-2 .pname,.ranktable .row.rank-top-3 .pname{font-size:17px}
+.top-signal-tag{display:inline-flex;align-items:center;margin-left:7px;padding:4px 6px;border-radius:6px;background:#103a31;color:#a9ecdc;font-size:7px;font-weight:1000;letter-spacing:.12em;vertical-align:2px;white-space:nowrap}
+.rank-top-2 .top-signal-tag{background:#e8f1ee;color:#536f68}.rank-top-3 .top-signal-tag{background:#f4ede3;color:#806b50}
+
+/* 4~30: visible signal feed states */
+.ranktable .row.rank-signal{isolation:isolate}
+.ranktable .row.rank-signal:before{background:#d9e4e0!important;opacity:.65}
+.ranktable .row.rank-signal.signal-surge{background:linear-gradient(90deg,rgba(226,249,243,.78),#fff 35%)}
+.ranktable .row.rank-signal.signal-rise{background:linear-gradient(90deg,rgba(239,249,246,.72),#fff 30%)}
+.ranktable .row.rank-signal.signal-drop-strong{background:linear-gradient(90deg,rgba(253,237,237,.72),#fff 34%)}
+.ranktable .row.rank-signal.signal-drop{background:linear-gradient(90deg,rgba(252,245,244,.66),#fff 28%)}
+.ranktable .row.rank-signal.signal-surge:before{background:#16aa8f!important;opacity:1}.ranktable .row.rank-signal.signal-rise:before{background:#79cabb!important;opacity:1}.ranktable .row.rank-signal.signal-drop-strong:before{background:#d46565!important;opacity:1}.ranktable .row.rank-signal.signal-drop:before{background:#dfaaa3!important;opacity:1}
+.momentum-cell{grid-template-columns:auto 88px;grid-template-areas:"delta spark" "state spark" "route spark" "bar bar";row-gap:1px}
+.momentum-state{grid-area:state;display:inline-flex;align-items:center;width:max-content;margin-top:2px;padding:3px 5px;border-radius:5px;background:#eef3f1;color:#788a84;font-size:6.5px;font-weight:1000;letter-spacing:.11em}
+.momentum-cell.signal-surge .momentum-state{background:#0d8d75;color:#fff}.momentum-cell.signal-rise .momentum-state{background:#e3f6f1;color:#087965}.momentum-cell.signal-drop-strong .momentum-state{background:#c65c5c;color:#fff}.momentum-cell.signal-drop .momentum-state{background:#f9eaea;color:#aa5555}
+.momentum-spark{height:30px;filter:drop-shadow(0 3px 5px rgba(15,95,80,.08))}.momentum-track{height:4px;margin-top:6px}
+
+/* Detail micro-interactions */
+.detail-signal,.detail-section .metric,.detail-section .radarbox,.trend-card,.record-card,.fact-card,.poll-card,.gov-detail-item,.combined-radar{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
+.detail-signal:hover{transform:translateY(-3px);border-color:#a8d9ce;box-shadow:0 13px 28px rgba(18,80,67,.09)}
+.detail-signal:hover b{color:#087665}.detail-signal:hover i{height:5px}
+.detail-section .metric:hover{transform:translateY(-3px);border-color:#b5ddd4;box-shadow:0 12px 24px rgba(18,80,67,.075);background:#fbfffe}
+.detail-section .metric:hover .metric-meter{height:5px}.detail-section .metric:hover .metric-value{color:#087665}
+.detail-section .radarbox:hover,.combined-radar:hover{transform:translateY(-2px);border-color:#b9dcd4;box-shadow:0 16px 30px rgba(18,80,67,.075)}
+.trend-card:hover,.record-card:hover,.fact-card:hover,.poll-card:hover,.gov-detail-item:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,80,67,.065);border-color:#c2ddd6}
+
+/* Newsroom: featured lead story + editorial cards */
+#page-news .news-section-title{position:relative;margin-bottom:12px;padding:23px 24px;border-radius:22px;background:linear-gradient(112deg,#102c26 0%,#173b33 62%,#1b493e 100%);overflow:hidden;box-shadow:0 18px 42px rgba(14,48,40,.13)}
+#page-news .news-section-title:after{content:"NEWSROOM";position:absolute;right:18px;bottom:-12px;color:rgba(255,255,255,.045);font-size:70px;font-weight:1000;letter-spacing:-5px;pointer-events:none}
+#page-news .news-section-title .kicker{color:#64d9c2}#page-news .news-section-title .h1{color:#fff}#page-news .news-section-title .sub{color:#b8d0ca;max-width:740px}
+.newsroom-signal-strip{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:17px;padding:10px 14px;border:1px solid #d9e6e2;border-radius:13px;background:#f8fbfa}
+.newsroom-signal-brand{display:flex;align-items:center;gap:9px;min-width:0}.newsroom-signal-brand i{width:7px;height:7px;border-radius:50%;background:#22b99e;box-shadow:0 0 0 5px rgba(34,185,158,.09);animation:jjddSignal 1.9s ease-in-out infinite}.newsroom-signal-brand b{font-size:9px;letter-spacing:.13em;color:#173a32}.newsroom-signal-brand span{font-size:8px;color:#8a9994;letter-spacing:.08em}.newsroom-signal-status{font-size:7px;font-weight:1000;color:#0b806e;letter-spacing:.13em;white-space:nowrap}
+.grid-news{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.news-card{position:relative;border-radius:20px;box-shadow:0 12px 30px rgba(18,49,43,.055);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.news-card:hover{transform:translateY(-5px);border-color:#add7ce;box-shadow:0 20px 40px rgba(18,68,57,.11)}
+.news-card-index{position:absolute;right:12px;top:11px;z-index:2;display:flex;align-items:center;justify-content:center;min-width:34px;height:25px;padding:0 8px;border:1px solid rgba(255,255,255,.35);border-radius:7px;background:rgba(10,43,36,.72);backdrop-filter:blur(7px);color:#d9f4ed;font-size:8px;font-weight:1000;letter-spacing:.12em}
+.news-card-signal{display:flex;align-items:center;gap:7px;margin-bottom:7px;color:#7b8e88;font-size:7px;font-weight:1000;letter-spacing:.13em}.news-card-signal i{height:1px;flex:1;background:linear-gradient(90deg,#58cbb5,transparent)}
+.news-card .news-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #edf2f0}.news-card .news-meta b{font-size:10px;color:#425b54}.news-card .news-meta span{font-size:9px;color:#98a49f}
+.news-card.news-featured{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);min-height:330px;background:linear-gradient(112deg,#0f2e27 0%,#163d34 49.8%,#fff 50%);border:0;box-shadow:0 22px 50px rgba(10,45,37,.15)}
+.news-card.news-featured .news-hero{height:100%;aspect-ratio:auto;min-height:330px}.news-card.news-featured .news-body{display:flex;flex-direction:column;justify-content:center;padding:30px 28px}.news-card.news-featured .news-cat{color:#0b806e}.news-card.news-featured .news-title{font-size:31px;line-height:1.24}.news-card.news-featured .news-excerpt{font-size:13px;line-height:1.75}.news-card.news-featured .news-card-signal span{color:#0a806e}
+.article-wrap{box-shadow:0 20px 48px rgba(17,54,46,.09)}.article-content{max-width:900px;margin:0 auto;padding:42px 44px}.article-content h1{font-size:46px}.article-content p{font-size:16px;line-height:1.95}
+
+/* Community: live discussion feed */
+#page-community>.section-title{position:relative;padding:20px 22px;margin-bottom:14px;border:1px solid #dce8e4;border-radius:21px;background:linear-gradient(110deg,#f7fbfa,#fff 60%);overflow:hidden}
+#page-community>.section-title:after{content:"COMMUNITY";position:absolute;right:18px;bottom:-10px;color:rgba(13,103,88,.045);font-size:66px;font-weight:1000;letter-spacing:-4px}
+.community-main{padding:0;overflow:hidden;border-radius:22px;box-shadow:0 16px 38px rgba(18,49,43,.06)}
+.community-signal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;background:linear-gradient(105deg,#102d26,#173c33);color:#fff}.community-signal-head>div{display:flex;align-items:center;gap:8px}.community-signal-head i{width:7px;height:7px;border-radius:50%;background:#48d5b8;box-shadow:0 0 0 5px rgba(72,213,184,.08)}.community-signal-head b{font-size:9px;letter-spacing:.13em}.community-signal-head span{font-size:8px;color:#9fc3ba;letter-spacing:.04em}.community-signal-head small{font-size:7px;color:#6fd7c0;font-weight:1000;letter-spacing:.12em}
+.community-toolbar{padding:13px 15px;margin:0;border-bottom:1px solid #e8efed;background:#f8fbfa}
+.community-list{gap:0}.community-post{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) 28px;gap:12px;align-items:center;border:0;border-bottom:1px solid #e9f0ed;border-radius:0;padding:15px 16px;background:#fff;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}.community-post:last-child{border-bottom:0}.community-post:hover{z-index:1;transform:translateX(4px);background:linear-gradient(90deg,#f0faf7,#fff 45%);box-shadow:0 10px 24px rgba(18,70,59,.06)}
+.community-seq{font-size:18px;font-weight:1000;color:#9aaba5;font-variant-numeric:tabular-nums}.community-post:hover .community-seq{color:#0a806e}.community-post-content{min-width:0}.community-post h3{margin:7px 0 4px;font-size:17px;color:#17332c}.community-post p{font-size:11px}.community-post-meta{display:flex;align-items:center;gap:10px}.community-post-meta b{color:#0b826f;font-size:9px}.community-arrow{font-size:15px;color:#c0cdc8;transition:.18s}.community-post:hover .community-arrow{color:#0b8d76;transform:translate(2px,-2px)}
+.community-hot-badge{display:inline-flex;padding:3px 5px;border-radius:5px;background:#103c32;color:#8ce6d3;font-size:6px;font-weight:1000;letter-spacing:.1em}.community-hot{background:linear-gradient(90deg,rgba(239,250,247,.7),#fff 38%)}
+.community-compose-card{border-radius:22px;background:linear-gradient(180deg,#fff,#f8fbfa);box-shadow:0 14px 32px rgba(18,49,43,.055)}.community-compose-card:before{content:"WRITE SIGNAL";display:block;margin:-18px -18px 15px;padding:12px 18px;background:#15382f;border-radius:22px 22px 0 0;color:#a8d8cd;font-size:7px;font-weight:1000;letter-spacing:.14em}
+.community-detail{box-shadow:0 16px 36px rgba(18,49,43,.06)}.community-comment{transition:.18s}.community-comment:hover{transform:translateX(3px);background:#f1f9f6}
+
+/* Compare: irresistible versus arena, no external image asset */
+#page-compare>.section-title{position:relative;padding:22px 24px;margin-bottom:14px;border-radius:22px;background:linear-gradient(108deg,#102d26 0%,#173d34 64%,#1c493f);overflow:hidden;box-shadow:0 18px 44px rgba(12,47,39,.13)}
+#page-compare>.section-title:after{content:"A / B";position:absolute;right:22px;bottom:-24px;color:rgba(255,255,255,.05);font-size:92px;font-weight:1000;letter-spacing:-7px}#page-compare>.section-title .kicker{color:#63dac2}#page-compare>.section-title .h1{color:#fff}#page-compare>.section-title .sub{color:#b8d0ca;max-width:860px}
+#comparePlusGate{border-color:#b9e4da;background:linear-gradient(110deg,#edf9f5,#f8fcfb);box-shadow:0 10px 24px rgba(18,70,59,.045)}#comparePlusGate button{background:linear-gradient(100deg,#102f28,#0d806d);box-shadow:0 8px 18px rgba(13,128,109,.16)}#comparePageCard.plus-locked-surface{opacity:.88;filter:saturate(.95);pointer-events:none}
+.compare-page-card{padding:0;overflow:hidden;border-radius:25px;background:#fff;box-shadow:0 23px 56px rgba(12,47,39,.12)}
+.compare-stage{position:relative;display:grid;grid-template-columns:1fr 150px 1fr;align-items:center;min-height:260px;padding:28px 32px;overflow:hidden;background-image:radial-gradient(circle at 50% 50%,transparent 0 45px,rgba(80,213,184,.12) 46px 47px,transparent 48px 82px,rgba(80,213,184,.075) 83px 84px,transparent 85px),repeating-linear-gradient(90deg,transparent 0 39px,rgba(119,184,170,.055) 40px),repeating-linear-gradient(0deg,transparent 0 39px,rgba(119,184,170,.045) 40px),linear-gradient(108deg,#0d2b24 0%,#153a31 49.8%,#f6fbf9 50%,#fff 100%)}
+.compare-stage:before,.compare-stage:after{content:"";position:absolute;width:240px;height:240px;border:1px solid rgba(99,218,194,.16);transform:rotate(45deg);pointer-events:none}.compare-stage:before{left:-92px;top:7px}.compare-stage:after{right:-92px;top:7px;border-color:rgba(12,115,96,.1)}
+.compare-stage-person{position:relative;z-index:1;display:flex;align-items:center;gap:15px;min-width:0}.compare-stage-b{justify-content:flex-end;text-align:right}.compare-stage-photo{width:92px;height:112px;flex:0 0 92px;border-radius:24px;overflow:hidden;border:2px solid rgba(255,255,255,.72);background:rgba(255,255,255,.08);box-shadow:0 18px 38px rgba(3,25,20,.18);display:flex;align-items:center;justify-content:center}.compare-stage-photo img,.compare-stage-photo svg{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}.compare-stage-photo>span{font-size:42px;font-weight:1000;color:rgba(184,224,215,.28)}.compare-stage-b .compare-stage-photo{border-color:#dce9e5;background:#edf6f3}.compare-stage-b .compare-stage-photo>span{color:rgba(24,111,94,.2)}
+.compare-stage-copy{min-width:0}.compare-stage-copy small{display:block;color:#5bd2bb;font-size:7px;font-weight:1000;letter-spacing:.15em}.compare-stage-copy b{display:block;margin-top:7px;color:#fff;font-size:20px;line-height:1.25;letter-spacing:-.7px}.compare-stage-copy em{display:block;margin-top:6px;color:#9cc4ba;font-size:8px;font-style:normal;font-weight:900;letter-spacing:.08em}.compare-stage-b .compare-stage-copy small{color:#0b8a74}.compare-stage-b .compare-stage-copy b{color:#13352d}.compare-stage-b .compare-stage-copy em{color:#879891}
+.compare-stage-vs{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;width:118px;height:118px;margin:auto;border-radius:50%;border:1px solid rgba(106,220,196,.36);background:radial-gradient(circle,#163b32 0 58%,#102d26 60%);box-shadow:0 0 0 9px rgba(75,199,174,.055),0 18px 38px rgba(5,33,27,.2);color:#fff}.compare-stage-vs span{font-size:35px;font-weight:1000;letter-spacing:-2px}.compare-stage-vs b{font-size:7px;color:#6ee0c8;letter-spacing:.17em}.compare-stage-vs small{margin-top:4px;font-size:5.5px;color:#8eb8ae;letter-spacing:.09em}
+.compare-stage.ready .compare-stage-vs{animation:compareVsPulse 1.6s ease-in-out infinite alternate}@keyframes compareVsPulse{to{box-shadow:0 0 0 13px rgba(75,199,174,.07),0 18px 42px rgba(5,33,27,.24)}}
+.compare-stage-cta{display:flex;justify-content:space-between;gap:12px;padding:10px 18px;border-bottom:1px solid #e1ebe8;background:#f4f9f7;color:#6a7a75;font-size:9px}.compare-stage-cta b{color:#0b806e;font-size:8px;letter-spacing:.12em;white-space:nowrap}.compare-search-grid{padding:20px 22px 0}.compare-action-row{margin:16px 0 22px}.compare-action{min-width:230px;height:54px;border-radius:14px;background:linear-gradient(100deg,#0e7f6c,#22b79d);box-shadow:0 13px 28px rgba(14,127,108,.22);letter-spacing:.02em}.compare-action:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(14,127,108,.27)}
+.compare-empty{position:relative;overflow:hidden;padding:64px 20px;background:radial-gradient(circle at 50% 45%,rgba(45,184,160,.1),transparent 26%),linear-gradient(180deg,#fbfefd,#f4f9f7)}.compare-empty:after{content:"VS";position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);z-index:0;color:rgba(15,118,110,.04);font-size:115px;font-weight:1000}.compare-empty>*{position:relative;z-index:1}
+.compare-result-arena{display:grid;grid-template-columns:1fr 120px 1fr;gap:10px;align-items:center;margin-top:20px;padding:22px;border-radius:24px;background:linear-gradient(106deg,#0f2d26 0%,#153a31 49.7%,#f7fbf9 50%,#fff);box-shadow:0 20px 48px rgba(12,47,39,.12);overflow:hidden}.compare-result-person{display:flex;align-items:center;gap:13px;min-width:0}.result-b{justify-content:flex-end;text-align:right}.compare-result-avatar{width:90px;height:108px;flex:0 0 90px;border-radius:22px;overflow:hidden;border:2px solid rgba(255,255,255,.75);box-shadow:0 15px 34px rgba(4,28,22,.18)}.compare-result-avatar img,.compare-result-avatar svg{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 22%}.result-b .compare-result-avatar{border-color:#d8e7e2}.compare-result-copy small{font-size:6.5px;font-weight:1000;letter-spacing:.12em;color:#62dac2}.compare-result-copy h3{margin:6px 0 3px;color:#fff;font-size:22px}.compare-result-copy p{margin:0;color:#9fc0b7;font-size:9px}.result-b .compare-result-copy small{color:#0b806e}.result-b .compare-result-copy h3{color:#14352d}.result-b .compare-result-copy p{color:#82928d}.compare-result-rank{font-size:11px;font-weight:1000;color:#61d8c0;white-space:nowrap}.result-b .compare-result-rank{color:#0a826e}.compare-result-chips{display:flex;gap:5px;margin-top:9px}.result-b .compare-result-chips{justify-content:flex-end}.compare-result-chips span{display:inline-flex;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.1);color:#cde7e1;font-size:7px;font-weight:1000}.result-b .compare-result-chips span{background:#edf6f3;color:#41665d}.compare-result-chips .up{color:#6de0c6}.compare-result-chips .down{color:#f4a2a2}.compare-result-vs{display:flex;flex-direction:column;align-items:center;color:#fff}.compare-result-vs span{font-size:32px;font-weight:1000}.compare-result-vs small{font-size:6px;color:#7cdcc7;letter-spacing:.12em}
+.compare-verdict-board{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:1px;margin:12px 0;border:1px solid #dce8e4;border-radius:17px;overflow:hidden;background:#dce8e4}.compare-verdict-board>div{padding:14px 16px;background:#fff;text-align:center}.compare-verdict-board small{display:block;color:#8c9995;font-size:7px;font-weight:1000;letter-spacing:.11em}.compare-verdict-board b{display:block;margin-top:5px;color:#15372f;font-size:16px}.compare-verdict-center{background:#f3f9f7!important}.compare-verdict-center span{display:block;color:#0b806e;font-size:7px;font-weight:1000;letter-spacing:.12em}.compare-verdict-center small{margin-top:4px}
+.compare-radar-upgraded{grid-template-columns:minmax(0,1fr) 230px}.compare-summary-live{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compare-summary-stat{padding:14px;border:1px solid #e0ebe7;border-radius:14px;background:#fff}.compare-summary-stat small,.compare-summary-stat span{display:block;color:#8c9a95;font-size:7px;font-weight:950;letter-spacing:.09em}.compare-summary-stat b{display:block;margin:5px 0;color:#12372e;font-size:24px}.compare-summary-stat b i{font-style:normal;font-size:9px;color:#9aa7a2}.compare-summary-stat.wide{grid-column:1/-1}
+.compare-metric-board{margin-top:14px;border:1px solid #dce8e4;border-radius:20px;overflow:hidden;background:#fff}.compare-metric-head{display:grid;grid-template-columns:1fr 190px 1fr;gap:8px;padding:12px 16px;background:#102e27;color:#fff}.compare-metric-head span{font-size:9px;font-weight:1000}.compare-metric-head span:last-child{text-align:right}.compare-metric-head b{text-align:center;color:#83dfcc;font-size:8px;letter-spacing:.12em}.compare-metric-row{display:grid;grid-template-columns:1fr 190px 1fr;gap:12px;align-items:center;min-height:66px;padding:10px 16px;border-top:1px solid #edf2f0}.compare-metric-side{display:grid;grid-template-columns:38px 34px 1fr;align-items:center;gap:8px}.compare-metric-side.side-b{grid-template-columns:1fr 34px 38px}.compare-metric-side>b{font-size:18px;color:#193b33}.compare-metric-side.side-b>b{text-align:right}.compare-metric-side>i{display:block;height:5px;border-radius:99px;background:#edf2f0;overflow:hidden}.compare-metric-side>i em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0c8d75,#50cdb7)}.compare-metric-side.side-b>i em{margin-left:auto;background:linear-gradient(90deg,#9e7aea,#7c3aed)}.compare-metric-axis{text-align:center}.compare-metric-axis b{display:block;color:#435b54;font-size:10px}.compare-metric-axis small{display:inline-block;margin-top:4px;padding:3px 5px;border-radius:5px;background:#f0f5f3;color:#81908b;font-size:6px;font-weight:1000}.compare-metric-row.win-a{background:linear-gradient(90deg,rgba(235,249,245,.68),#fff 42%)}.compare-metric-row.win-b{background:linear-gradient(270deg,rgba(244,239,253,.7),#fff 42%)}
+
+@media(max-width:900px){
+  .news-card.news-featured{display:block;min-height:0;background:#fff;border:1px solid #dce6e3}.news-card.news-featured .news-hero{min-height:0;aspect-ratio:16/9}.news-card.news-featured .news-body{display:block;padding:20px}.news-card.news-featured .news-title{font-size:25px}
+  .community-signal-head span{display:none}.community-post{grid-template-columns:38px minmax(0,1fr) 22px}
+  .compare-stage{grid-template-columns:1fr 86px 1fr;min-height:210px;padding:20px 15px}.compare-stage-photo{width:68px;height:86px;flex-basis:68px;border-radius:18px}.compare-stage-copy b{font-size:14px}.compare-stage-copy em{font-size:6.5px}.compare-stage-vs{width:74px;height:74px}.compare-stage-vs span{font-size:24px}.compare-stage-vs small{display:none}
+  .compare-result-arena{grid-template-columns:1fr 70px 1fr;padding:16px 11px}.compare-result-avatar{width:64px;height:78px;flex-basis:64px}.compare-result-copy h3{font-size:16px}.compare-result-copy p{display:none}.compare-result-rank{display:none}.compare-radar-upgraded{grid-template-columns:1fr}.compare-summary-live{grid-template-columns:1fr 1fr}.compare-metric-head,.compare-metric-row{grid-template-columns:1fr 120px 1fr}.compare-metric-side{grid-template-columns:30px 28px 1fr}.compare-metric-side.side-b{grid-template-columns:1fr 28px 30px}
+}
+@media(max-width:620px){
+  .ranktable .row.rank-top-1{min-height:105px}.ranktable .row.rank-top-1 .ranknum{font-size:38px}.ranktable .row.rank-top-1 .person .avatar{width:61px;height:61px;flex-basis:61px}.top-signal-tag{display:none}.momentum-state{font-size:5.5px}
+  .newsroom-signal-brand span,.newsroom-signal-status{display:none}.grid-news{grid-template-columns:1fr}.article-content{padding:26px 18px}.article-content h1{font-size:32px}
+  .community-signal-head{padding:13px 14px}.community-signal-head small{display:none}.community-seq{font-size:15px}.community-post{padding:13px 12px;gap:8px}
+  .compare-stage{display:grid;grid-template-columns:1fr 58px 1fr;min-height:170px;padding:16px 9px}.compare-stage-person{gap:6px}.compare-stage-photo{width:49px;height:64px;flex-basis:49px;border-radius:14px}.compare-stage-copy small,.compare-stage-copy em{display:none}.compare-stage-copy b{font-size:11px}.compare-stage-vs{width:50px;height:50px}.compare-stage-vs span{font-size:18px}.compare-stage-vs b{font-size:5px}.compare-stage-cta span{display:none}.compare-stage-cta{justify-content:center}.compare-search-grid{padding:14px 12px 0}
+  .compare-result-arena{grid-template-columns:1fr 42px 1fr}.compare-result-person{gap:6px;display:block;text-align:center}.compare-result-avatar{width:58px;height:70px;margin:0 auto 7px}.result-b{display:flex;flex-direction:column-reverse}.compare-result-copy h3{font-size:14px}.compare-result-copy small{font-size:5.5px}.compare-result-chips{justify-content:center!important}.compare-result-vs span{font-size:20px}.compare-verdict-board{grid-template-columns:1fr 1fr}.compare-verdict-center{grid-column:1/-1;grid-row:1}.compare-verdict-board b{font-size:13px}.compare-metric-head{grid-template-columns:1fr 95px 1fr;padding:10px}.compare-metric-row{grid-template-columns:1fr 95px 1fr;padding:9px 8px;gap:5px}.compare-metric-side{display:flex;gap:4px}.compare-metric-side.side-b{display:flex}.compare-metric-side>i{display:none}.compare-metric-side>b{font-size:14px}.compare-metric-axis b{font-size:8px}
+}
+/* ===== /v2.3.3 ===== */
 </style>
 </head>
 <body>
@@ -1652,6 +1751,11 @@ body:before{
         <div class="news-pro-mark" id="newsProMark" style="display:none">PRO PUBLISHING</div>
       </div>
 
+      <div class="newsroom-signal-strip" aria-label="정참시 뉴스룸 섹션 안내">
+        <div class="newsroom-signal-brand"><i></i><b>JEONGCHAMSI NEWSROOM</b><span>POLITICS · POLICY · LOCAL · DATA · FIELD</span></div>
+        <div class="newsroom-signal-status">EDITORIAL SIGNAL</div>
+      </div>
+
       <section class="news-writer-card" id="newsWriterCard" style="display:none">
         <div class="news-writer-head">
           <div><div class="kicker">PRO PUBLISHING</div><h2>정참시News 작성</h2><p>정참시News 발행 권한은 PRO 이상 회원과 관리자에게 제공됩니다.</p></div>
@@ -1702,6 +1806,7 @@ body:before{
 
     <div class="community-shell">
       <main class="community-main">
+        <div class="community-signal-head"><div><i></i><b>COMMUNITY SIGNAL BOARD</b><span>회원 토론 · 정책 · 지역정치 · 질문</span></div><small>OPEN DISCUSSION</small></div>
         <div class="community-toolbar">
           <div class="community-cats" id="communityCats">
             <button class="community-cat active" data-community-cat="all">전체</button>
@@ -1764,6 +1869,18 @@ body:before{
 
     <div class="plus-gate" id="comparePlusGate" style="display:flex"><div><b>정치인 비교는 PLUS 기능입니다.</b><p>PLUS 회원은 랭킹 정치인과 대통령·정부 주요 인사의 8개 비교지표를 한 화면에서 비교할 수 있습니다.</p></div><button onclick="openPlusUpgrade('정치인 비교')">PLUS 월 5,000원 보기</button></div>
     <section class="compare-page-card plus-locked-surface" id="comparePageCard">
+      <div class="compare-stage" id="compareStage" aria-label="정치인 비교 분석 무대">
+        <div class="compare-stage-person compare-stage-a">
+          <div class="compare-stage-photo" id="compareStagePhotoA"><span>A</span></div>
+          <div class="compare-stage-copy"><small>PLAYER A</small><b id="compareStageNameA">첫 번째 인물을 선택</b><em id="compareStageMetaA">NOW PROFILE</em></div>
+        </div>
+        <div class="compare-stage-vs"><span>VS</span><b>8 AXIS</b><small>HEAD-TO-HEAD ANALYSIS</small></div>
+        <div class="compare-stage-person compare-stage-b">
+          <div class="compare-stage-copy"><small>PLAYER B</small><b id="compareStageNameB">두 번째 인물을 선택</b><em id="compareStageMetaB">NOW PROFILE</em></div>
+          <div class="compare-stage-photo" id="compareStagePhotoB"><span>B</span></div>
+        </div>
+      </div>
+      <div class="compare-stage-cta"><span>두 인물을 고르면 현재 순위 · NOW INDEX · 모멘텀 · 8개 능력축을 한 화면에서 맞붙여 봅니다.</span><b>WHO LEADS THE SIGNAL?</b></div>
       <div class="compare-search-grid">
         <div class="person-search">
           <label>인물 A</label>
@@ -10487,9 +10604,17 @@ function momentumSparklineSVG(x,viewMode=mode){
   const stroke=cls==='up'?'#128d76':cls==='down'?'#c76565':'#91a19b';
   return `<svg class="momentum-spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts.split(' ').at(-1).split(',')[0]}" cy="${pts.split(' ').at(-1).split(',')[1]}" r="2.3" fill="#fff" stroke="${stroke}" stroke-width="1.6"/></svg>`;
 }
+function momentumSignalMeta(x,viewMode=mode){
+  const raw=refreshRankChange(x,viewMode), ch=finiteValue(raw.change)?Number(raw.change):0;
+  if(ch>=8)return {cls:'signal-surge',label:'SURGE'};
+  if(ch>=2)return {cls:'signal-rise',label:'RISING'};
+  if(ch<=-8)return {cls:'signal-drop-strong',label:'DROP'};
+  if(ch<=-2)return {cls:'signal-drop',label:'COOLING'};
+  return {cls:'signal-steady',label:'STEADY'};
+}
 function momentumCellHTML(x,viewMode=mode){
-  const refresh=refreshChangeText(x,viewMode), raw=refreshRankChange(x,viewMode), mag=finiteValue(raw.change)?Math.max(5,Math.min(100,Math.abs(Number(raw.change))*7)):4;
-  return `<div class="momentum-cell ${refresh.cls}"><div class="change ${refresh.cls}">${refresh.text}</div><span class="refresh-route">${refresh.route}</span>${momentumSparklineSVG(x,viewMode)}<span class="momentum-track"><i style="width:${mag}%"></i></span></div>`;
+  const refresh=refreshChangeText(x,viewMode), raw=refreshRankChange(x,viewMode), mag=finiteValue(raw.change)?Math.max(5,Math.min(100,Math.abs(Number(raw.change))*7)):4, signal=momentumSignalMeta(x,viewMode);
+  return `<div class="momentum-cell ${refresh.cls} ${signal.cls}"><div class="change ${refresh.cls}">${refresh.text}</div><span class="momentum-state">${signal.label}</span><span class="refresh-route">${refresh.route}</span>${momentumSparklineSVG(x,viewMode)}<span class="momentum-track"><i style="width:${mag}%"></i></span></div>`;
 }
 function renderLiveDeskStamp(){
   const el=document.getElementById('liveDeskTime'); if(!el)return;
@@ -10526,14 +10651,16 @@ function renderRank(){
     const vr=viewRank(x,mode), firstCell=(Number(x.id)===300||x.party==='공석')?'―':vr;
     const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x);
     const topClass=Number(vr)>=1&&Number(vr)<=3?` rank-top rank-top-${vr}`:'';
+    const signal=momentumSignalMeta(x,mode), signalClass=Number(vr)>3&&Number(vr)<=30?` rank-signal ${signal.cls}`:'';
     const fifth=momentumCellHTML(x,mode);
     const sixth=`<div class="score-stack"><span class="rankpill rank-${x.grade}">${x.grade}</span><b class="score-number">${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'—'}</b><small class="score-label">NOW INDEX</small></div>`;
-    html += `<div class="row${topClass}" data-rank-ghost="${String(vr).padStart(2,'0')}" onclick="openDetail(${x.id})">
+    const topSignal=Number(vr)===1?'LIVE LEADER':Number(vr)===2?'CHASE SIGNAL':Number(vr)===3?'TOP WATCH':'';
+    html += `<div class="row${topClass}${signalClass?' '+signalClass:''}" data-rank-ghost="${String(vr).padStart(2,'0')}" onclick="openDetail(${x.id})">
       <div class="ranknum">${firstCell}</div>
       <div class="person">
         <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
         <div class="person-copy">
-          <div class="pname">${x.name}<span class="entity-chip">${entityLabel(x)}</span></div>
+          <div class="pname">${x.name}<span class="entity-chip">${entityLabel(x)}</span>${topSignal?`<span class="top-signal-tag">${topSignal}</span>`:''}</div>
           <div class="mobile-party-line ${partyClass[x.party]||"party-gray"}">${x.party}</div>
           ${(()=>{const h=rankHeadlineFor(x);return h?`<div class="person-headline" title="${rankHeadlineEsc(h)}">${rankHeadlineEsc(h)}</div>`:'';})()}
         </div>
@@ -10655,13 +10782,14 @@ function renderSideNews(){
 function renderNewsGrid(){
   const el=document.getElementById('newsGrid');if(!el)return;
   el.innerHTML = newsArticles.map((a,i)=>`
-    <article class="news-card" onclick="openArticle(${i})">
-      <div class="news-hero">${newsVisual(a)}</div>
+    <article class="news-card ${i===0?'news-featured':''}" onclick="openArticle(${i})">
+      <div class="news-hero">${newsVisual(a)}<span class="news-card-index">${String(i+1).padStart(2,'0')}</span></div>
       <div class="news-body">
+        <div class="news-card-signal"><span>${i===0?'LEAD STORY':'NEWS SIGNAL'}</span><i></i></div>
         <div class="news-cat">${newsEsc(a.cat)}</div>
         <div class="news-title">${newsEsc(a.title)}</div>
         <div class="news-excerpt">${newsEsc(a.excerpt)}</div>
-        <div class="news-meta">${newsEsc(a.author)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
+        <div class="news-meta"><b>${newsEsc(a.author)}</b><span>${newsEsc(a.date||newsDate(a.createdAt))}</span></div>
       </div>
     </article>
   `).join('');
@@ -10830,47 +10958,60 @@ function combinedRadarSVG(a,b){
   </svg>`;
 }
 
+function comparisonMetricScore(m){return finiteValue(m?.[2])?Math.max(0,Math.min(100,Number(m[2]))):0;}
+function comparisonAverage(p){const vals=(p?.metrics||[]).map(comparisonMetricScore).filter(Number.isFinite);return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;}
+function comparisonMomentum(p){
+  if(isReferencePerson(p))return {text:'REFERENCE',cls:'same'};
+  const r=refreshRankChange(p,'all'),ch=finiteValue(r.change)?Number(r.change):0;
+  return {text:ch>0?`▲ ${ch}`:ch<0?`▼ ${Math.abs(ch)}`:'―',cls:ch>0?'up':ch<0?'down':'same'};
+}
+function comparisonProfileScore(p){return Number.isFinite(Number(p?.rank2Score))?Number(p.rank2Score).toFixed(1):comparisonAverage(p).toFixed(1);}
 function compareResultHTML(a,b,showBack=false){
-  const rows=[
-    ["NOW Rank",comparisonRankText(a),comparisonRankText(b)],
-    ["분석 구분",comparisonStatusText(a),comparisonStatusText(b)],
-    ...a.metrics.map((m,i)=>[m[0],m[1],b.metrics?.[i]?.[1]||'-'])
-  ];
+  const metrics=(a.metrics||[]).map((m,i)=>{const bm=b.metrics?.[i]||[m[0],'-',0],as=comparisonMetricScore(m),bs=comparisonMetricScore(bm),diff=as-bs;return {label:m[0],ag:m[1],bg:bm[1]||'-',as,bs,diff};});
+  const winsA=metrics.filter(m=>m.diff>0.5).length,winsB=metrics.filter(m=>m.diff<-.5).length,ties=metrics.length-winsA-winsB;
+  const avgA=comparisonAverage(a),avgB=comparisonAverage(b),momA=comparisonMomentum(a),momB=comparisonMomentum(b);
+  const leader=avgA>avgB+.5?a.name:avgB>avgA+.5?b.name:'동률';
   return `
-    <div class="compare-head">
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${comparisonPhotoHTML(a)}</div><div><h3 style="margin:0">${a.name} · ${entityOffice(a)}</h3><div class="sub" style="margin-top:4px">${a.party} · ${a.jurisdiction||a.constituency||a.region}</div></div></div></div>
-      <div class="vs">VS</div>
-      <div class="compare-person"><div class="bigperson"><div class="bigavatar">${comparisonPhotoHTML(b)}</div><div><h3 style="margin:0">${b.name} · ${entityOffice(b)}</h3><div class="sub" style="margin-top:4px">${b.party} · ${b.jurisdiction||b.constituency||b.region}</div></div></div></div>
+    <div class="compare-result-arena">
+      <div class="compare-result-person result-a">
+        <div class="compare-result-rank">${comparisonRankText(a)}</div>
+        <div class="compare-result-avatar">${comparisonPhotoHTML(a,'high')}</div>
+        <div class="compare-result-copy"><small>PLAYER A · ${comparisonStatusText(a)}</small><h3>${a.name}</h3><p>${a.party} · ${entityOffice(a)} · ${a.jurisdiction||a.constituency||a.region}</p><div class="compare-result-chips"><span>NOW ${comparisonProfileScore(a)}</span><span class="${momA.cls}">${momA.text}</span></div></div>
+      </div>
+      <div class="compare-result-vs"><span>VS</span><small>LIVE SIGNAL</small></div>
+      <div class="compare-result-person result-b">
+        <div class="compare-result-copy"><small>PLAYER B · ${comparisonStatusText(b)}</small><h3>${b.name}</h3><p>${b.party} · ${entityOffice(b)} · ${b.jurisdiction||b.constituency||b.region}</p><div class="compare-result-chips"><span>NOW ${comparisonProfileScore(b)}</span><span class="${momB.cls}">${momB.text}</span></div></div>
+        <div class="compare-result-avatar">${comparisonPhotoHTML(b,'high')}</div>
+        <div class="compare-result-rank">${comparisonRankText(b)}</div>
+      </div>
     </div>
 
-    <div class="combined-radar-wrap">
+    <div class="compare-verdict-board">
+      <div><small>8축 우세</small><b>${a.name} ${winsA}</b></div>
+      <div class="compare-verdict-center"><span>HEAD-TO-HEAD</span><b>${leader==='동률'?'EVEN SIGNAL':`${leader} SIGNAL LEAD`}</b><small>동률축 ${ties}</small></div>
+      <div><small>8축 우세</small><b>${b.name} ${winsB}</b></div>
+    </div>
+
+    <div class="combined-radar-wrap compare-radar-upgraded">
       <div class="combined-radar">
         <div class="radar-legend">
-          <div class="legend-item"><span class="legend-dot" style="background:#28b7a2"></span>${a.name}</div>
-          <div class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>${b.name}</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#28b7a2"></span>${a.name} · 평균 ${avgA.toFixed(1)}</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>${b.name} · 평균 ${avgB.toFixed(1)}</div>
         </div>
         ${combinedRadarSVG(a,b)}
-        <div class="sub" style="text-align:center;font-size:13px">두 인물의 8개 비교 축을 같은 좌표계에서 비교합니다.</div>
+        <div class="sub" style="text-align:center;font-size:13px">8개 능력축의 현재 점수를 같은 좌표계에서 겹쳐 봅니다.</div>
       </div>
-      <div class="compare-summary">
-        <div class="compare-person">
-          <div class="kicker">${a.name}</div>
-          <h3 style="margin:4px 0">${comparisonRankText(a)} · ${isReferencePerson(a)?'참고 비교 프로필':a.grade+' Rank'}</h3>
-          <div class="sub" style="margin-top:4px">${a.party} · ${entityLabel(a)} · ${a.jurisdiction||a.constituency||a.region}</div>
-        </div>
-        <div class="compare-person">
-          <div class="kicker" style="color:#7c3aed">${b.name}</div>
-          <h3 style="margin:4px 0">${comparisonRankText(b)} · ${isReferencePerson(b)?'참고 비교 프로필':b.grade+' Rank'}</h3>
-          <div class="sub" style="margin-top:4px">${b.party} · ${entityLabel(b)} · ${b.jurisdiction||b.constituency||b.region}</div>
-        </div>
+      <div class="compare-summary compare-summary-live">
+        <div class="compare-summary-stat"><small>${a.name}</small><b>${avgA.toFixed(1)}</b><span>8 AXIS AVG</span></div>
+        <div class="compare-summary-stat"><small>${b.name}</small><b>${avgB.toFixed(1)}</b><span>8 AXIS AVG</span></div>
+        <div class="compare-summary-stat wide"><small>NOW RANK</small><b>${comparisonRankText(a)} <i>vs</i> ${comparisonRankText(b)}</b><span>${a.name} · ${b.name}</span></div>
       </div>
     </div>
 
-    <div class="compare-table">
-      ${rows.map(r=>`<div class="compare-row"><div class="left">${r[1]}</div><div class="label">${r[0]}</div><div class="right">${r[2]}</div></div>`).join("")}
+    <div class="compare-metric-board">
+      <div class="compare-metric-head"><span>${a.name}</span><b>8 AXIS HEAD-TO-HEAD</b><span>${b.name}</span></div>
+      ${metrics.map(m=>`<div class="compare-metric-row ${m.diff>0.5?'win-a':m.diff<-.5?'win-b':'tie'}"><div class="compare-metric-side side-a"><b>${m.as.toFixed(0)}</b><span class="metric-badge metric-${m.ag}">${m.ag}</span><i><em style="width:${m.as}%"></em></i></div><div class="compare-metric-axis"><b>${m.label}</b><small>${Math.abs(m.diff)<.5?'EVEN':`Δ ${Math.abs(m.diff).toFixed(0)}`}</small></div><div class="compare-metric-side side-b"><i><em style="width:${m.bs}%"></em></i><span class="metric-badge metric-${m.bg}">${m.bg}</span><b>${m.bs.toFixed(0)}</b></div></div>`).join('')}
     </div>
-
-    <div class="why"><h4>비교 기능의 원칙</h4><p>랭킹 참여 정치인은 NOW Rank 지표를, 대통령·정부 주요 인사는 랭킹에서 제외한 채 공개 이력과 현재 직책을 바탕으로 만든 비랭킹 참고 프로필을 같은 8개 축에서 비교합니다. 참고 프로필은 공식 평가점수나 직무수행 성적표가 아니며, 어느 쪽이 더 ‘좋은 정치인’인지 결론내리지 않습니다.</p></div>
     ${showBack?`<div style="margin-top:14px"><button class="secondary" onclick="openDetail(${a.id})">← ${a.name} 상세로 돌아가기</button></div>`:""}
   `;
 }
@@ -11252,7 +11393,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.3.2 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.3.3 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -11495,6 +11636,11 @@ function setupDetailCompareSearch(excludeId){
 let compareSelectedA=null;
 let compareSelectedB=null;
 
+function updateCompareStage(){
+  const paint=(side,p)=>{const photo=document.getElementById(`compareStagePhoto${side}`),name=document.getElementById(`compareStageName${side}`),meta=document.getElementById(`compareStageMeta${side}`);if(!photo||!name||!meta)return;photo.innerHTML=p?comparisonPhotoHTML(p,'standard'):`<span>${side}</span>`;name.textContent=p?p.name:(side==='A'?'첫 번째 인물을 선택':'두 번째 인물을 선택');meta.textContent=p?`${comparisonRankText(p)} · ${p.party||entityLabel(p)} · NOW ${comparisonProfileScore(p)}`:'NOW PROFILE';};
+  paint('A',compareSelectedA);paint('B',compareSelectedB);document.getElementById('compareStage')?.classList.toggle('ready',Boolean(compareSelectedA&&compareSelectedB));
+}
+
 function setupCompareSearch(side){
   const input=document.getElementById(`compareSearch${side}`);
   const box=document.getElementById(`suggestions${side}`);
@@ -11502,7 +11648,7 @@ function setupCompareSearch(side){
   if(!input||!box||!preview)return;
   input.addEventListener("input",()=>{
     if(side==="A")compareSelectedA=null; else compareSelectedB=null;
-    preview.classList.remove("show");
+    updateCompareStage();preview.classList.remove("show");
     const other=side==="A"?compareSelectedB:compareSelectedA;
     const matches=politicianMatches(input.value,other?.id||null,10);
     box.innerHTML=matches.map(suggestionHTML).join("");
@@ -11510,7 +11656,7 @@ function setupCompareSearch(side){
     box.querySelectorAll(".suggestion").forEach(el=>el.addEventListener("click",()=>{
       const p=findComparisonPerson(el.dataset.id);
       if(side==="A")compareSelectedA=p; else compareSelectedB=p;
-      input.value=p.name;
+      input.value=p.name;updateCompareStage();
       preview.innerHTML=`선택됨 · <b>${p.name} · ${entityLabel(p)}</b> · ${p.party} · ${p.jurisdiction||p.region} · ${comparisonRankText(p)}`;
       preview.classList.add("show");
       box.classList.remove("show");
@@ -11532,6 +11678,7 @@ function renderComparePage(){
 function initComparePage(){
   setupCompareSearch("A");
   setupCompareSearch("B");
+  updateCompareStage();
   document.getElementById("runCompare")?.addEventListener("click",renderComparePage);
   document.getElementById("swapCompare")?.addEventListener("click",()=>{
     const temp=compareSelectedA; compareSelectedA=compareSelectedB; compareSelectedB=temp;
@@ -11545,6 +11692,7 @@ function initComparePage(){
         preview.classList.add("show");
       }else preview.classList.remove("show");
     });
+    updateCompareStage();
     if(compareSelectedA&&compareSelectedB)renderComparePage();
   });
   document.addEventListener("click",(e)=>{
@@ -12140,7 +12288,7 @@ function renderCommunityLoginState(){
 }
 function renderCommunityPosts(){
   const el=document.getElementById('communityList');if(!el)return;const rows=communityCategoryFilter==='all'?communityPosts:communityPosts.filter(p=>p.category===communityCategoryFilter);
-  el.innerHTML=rows.length?rows.map(p=>`<article class="community-post" data-community-post="${accountEsc(p.id)}"><div class="community-post-top"><span class="community-badge">${accountEsc(p.category)}</span><span>${accountEsc(p.author)} · ${accountEsc(p.role||'FREE')}</span></div><h3>${accountEsc(p.title)}</h3><p>${accountEsc(p.content)}</p><div class="community-post-meta">${communityDate(p.createdAt)} · 댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</div></article>`).join(''):'<div class="community-empty">아직 등록된 게시글이 없습니다. 첫 이야기를 남겨보세요.</div>';
+  el.innerHTML=rows.length?rows.map((p,i)=>{const comments=Number(p.commentCount||0),hot=comments>=5;return `<article class="community-post ${hot?'community-hot':''}" data-community-post="${accountEsc(p.id)}"><div class="community-seq">${String(i+1).padStart(2,'0')}</div><div class="community-post-content"><div class="community-post-top"><span class="community-badge">${accountEsc(p.category)}</span>${hot?'<span class="community-hot-badge">HOT</span>':''}<span>${accountEsc(p.author)} · ${accountEsc(p.role||'FREE')}</span></div><h3>${accountEsc(p.title)}</h3><p>${accountEsc(p.content)}</p><div class="community-post-meta"><span>${communityDate(p.createdAt)}</span><b>댓글 ${comments.toLocaleString('ko-KR')}</b></div></div><div class="community-arrow">↗</div></article>`}).join(''):'<div class="community-empty">아직 등록된 게시글이 없습니다. 첫 이야기를 남겨보세요.</div>';
   el.querySelectorAll('[data-community-post]').forEach(card=>card.onclick=()=>openCommunityPost(card.dataset.communityPost));
 }
 async function loadCommunity(force=false){

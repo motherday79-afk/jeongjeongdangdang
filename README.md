@@ -1,21 +1,15 @@
-# 정참시 v2.3.2 · NOW SIGNAL TERMINAL
+# 정참시 v2.3.3 · SIGNAL HIERARCHY + COMPARE ARENA
 
-레이아웃과 v2.3.0 성능 구조를 유지한 체감형 디자인 업그레이드입니다.
+## 이번 패치
+- TOP1~3 시각 계층 강화: 1위 HERO, 2·3위 준 HERO, LIVE LEADER/CHASE/TOP WATCH 신호 추가
+- 4~30위 NOW MOMENTUM을 SURGE/RISING/STEADY/COOLING/DROP 상태로 시각화
+- 정치인 상세페이지 SIGNAL/8축/기록 카드 hover micro-interaction 강화
+- 정참시News를 NEWSROOM 디자인으로 개편: LEAD STORY + 편집국 카드 계층
+- 정뮤니티를 COMMUNITY SIGNAL BOARD 피드로 개편
+- 비교분석을 VS ARENA로 전면 강화: 선택 단계 배경 그래픽, 두 인물 실시간 프리뷰, NOW INDEX/모멘텀/8축 평균/축별 점수·우세 비교
+- 비교 배경은 외부 이미지 파일 없이 CSS 그래픽 레이어로 구현
 
-## 디자인
-- TOP1~3 시각 계층 강화: 1위 HERO, 2·3위 준 HERO
-- 4~30위 데이터 피드형 랭킹
-- 실제 게시 이력을 이용한 NOW MOMENTUM 미니 흐름선
-- WHY NOW 키워드에 실제 순위/상승 신호 기반 HOT·UP 표시
-- 오른쪽 사이드바를 하나의 NOW LIVE DESK로 통합
-- 정치인 상세를 NOW Intelligence Profile로 재설계
-- 8축 능력치를 점수/등급/미터로 동시에 표현
-- 숫자 자체를 핵심 그래픽 자산으로 사용
-- LIVE pulse, momentum reveal, hover 등 절제된 모션
-
-## 보존
-- v2.3.0 빠른 Refresh 구조 유지
-- 독립 경량 사진 API와 캐시 구조 유지
-- 관리자 기능과 콘텐츠 관리 기능 유지
-- 70개 파일 구조 유지
-- 별도 디자인 자산/API 호출 추가 없음
+## 성능/구조 보존
+- v2.3.0 빠른 Refresh 및 사진 최적화 API/lib 구조 변경 없음
+- 배포 파일 수 70개 유지
+- 새 이미지/디자인 자산 파일 추가 없음
