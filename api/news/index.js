@@ -1,7 +1,7 @@
 const crypto=require('crypto');
 const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {authenticate,capabilities,rateLimit}=require('../../lib/user_auth');
-const {getSession}=require('../../lib/auth');
+const {getSession,requireAdmin}=require('../../lib/auth');
 const {flushDue}=require('../../lib/editorial');
 
 const POSTS='jjdd:news:posts:v1';
@@ -24,10 +24,17 @@ function parseImageData(v){
   const mime=m[1].toLowerCase(),buf=Buffer.from(m[2],'base64');if(!buf.length||buf.length>MAX_IMAGE_BYTES)throw new Error('최적화된 대표 이미지는 1.2MB 이하만 저장할 수 있습니다.');if(!looksLikeImage(buf,mime))throw new Error('이미지 파일 내용이 올바르지 않습니다.');
   return {mime,data:buf.toString('base64'),bytes:buf.length};
 }
+
+async function findPostRow(id){
+  const rows=await cmd(['LRANGE',POSTS,'0',String(MAX_POSTS-1)]).catch(()=>[]),target=String(id||'');
+  for(let i=0;i<(rows||[]).length;i++){try{const p=JSON.parse(rows[i]);if(String(p.id)===target)return {index:i,raw:rows[i],post:p};}catch(_){}}
+  return null;
+}
+
 async function writerContext(req){
+  const admin=getSession(req);if(admin)return {id:`admin:${admin.id||'admin'}`,nickname:'정참시 운영팀',role:'ADMIN'};
   const user=await authenticate(req).catch(()=>null);
   if(user&&capabilities(user.role).pro)return {id:user.id,nickname:String(user.nickname||user.username||'PRO 회원').slice(0,30),role:user.role};
-  const admin=getSession(req);if(admin)return {id:`admin:${admin.id||'admin'}`,nickname:'정참시 운영팀',role:'ADMIN'};
   return null;
 }
 async function listPosts(limit=60){
@@ -44,9 +51,22 @@ module.exports=async function(req,res){
     }
     if(req.method==='GET'||action==='list'){
       await flushDue(12).catch(()=>{});
-      const [posts,writer]=await Promise.all([listPosts(req.query?.limit||60),writerContext(req)]);return res.json({ok:true,posts,canWrite:Boolean(writer),me:writer?{nickname:writer.nickname,role:writer.role}:null,minimumRole:'PRO'});
+      const [posts,writer]=await Promise.all([listPosts(req.query?.limit||60),writerContext(req)]);return res.json({ok:true,posts,canWrite:Boolean(writer),isAdmin:Boolean(writer?.role==='ADMIN'),me:writer?{nickname:writer.nickname,role:writer.role}:null,minimumRole:'PRO'});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
+    if(action==='admin-update'||action==='admin-delete'){
+      const admin=requireAdmin(req,res);if(!admin)return;
+      const b=req.body||{},row=await findPostRow(b.id);if(!row)return res.status(404).json({ok:false,error:'기사를 찾을 수 없습니다.'});
+      if(action==='admin-delete'){
+        await cmd(['LREM',POSTS,'1',row.raw]);await cmd(['DEL',IMAGE_PREFIX+row.post.id]).catch(()=>{});return res.json({ok:true,deletedId:row.post.id});
+      }
+      const title=cleanText(b.title,100),content=cleanText(b.content,12000);let excerpt=cleanText(b.excerpt,260);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 본문을 2자 이상 입력해주세요.'});if(!excerpt)excerpt=content.replace(/\s+/g,' ').slice(0,180);
+      let hasImage=Boolean(row.post.hasImage);
+      if(b.removeImage===true){await cmd(['DEL',IMAGE_PREFIX+row.post.id]).catch(()=>{});hasImage=false;}
+      if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+row.post.id,image);hasImage=true;}
+      const next={...row.post,category:safeCategory(b.category),title,excerpt,content,hasImage,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};
+      await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);return res.json({ok:true,post:publicPost(next)});
+    }
     if(action==='create'){
       const writer=await writerContext(req);if(!writer)return res.status(403).json({ok:false,error:'정참시News 작성은 PRO 이상 회원만 가능합니다.'});
       const lim=await rateLimit(req,'news-create',20,3600);if(!lim.ok)return res.status(429).json({ok:false,error:'짧은 시간에 기사 발행이 너무 많습니다. 잠시 후 다시 시도해주세요.'});

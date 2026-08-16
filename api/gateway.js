@@ -13,6 +13,7 @@ const routes = {
   'admin/local-photo': require('./admin/local-photo'),
   'admin/person-photo': require('./admin/person-photo'),
   'admin/photo-audit': require('./admin/photo-audit'),
+  'admin/member-metrics': require('./admin/member-metrics'),
   'admin/visitor-stats': require('./admin/visitor-stats'),
   'admin/content': require('./admin/content'),
   'admin/site-settings': require('./admin/site-settings'),

@@ -1,6 +1,7 @@
 const crypto=require('crypto');
 const {cmd}=require('../../lib/store');
 const {authenticate,requireUser,rateLimit}=require('../../lib/user_auth');
+const {getSession,requireAdmin}=require('../../lib/auth');
 const {flushDue}=require('../../lib/editorial');
 const POSTS='jjdd:community:posts:v1';
 const COMMENT_COUNTS='jjdd:community:comment-counts:v1';
@@ -11,6 +12,13 @@ function parseHash(v){
   const out={};for(let i=0;i<(v||[]).length;i+=2)out[String(v[i])]=v[i+1];return out;
 }
 function publicPost(p,count){return {id:p.id,category:p.category,title:p.title,content:p.content,author:p.author,role:p.role,createdAt:p.createdAt,commentCount:Number(count??p.commentCount??0)};}
+
+async function findPostRow(id){
+  const rows=await cmd(['LRANGE',POSTS,'0','299']).catch(()=>[]);const target=String(id||'');
+  for(let i=0;i<(rows||[]).length;i++){try{const p=JSON.parse(rows[i]);if(String(p.id)===target)return {index:i,raw:rows[i],post:p};}catch(_){}}
+  return null;
+}
+
 async function listPosts(limit=60){
   const [rows,countsRaw]=await Promise.all([
     cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(99,limit-1)))]).catch(()=>[]),
@@ -26,10 +34,21 @@ module.exports=async function(req,res){
     if(req.method==='GET'||action==='list'){
       await flushDue(12).catch(()=>{});
       const posts=await listPosts(Number(req.query?.limit||60));
-      const me=await authenticate(req).catch(()=>null);
-      return res.json({ok:true,posts,canWrite:Boolean(me),me:me?{nickname:me.nickname,role:me.role}:null});
+      const [me,admin]=await Promise.all([authenticate(req).catch(()=>null),Promise.resolve(getSession(req))]);
+      return res.json({ok:true,posts,canWrite:Boolean(me),isAdmin:Boolean(admin),me:me?{nickname:me.nickname,role:me.role}:(admin?{nickname:'정참시 관리자',role:'ADMIN'}:null)});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
+    if(action==='admin-update'||action==='admin-delete'){
+      const admin=requireAdmin(req,res);if(!admin)return;
+      const row=await findPostRow(b.id);if(!row)return res.status(404).json({ok:false,error:'게시글을 찾을 수 없습니다.'});
+      if(action==='admin-delete'){
+        await cmd(['LREM',POSTS,'1',row.raw]);await cmd(['DEL',`jjdd:community:comments:${row.post.id}`]).catch(()=>{});await cmd(['HDEL',COMMENT_COUNTS,String(row.post.id)]).catch(()=>{});
+        return res.json({ok:true,deletedId:row.post.id});
+      }
+      const title=escText(b.title,80),content=escText(b.content,4000);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 내용을 2자 이상 입력해주세요.'});
+      const next={...row.post,category:safeCategory(b.category),title,content,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};
+      await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);return res.json({ok:true,post:publicPost(next)});
+    }
     if(action==='create'){
       const user=await requireUser(req,res);if(!user)return;
       const lim=await rateLimit(req,'community-create',12,3600);if(!lim.ok)return res.status(429).json({ok:false,error:'짧은 시간에 글 작성이 너무 많습니다. 잠시 후 다시 시도해주세요.'});
