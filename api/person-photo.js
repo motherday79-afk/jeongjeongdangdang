@@ -1,4 +1,5 @@
 const {resolvePersonPhoto,cachePersonPhotoRecord}=require('../lib/local_photo');
+const {getPhotoMaster,buildPhotoMaster,variantSize,MASTER_VERSION}=require('../lib/photo_master');
 
 async function fetchImage(photo){
   const tries=[
@@ -17,11 +18,38 @@ async function fetchImage(photo){
   }
   return null;
 }
+function sendMaster(res,rec){
+  const buf=Buffer.from(rec.data,'base64');
+  if(!buf.length)return false;
+  res.setHeader('Content-Type',rec.mime||'image/webp');
+  res.setHeader('Cache-Control','public, max-age=604800, stale-while-revalidate=2592000');
+  res.setHeader('CDN-Cache-Control','public, max-age=31536000, stale-while-revalidate=31536000');
+  res.setHeader('Vercel-CDN-Cache-Control','public, max-age=31536000, stale-while-revalidate=31536000');
+  res.setHeader('X-JJDD-Photo-Cache','MASTER');
+  res.setHeader('X-JJDD-Photo-Master',MASTER_VERSION);
+  res.setHeader('X-JJDD-Photo-Size',String(rec.size||''));
+  res.setHeader('X-JJDD-Photo-Source',String(rec.source||'master').replace(/[^\x20-\x7E]/g,'').slice(0,120)||'master');
+  res.setHeader('Content-Length',String(buf.length));
+  res.status(200).send(buf);return true;
+}
 module.exports=async function(req,res){
   if(req.method!=='GET'){res.setHeader('Cache-Control','no-store');return res.status(405).end();}
   const id=Number(req.query?.id||0);if(!id){res.setHeader('Cache-Control','no-store');return res.status(400).end();}
+  const size=variantSize(req.query?.s||req.query?.size||160);
   try{
-    // v2.2.22: last-known-good 사진 메타데이터를 새 후보가 실제로 성공하기 전에는 버리지 않습니다.
+    // v2.6.0 SPEED: optimized self-stored MASTER image is always the first path.
+    const master=await getPhotoMaster(id,size).catch(()=>null);
+    if(master?.data&&sendMaster(res,master))return;
+
+    // A cache miss builds the MASTER once. Subsequent visitors are served from Redis -> Vercel CDN,
+    // so external Assembly/local-government hosts are no longer in the hot display path.
+    try{
+      const built=await buildPhotoMaster(id);
+      const rec=(built.records||[]).find(x=>Number(x.size)===size);
+      if(rec?.data&&sendMaster(res,rec))return;
+    }catch(_){/* non-destructive legacy fallback below */}
+
+    // v2.2.23 last-known-good fallback remains untouched as the recovery path.
     const previous=await resolvePersonPhoto(id);if(!previous?.url){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     let photo=previous;
     let got=await fetchImage(previous);
@@ -34,20 +62,14 @@ module.exports=async function(req,res){
           await cachePersonPhotoRecord(id,replacement).catch(()=>{});
         }
       }
-      // 새 후보도 실패한 경우 기존 known-good 메타데이터는 유지하고 원본을 한 번 더 재시도합니다.
-      if(!got){
-        const previousRetry=await fetchImage(previous);
-        if(previousRetry){photo=previous;got=previousRetry;}
-      }
+      if(!got){const previousRetry=await fetchImage(previous);if(previousRetry){photo=previous;got=previousRetry;}}
     }
     if(!got){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     res.setHeader('Content-Type',got.ct);
-    // v2.3.0 performance: browser는 6시간 재사용, Vercel CDN은 동일 인물 URL을 최대 1년 보존합니다.
-    // 사진 변경 시 프론트의 photo cache version을 올려 새 URL로 즉시 우회합니다.
     res.setHeader('Cache-Control','public, max-age=21600, stale-while-revalidate=604800');
     res.setHeader('CDN-Cache-Control','public, max-age=2592000, stale-while-revalidate=31536000');
     res.setHeader('Vercel-CDN-Cache-Control','public, max-age=31536000, stale-while-revalidate=31536000');
-    res.setHeader('X-JJDD-Photo-Cache','v2.3.0');
+    res.setHeader('X-JJDD-Photo-Cache','LEGACY-LKG');
     res.setHeader('X-JJDD-Photo-Source',String(photo.source||'verified-search').replace(/[^\x20-\x7E]/g,'').slice(0,120)||'verified-search');
     return res.status(200).send(got.buf);
   }catch(_){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}

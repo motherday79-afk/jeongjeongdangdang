@@ -1,4 +1,21 @@
-# 정참시 v2.5.2 · SECURITY HARDENING COMPLETE
+# 정참시 v2.6.0 · SPEED ARCHITECTURE
+
+## v2.6.0 SPEED ARCHITECTURE
+- PHOTO MASTER: 검증된 562명 인물사진을 정참시 저장소에 160px / 360px WebP로 최적화 저장하고 `/api/person-photo`는 MASTER를 최우선으로 제공
+- Vercel CDN 장기 캐시 + 브라우저 lazy/eager 우선순위 적용: TOP3는 즉시, 일반 목록은 lazy, 상세·비교는 360px 우선 로딩
+- 사진 MASTER가 없을 때만 최초 1회 생성하고, 실패 시 기존 v2.2.23 Last-Known-Good/자동복구 경로로 비파괴 fallback
+- 관리자 `사진` 메뉴에 PHOTO MASTER 상태/용량/구축률 및 `562명 MASTER 구축` 추가. 사진 직접 교체·자동복구 시 해당 MASTER 자동 무효화
+- `/api/home-snapshot` 신설: NOW Rank + NOW ISSUE + 설문 + 능력치 override + 최신 COLUMN을 하나의 짧은 CDN 캐시 응답으로 묶어 메인 초기 요청 수 감소
+- IT’S ME / 정뮤니티 / COLUMN 목록에 sessionStorage stale-first 적용: 재방문·새로고침 시 직전 화면을 즉시 그리고 최신 데이터는 백그라운드 재검증
+- IT’S ME / 정뮤니티 댓글도 10분 stale-first 캐시로 상세 화면 복원 시 본문을 먼저 표시하고 댓글은 즉시 또는 백그라운드 갱신
+- IT’S ME 새로고침 복원은 회원 세션 확인과 병렬 실행하여 세션 응답 때문에 현재 게시판 화면이 늦어지는 병목 제거
+- IT’S ME 목록 Redis 호출을 대표배지/팔로우/좋아요 상태 기준 배치 처리, 정뮤니티 좋아요 상태도 배치 처리하여 게시글 수에 비례하던 왕복 호출 감소
+- 비교분석 후보 hover/pointer 단계에서 160px 사진 prefetch, 선택 순간 360px prefetch. 비교 스테이지는 고해상도 MASTER 사용
+- v2.3.0 빠른 Refresh, 542명 순위 재계산, 기존 사진 LKG 안전망 및 v2.5.1 보안구조는 유지
+- v2.5.2 방문자 `현재 접속자 / 오늘 방문 / 누적 방문` 개별 ON/OFF 기능 유지
+
+### 배포 후 1회 권장
+어드민 → `사진` → `562명 MASTER 구축`을 한 번 실행하면 562명 사진이 정참시 MASTER로 준비됩니다. 이후 메인·상세·비교분석은 외부 원본보다 MASTER/CDN 경로를 먼저 사용합니다.
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -113,10 +130,10 @@
 - 보안 응답 헤더 추가: nosniff, DENY frame, Referrer-Policy, Permissions-Policy, 제한형 CSP, HSTS
 - `/admin`, `/admin.html`, `/api/admin/*` 응답은 no-store로 캐시 금지
 - 기존 v2.4.9 회원관리 TRUE MODAL, v2.3.0 빠른 Refresh/사진 LKG 구조 보존
-- v2.5.2에서 관리자 MFA·서버측 세션 만료·Origin/Fetch Metadata 방어까지 추가 적용
+- v2.5.1에서 관리자 MFA·서버측 세션 만료·Origin/Fetch Metadata 방어까지 추가 적용
 
 
-## v2.5.2 SECURITY HARDENING COMPLETE
+## v2.5.1 SECURITY HARDENING COMPLETE
 - 관리자 TOTP MFA(Authenticator) + 일회용 복구코드 8개 지원
 - MFA Secret은 AES-256-GCM으로 암호화 저장 · `ADMIN_MFA_ENCRYPTION_KEY` 별도 키 지원
 - 관리자 세션을 stateless 쿠키만 믿지 않고 Redis 서버 세션으로 전환
@@ -131,10 +148,3 @@
 - 어드민 보안 화면에서 환경 키 설정 상태, MFA 상태, 복구코드 잔여수, 세션 정책을 확인
 - `SECURITY_DEPLOY_CHECKLIST.md` 추가: Vercel 환경변수/MFA/WAF 운영 적용 절차
 - Vercel Dashboard의 WAF Rate Limit은 프로젝트 계정 설정이므로 코드가 임의 활성화하지 않으며 체크리스트에 권장 규칙을 명시
-
-
-## v2.5.2 방문자 지표 노출 핫픽스
-- 어드민 > 방문자 표시 관리에서 `현재 접속자 / 오늘 방문 / 누적 방문`을 각각 독립적으로 ON/OFF
-- 체크 해제된 지표만 메인에서 숨기고 방문 집계 자체는 계속 유지
-- 세 지표를 모두 끄면 메인의 방문자 현황 줄 전체를 숨김
-- 기존 오늘/누적 표시값 보정 및 자정 이월 로직은 그대로 유지

@@ -2,7 +2,7 @@ const crypto=require('crypto');
 const {cmd}=require('../../lib/store');
 const {authenticate,requireUser,rateLimit}=require('../../lib/user_auth');
 const {requireAdmin,getSession}=require('../../lib/auth');
-const {getRepresentativeBadge,getRepresentativeBadges,recordActivity,getSeasonConfig,followState,manualAward}=require('../../lib/badges');
+const {getRepresentativeBadge,getRepresentativeBadges,getAuthorSocialStates,recordActivity,getSeasonConfig,followState,manualAward}=require('../../lib/badges');
 
 const POSTS='jjdd:itsme:posts:v1';
 const LIKE_COUNTS='jjdd:itsme:like-counts:v1';
@@ -13,12 +13,24 @@ function hashObj(v){if(!v)return{};if(!Array.isArray(v)&&typeof v==='object')ret
 function likeKey(id){return `jjdd:itsme:likes:${String(id)}`}
 function commentKey(id){return `jjdd:itsme:comments:${String(id)}`}
 async function findRow(id){const rows=await cmd(['LRANGE',POSTS,'0',String(MAX_POSTS-1)]).catch(()=>[]),target=String(id||'');for(let i=0;i<(rows||[]).length;i++){try{const p=JSON.parse(rows[i]);if(String(p.id)===target)return {index:i,raw:rows[i],post:p}}catch(_){}}return null}
-async function enriched(p,likes,comments,me,repOverride,relationOverride){
-  const rep=repOverride!==undefined?repOverride:await getRepresentativeBadge(p.authorId).catch(()=>null);let liked=false;if(me?.id)liked=Boolean(Number(await cmd(['SISMEMBER',likeKey(p.id),String(me.id)]).catch(()=>0)));const relation=relationOverride!==undefined?relationOverride:await followState(me?.id,p.authorId).catch(()=>({following:false,followers:0}));
-  const likeCount=Number(likes?.[p.id]??p.likeCount??0),commentCount=Number(comments?.[p.id]??p.commentCount??0);return {id:p.id,seasonId:p.seasonId,roleTag:p.roleTag,title:p.title,content:p.content,author:p.author,authorId:p.authorId,role:p.role,createdAt:p.createdAt,updatedAt:p.updatedAt||null,featured:Boolean(p.featured),winner:Boolean(p.winner),likeCount,commentCount,score:likeCount*3+commentCount*2,liked,representativeBadge:rep,authorFollowers:relation.followers,followingAuthor:relation.following};
+async function enriched(p,likes,comments,me,repOverride,relationOverride,likedOverride){
+  const rep=repOverride!==undefined?repOverride:await getRepresentativeBadge(p.authorId).catch(()=>null);let liked=likedOverride;
+  if(liked===undefined){liked=false;if(me?.id)liked=Boolean(Number(await cmd(['SISMEMBER',likeKey(p.id),String(me.id)]).catch(()=>0)));}
+  const relation=relationOverride!==undefined?relationOverride:await followState(me?.id,p.authorId).catch(()=>({following:false,followers:0}));
+  const likeCount=Number(likes?.[p.id]??p.likeCount??0),commentCount=Number(comments?.[p.id]??p.commentCount??0);return {id:p.id,seasonId:p.seasonId,roleTag:p.roleTag,title:p.title,content:p.content,author:p.author,authorId:p.authorId,role:p.role,createdAt:p.createdAt,updatedAt:p.updatedAt||null,featured:Boolean(p.featured),winner:Boolean(p.winner),likeCount,commentCount,score:likeCount*3+commentCount*2,liked:Boolean(liked),representativeBadge:rep,authorFollowers:Number(relation?.followers||0),followingAuthor:Boolean(relation?.following)};
+}
+async function batchLiked(posts,me){
+  const out={};if(!me?.id||!posts.length)return out;
+  const keys=posts.map(p=>likeKey(p.id));
+  const script=`local o={} for i,k in ipairs(KEYS) do o[i]=redis.call('SISMEMBER',k,ARGV[1]) end return o`;
+  const vals=await cmd(['EVAL',script,String(keys.length),...keys,String(me.id)]).catch(()=>[]);
+  posts.forEach((p,i)=>{out[p.id]=Boolean(Number(vals?.[i]||0));});return out;
 }
 async function list(limit,me){
-  const [rows,likesRaw,commentsRaw]=await Promise.all([cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(MAX_POSTS-1,Number(limit||80)-1)))]).catch(()=>[]),cmd(['HGETALL',LIKE_COUNTS]).catch(()=>null),cmd(['HGETALL',COMMENT_COUNTS]).catch(()=>null)]);const likes=hashObj(likesRaw),comments=hashObj(commentsRaw),posts=[];for(const raw of (rows||[])){try{posts.push(JSON.parse(raw))}catch(_){}}const authorIds=[...new Set(posts.map(p=>String(p.authorId||'')).filter(Boolean))],reps=await getRepresentativeBadges(authorIds).catch(()=>({})),relations={};await Promise.all(authorIds.map(async id=>{relations[id]=await followState(me?.id,id).catch(()=>({following:false,followers:0}));}));const arr=await Promise.all(posts.map(p=>enriched(p,likes,comments,me,reps[p.authorId]??null,relations[p.authorId]||{following:false,followers:0})));
+  const [rows,likesRaw,commentsRaw]=await Promise.all([cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(MAX_POSTS-1,Number(limit||80)-1)))]).catch(()=>[]),cmd(['HGETALL',LIKE_COUNTS]).catch(()=>null),cmd(['HGETALL',COMMENT_COUNTS]).catch(()=>null)]);const likes=hashObj(likesRaw),comments=hashObj(commentsRaw),posts=[];for(const raw of (rows||[])){try{posts.push(JSON.parse(raw))}catch(_){}}
+  const authorIds=[...new Set(posts.map(p=>String(p.authorId||'')).filter(Boolean))];
+  const [reps,relations,liked]=await Promise.all([getRepresentativeBadges(authorIds).catch(()=>({})),getAuthorSocialStates(me?.id,authorIds).catch(()=>({})),batchLiked(posts,me)]);
+  const arr=posts.map(p=>({id:p.id,seasonId:p.seasonId,roleTag:p.roleTag,title:p.title,content:p.content,author:p.author,authorId:p.authorId,role:p.role,createdAt:p.createdAt,updatedAt:p.updatedAt||null,featured:Boolean(p.featured),winner:Boolean(p.winner),likeCount:Number(likes?.[p.id]??p.likeCount??0),commentCount:Number(comments?.[p.id]??p.commentCount??0),score:Number(likes?.[p.id]??p.likeCount??0)*3+Number(comments?.[p.id]??p.commentCount??0)*2,liked:Boolean(liked[p.id]),representativeBadge:reps[p.authorId]??null,authorFollowers:Number(relations[p.authorId]?.followers||0),followingAuthor:Boolean(relations[p.authorId]?.following)}));
   arr.sort((a,b)=>Number(b.winner)-Number(a.winner)||Number(b.featured)-Number(a.featured)||b.score-a.score||String(b.createdAt).localeCompare(String(a.createdAt)));return arr;
 }
 function activeSeason(s){const now=Date.now(),start=Date.parse(s?.startAt||''),end=Date.parse(s?.endAt||'');return s?.enabled!==false&&Number.isFinite(start)&&Number.isFinite(end)&&now>=start&&now<=end}

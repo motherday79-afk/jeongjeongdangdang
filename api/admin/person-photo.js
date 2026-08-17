@@ -3,6 +3,7 @@ const {findEntity}=require('../../lib/political_roster');
 const {getJSON,setJSON,del}=require('../../lib/store');
 const {invalidatePersonPhoto,probePhotoRecord}=require('../../lib/local_photo');
 const {recheckMember}=require('../../lib/photo_audit');
+const {invalidatePhotoMaster}=require('../../lib/photo_master');
 
 function key(id){return `jjdd:local-photo:override:${id}`;}
 module.exports=async function(req,res){
@@ -14,7 +15,7 @@ module.exports=async function(req,res){
     return res.json({ok:true,member:{id:m.id,name:m.name,party:m.party,entityType:m.entityType,office:m.office,jurisdiction:m.jurisdiction||m.constituency||m.region||''},photo:override});
   }
   if(req.method==='DELETE'){
-    await del(key(id)).catch(()=>{});await invalidatePersonPhoto(id);
+    await del(key(id)).catch(()=>{});await invalidatePersonPhoto(id);await invalidatePhotoMaster(id).catch(()=>{});
     const audit=await recheckMember(m).catch(()=>null);
     return res.json({ok:true,deleted:true,audit});
   }
@@ -25,7 +26,7 @@ module.exports=async function(req,res){
   const probe=await probePhotoRecord(rec,8500).catch(()=>({ok:false,error:'FETCH_FAILED'}));
   if(!probe?.ok)return res.status(400).json({ok:false,error:`사진 URL을 서버에서 불러올 수 없습니다.${probe?.httpStatus?` HTTP ${probe.httpStatus}`:''}`,probe});
   rec.width=Number(probe.width||0)||null;rec.height=Number(probe.height||0)||null;
-  await setJSON(key(id),rec);await invalidatePersonPhoto(id);
+  await setJSON(key(id),rec);await invalidatePersonPhoto(id);await invalidatePhotoMaster(id).catch(()=>{});
   const audit=await recheckMember(m).catch(()=>null);
   return res.json({ok:true,photo:rec,probe,audit});
 };
