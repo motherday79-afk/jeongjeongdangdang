@@ -1297,6 +1297,15 @@ body:before{
 .now-chip.signal-hot .signal-mark{background:#0f766e;color:#fff}
 .now-chip.signal-rise:before{content:"↑";color:#0b997e;font-size:10px;font-weight:1000}
 .now-chip:hover .signal-mark{background:rgba(255,255,255,.16);color:#fff}
+/* v2.6.1 HOT hover hotfix: later .signal-hot background used to override the dark hover while leaving white text. */
+.now-chip.signal-hot:hover{background:#102a25;color:#fff;border-color:#102a25;box-shadow:0 8px 18px rgba(20,46,41,.13)}
+.now-chip.signal-hot:hover .signal-mark{background:#dff8f1;color:#0c6f62}
+
+/* v2.6.1 NOW ISSUE · generic title / subtitle / content */
+.now-issue-simple{padding:17px 16px 18px!important;background:linear-gradient(145deg,#fcfffe,#f5fbf9)!important}
+.now-issue-main-title{font-size:18px;line-height:1.35;font-weight:1000;letter-spacing:-.55px;color:#132f28}
+.now-issue-subtitle{margin-top:7px;font-size:12px;line-height:1.5;font-weight:900;color:#28766a}
+.now-issue-body{margin-top:13px;padding-top:12px;border-top:1px solid #e2ece8;font-size:12px;line-height:1.72;font-weight:650;color:#586b65;white-space:pre-line;word-break:keep-all}
 
 /* Ranking = political data feed, not a spreadsheet */
 .ranktable{position:relative;border:1px solid #d9e5e1;border-radius:25px;background:#fff;box-shadow:0 22px 54px rgba(18,49,43,.065)}
@@ -1702,25 +1711,13 @@ body:before{
             <h3>NOW ISSUE</h3>
             <div class="more" style="cursor:default">NOW</div>
           </div>
-          <div class="issue-box" id="nowIssueContent">
-            <div class="issue-labels"><span class="tinylabel" id="nowIssueLabel" style="background:#fff5e9;color:#b45309">민주당 8·17 전당대회</span></div>
-            <div class="issue-question" id="nowIssueHeadline">당대표 본선 3파전 · 8월 17일 대전</div>
-            <div class="sub" id="nowIssueSummary" style="margin:0 0 12px;font-size:12px;line-height:1.6">김민석·정청래·송영길 후보가 본경선에 진출했습니다. 민주당은 예비경선 후보별 득표율을 공개하지 않았습니다.</div>
-            <div class="issue-question" id="nowIssueDataTitle" style="font-size:15px;margin:0 0 8px">NBS 당대표 적합도 · 7.27~29 전체 응답</div>
-            <div id="nowIssueRows">
-              <div class="candidate"><div class="candline"><span>정청래</span><b>21%</b></div><div class="bar"><span style="width:100%"></span></div></div>
-              <div class="candidate"><div class="candline"><span>김민석</span><b>19%</b></div><div class="bar"><span style="width:90.5%"></span></div></div>
-              <div class="candidate"><div class="candline"><span>송영길</span><b>6%</b></div><div class="bar"><span style="width:28.6%"></span></div></div>
-            </div>
-            <div class="issue-foot" style="display:block;line-height:1.55;margin-top:12px">
-              <div id="nowIssueFooter"><b>민주당 지지층:</b> 정청래 34% · 김민석 29% · 송영길 9%</div>
-              <div id="nowIssueSource" style="margin-top:5px;color:#64748b">NBS 2026.07.27~29 · 표본 1,000명 · 95% 신뢰수준 ±3.1%p</div>
-              <div id="nowIssueNote" style="margin-top:5px;color:#64748b">※ 여론조사 적합도이며 경선 득표율이 아닙니다.</div>
-            </div>
-            <div style="height:1px;background:#e9efee;margin:14px 0 12px"></div>
-            <div class="sub" id="serverUpdateStatus" style="margin:0;font-size:11px;line-height:1.55;color:#64748b">
-              NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다. 백엔드 연결 전에는 마지막 내장 스냅샷을 표시합니다.
-            </div>
+          <div class="issue-box now-issue-simple" id="nowIssueContent">
+            <div class="now-issue-main-title" id="nowIssueTitle">정치권 핵심 현안</div>
+            <div class="now-issue-subtitle" id="nowIssueSubtitle">지금 주목해야 할 정치 이슈</div>
+            <div class="now-issue-body" id="nowIssueBody">NOW ISSUE는 특정 선거나 이벤트 형식에 묶이지 않고, 운영자가 지금 가장 중요한 이슈를 자유롭게 설명할 수 있습니다.</div>
+          </div>
+          <div class="sub" id="serverUpdateStatus" style="margin:10px 2px 0;font-size:10.5px;line-height:1.5;color:#82908c">
+            NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다.
           </div>
         </section>
 
@@ -11581,7 +11578,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.0 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.1 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -12102,9 +12099,11 @@ function renderNowIssueSetting(issue){
   const card=document.getElementById('nowIssueCard');if(!card||!issue)return;
   card.style.display=issue.enabled===false?'none':'';
   const text=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v||'');};
-  text('nowIssueLabel',issue.label);text('nowIssueHeadline',issue.headline);text('nowIssueSummary',issue.summary);text('nowIssueDataTitle',issue.dataTitle);text('nowIssueFooter',issue.footer);text('nowIssueSource',issue.source);text('nowIssueNote',issue.note);
-  const box=document.getElementById('nowIssueRows'),rows=Array.isArray(issue.rows)?issue.rows:[];
-  if(box){const nums=rows.map(r=>Number(String(r.value||'').replace(/[^0-9.]/g,''))).filter(Number.isFinite),mx=Math.max(1,...nums);box.innerHTML=rows.map(r=>{const n=Number(String(r.value||'').replace(/[^0-9.]/g,'')),w=Number.isFinite(n)?Math.max(4,Math.min(100,(n/mx)*100)):100;return `<div class="candidate"><div class="candline"><span>${siteEsc(r.label)}</span><b>${siteEsc(r.value)}</b></div><div class="bar"><span style="width:${w.toFixed(1)}%"></span></div></div>`;}).join('');}
+  // v2.6.1: NOW ISSUE를 특정 선거/여론조사 레이아웃에서 범용 3단 콘텐츠로 단순화.
+  // 구버전 저장값도 즉시 자연스럽게 보이도록 fallback을 유지합니다.
+  text('nowIssueTitle',issue.title||issue.label||issue.headline||'NOW ISSUE');
+  text('nowIssueSubtitle',issue.subtitle||issue.headline||'');
+  text('nowIssueBody',issue.content||issue.summary||'');
 }
 function renderSurveySetting(survey,loggedIn){
   const card=document.getElementById('surveyCard'),title=document.getElementById('surveyTitle'),body=document.getElementById('surveyBody');if(!card||!body||!survey)return;

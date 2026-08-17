@@ -1,4 +1,11 @@
-# 정참시 v2.6.0 · SPEED ARCHITECTURE
+# 정참시 v2.6.1 · NOW ISSUE / WHY NOW HOTFIX
+
+
+## v2.6.1 HOTFIX
+- 오른쪽 NOW ISSUE를 전당대회/여론조사 전용 레이아웃에서 **대제목 / 소제목 / 내용** 3단 범용 콘텐츠로 변경했습니다.
+- 기존에 저장된 NOW ISSUE 값은 최초 조회 시 새 3단 구조로 자동 마이그레이션됩니다.
+- WHY NOW의 HOT 키워드에 마우스를 올릴 때 배경과 글자색 우선순위가 충돌해 흰색으로 보이던 문제를 수정했습니다.
+- v2.6.0 PHOTO MASTER / STALE-FIRST / HOME SNAPSHOT 속도 구조는 그대로 유지합니다.
 
 ## v2.6.0 SPEED ARCHITECTURE
 - PHOTO MASTER: 검증된 562명 인물사진을 정참시 저장소에 160px / 360px WebP로 최적화 저장하고 `/api/person-photo`는 MASTER를 최우선으로 제공
