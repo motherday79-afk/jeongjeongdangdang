@@ -1,4 +1,4 @@
-# 정참시 v2.5.1 · SECURITY HARDENING COMPLETE
+# 정참시 v2.5.2 · SECURITY HARDENING COMPLETE
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -113,10 +113,10 @@
 - 보안 응답 헤더 추가: nosniff, DENY frame, Referrer-Policy, Permissions-Policy, 제한형 CSP, HSTS
 - `/admin`, `/admin.html`, `/api/admin/*` 응답은 no-store로 캐시 금지
 - 기존 v2.4.9 회원관리 TRUE MODAL, v2.3.0 빠른 Refresh/사진 LKG 구조 보존
-- v2.5.1에서 관리자 MFA·서버측 세션 만료·Origin/Fetch Metadata 방어까지 추가 적용
+- v2.5.2에서 관리자 MFA·서버측 세션 만료·Origin/Fetch Metadata 방어까지 추가 적용
 
 
-## v2.5.1 SECURITY HARDENING COMPLETE
+## v2.5.2 SECURITY HARDENING COMPLETE
 - 관리자 TOTP MFA(Authenticator) + 일회용 복구코드 8개 지원
 - MFA Secret은 AES-256-GCM으로 암호화 저장 · `ADMIN_MFA_ENCRYPTION_KEY` 별도 키 지원
 - 관리자 세션을 stateless 쿠키만 믿지 않고 Redis 서버 세션으로 전환
@@ -131,3 +131,10 @@
 - 어드민 보안 화면에서 환경 키 설정 상태, MFA 상태, 복구코드 잔여수, 세션 정책을 확인
 - `SECURITY_DEPLOY_CHECKLIST.md` 추가: Vercel 환경변수/MFA/WAF 운영 적용 절차
 - Vercel Dashboard의 WAF Rate Limit은 프로젝트 계정 설정이므로 코드가 임의 활성화하지 않으며 체크리스트에 권장 규칙을 명시
+
+
+## v2.5.2 방문자 지표 노출 핫픽스
+- 어드민 > 방문자 표시 관리에서 `현재 접속자 / 오늘 방문 / 누적 방문`을 각각 독립적으로 ON/OFF
+- 체크 해제된 지표만 메인에서 숨기고 방문 집계 자체는 계속 유지
+- 세 지표를 모두 끄면 메인의 방문자 현황 줄 전체를 숨김
+- 기존 오늘/누적 표시값 보정 및 자정 이월 로직은 그대로 유지

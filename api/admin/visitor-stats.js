@@ -1,5 +1,5 @@
 const {requireAdmin}=require('../../lib/auth');
-const {readAdminStats,setDisplayTargets,resetDisplayTargets}=require('../../lib/site_stats');
+const {readAdminStats,setDisplayTargets,setDisplayVisibility,resetDisplayTargets}=require('../../lib/site_stats');
 
 module.exports=async function(req,res){
   const admin=requireAdmin(req,res);if(!admin)return;
@@ -9,6 +9,7 @@ module.exports=async function(req,res){
     if(req.method==='POST'){
       const b=req.body||{};
       if(b.action==='reset') return res.json({ok:true,stats:await resetDisplayTargets(Date.now(),admin.id)});
+      if(b.action==='visibility') return res.json({ok:true,stats:await setDisplayVisibility({online:b.online,today:b.today,total:b.total,updatedBy:admin.id})});
       const stats=await setDisplayTargets({today:b.today,total:b.total,updatedBy:admin.id});
       return res.json({ok:true,stats});
     }
