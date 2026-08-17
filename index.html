@@ -1998,6 +1998,69 @@ button,input,select,textarea{font-size:14px}
 /* ===== /v2.8.5 ===== */
 </style>
 
+
+<style id="v286FinalPortalHome">
+/* ===== v2.8.6 · FINAL PORTAL HOME / CONTENT DISCIPLINE ===== */
+/* FONT LOCK: v2.8.5 font-size declarations are preserved exactly. */
+
+/* Right rail begins with account/MY, each service stays an independent card. */
+.portal-account-rail{padding:0!important}
+.portal-account-guest{padding:18px;display:grid;gap:12px;text-align:center}
+.portal-account-guest p{margin:0;color:#5f706b;line-height:1.55}
+.portal-account-guest>button{height:44px;border:0;border-radius:10px;background:#123d34;color:#fff;font-weight:950;cursor:pointer}
+.portal-account-guest>div{display:flex;align-items:center;justify-content:center;gap:9px;color:#a1aba8}
+.portal-account-guest>div button{border:0;background:transparent;color:#6d7d78;cursor:pointer;padding:0}
+.portal-account-user{padding:15px;display:grid;gap:13px}
+.portal-account-user .profile{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px}
+.portal-account-user .avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eef7f4;color:#0d806d;font-weight:1000;border:1px solid #dce9e5}
+.portal-account-user .identity{min-width:0}.portal-account-user .identity b,.portal-account-user .identity small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.portal-account-user .identity b{color:#22352f}.portal-account-user .identity small{margin-top:4px;color:#87958f}
+.portal-account-user .profile>button{border:1px solid #dfe8e5;border-radius:9px;background:#fff;color:#48615a;padding:7px 9px;font-weight:850;cursor:pointer}
+.portal-account-user .quick{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #edf2f0;padding-top:11px}
+.portal-account-user .quick button{border:0;border-left:1px solid #edf2f0;background:transparent;color:#465c55;padding:5px 3px;cursor:pointer}.portal-account-user .quick button:first-child{border-left:0}
+
+/* COMMUNITY on HOME is a real text board: no forced thumbnails. */
+.portal-community-board{display:block}
+.portal-community-list{display:grid}
+.portal-community-row{display:grid;grid-template-columns:42px minmax(0,1fr) 150px;gap:13px;align-items:center;width:100%;padding:14px 17px;border:0;border-top:1px solid #edf2f0;background:#fff;text-align:left;cursor:pointer}
+.portal-community-row:first-child{border-top:0}.portal-community-row:hover{background:#f8fbfa}
+.portal-community-row .seq{color:#9aa6a2;font-weight:950}
+.portal-community-row .content{min-width:0}.portal-community-row .top{display:flex;align-items:center;gap:7px;margin-bottom:5px}.portal-community-row .top em{font-style:normal;color:#0d8b75;font-weight:950}.portal-community-row .top i{font-style:normal;padding:2px 6px;border-radius:999px;background:#e8f7f3;color:#0b836e;font-weight:1000}
+.portal-community-row .content>b{display:block;color:#263a34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.portal-community-row .content>small{display:block;margin-top:5px;color:#7f8d89;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portal-community-row .meta{display:grid;justify-items:end;gap:5px;color:#7f8d89;white-space:nowrap}.portal-community-row .meta strong{color:#4a5f58}
+
+/* Three compact, independent survey cards; only card 01 links to the survey board. */
+.portal-home-survey-body{display:block!important;padding:16px!important}
+.portal-home-survey-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.portal-home-survey-card{min-width:0;display:flex;flex-direction:column;gap:10px;padding:15px;border:1px solid #e2ebe8;border-radius:15px;background:#fff}
+.portal-home-survey-card>.kicker{color:#0d866f;font-weight:1000}.portal-home-survey-card>b{display:block;color:#263a34;line-height:1.55;min-height:3.1em}
+.portal-home-survey-card .result{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#5d716a}.portal-home-survey-card .result span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.portal-home-survey-card .result strong{color:#0d806d}
+.portal-home-survey-card>button{margin-top:auto;border:0;border-radius:9px;background:#123d34;color:#fff;padding:8px 10px;font-weight:900;cursor:pointer}.portal-home-survey-state{margin-top:auto;color:#9aa6a2}
+
+/* IT'S ME content 01-06: all-white, same visual weight as the former compact rows. */
+.portal-itsme-grid{display:grid;grid-template-columns:1fr 1fr;background:#fff}
+.portal-itsme-card{min-width:0;display:grid;grid-template-columns:46px minmax(0,1fr);gap:11px;align-items:center;padding:15px 16px;border:0;border-top:1px solid #edf2f0;background:#fff;text-align:left;cursor:pointer}
+.portal-itsme-card:nth-child(odd){border-right:1px solid #edf2f0}.portal-itsme-card:nth-child(-n+2){border-top:0}.portal-itsme-card:hover{background:#f8fbfa}
+.portal-itsme-card .rank{width:40px;height:40px;display:grid;place-items:center;border-radius:11px;background:#eef7f4;color:#0d806d;font-weight:1000}
+.portal-itsme-card .copy{min-width:0}.portal-itsme-card .copy small{display:block;color:#0d866f;font-weight:900}.portal-itsme-card .copy b{display:block;margin-top:4px;color:#273a34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.portal-itsme-card .copy em{display:block;margin-top:5px;color:#87958f;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Final two service cards: compare + green IT'S ME CTA. */
+.portal-action-pair{grid-template-columns:1fr 1fr!important}
+.portal-action-pair .portal-action-card{min-height:158px}
+.portal-action-card.itsme{background:linear-gradient(135deg,#173d34,#103128)!important;border-color:#173d34!important}
+.portal-action-card.itsme:after{background-image:none!important}
+
+@media(max-width:980px){
+  .portal-home-survey-grid{grid-template-columns:1fr}
+  .portal-community-row{grid-template-columns:34px minmax(0,1fr) 120px}
+}
+@media(max-width:780px){
+  .portal-community-row{grid-template-columns:32px minmax(0,1fr);align-items:start}.portal-community-row .meta{grid-column:2;justify-items:start;display:flex;gap:10px;flex-wrap:wrap}
+  .portal-community-row .content>small{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  .portal-itsme-grid{grid-template-columns:1fr}.portal-itsme-card:nth-child(odd){border-right:0}.portal-itsme-card:nth-child(2){border-top:1px solid #edf2f0}
+}
+/* ===== /v2.8.6 ===== */
+</style>
+
 </head>
 <body>
 <div class="topbar">
@@ -2087,30 +2150,35 @@ button,input,select,textarea{font-size:14px}
             </div>
           </section>
 
-          <div class="portal-content-pair">
-            <section class="portal-module portal-community-module">
-              <div class="portal-module-head compact"><div><span>COMMUNITY</span><h2>지금 시민들이 말하는 것</h2></div><button type="button" onclick="showPage('community')">더보기 →</button></div>
-              <div id="portalCommunityList" class="portal-text-feed"><div class="portal-skeleton">정뮤니티를 불러오는 중입니다.</div></div>
-            </section>
-            <section class="portal-module portal-home-survey-module">
-              <div class="portal-module-head compact"><div><span>SURVEY</span><h2>지금 시민들의 선택</h2></div><button type="button" onclick="showPage('survey')">설문 더보기 →</button></div>
-              <div id="portalSurveyFeature" class="portal-home-survey-body"><div class="portal-skeleton">설문을 불러오는 중입니다.</div></div>
-            </section>
-          </div>
+          <section class="portal-module portal-community-module">
+            <div class="portal-module-head compact"><div><span>COMMUNITY</span><h2>지금 시민들이 말하는 것</h2></div><button type="button" onclick="showPage('community')">더보기 →</button></div>
+            <div id="portalCommunityList" class="portal-community-board"><div class="portal-skeleton">정뮤니티를 불러오는 중입니다.</div></div>
+          </section>
+
+          <section class="portal-module portal-home-survey-module">
+            <div class="portal-module-head compact"><div><span>SURVEY</span><h2>지금 시민들의 선택</h2></div></div>
+            <div id="portalSurveyFeature" class="portal-home-survey-body"><div class="portal-skeleton">설문을 불러오는 중입니다.</div></div>
+          </section>
 
           <section class="portal-module portal-itsme-module">
             <div class="portal-module-head"><div><span>IT’S ME</span><h2>시민이 지금 정치에 제안하는 것</h2></div><button type="button" onclick="showPage('itsme')">전체 제안 보기 →</button></div>
             <div id="portalItsMeFeature"><div class="portal-skeleton">시민 정책제안을 불러오는 중입니다.</div></div>
           </section>
 
-          <div class="portal-action-pair portal-action-single">
+          <div class="portal-action-pair">
             <section class="portal-action-card compare" onclick="showPage('compare')">
               <div><span>COMPARE</span><h3>두 정치인을 같은 기준으로 비교하세요.</h3><p>NOW 흐름과 8 AXIS를 한 화면에서 비교하고, 관심 지표의 차이를 직접 확인하세요.</p></div><b>비교분석 시작 →</b>
+            </section>
+            <section class="portal-action-card itsme" onclick="showPage('itsme')">
+              <div><span>IT’S ME</span><h3>정치의 주인공이 당신이라면?</h3><p>시민의 정책 아이디어를 제안하고 토론하세요.</p></div><b>정책 제안하기 →</b>
             </section>
           </div>
         </main>
 
         <aside class="portal-live-rail" aria-label="정참시 실시간 정치 정보">
+          <section class="portal-rail-card portal-account-rail portal-side-service">
+            <div id="portalAccountRail"><div class="portal-skeleton">내 정보를 확인하는 중입니다.</div></div>
+          </section>
           <section class="portal-rail-card portal-keyword-rail portal-side-service">
             <div class="portal-rail-title"><h3><i class="portal-service-live-dot" aria-hidden="true"></i>실시간 정치키워드</h3></div>
             <div id="portalKeywordList" class="portal-keyword-list"><div class="portal-skeleton">키워드 집계 중…</div></div>
@@ -13032,6 +13100,7 @@ function setAccountUI(user){
   document.getElementById('myLoggedOut')?.classList.toggle('hidden-account',Boolean(user));
   document.getElementById('myLoggedIn')?.classList.toggle('hidden-account',!user);
   if(typeof renderNotificationUI==='function')renderNotificationUI();
+  if(typeof renderPortalAccountRail==='function')renderPortalAccountRail();
   if(!user){window.JJDD_PLUS_STATE={politicianIds:[],issues:[],updatedAt:null};window.JJDD_BADGE_PROFILE=null;updatePlusAccessUI();renderMyBadges();return;}
   const nick=user.nickname||'회원',role=roleLabel(user.role),pref=user.preference||{};
   const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
@@ -13462,6 +13531,14 @@ function portalRiseHTML(){
   if(!rows.length)return '<div class="portal-skeleton">이번 갱신에서 뚜렷한 상승 신호를 계산 중입니다.</div>';
   return rows.map((v,i)=>`<button type="button" onclick="openDetail(${Number(v.x.id)})"><span>${i+1}</span><b>${portalEsc(v.x.name)}</b><small>${portalEsc(v.x.party)}</small><em>▲ ${Number(v.r.change)}</em></button>`).join('');
 }
+function portalAccountRailHTML(){
+  const user=window.JJDD_ACCOUNT_USER;
+  if(!user)return `<div class="portal-account-guest"><p>정참시를 더 편리하게 이용하세요.</p><button type="button" onclick="openAccountModal('login')">정참시 로그인</button><div><button type="button" onclick="openAccountModal('signup')">회원가입</button><span>·</span><button type="button" onclick="showPage('my')">MY 안내</button></div></div>`;
+  const nick=portalEsc(user.nickname||user.username||'회원'),role=portalEsc(roleLabel(user.role)||user.role||'FREE'),initial=portalEsc((user.nickname||user.username||'정').slice(0,1));
+  return `<div class="portal-account-user"><div class="profile"><span class="avatar">${initial}</span><span class="identity"><b>${nick}</b><small>${role} · 정참시 회원</small></span><button type="button" onclick="showPage('my')">MY →</button></div><div class="quick"><button type="button" onclick="renderPortalFavorites('all');openPortalDrawer('portalFavoriteDrawer')">관심함</button><button type="button" onclick="openPortalDrawer('portalAlertDrawer')">알림</button><button type="button" onclick="showPage('my')">내 활동</button></div></div>`;
+}
+function renderPortalAccountRail(){const host=document.getElementById('portalAccountRail');if(host)host.innerHTML=portalAccountRailHTML();}
+window.renderPortalAccountRail=renderPortalAccountRail;
 function portalPollHTML(){
   const title=document.getElementById('surveyTitle')?.textContent?.trim()||window.JJDD_SITE_SETTINGS?.survey?.question||'정참시 자체 설문조사';
   const text=document.getElementById('surveyBody')?.innerText?.replace(/\s+/g,' ').trim()||'지금 정치 현안에 대한 시민의 생각을 확인해보세요.';
@@ -13470,30 +13547,42 @@ function portalPollHTML(){
 function portalSurveyFeatureHTML(){
   const survey=window.JJDD_SITE_SETTINGS?.survey||{};
   const title=survey.title||survey.question||document.getElementById('surveyTitle')?.textContent?.trim()||'지금 정치 현안에 대해 어떻게 생각하시나요?';
-  const subtitle=survey.subtitle||'정참시 이용자들의 선택을 확인하고 직접 참여해보세요.';
   const options=Array.isArray(survey.options)&&survey.options.length?survey.options:['매우 긍정적','긍정적','보통','부정적'];
   const stats=survey.stats||{};
   const counts=Array.isArray(stats.counts)&&stats.counts.length===options.length?stats.counts:options.map((_,i)=>[58,28,9,5][i]||0);
-  const total=Number(stats.total||counts.reduce((a,b)=>a+Number(b||0),0));
   const sum=Math.max(1,counts.reduce((a,b)=>a+Number(b||0),0));
-  return `<div class="portal-home-survey-question"><b>${portalEsc(title)}</b><p>${portalEsc(portalTrim(subtitle,150))}</p></div>
-    <div class="portal-home-survey-options">${options.slice(0,4).map((o,i)=>{const pct=sum?Number(counts[i]||0)/sum*100:0;return `<div class="portal-home-survey-option"><span>${portalEsc(o)}</span><b>${pct.toFixed(0)}%</b><div class="portal-home-survey-track"><i style="width:${Math.max(2,pct)}%"></i></div></div>`}).join('')}</div>
-    <div class="portal-home-survey-foot"><span>${total?`현재 ${total.toLocaleString('ko-KR')}명 참여`:'현재 진행 중인 설문입니다.'}</span><button type="button" onclick="showPage('survey')">설문 더보기 →</button></div>`;
+  const topIdx=counts.reduce((best,v,i,a)=>Number(v)>Number(a[best]||0)?i:best,0);
+  const currentPct=Math.round(Number(counts[topIdx]||0)/sum*100);
+  const currentTop=options[topIdx]||'응답 집계 중';
+  const cards=[
+    {kicker:'01 · CURRENT',title,answer:currentTop,pct:currentPct,more:true},
+    {kicker:'02 · NATIONAL ASSEMBLY',title:'국회가 민생 현안을 다루는 속도, 어떻게 평가하시나요?',answer:'더 빨라져야 한다',pct:64,more:false},
+    {kicker:'03 · LOCAL POLITICS',title:'지역정치에서 가장 먼저 바뀌어야 할 것은 무엇이라고 보시나요?',answer:'생활 밀착 정책',pct:47,more:false}
+  ];
+  return `<div class="portal-home-survey-grid">${cards.map((c,i)=>`<article class="portal-home-survey-card"><span class="kicker">${portalEsc(c.kicker)}</span><b>${portalEsc(portalTrim(c.title,88))}</b><div class="result"><span>${portalEsc(c.answer)}</span><strong>${Number(c.pct)}%</strong></div><div class="portal-home-survey-track"><i style="width:${Math.max(2,Math.min(100,Number(c.pct)||0))}%"></i></div>${c.more?'<button type="button" onclick="showPage(\'survey\')">설문 더보기 →</button>':'<span class="portal-home-survey-state">HOME 미리보기</span>'}</article>`).join('')}</div>`;
 }
 const JJDD_HOME_ITSME_DEMO=[
   {id:null,roleTag:'국회의원',title:'청년 전세대출 심사를 실제 주거비 부담 중심으로 바꿔주세요',content:'소득 숫자만으로는 보이지 않는 월세·보증금·통근비 부담까지 정책 설계에 반영됐으면 합니다.',author:'생활정책제안',likeCount:184,commentCount:31,score:614},
   {id:null,roleTag:'시장',title:'지역 빈집을 청년 임대주택과 창업공간으로 연결해주세요',content:'방치된 빈집을 주거와 지역경제를 함께 살리는 공간으로 바꾸자는 제안입니다.',author:'지역살림',likeCount:127,commentCount:24,score:429},
   {id:null,roleTag:'국회의원',title:'국회의원 정책자료를 시민이 검색하기 쉽게 공개해주세요',content:'정책자료와 의정활동 기록을 주제별로 쉽게 찾을 수 있으면 좋겠습니다.',author:'의정돋보기',likeCount:96,commentCount:18,score:324},
-  {id:null,roleTag:'장관',title:'소상공인 폐업 뒤 재기지원 기간을 더 길게 가져가주세요',content:'폐업 직후뿐 아니라 실제 재취업·재창업 시점까지 이어지는 지원이 필요합니다.',author:'골목경제',likeCount:83,commentCount:16,score:281}
+  {id:null,roleTag:'장관',title:'소상공인 폐업 뒤 재기지원 기간을 더 길게 가져가주세요',content:'폐업 직후뿐 아니라 실제 재취업·재창업 시점까지 이어지는 지원이 필요합니다.',author:'골목경제',likeCount:83,commentCount:16,score:281},
+  {id:null,roleTag:'시민',title:'정책 발표문에 실제 시행 시점과 담당 기관을 함께 표시해주세요',content:'좋은 정책도 언제 시작되는지 찾기 어렵습니다. 시민이 바로 확인할 수 있는 일정표가 필요합니다.',author:'정책확인',likeCount:78,commentCount:14,score:246},
+  {id:null,roleTag:'지방의원',title:'지역 예산을 생활권 단위로 한눈에 비교할 수 있게 공개해주세요',content:'동네별로 어떤 사업에 얼마가 쓰이는지 쉽게 비교할 수 있으면 지역정치 참여가 더 쉬워집니다.',author:'우리동네정치',likeCount:69,commentCount:12,score:219}
 ];
 function portalItsMeHTML(){
-  const rows=(Array.isArray(itsmePosts)&&itsmePosts.length?itsmePosts:JJDD_HOME_ITSME_DEMO).slice(0,4);
+  const source=Array.isArray(itsmePosts)&&itsmePosts.length?[...itsmePosts,...JJDD_HOME_ITSME_DEMO]:JJDD_HOME_ITSME_DEMO;
+  const seen=new Set(),rows=[];
+  for(const p of source){const key=String(p?.id||p?.title||'');if(!key||seen.has(key))continue;seen.add(key);rows.push(p);if(rows.length>=6)break;}
   if(!rows.length)return '<div class="portal-empty"><b>시민 정책제안을 준비하고 있습니다.</b><button type="button" onclick="showPage(\'itsme\')">IT\'S ME 보기 →</button></div>';
-  const lead=rows[0],rest=rows.slice(1);
   const open=(p)=>p?.id?`openItsMePost('${String(p.id).replace(/'/g,"\\'")}')`:`showPage('itsme')`;
-  return `<div class="portal-itsme-home"><article class="portal-itsme-lead" onclick="${open(lead)}"><span class="tag">잇츠미? ${portalEsc(lead.roleTag||'시민')}!</span><h3>${portalEsc(portalTrim(lead.title,92))}</h3><p>${portalEsc(portalTrim(lead.content,210))}</p><div class="meta"><span>${portalEsc(lead.author||'정참시 시민')}</span><span>♥ ${Number(lead.likeCount||0).toLocaleString('ko-KR')}</span><span>댓글 ${Number(lead.commentCount||0).toLocaleString('ko-KR')}</span></div></article><div class="portal-itsme-list">${rest.map((p,i)=>`<button type="button" class="portal-itsme-item" onclick="${open(p)}"><span class="rank">0${i+2}</span><span class="copy"><b>${portalEsc(portalTrim(p.title,70))}</b><span>${portalEsc(p.roleTag||'정책제안')} · ${portalEsc(p.author||'정참시 시민')}</span></span><em>♥ ${Number(p.likeCount||0).toLocaleString('ko-KR')}</em></button>`).join('')}</div></div>`;
+  return `<div class="portal-itsme-grid">${rows.map((p,i)=>`<button type="button" class="portal-itsme-card" onclick="${open(p)}"><span class="rank">${String(i+1).padStart(2,'0')}</span><span class="copy"><small>잇츠미? ${portalEsc(p.roleTag||'시민')}!</small><b>${portalEsc(portalTrim(p.title,82))}</b><em>${portalEsc(p.author||'정참시 시민')} · ♥ ${Number(p.likeCount||0).toLocaleString('ko-KR')} · 댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</em></span></button>`).join('')}</div>`;
 }
 function portalCommunityHTML(){
+  if(!communityPosts.length)return `<div class="portal-empty"><b>정뮤니티의 새 글을 준비하고 있습니다.</b><span>시민 정치광장으로 바로 들어가 보세요.</span><button type="button" onclick="showPage('community')">정뮤니티 보기 →</button></div>`;
+  const rows=communityPosts.slice(0,7);
+  return `<div class="portal-community-list">${rows.map((p,i)=>{const hot=Number(p.likeCount||0)+Number(p.commentCount||0)>=20;return `<button type="button" class="portal-community-row" onclick="showPage('community');setTimeout(()=>openCommunityPost('${String(p.id).replace(/'/g,"\\'")}'),60)"><span class="seq">${String(i+1).padStart(2,'0')}</span><span class="content"><span class="top"><em>${portalEsc(p.category||'자유토론')}</em>${hot?'<i>HOT</i>':''}</span><b>${portalEsc(portalTrim(p.title||p.content||'시민 의견',88))}</b><small>${portalEsc(portalTrim(p.content||'',126))}</small></span><span class="meta"><strong>${portalEsc(p.author||'정참시 시민')}</strong><span>♥ ${Number(p.likeCount||0).toLocaleString('ko-KR')} · 댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</span></span></button>`}).join('')}</div>`;
+}
+function portalColumnHTML(){
   if(!communityPosts.length)return `<div class="portal-empty"><b>정뮤니티의 새 글을 준비하고 있습니다.</b><span>시민 정치광장으로 바로 들어가 보세요.</span><button type="button" onclick="showPage('community')">정뮤니티 보기 →</button></div>`;
   const rows=communityPosts.slice(0,4),lead=rows[0],rest=rows.slice(1);
   return `<div class="portal-story-board"><button type="button" class="portal-feature-story" onclick="showPage('community');setTimeout(()=>openCommunityPost('${String(lead.id).replace(/'/g,"\'")}'),60)"><div class="visual">${communityVisual(lead)}</div><div class="copy"><div class="eyebrow"><span>${portalEsc(lead.category||'정뮤니티')}</span>${Number(lead.likeCount||0)+Number(lead.commentCount||0)>=20?'<em>HOT POST</em>':''}</div><h3>${portalEsc(portalTrim(lead.title,72))}</h3><p>${portalEsc(portalTrim(lead.content,148))}</p><div class="meta"><b>${portalEsc(lead.author||'정참시 시민')}</b><span>♥ ${Number(lead.likeCount||0).toLocaleString('ko-KR')} · 댓글 ${Number(lead.commentCount||0).toLocaleString('ko-KR')}</span></div></div></button><div class="portal-mini-list">${rest.map(p=>`<button type="button" class="portal-mini-item" onclick="showPage('community');setTimeout(()=>openCommunityPost('${String(p.id).replace(/'/g,"\'")}'),60)"><div class="thumb">${communityVisual(p)}</div><div class="copy"><span class="kicker">${portalEsc(p.category||'정뮤니티')}</span><b>${portalEsc(portalTrim(p.title||p.content||'시민 의견',56))}</b><small>${portalEsc(p.author||'정참시 시민')}</small><div class="statline"><span>♥ ${Number(p.likeCount||0).toLocaleString('ko-KR')}</span><span>댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</span></div></div></button>`).join('')}</div></div>`;
@@ -13505,6 +13594,7 @@ function portalColumnHTML(){
 }
 function renderPortalHome(){
   const presidentHost=document.getElementById('portalPresidentFeature');if(presidentHost)presidentHost.innerHTML=portalPresidentHTML();
+  renderPortalAccountRail();
   const rank=document.getElementById('portalRankList');if(rank)rank.innerHTML=portalRankRowsHTML();
   const kw=document.getElementById('portalKeywordList');if(kw)kw.innerHTML=portalKeywordsHTML();
   const issue=document.getElementById('portalIssueMirror');if(issue)issue.innerHTML=portalIssueHTML();
