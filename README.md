@@ -1,4 +1,4 @@
-# 정참시 v2.4.8 · IT’S ME NO-FLASH REFRESH + ADMIN MEMBER MODAL
+# 정참시 v2.4.9 · MEMBER MANAGEMENT TRUE MODAL HOTFIX
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -93,3 +93,11 @@
 - IT’S ME 새로고침 시 NOW Rank 메인이 먼저 잠깐 보였다가 복원되던 초기 렌더링 순서 수정
 - sessionStorage/history에 저장된 공개 페이지를 로그인 세션 요청 전에 즉시 pre-paint하여 현재 섹션을 그대로 유지
 - IT’S ME 상세글은 IT’S ME 화면을 먼저 유지한 뒤 데이터 로딩 완료 시 같은 상세글로 복원
+
+## v2.4.9 회원관리 TRUE MODAL 핫픽스
+- 회원관리 `관리` 클릭 시 남아 있던 `scrollIntoView()` 강제 하단 스크롤 로직 완전 제거
+- 회원 상세를 페이지 하단 패널이 아닌 viewport 고정 오버레이 모달로 분리
+- 모달 오픈 동안 배경 스크롤 잠금
+- 닫기 / 배경 클릭 / ESC 지원
+- 저장·등급변경·정지·비밀번호 재설정 후에도 모달 위치 유지
+- 모달 닫기 시 기존 회원 목록 스크롤 위치 복원

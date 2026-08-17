@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>정참시 관리자 · v2.4.8</title>
+<title>정참시 관리자 · v2.4.9</title>
 <style>
 :root{--bg:#f3f7f6;--panel:#fff;--ink:#111827;--muted:#64748b;--mint:#28b7a2;--mint2:#0f766e;--line:#dfe8e5;--danger:#b91c1c;--warn:#b45309;--blue:#1d4ed8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -32,11 +32,19 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px
 /* ===== /v2.2.24 ===== */
 
 .referral-admin-list{display:grid;gap:8px;margin-top:10px;max-height:520px;overflow:auto}.referral-admin-row{border:1px solid var(--line);border-radius:13px;padding:11px;background:#fff}.referral-admin-row h4{margin:0 0 5px;font-size:13px}.referral-admin-row .meta{font-size:9px;color:var(--muted);line-height:1.55}.referral-admin-row .actions{margin-top:8px}.referral-status{display:inline-flex;padding:3px 6px;border-radius:999px;font-size:8px;font-weight:950;background:#eef2f1;color:#63736f}.referral-status.VALID{background:#e5faf3;color:#08745f}.referral-status.INVALID{background:#fff0f0;color:#a33}.gift-shipping{margin-top:7px;padding:8px;border-radius:10px;background:#f7faf9;font-size:9px;line-height:1.6}.gift-admin-fields{display:grid;grid-template-columns:110px 1fr 1fr;gap:6px;margin-top:8px}.gift-admin-fields input,.gift-admin-fields select{padding:7px;font-size:10px}@media(max-width:760px){.gift-admin-fields{grid-template-columns:1fr}}
+
+/* ===== v2.4.9 · MEMBER MANAGEMENT TRUE MODAL ===== */
+body.user-admin-modal-open{overflow:hidden!important}
+#userAdminDetail.user-admin-modal{position:fixed!important;inset:0!important;z-index:9999!important;margin:0!important;border:0!important;border-radius:0!important;padding:clamp(12px,3vw,28px)!important;background:rgba(15,23,42,.62)!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow:auto!important;overscroll-behavior:contain}
+#userAdminDetail.user-admin-modal>.user-admin-modal-panel{width:min(920px,100%);max-height:calc(100vh - 48px);margin:auto;background:#fbfdfc;border:1px solid #dbe7e3;border-radius:20px;padding:18px;overflow:auto;box-shadow:0 30px 80px rgba(15,23,42,.3)}
+#userAdminDetail.user-admin-modal>.user-admin-modal-panel h3{margin-top:0}
+@media(max-width:760px){#userAdminDetail.user-admin-modal{padding:10px!important}#userAdminDetail.user-admin-modal>.user-admin-modal-panel{max-height:calc(100dvh - 20px);border-radius:16px;padding:14px}}
+/* ===== /v2.4.9 ===== */
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.4.8 · BADGES VISUAL TIER + IT’S ME</div></div>
+  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.4.9 · BADGES VISUAL TIER + IT’S ME</div></div>
 
   <section class="card" id="loginCard">
     <h2 style="margin-top:0">관리자 로그인</h2>
@@ -448,7 +456,7 @@ async function runNowRankRefresh(mode='quick'){
     let npo=0,npt=Number(np.total||0);if(np.configured&&npt>0){while(npo<npt){$('#refreshStatus').textContent=`0차 Name Pulse 갱신 · ${npo}/${npt} · 나머지는 직전 정상값 유지`;const nb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'name-pulse-batch',draftId,offset:npo,size:14})});npo=nb.nextOffset;$('#bar').style.width=`${Math.round((npo/Math.max(1,npt))*15)}%`;}}
     let offset=0,total=collectTotal;while(offset<total){$('#refreshStatus').textContent=`1차 뉴스·포털 선택 수집 · ${offset}/${total} · 전체 542명 중 필요한 인물만 갱신`;const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:8})});offset=b.nextOffset;$('#bar').style.width=`${15+Math.round((offset/Math.max(1,total))*55)}%`;}
     const prep=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'prepare-enrichment',draftId})});let eo=0,et=prep.total||0;if(et&&(prep.configured?.keyless||prep.configured?.youtube||prep.configured?.x||prep.configured?.bigKinds)){while(eo<et){$('#refreshStatus').textContent=`2차 상위·급등·이벤트 심층 보강 · ${eo}/${et}${prep.configured?.bigKinds?' · BIG KINDS 포함':''}`;const eb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'enrich',draftId,offset:eo,size:5})});eo=eb.nextOffset;$('#bar').style.width=`${70+Math.round((eo/Math.max(1,et))*22)}%`;}}
-    $('#refreshStatus').textContent=`542명 전체 스냅샷 재계산 중 · 새 수집 ${total}명 + 정상 캐시 ${carried}명`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent=`v2.4.8 · ${mode==='full'?'전체 재수집':'빠른 Refresh'} 미리보기 완료 · 새 수집 ${total}명 / 재사용 ${carried}명 · 아직 공개되지 않았습니다.`;renderPreview(fin.preview);
+    $('#refreshStatus').textContent=`542명 전체 스냅샷 재계산 중 · 새 수집 ${total}명 + 정상 캐시 ${carried}명`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent=`v2.4.9 · ${mode==='full'?'전체 재수집':'빠른 Refresh'} 미리보기 완료 · 새 수집 ${total}명 / 재사용 ${carried}명 · 아직 공개되지 않았습니다.`;renderPreview(fin.preview);
   }catch(e){$('#refreshStatus').textContent='오류: '+e.message;}finally{quickBtn.disabled=false;fullBtn.disabled=false;}
 }
 $('#refreshBtn').onclick=()=>runNowRankRefresh('quick');
@@ -556,6 +564,21 @@ function renderAdminUsers(){
   $('#userAdminList').innerHTML=data.slice(0,500).map(u=>`<div class="user-admin-row"><div><b>${esc(u.nickname||'회원')}${u.isSynthetic?'<span class="demo-star">*</span>':''}</b><small>@${esc(u.username||'legacy')}${u.region?.display?` · ${esc(u.region.display)}`:''}${u.preference?.party?` · ${esc(u.preference.party)}`:''}</small></div><div><span class="state ${u.status==='SUSPENDED'?'st-MISSING':'st-OBSERVED'}">${esc(u.role||'FREE')}${u.status==='SUSPENDED'?' · 정지':''}</span></div><div class="user-admin-meta">가입 ${u.createdAt?new Date(u.createdAt).toLocaleDateString('ko-KR'):'-'}</div><button class="ghost" data-user-manage="${esc(u.id)}">관리</button></div>`).join('')||'<div class="status">표시할 회원이 없습니다.</div>';
   $$('[data-user-manage]').forEach(btn=>btn.onclick=()=>openAdminUserDetail(btn.dataset.userManage));
 }
+let adminUserModalScrollY=0;
+function activateAdminUserModal(box){
+  if(!box)return;
+  if(!document.body.classList.contains('user-admin-modal-open'))adminUserModalScrollY=window.scrollY||window.pageYOffset||0;
+  const panel=document.createElement('div');panel.className='user-admin-modal-panel';
+  while(box.firstChild)panel.appendChild(box.firstChild);box.appendChild(panel);
+  box.classList.add('user-admin-modal');document.body.classList.add('user-admin-modal-open');
+  box.onclick=e=>{if(e.target===box)closeAdminUserDetail();};
+}
+function closeAdminUserDetail(){
+  const box=$('#userAdminDetail');if(!box)return;
+  box.classList.add('hidden');box.classList.remove('user-admin-modal');box.onclick=null;document.body.classList.remove('user-admin-modal-open');
+  const y=adminUserModalScrollY;requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}));
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#userAdminDetail')?.classList.contains('hidden'))closeAdminUserDetail();});
 function openAdminUserDetail(id){
   const u=adminUserById(id);if(!u)return;selectedAdminUserId=u.id;
   const box=$('#userAdminDetail');box.classList.remove('hidden');
@@ -564,8 +587,9 @@ function openAdminUserDetail(id){
     <div class="demo-note"><b>* 임의회원</b> · 실제 가입자와 구분하기 위한 시연용 프로필입니다. 화면에만 회원처럼 표시되며 로그인, 비밀번호 찾기, 메일 발송 대상이 아닙니다.</div>
     <div class="grid" style="margin-top:12px"><div><label>아이디</label><input value="${esc(u.username||'')}" readonly></div><div><label>이메일 · 시연용 표시</label><input value="${esc(u.email||'')}" readonly></div></div>
     <div class="grid" style="margin-top:10px"><div><label>닉네임</label><input value="${esc(u.nickname||'')}" readonly></div><div><label>회원 등급</label><input value="${esc(u.role||'FREE')}" readonly></div></div>`;
-    $('#closeUserAdminDetail').onclick=()=>box.classList.add('hidden');
-    box.scrollIntoView({behavior:'smooth',block:'nearest'});return;
+    activateAdminUserModal(box);
+    $('#closeUserAdminDetail').onclick=closeAdminUserDetail;
+    return;
   }
   box.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div><h3>${esc(u.nickname||'회원')} 회원 상세</h3><div class="status">회원번호 ${esc(u.id)} · 가입 ${u.createdAt?new Date(u.createdAt).toLocaleString('ko-KR'):'-'}</div></div><button class="ghost" id="closeUserAdminDetail">닫기</button></div>
   <div class="privacy-note" style="margin-top:12px"><b>관리자 편집</b><span>아이디·이메일·닉네임·전화번호·지역·선호정당·회원등급을 수정할 수 있습니다. 기존 비밀번호와 암호화 원문은 조회할 수 없고, 비밀번호는 아래에서 새 값으로만 재설정합니다.</span></div>
@@ -581,11 +605,11 @@ function openAdminUserDetail(id){
   <div class="grid" style="margin-top:10px"><div><label>새 비밀번호</label><input id="adminResetUserPw" type="password" minlength="8" autocomplete="new-password" placeholder="8자 이상"></div><div><label>새 비밀번호 확인</label><input id="adminResetUserPw2" type="password" minlength="8" autocomplete="new-password" placeholder="다시 입력"></div></div>
   <div class="actions"><button class="danger" id="resetAdminUserPw">회원 새 비밀번호 설정</button></div><div class="status" id="adminUserEditStatus"></div>`;
   wireAdminRegionEditors(u.region||{});
-  $('#closeUserAdminDetail').onclick=()=>box.classList.add('hidden');
+  activateAdminUserModal(box);
+  $('#closeUserAdminDetail').onclick=closeAdminUserDetail;
   $('#saveAdminUserAccount').onclick=saveAdminUserAccount;
   $('#toggleAdminUserStatus').onclick=toggleAdminUserStatus;
   $('#resetAdminUserPw').onclick=resetAdminUserPassword;
-  box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 async function saveAdminUserAccount(){
   const u=adminUserById(selectedAdminUserId);if(!u)return;const st=$('#adminUserEditStatus');
