@@ -1,6 +1,13 @@
-# 정참시 v2.6.3 · HUMAN ENTERPRISE PASS
+# 정참시 v2.6.4 · HUMAN ENTERPRISE PASS
 
-## v2.6.3 정보구조 · HUMAN DESIGN 정리
+## v2.6.4 HOTFIX · 초기 렌더링 복구
+- v2.6.3에서 메인 대통령/정부 블록을 제거한 뒤 남아 있던 `presPortrait`, `govIcon` 직접 DOM 초기화가 페이지 전체 스크립트를 중단시키던 문제 수정.
+- 삭제된 DOM 요소 접근은 null-safe 처리.
+- HTML에 존재하지 않는 ID에 대한 직접 `innerHTML/textContent/style` 접근을 전수 검사해 0건 확인.
+- v2.6.3의 대통령 조직도/HUMAN ENTERPRISE 구조와 v2.6.x SPEED ARCHITECTURE는 그대로 유지.
+
+
+## v2.6.4 정보구조 · HUMAN DESIGN 정리
 - 메인 상단의 별도 대통령/현 정부 주요인사 블록을 제거하고 NOW Rank가 첫 콘텐츠가 되도록 정리했습니다.
 - NOW Rank 카테고리에 `대통령`을 추가하고, 대통령 → 국무총리/부총리 → 주요 장관이 이어지는 GOVERNMENT ORGANIZATION 화면으로 통합했습니다.
 - 대통령 카테고리에서 `PRESIDENTIAL AGENDA`와 `GOVERNMENT DIRECTION`을 먼저 보여주며, 기존 비랭킹 데이터 설명보다 공약·국정방향을 우선합니다.
