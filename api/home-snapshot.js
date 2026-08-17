@@ -1,6 +1,6 @@
 const store=require('../lib/store');
 const {publicSnapshot}=require('../lib/public_snapshot');
-const {getNowIssue,getRapidRise,getSurvey,surveyStats}=require('../lib/site_settings');
+const {getPresidentPage,getNowIssue,getRapidRise,getSurvey,surveyStats}=require('../lib/site_settings');
 const {getAllOverrides,publicOverrides}=require('../lib/member_metrics');
 const {getRepresentativeBadges}=require('../lib/badges');
 
@@ -24,8 +24,8 @@ module.exports=async function(req,res){
   res.setHeader('Vercel-CDN-Cache-Control','public, max-age=15, stale-while-revalidate=45');
   try{
     const survey=await getSurvey();
-    const [rank,nowIssue,rapidRise,stats,metricMap,news]=await Promise.all([currentPublic(),getNowIssue(),getRapidRise(),surveyStats(survey,null),getAllOverrides(),latestNews(16)]);
+    const [rank,presidentPage,nowIssue,rapidRise,stats,metricMap,news]=await Promise.all([currentPublic(),getPresidentPage(),getNowIssue(),getRapidRise(),surveyStats(survey,null),getAllOverrides(),latestNews(16)]);
     if(!rank)return res.status(404).json({ok:false,error:'published snapshot not found'});
-    return res.json({ok:true,generatedAt:new Date().toISOString(),rank,site:{nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:false},news});
+    return res.json({ok:true,generatedAt:new Date().toISOString(),rank,site:{presidentPage,nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:false},news});
   }catch(e){return res.status(503).json({ok:false,error:'home snapshot unavailable'});}
 };

@@ -1,5 +1,5 @@
 const {authenticate,requireUser,rateLimit}=require('../lib/user_auth');
-const {getNowIssue,getRapidRise,getSurvey,surveyStats,voteSurvey}=require('../lib/site_settings');
+const {getPresidentPage,getNowIssue,getRapidRise,getSurvey,surveyStats,voteSurvey}=require('../lib/site_settings');
 const {getAllOverrides,publicOverrides}=require('../lib/member_metrics');
 function publicSurveyStats(stats){
   const s=stats||{};
@@ -13,9 +13,9 @@ module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
   try{
     if(req.method==='GET'){
-      const [nowIssue,rapidRise,survey,me,metricMap]=await Promise.all([getNowIssue(),getRapidRise(),getSurvey(),authenticate(req).catch(()=>null),getAllOverrides()]);
+      const [presidentPage,nowIssue,rapidRise,survey,me,metricMap]=await Promise.all([getPresidentPage(),getNowIssue(),getRapidRise(),getSurvey(),authenticate(req).catch(()=>null),getAllOverrides()]);
       const stats=await surveyStats(survey,me?.id||null);
-      return res.json({ok:true,nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:Boolean(me)});
+      return res.json({ok:true,presidentPage,nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:Boolean(me)});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     const b=req.body||{};if(String(b.action||'')!=='vote-survey')return res.status(400).json({ok:false,error:'지원하지 않는 작업입니다.'});

@@ -1,6 +1,6 @@
 const {requireAdmin}=require('../../lib/auth');
 const {
-  getNowIssue,saveNowIssue,getRapidRise,saveRapidRise,getSurvey,saveSurvey,surveyStats,
+  getPresidentPage,savePresidentPage,getNowIssue,saveNowIssue,getRapidRise,saveRapidRise,getSurvey,saveSurvey,surveyStats,
   surveyModeration,recountSurvey,invalidateSurveyVote,restoreSurveyVote,invalidateSurveyOption,
   setSurveyAdjustment,clearSurveyAdjustments,resetSurveyResponses
 }=require('../../lib/site_settings');
@@ -19,12 +19,13 @@ module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
   try{
     if(req.method==='GET'){
-      const [nowIssue,rapidRise,survey]=await Promise.all([getNowIssue(),getRapidRise(),getSurvey()]);
+      const [presidentPage,nowIssue,rapidRise,survey]=await Promise.all([getPresidentPage(),getNowIssue(),getRapidRise(),getSurvey()]);
       const stats=await surveyStats(survey,null);
-      return res.json({ok:true,nowIssue,rapidRise,survey:{...survey,stats}});
+      return res.json({ok:true,presidentPage,nowIssue,rapidRise,survey:{...survey,stats}});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     const b=req.body||{},action=String(b.action||'');
+    if(action==='save-president-page')return res.json({ok:true,presidentPage:await savePresidentPage(b.presidentPage||b,admin)});
     if(action==='save-now-issue')return res.json({ok:true,nowIssue:await saveNowIssue(b.nowIssue||b,admin)});
     if(action==='save-rapid-rise')return res.json({ok:true,rapidRise:await saveRapidRise(b.rapidRise||b,admin)});
     if(action==='save-survey'){

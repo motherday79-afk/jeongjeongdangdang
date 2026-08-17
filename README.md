@@ -1,4 +1,15 @@
-# 정참시 v2.6.2 · VISIBILITY + SPEED HOTFIX
+# 정참시 v2.6.3 · HUMAN ENTERPRISE PASS
+
+## v2.6.3 정보구조 · HUMAN DESIGN 정리
+- 메인 상단의 별도 대통령/현 정부 주요인사 블록을 제거하고 NOW Rank가 첫 콘텐츠가 되도록 정리했습니다.
+- NOW Rank 카테고리에 `대통령`을 추가하고, 대통령 → 국무총리/부총리 → 주요 장관이 이어지는 GOVERNMENT ORGANIZATION 화면으로 통합했습니다.
+- 대통령 카테고리에서 `PRESIDENTIAL AGENDA`와 `GOVERNMENT DIRECTION`을 먼저 보여주며, 기존 비랭킹 데이터 설명보다 공약·국정방향을 우선합니다.
+- 어드민에 `대통령 · 정부 페이지` 메뉴를 추가해 공약·국정방향·소개·출처 라벨을 직접 편집할 수 있습니다.
+- 메인 메뉴의 `정참시 COLUMN`을 `COLUMN`으로 단순화했습니다.
+- PC NOW Rank의 검색/정당 필터를 한 줄 배치로 고정했습니다.
+- 상단 검색·알림 버튼을 이모지에서 정제된 라인 SVG 아이콘으로 교체했습니다.
+- 장식성 문구, 과도한 그라데이션·카드 강조를 줄이고 정보 계층과 여백 중심으로 다듬었습니다.
+- 기존 SPEED ARCHITECTURE / PHOTO MASTER / STALE-FIRST / 방문자 ON·OFF / 보안 구조를 유지합니다.
 
 ## v2.6.2 시인성 · 속도 정리
 - 오른쪽 `NOW ISSUE` 하단의 최근 게시시각/수집원천 메타를 제거하고 **대제목 / 소제목 / 내용**만 남겼습니다.
