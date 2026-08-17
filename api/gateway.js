@@ -1,7 +1,7 @@
 // NOW Rank v1.10.5 Hobby Gateway
 // A single Vercel Function dispatches all API routes internally.
 const {validateAdminSession,clearCookie}=require('../lib/auth');
-const {globalApiGuard,applyRateLimitResponse}=require('../lib/security');
+const {globalApiGuard,applyRateLimitResponse,requestOriginAllowed,recordAdminAudit}=require('../lib/security');
 const routes = {
   'admin/login': require('./admin/login'),
   'admin/logout': require('./admin/logout'),
@@ -63,6 +63,13 @@ module.exports = async function gateway(req, res){
   // Do not expose internal routing marker to endpoint handlers.
   if(req.query && Object.prototype.hasOwnProperty.call(req.query,'__path')) delete req.query.__path;
   try{
+    // Browser-side CSRF / cross-site mutation guard. SameSite cookies remain in place,
+    // but unsafe requests are also checked against Fetch Metadata + Origin/Referer.
+    const originGuard=requestOriginAllowed(req);
+    if(!originGuard.ok){
+      if(key.startsWith('admin/'))await recordAdminAudit(req,{type:'CROSS_SITE_BLOCKED',adminId:'admin',success:false,detail:`${req.method} ${key} ${originGuard.reason}`}).catch(()=>{});
+      return res.status(403).json({ok:false,error:'허용되지 않은 출처의 요청입니다.'});
+    }
     // v2.5.0: centralized admin session-version validation. A password change or
     // explicit global logout invalidates every previously issued admin cookie.
     if(key.startsWith('admin/') && !['admin/login','admin/logout'].includes(key)){
@@ -70,6 +77,9 @@ module.exports = async function gateway(req, res){
       if(!adminSession){
         res.setHeader('Set-Cookie',clearCookie());
         return res.status(401).json({ok:false,error:'관리자 세션이 만료되었거나 무효화되었습니다. 다시 로그인해주세요.'});
+      }
+      if(!['GET','HEAD','OPTIONS'].includes(String(req.method||'GET').toUpperCase())){
+        await recordAdminAudit(req,{type:'ADMIN_WRITE',adminId:adminSession.id,success:true,detail:`${req.method} ${key}`}).catch(()=>{});
       }
     }else{
       const guard=await globalApiGuard(req,key);

@@ -26,8 +26,9 @@
         "X-Frame-Options": "DENY",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-        "Content-Security-Policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
-        "Strict-Transport-Security": "max-age=31536000"
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; font-src 'self' data:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Permitted-Cross-Domain-Policies": "none"
       },
       "continue": true
     },
@@ -49,6 +50,27 @@
       "src": "/api/admin/(.*)",
       "headers": {
         "Cache-Control": "no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/account/(.*)",
+      "headers": {
+        "Cache-Control": "private, no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/referrals",
+      "headers": {
+        "Cache-Control": "private, no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/badges",
+      "headers": {
+        "Cache-Control": "private, no-store, max-age=0"
       },
       "continue": true
     },
