@@ -1627,6 +1627,83 @@ body{font-size:var(--type-md);background:#f7f9f8}
 /* ===== /v2.7.1 ===== */
 </style>
 
+
+<style id="v272DetailRailsStyles">
+/* ===== v2.7.2 · DETAIL RAILS / PIXEL DISCIPLINE ===== */
+:root{
+  --rail-gap:20px;--rail-radius:15px;--rail-line:#e1e7e5;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;
+}
+html{scrollbar-gutter:stable}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.portal-header,.visitor-strip,.app,.site-footer-inner{width:100%}
+.app{padding-top:16px;padding-bottom:0}
+/* One navigation rhythm: no decorative float, one baseline */
+.service-launcher{height:78px;padding:6px 0 9px;gap:10px;justify-content:flex-start}
+.service-btn{width:84px;height:62px;border-radius:12px!important;font-size:12px!important}
+.service-icon{width:32px;height:32px;border-radius:10px}
+.service-btn.active{position:relative;background:#f3faf8!important}
+.service-btn.active:after{content:""!important;display:block!important;position:absolute;left:20px;right:20px;bottom:-9px;height:2px;border-radius:2px;background:#13a58f}
+/* Ranking toolbar spans the full portal width. Primary left/right rails begin below it on the exact same line. */
+.ranking-toolbar{margin:0 0 14px}
+.ranking-toolbar .head{height:44px;margin:0 0 10px;align-items:center}
+.ranking-toolbar .head-left h1{font-size:24px;line-height:1.2;letter-spacing:-.85px}
+.ranking-toolbar .searchline{margin-left:auto}
+.ranking-toolbar .search,.ranking-toolbar .select{height:38px;border-radius:9px;font-size:13px}
+.ranking-toolbar .search{width:270px}
+.ranking-toolbar .tabs{margin:9px 0 0;gap:6px}
+.ranking-toolbar .tab{height:36px;padding:0 13px;border-radius:9px;font-size:13px}
+.now-keyword-panel{margin:0;padding:12px 14px 10px;border-radius:12px}
+.now-keyword-head{margin-bottom:8px}.now-keyword-head b{font-size:15px;letter-spacing:-.45px}
+.now-keyword-strip{gap:6px;max-height:60px}.now-chip{min-height:27px;padding:4px 8px;font-size:12px;border-radius:8px}
+.now-keyword-toggle{margin-top:7px;font-size:12px}
+/* TOP RAIL / BOTTOM RAIL */
+.home-rails{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:var(--rail-gap);align-items:stretch}
+.home-main-rail,.home-rails>.side{min-width:0;align-self:stretch}
+.home-rails>.side{position:static!important;top:auto!important;height:auto!important;overflow:visible!important}
+.home-rails .side-track{height:100%;min-height:100%;display:flex;flex-direction:column;gap:0!important;transform:none!important;border-radius:var(--rail-radius);box-shadow:none;background:#fff}
+.home-rails .side-track>#sideNewsCard{flex:1}
+.home-rails .side-track>.card{background:#fff!important}
+.home-rails .live-desk-head{height:46px;flex:0 0 46px;padding:0 15px}
+.home-rails .live-desk-brand{font-size:9px;letter-spacing:.13em}.home-rails .live-desk-time{font-size:7.5px}
+.home-rails .cardpad{padding:15px}.home-rails .side-title{margin-bottom:10px}.home-rails .side-title h3{font-size:14px;letter-spacing:-.3px}
+.home-rails .side-track>.card .side-title{padding-left:27px}.home-rails .side-track>.card .side-title:before{width:19px;font-size:8px}
+.rapid-rise-note,.visitor-stat-note{display:none!important}
+/* Rank table is the left rail: compact enough to scan, still gives TOP3 hierarchy. */
+.ranktable{border-radius:var(--rail-radius)!important;box-shadow:none!important;border-color:var(--rail-line)!important}
+.ranktable:before{display:none!important}
+.ranktable .header{min-height:42px!important}.ranktable .header>div{font-size:9px;letter-spacing:.08em}
+.ranktable .row{grid-template-columns:62px minmax(210px,1fr) 132px 150px 84px 100px!important}
+.ranktable .row:not(.header){min-height:58px!important;padding-top:8px;padding-bottom:8px}
+.ranktable .row.rank-top-1{min-height:86px!important;padding-top:12px!important;padding-bottom:12px!important}
+.ranktable .row.rank-top-2,.ranktable .row.rank-top-3{min-height:72px!important;padding-top:10px!important;padding-bottom:10px!important}
+.ranktable .row.rank-top-1 .ranknum{font-size:34px}.ranktable .row.rank-top-2 .ranknum,.ranktable .row.rank-top-3 .ranknum{font-size:25px}
+.ranktable .row.rank-top-1 .person .avatar{width:58px;height:58px;flex-basis:58px;border-radius:17px}.ranktable .row.rank-top-2 .person .avatar,.ranktable .row.rank-top-3 .person .avatar{width:48px;height:48px;flex-basis:48px;border-radius:15px}
+.ranktable .row.rank-top-1 .pname{font-size:16px}.ranktable .row.rank-top-2 .pname,.ranktable .row.rank-top-3 .pname{font-size:14px}
+.ranktable .row.rank-top:after{font-size:60px;right:94px;letter-spacing:-4px}
+.ranktable .row:not(.rank-top) .avatar{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+.ranktable .pname{font-size:13px}.person-headline{font-size:10.5px!important;line-height:1.35;margin-top:3px}
+.momentum-cell{display:flex!important;align-items:center;justify-content:flex-start;min-width:0!important;grid-template-columns:none!important}.momentum-cell .change{font-size:12px!important}.momentum-state,.refresh-route,.momentum-spark,.momentum-track{display:none!important}
+.score-stack{gap:4px}.score-number{font-size:14px}.score-label{font-size:6.5px}.rankpill{font-size:8px}
+.rank-more-wrap{padding:13px 16px!important;background:#fbfcfc;border-top:1px solid #edf1f0}.rank-more-btn{height:38px!important;border-radius:9px!important;font-size:12px!important;box-shadow:none!important}
+/* Footer begins after both home rails finish: same portal rail, no floating island. */
+.site-footer{margin-top:32px;padding:30px 20px 46px;background:#f2f4f3;border-top:1px solid #dfe5e3}
+.site-footer-brand{padding-bottom:17px}.site-footer-services{padding:15px 0}.site-footer-bottom{padding-top:14px}
+.site-footer-services button,.site-footer-links button,.site-footer-links a{font-size:12px}.site-footer-copy{font-size:11px}
+/* Consistent detail rhythm across non-home pages */
+.page:not(#page-ranking)>.section-title,.president-page-shell,.itsme-shell,.community-layout,.live-layout{scroll-margin-top:150px}
+@media(max-width:1120px){
+  .service-launcher{justify-content:flex-start}.home-rails{grid-template-columns:1fr}.home-rails>.side{height:auto!important}.home-rails .side-track{height:auto;min-height:0;border:0;background:transparent}.home-rails .side-track>#sideNewsCard{flex:none}
+  .site-footer{padding-bottom:100px}
+}
+@media(max-width:780px){
+  .ranking-toolbar{margin-bottom:10px}.ranking-toolbar .head{height:auto;display:block;margin-bottom:9px}.ranking-toolbar .head-left h1{font-size:22px}.ranking-toolbar .searchline{margin-top:9px}.ranking-toolbar .search,.ranking-toolbar .select{width:100%}
+  .ranking-toolbar .tabs{overflow-x:auto;margin-top:8px}.now-keyword-panel{padding:11px 12px 9px}.now-keyword-strip{max-height:58px}
+  .home-main-rail>.ranktable{margin-top:0}.ranktable .row:not(.header){min-height:62px!important}
+  .site-footer{margin-top:22px;padding:26px 15px 94px}
+}
+/* ===== /v2.7.2 ===== */
+</style>
 </head>
 <body>
 <div class="topbar">
@@ -1664,53 +1741,51 @@ body{font-size:var(--type-md);background:#f7f9f8}
 <div class="app">
   <!-- Ranking -->
   <section class="page active" id="page-ranking">
-    <div class="layout">
-      <main class="main">
-<section class="mobile-now-flow" id="mobileNowFlow" aria-label="모바일 NOW 요약">
+    <section class="ranking-toolbar" aria-label="NOW Rank 탐색">
+      <div class="head">
+        <div class="head-left">
+          <h1>정참시 NOW Rank</h1>
+        </div>
+        <div class="searchline">
+          <input id="search" class="search" placeholder="이름, 정당, 지역 검색" />
+          <select id="party" class="select">
+            <option value="all">전체 정당</option>
+            <option>더불어민주당</option>
+            <option>국민의힘</option>
+            <option>조국혁신당</option>
+            <option>개혁신당</option>
+            <option>진보당</option>
+            <option>사회민주당</option>
+            <option>무소속</option>
+          </select>
+        </div>
+      </div>
+      <section class="now-keyword-panel" id="nowKeywordPanel" aria-label="실시간 정치키워드">
+        <div class="now-keyword-head"><b>실시간 정치키워드</b><span id="nowKeywordMeta" aria-hidden="true"></span></div>
+        <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
+        <button class="now-keyword-toggle" id="nowKeywordToggle" type="button" aria-expanded="false">더보기 <span>⌄</span></button>
+      </section>
+      <div class="tabs">
+        <button class="tab active" data-mode="all">전체</button>
+        <button class="tab" data-mode="assembly">국회의원</button>
+        <button class="tab" data-mode="metro">광역단체장</button>
+        <button class="tab" data-mode="local">기초단체장</button>
+      </div>
+    </section>
+
+    <div class="layout home-rails">
+      <main class="main home-main-rail">
+        <section class="mobile-now-flow" id="mobileNowFlow" aria-label="모바일 NOW 요약">
           <div id="mobileNowIssuePortal"></div>
           <div id="mobileSurveyPortal"></div>
           <div id="mobileRapidRisePortal"></div>
           <div id="mobileNewsPortal"></div>
           <div class="mobile-all-rank-title">
             <h3 id="mobileAllRankTitle">정참시 NOW Rank</h3>
-            <span id="mobileAllRankMeta">1~300 전체 보기</span>
+            <span id="mobileAllRankMeta">TOP 30 먼저 보기</span>
           </div>
         </section>
-        <div class="head">
-          <div class="head-left">
-            <h1>정참시 NOW Rank</h1>
-          </div>
-          <div class="searchline">
-            <input id="search" class="search" placeholder="이름, 정당, 지역 검색" />
-            <select id="party" class="select">
-              <option value="all">전체 정당</option>
-              <option>더불어민주당</option>
-              <option>국민의힘</option>
-              <option>조국혁신당</option>
-              <option>개혁신당</option>
-              <option>진보당</option>
-              <option>사회민주당</option>
-              <option>무소속</option>
-            </select>
-          </div>
-        </div>
-
-
-        <section class="now-keyword-panel" id="nowKeywordPanel" aria-label="실시간 정치키워드">
-          <div class="now-keyword-head"><b>실시간 정치키워드</b><span id="nowKeywordMeta" aria-hidden="true"></span></div>
-          <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
-          <button class="now-keyword-toggle" id="nowKeywordToggle" type="button" aria-expanded="false">더보기 <span>⌄</span></button>
-        </section>
-
-        <div class="tabs">
-          <button class="tab active" data-mode="all">전체</button>
-          <button class="tab" data-mode="assembly">국회의원</button>
-          <button class="tab" data-mode="metro">광역단체장</button>
-          <button class="tab" data-mode="local">기초단체장</button>
-        </div>
-
         <section class="ranktable" id="ranktable"></section>
-
       </main>
 
       <aside class="side">
@@ -1738,7 +1813,7 @@ body{font-size:var(--type-md);background:#f7f9f8}
           <div class="rapid-rise-list" id="rapidRiseList">
             <div class="rapid-rise-empty">직전 게시 스냅샷과 비교한 뒤 가장 많이 오른 의원을 표시합니다.</div>
           </div>
-          <div class="rapid-rise-note">현재 순위가 낮더라도 직전 갱신보다 크게 상승했다면 노출됩니다.</div>
+          <div class="rapid-rise-note" aria-hidden="true"></div>
         </section>
 
         <section class="card cardpad" id="sideNewsCard">
@@ -10198,7 +10273,7 @@ function renderMobileRankHeading(){
   }
   if(allMeta){
     const count=people.filter(x=>entityCategoryMatch(x,mode)).length;
-    allMeta.textContent=count?`TOP ${Math.min(100,count)} 우선 노출${count>100?' · 더보기':''}`:'전체 보기';
+    allMeta.textContent=count?`TOP ${Math.min(30,count)} 먼저 보기${count>30?' · TOP100 더보기':''}`:'전체 보기';
   }
 }
 
@@ -10833,8 +10908,8 @@ function momentumSignalMeta(x,viewMode=mode){
   return {cls:'signal-steady',label:'STEADY'};
 }
 function momentumCellHTML(x,viewMode=mode){
-  const refresh=refreshChangeText(x,viewMode), raw=refreshRankChange(x,viewMode), mag=finiteValue(raw.change)?Math.max(5,Math.min(100,Math.abs(Number(raw.change))*7)):4, signal=momentumSignalMeta(x,viewMode);
-  return `<div class="momentum-cell ${refresh.cls} ${signal.cls}"><div class="change ${refresh.cls}">${refresh.text}</div><span class="momentum-state">${signal.label}</span><span class="refresh-route">${refresh.route}</span>${momentumSparklineSVG(x,viewMode)}<span class="momentum-track"><i style="width:${mag}%"></i></span></div>`;
+  const refresh=refreshChangeText(x,viewMode);
+  return `<div class="momentum-cell ${refresh.cls}"><div class="change ${refresh.cls}">${refresh.text}</div></div>`;
 }
 function renderLiveDeskStamp(){
   const el=document.getElementById('liveDeskTime'); if(!el)return;
@@ -10851,10 +10926,10 @@ function keywordSignalMeta(k,i){
   return {hot,rise,mark:hot?'HOT':rise?'UP':''};
 }
 
-const rankVisibleLimitByMode={all:100,assembly:100,metro:100,local:100,president:100};
-function showMoreRankRows(){rankVisibleLimitByMode[mode]=Math.min(600,Math.max(100,Number(rankVisibleLimitByMode[mode]||100))+100);renderRank();}
+const rankVisibleLimitByMode={all:30,assembly:30,metro:30,local:30,president:30};
+function showMoreRankRows(){const current=Math.max(30,Number(rankVisibleLimitByMode[mode]||30));rankVisibleLimitByMode[mode]=current<100?100:Math.min(600,current+100);renderRank();}
 window.showMoreRankRows=showMoreRankRows;
-function resetRankVisibleLimit(viewMode=mode){rankVisibleLimitByMode[viewMode]=100;}
+function resetRankVisibleLimit(viewMode=mode){rankVisibleLimitByMode[viewMode]=30;}
 
 function renderRank(){
   const rankingMain=document.querySelector('#page-ranking .main');
@@ -10877,9 +10952,9 @@ function renderRank(){
   data.sort((a,b)=>viewRank(a,mode)-viewRank(b,mode));
   const label=ENTITY_LABELS[mode]||'전체';
   const totalMatched=data.length;
-  const limit=Math.max(100,Number(rankVisibleLimitByMode[mode]||100));
+  const limit=Math.max(30,Number(rankVisibleLimitByMode[mode]||30));
   const visible=data.slice(0,limit);
-  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','NOW MOMENTUM','NOW INDEX'];
+  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','변동','NOW 지수'];
   let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
   visible.forEach(x=>{
     const vr=viewRank(x,mode), firstCell=(Number(x.id)===300||x.party==='공석')?'―':vr;
@@ -10906,7 +10981,7 @@ function renderRank(){
     </div>`;
   });
   if(totalMatched>visible.length){
-    html+=`<div class="rank-more-wrap"><button class="rank-more-btn" type="button" onclick="showMoreRankRows()">더보기 <b>${visible.length.toLocaleString('ko-KR')}</b> / ${totalMatched.toLocaleString('ko-KR')}</button></div>`;
+    html+=`<div class="rank-more-wrap"><button class="rank-more-btn" type="button" onclick="showMoreRankRows()">${visible.length<100?'TOP100 보기':'100명 더보기'} <b>${visible.length.toLocaleString('ko-KR')}</b> / ${totalMatched.toLocaleString('ko-KR')}</button></div>`;
   }
   document.getElementById("ranktable").innerHTML=html;
   renderMobileRankHeading();
@@ -11028,7 +11103,7 @@ function normalizePublishedNews(p){
 }
 function renderSideNews(){
   const el=document.getElementById('sideNews');if(!el)return;
-  el.innerHTML = newsArticles.slice(0,3).map((a,i)=>`
+  el.innerHTML = newsArticles.slice(0,6).map((a,i)=>`
     <div class="news-row" onclick="openArticle(${i})">
       <div>
         <h4>${newsEsc(a.title)}</h4>
@@ -11882,22 +11957,8 @@ document.querySelectorAll(".mymenu").forEach(btn=>{
 });
 
 function syncSidebarWithPage(){
-  const rankingPage=document.getElementById('page-ranking');
-  const side=rankingPage?.querySelector('.side');
-  const track=rankingPage?.querySelector('.side-track');
-  if(!side || !track) return;
-
-  if(window.innerWidth<=1120){
-    track.style.transform='translate3d(0,0,0)';
-    return;
-  }
-
-  const maxShift=Math.max(0, track.scrollHeight - side.clientHeight);
-  // Page scroll and sidebar contents move together, but the sidebar frame remains visible.
-  // By the time the user is around the early ranking rows, NOW ISSUE has yielded to NEWS.
-  const activation=120;
-  const shift=Math.max(0, Math.min(maxShift, window.scrollY-activation));
-  track.style.transform=`translate3d(0,${-shift}px,0)`;
+  const track=document.querySelector('#page-ranking .side-track');
+  if(track) track.style.transform='translate3d(0,0,0)';
 }
 window.addEventListener('scroll', syncSidebarWithPage, {passive:true});
 window.addEventListener('resize', syncSidebarWithPage);
