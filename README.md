@@ -1,16 +1,23 @@
-# 정참시 v2.6.1 · NOW ISSUE / WHY NOW HOTFIX
+# 정참시 v2.6.2 · VISIBILITY + SPEED HOTFIX
 
-
-## v2.6.1 HOTFIX
-- 오른쪽 NOW ISSUE를 전당대회/여론조사 전용 레이아웃에서 **대제목 / 소제목 / 내용** 3단 범용 콘텐츠로 변경했습니다.
-- 기존에 저장된 NOW ISSUE 값은 최초 조회 시 새 3단 구조로 자동 마이그레이션됩니다.
-- WHY NOW의 HOT 키워드에 마우스를 올릴 때 배경과 글자색 우선순위가 충돌해 흰색으로 보이던 문제를 수정했습니다.
-- v2.6.0 PHOTO MASTER / STALE-FIRST / HOME SNAPSHOT 속도 구조는 그대로 유지합니다.
+## v2.6.2 시인성 · 속도 정리
+- 오른쪽 `NOW ISSUE` 하단의 최근 게시시각/수집원천 메타를 제거하고 **대제목 / 소제목 / 내용**만 남겼습니다.
+- 어드민 `방문자 표시 관리`에 **현재 접속 / 오늘 방문 / 누적 방문 개별 ON/OFF** 컨트롤을 다시 노출했습니다. 집계는 OFF 상태에서도 계속 유지됩니다.
+- WHY NOW 실시간 키워드를 **15개**로 축소해 첫 화면 밀도를 낮췄습니다.
+- NOW Rank는 `전체 / 국회의원 / 광역단체장 / 기초단체장` 모두 **TOP100 우선 렌더링**하고, 100명 초과 시 `더보기`로 100명씩 추가합니다. 초기 DOM과 사진 요청량을 크게 줄이는 목적입니다.
+- `정참시 NOW Rank` 제목 크기를 낮추고 PC에서 한 줄에 안정적으로 보이도록 조정했습니다.
+- 제목 옆 `6H SNAPSHOT`, `POLITICAL MOMENTUM INDEX` 장식 문구를 제거했습니다.
+- `현 정부 주요 인사`의 `국무총리·장관은 의원 랭킹과 분리 · 가로 스크롤` 설명 문구를 제거했습니다.
+- 오른쪽 `실시간 급상승 TOP10`을 **TOP5**로 축소하고, 어드민 편집 UI도 1~5위 중심으로 정리했습니다.
+- 사진 표시 hot path에서 PHOTO MASTER가 없을 때 **동기 MASTER 생성 작업을 제거**했습니다. MASTER 구축은 관리자 배치에서만 수행하고, 사용자 화면은 기존 검증사진/LKG로 즉시 fallback합니다.
+- 서버 사진 실패 시 동일 API를 다시 기다리는 중복 재시도를 제거하고, 마지막 정상사진/국회 공식/지방단체장 브라우저 검증 복구 경로로 바로 넘깁니다.
+- 사진 URL cache version을 `v=262`로 올려 이전 실패 응답/브라우저 상태와 분리하되, 기존 브라우저 Last-Known-Good 사진 캐시는 그대로 보존합니다.
+- v2.6.0 STALE-FIRST / HOME SNAPSHOT, v2.5.1 보안, v2.3.0 빠른 Refresh 구조는 그대로 유지합니다.
 
 ## v2.6.0 SPEED ARCHITECTURE
 - PHOTO MASTER: 검증된 562명 인물사진을 정참시 저장소에 160px / 360px WebP로 최적화 저장하고 `/api/person-photo`는 MASTER를 최우선으로 제공
 - Vercel CDN 장기 캐시 + 브라우저 lazy/eager 우선순위 적용: TOP3는 즉시, 일반 목록은 lazy, 상세·비교는 360px 우선 로딩
-- 사진 MASTER가 없을 때만 최초 1회 생성하고, 실패 시 기존 v2.2.23 Last-Known-Good/자동복구 경로로 비파괴 fallback
+- 사진 MASTER는 관리자 배치에서만 생성하고, 사용자 표시 경로에서는 MASTER miss 시 기존 v2.2.23 Last-Known-Good/자동복구 경로로 즉시 fallback
 - 관리자 `사진` 메뉴에 PHOTO MASTER 상태/용량/구축률 및 `562명 MASTER 구축` 추가. 사진 직접 교체·자동복구 시 해당 MASTER 자동 무효화
 - `/api/home-snapshot` 신설: NOW Rank + NOW ISSUE + 설문 + 능력치 override + 최신 COLUMN을 하나의 짧은 CDN 캐시 응답으로 묶어 메인 초기 요청 수 감소
 - IT’S ME / 정뮤니티 / COLUMN 목록에 sessionStorage stale-first 적용: 재방문·새로고침 시 직전 화면을 즉시 그리고 최신 데이터는 백그라운드 재검증

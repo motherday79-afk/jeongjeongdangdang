@@ -1,5 +1,5 @@
-const {resolvePersonPhoto,cachePersonPhotoRecord}=require('../lib/local_photo');
-const {getPhotoMaster,buildPhotoMaster,variantSize,MASTER_VERSION}=require('../lib/photo_master');
+const {resolvePersonPhoto,resolvePersonPhotoFast,cachePersonPhotoRecord}=require('../lib/local_photo');
+const {getPhotoMaster,variantSize,MASTER_VERSION}=require('../lib/photo_master');
 
 async function fetchImage(photo){
   const tries=[
@@ -7,7 +7,7 @@ async function fetchImage(photo){
     {'User-Agent':'Mozilla/5.0','Accept':'image/*,*/*;q=0.8'}
   ];
   for(const headers of tries){
-    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),8500);
+    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),4500);
     try{
       const r=await fetch(photo.url,{signal:ctl.signal,redirect:'follow',headers});
       if(!r.ok)continue;
@@ -41,16 +41,12 @@ module.exports=async function(req,res){
     const master=await getPhotoMaster(id,size).catch(()=>null);
     if(master?.data&&sendMaster(res,master))return;
 
-    // A cache miss builds the MASTER once. Subsequent visitors are served from Redis -> Vercel CDN,
-    // so external Assembly/local-government hosts are no longer in the hot display path.
-    try{
-      const built=await buildPhotoMaster(id);
-      const rec=(built.records||[]).find(x=>Number(x.size)===size);
-      if(rec?.data&&sendMaster(res,rec))return;
-    }catch(_){/* non-destructive legacy fallback below */}
+    // v2.6.2 SPEED: 화면 요청에서는 PHOTO MASTER를 절대 동기 생성하지 않습니다.
+    // MASTER가 아직 없다면 즉시 기존 Last-Known-Good 경로로 내려가고, MASTER 구축은 관리자 배치에서만 수행합니다.
+    // 첫 방문자가 외부 원본 다운로드/리사이즈 비용을 떠안지 않도록 display hot path를 짧게 유지합니다.
 
     // v2.2.23 last-known-good fallback remains untouched as the recovery path.
-    const previous=await resolvePersonPhoto(id);if(!previous?.url){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
+    const previous=await resolvePersonPhotoFast(id);if(!previous?.url){res.setHeader('Cache-Control','no-store, max-age=0');return res.status(404).end();}
     let photo=previous;
     let got=await fetchImage(previous);
     if(!got){

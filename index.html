@@ -1277,7 +1277,6 @@ body:before{
 
 /* Stronger identity without moving the layout */
 .head-left h1{position:relative;display:inline-flex;align-items:center;gap:10px;font-size:52px;letter-spacing:-2.4px}
-.head-left h1:after{content:"POLITICAL MOMENTUM INDEX";align-self:flex-end;margin:0 0 9px 3px;padding:5px 8px;border:1px solid #d5e4df;border-radius:999px;background:#f9fcfb;color:#78908a;font-size:8px;font-weight:950;letter-spacing:.15em;white-space:nowrap}
 .head-left .sub{max-width:880px;font-size:13px;line-height:1.72;color:#667872}
 .demo-notice{position:relative;overflow:hidden;border:1px solid #dce8e4!important;background:linear-gradient(105deg,#fbfdfc,#f2f9f6)!important;box-shadow:inset 3px 0 0 #1caf97;color:#52645e!important}
 .demo-notice:after{content:"SIGNAL ENGINE";position:absolute;right:14px;top:10px;font-size:8px;font-weight:950;letter-spacing:.16em;color:rgba(18,74,64,.22)}
@@ -1432,7 +1431,6 @@ body:before{
 }
 @media(max-width:760px){
   .head-left h1{display:block;font-size:37px;letter-spacing:-1.7px}
-  .head-left h1:after{display:inline-block;vertical-align:middle;margin:7px 0 0 3px;font-size:7px}
   .demo-notice:after{display:none}
   .now-keyword-head b:before{content:"● LIVE ·"}
   .now-chip{border-radius:9px;padding:6px 8px}
@@ -1579,6 +1577,14 @@ body:before{
 /* ===== v2.5.1 · REFERRAL + SECRET GIFT ===== */
 .invite-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.invite-card,.secret-collection-card{border:1px solid #dce8e4;border-radius:20px;background:#fff;padding:17px}.invite-card h3,.secret-collection-card h3{margin:5px 0}.invite-nickname{margin-top:12px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#e8faf5,#f7fffc);border:1px solid #bde8dc;color:#0a6f5e;font-size:22px;font-weight:1000;letter-spacing:-.02em}.invite-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.invite-kpis div{padding:10px;border:1px solid #e0ebe7;border-radius:12px;background:#f7faf9}.invite-kpis b{display:block;font-size:20px;color:#14372f}.invite-kpis span{display:block;font-size:7px;color:#7d8e88;font-weight:1000;margin-top:2px}.invite-progress{height:7px;border-radius:99px;background:#e9efed;overflow:hidden;margin-top:11px}.invite-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#19a88d,#64d9c3);border-radius:99px;transition:.3s}.secret-collection-card{background:linear-gradient(145deg,#0e2c25,#173d34);color:#fff;border-color:#285247}.secret-collection-card .sub{color:#a9c9c1}.secret-collection-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.secret-count{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:1000;color:#7ce3ce}.secret-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}.secret-slot{min-height:92px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.055);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9px}.secret-slot .icon{font-size:25px}.secret-slot b{font-size:8px;margin-top:6px}.secret-slot.locked{color:#76958d}.secret-slot.earned{background:linear-gradient(145deg,rgba(81,215,186,.22),rgba(255,255,255,.08));border-color:rgba(113,229,204,.32)}.secret-gift-box{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}.secret-gift-box h4{margin:0 0 5px}.secret-gift-box p{margin:0;color:#b5d0c9;font-size:9px;line-height:1.55}.secret-gift-box button{margin-top:10px;border:0;border-radius:10px;padding:9px 12px;background:#68dfc7;color:#0d352c;font-weight:1000;cursor:pointer}.gift-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.gift-form input{width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);color:#fff;border-radius:9px;padding:9px}.gift-form input::placeholder{color:#9cb9b2}.gift-form .wide{grid-column:1/-1}.gift-consent{grid-column:1/-1;display:flex;gap:7px;align-items:flex-start;font-size:8px;color:#b9d3cc}.gift-consent input{width:14px;margin-top:1px}.invite-member-list{display:grid;gap:7px;margin-top:10px}.invite-member{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e2ece9;border-radius:12px}.invite-member b{font-size:11px}.invite-member small{display:block;color:#82918d;font-size:8px;margin-top:2px}.invite-status{font-size:7px;font-weight:1000;padding:5px 7px;border-radius:999px;background:#eef3f1;color:#6b7c77}.invite-status.VALID{background:#e4f8f2;color:#087660}.invite-status.INVALID{background:#fff0f0;color:#aa3333}@media(max-width:700px){.invite-grid{grid-template-columns:1fr}.secret-slots{grid-template-columns:repeat(3,1fr)}.gift-form{grid-template-columns:1fr}.gift-form .wide,.gift-consent{grid-column:auto}}
 /* ===== /v2.5.1 ===== */
+
+/* v2.6.2 VISIBILITY + SPEED HOTFIX */
+.head-left h1{font-size:40px;line-height:1.05;letter-spacing:-1.7px;white-space:nowrap}
+.head-left h1:after{display:none!important;content:none!important}
+.rank-more-wrap{padding:16px 12px 4px;text-align:center;background:#fff;border-top:1px solid #edf2f0}
+.rank-more-btn{min-width:220px;border:1px solid #cfe0db;border-radius:999px;background:#f7fbfa;color:#173a33;padding:11px 18px;font-size:12px;font-weight:950;cursor:pointer;box-shadow:0 5px 16px rgba(15,23,42,.045)}
+.rank-more-btn:hover{background:#eef8f5;border-color:#9fd2c5}
+@media(max-width:900px){.head-left h1{font-size:30px;letter-spacing:-1.15px;white-space:normal}.rank-more-btn{width:100%;max-width:320px}}
 </style>
 </head>
 <body>
@@ -1604,11 +1610,11 @@ body:before{
   </div>
 </div>
 
-<div class="visitor-strip" aria-label="정참시 방문 현황">
-  <div class="visitor-stat"><span class="visitor-dot"></span><b id="visitorOnline">-</b><small>현재 접속</small></div>
-  <div class="visitor-stat"><b id="visitorToday">-</b><small>오늘 방문</small></div>
-  <div class="visitor-stat"><b id="visitorTotal">-</b><small>누적 방문</small></div>
-  <div class="visitor-stat-note">현재 접속은 최근 5분 활동 기준</div>
+<div class="visitor-strip" id="visitorStrip" aria-label="정참시 방문 현황">
+  <div class="visitor-stat" id="visitorOnlineStat"><span class="visitor-dot"></span><b id="visitorOnline">-</b><small>현재 접속</small></div>
+  <div class="visitor-stat" id="visitorTodayStat"><b id="visitorToday">-</b><small>오늘 방문</small></div>
+  <div class="visitor-stat" id="visitorTotalStat"><b id="visitorTotal">-</b><small>누적 방문</small></div>
+  <div class="visitor-stat-note" id="visitorStatNote">현재 접속은 최근 5분 활동 기준</div>
 </div>
 
 <div class="app">
@@ -1637,7 +1643,7 @@ body:before{
               <div class="kicker">Government · 2026.08.11</div>
               <h3>현 정부 주요 인사</h3>
             </div>
-            <div class="sub" style="margin:0;font-size:12px">국무총리·장관은 의원 랭킹과 분리 · 가로 스크롤</div>
+
           </div>
           <div class="gov-rail" id="govRail"></div>
         </section>
@@ -1654,7 +1660,7 @@ body:before{
         </section>
         <div class="head">
           <div class="head-left">
-            <h1>정참시 NOW Rank <span class="livepill">6H SNAPSHOT</span></h1>
+            <h1>정참시 NOW Rank</h1>
             <div class="sub">국회의원·광역단체장·기초단체장의 뉴스·검색·현재 정치 이벤트·디지털 확산을 함께 추적해 “지금 누가 이슈의 중심인가”를 보여주는 실시간 정치 인텔리전스 랭킹입니다.</div>
           </div>
           <div class="searchline">
@@ -1676,7 +1682,7 @@ body:before{
 
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
-          <div class="now-keyword-head"><b>WHY NOW · 지금 정치권 키워드</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 20~25개</span></div>
+          <div class="now-keyword-head"><b>WHY NOW · 지금 정치권 키워드</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 15개</span></div>
           <div class="keyword-category-tabs" id="keywordCategoryTabs">
             <button class="keyword-category-tab active" data-keyword-category="all">전체</button>
             <button class="keyword-category-tab" data-keyword-category="assembly">국회의원</button>
@@ -1716,9 +1722,7 @@ body:before{
             <div class="now-issue-subtitle" id="nowIssueSubtitle">지금 주목해야 할 정치 이슈</div>
             <div class="now-issue-body" id="nowIssueBody">NOW ISSUE는 특정 선거나 이벤트 형식에 묶이지 않고, 운영자가 지금 가장 중요한 이슈를 자유롭게 설명할 수 있습니다.</div>
           </div>
-          <div class="sub" id="serverUpdateStatus" style="margin:10px 2px 0;font-size:10.5px;line-height:1.5;color:#82908c">
-            NOW Rank 운영 스냅샷은 6시간 주기로 게시됩니다.
-          </div>
+
         </section>
 
 
@@ -1730,7 +1734,7 @@ body:before{
 
         <section class="card cardpad" id="rapidRiseCard">
           <div class="side-title">
-            <h3>실시간 급상승 TOP10</h3>
+            <h3>실시간 급상승 TOP5</h3>
             <div class="more" style="cursor:default">직전 갱신 대비</div>
           </div>
           <div class="rapid-rise-list" id="rapidRiseList">
@@ -2252,9 +2256,9 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
     const masterSize=quality==='high'?360:160;
     const loading=(quality==='high'||quality==='critical')?'eager':'lazy';
     const priority=quality==='critical'?' fetchpriority="high"':'';
-    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&s=${masterSize}&v=260`;
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&s=${masterSize}&v=262`;
     const title='사진 출처: 정참시 PHOTO MASTER · 검증 원본 기반';
-    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="photo-master-v260" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="${loading}" decoding="async"${priority} referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="photo-master-v262" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="${loading}" decoding="async"${priority} referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -2537,8 +2541,8 @@ async function handlePoliticianPhotoError(img){
   if(slot?.dataset.photoServer==='1'){
     let stage=Number(slot.dataset.photoFallbackStage||0);
     if(stage===0){
+      // v2.6.2 SPEED: 동일 서버 API를 한 번 더 기다리지 않고 마지막 정상사진/공식 비상경로로 즉시 전환합니다.
       slot.dataset.photoFallbackStage='1';
-      return replaceWithResult({url:`/api/person-photo?id=${encodeURIComponent(seed)}&v=230&retry=1`,source:'server-person-photo-v230-retry',title:'사진 출처: 정참시 서버 검증 · 자동 복구 재시도'},'서버 재시도');
     }
 
     const cached=seed?politicianPhotoCache[String(seed)]:null;
@@ -2566,6 +2570,9 @@ async function handlePoliticianPhotoError(img){
           if(member?.officialPhoto)result={url:member.officialPhoto,source:'government-official',title:'사진 출처: 대한민국 정부 공식 프로필'};
           if(!result)result=await resolveWikidataPhotoHQ(name,member);
           if(!result)result=await resolveWikipediaPagePhotoHQ(name,member);
+        }else if(type==='metro'||type==='local'){
+          // PHOTO MASTER가 아직 없는 지방단체장은 화면을 막지 않고 브라우저의 기존 검증 복구기를 뒤에서 사용합니다.
+          result=await resolvePoliticianPhoto(name,{member,skipAssembly:true});
         }
       }catch(_){result=null;}
       if(result?.url&&absolute(result.url)!==absolute(img.src)){
@@ -10119,7 +10126,7 @@ function renderMobileRankHeading(){
   }
   if(allMeta){
     const count=people.filter(x=>entityCategoryMatch(x,mode)).length;
-    allMeta.textContent=count?`1~${count} 전체 보기`:'전체 보기';
+    allMeta.textContent=count?`TOP ${Math.min(100,count)} 우선 노출${count>100?' · 더보기':''}`:'전체 보기';
   }
 }
 
@@ -10271,21 +10278,32 @@ function refreshChangeText(x,viewMode=mode){
   return {text,cls,route};
 }
 function renderRapidRiseTop10(){
-  const box=document.getElementById('rapidRiseList');
-  if(!box) return;
-  const movers=people
+  const box=document.getElementById('rapidRiseList'),card=document.getElementById('rapidRiseCard');
+  if(!box)return;
+  const cfg=window.JJDD_SITE_SETTINGS?.rapidRise||{};
+  if(card)card.style.display=cfg.enabled===false?'none':'';
+  if(cfg.enabled===false)return;
+  const auto=people
     .filter(x=>x && entityCategoryMatch(x,mode) && x.id!==300 && x.party!=='공석')
     .map(x=>{const r=refreshRankChange(x,mode);return {x,change:finiteValue(r.change)?Number(r.change):null,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null,currentRank:finiteValue(r.currentRank)?Number(r.currentRank):viewRank(x,mode)};})
     .filter(v=>Number.isFinite(v.change) && v.change>0 && Number.isFinite(v.currentRank))
-    .sort((a,b)=>(b.change-a.change)||(a.currentRank-b.currentRank)||String(a.x.name).localeCompare(String(b.x.name),'ko'))
-    .slice(0,10);
-
+    .sort((a,b)=>(b.change-a.change)||(a.currentRank-b.currentRank)||String(a.x.name).localeCompare(String(b.x.name),'ko'));
+  let movers=auto.slice(0,5);
+  if(cfg.mode==='manual'&&Array.isArray(cfg.slots)){
+    const used=new Set(),manual=[];
+    for(const slot of cfg.slots.slice(0,5)){
+      const id=Number(slot?.id||0),x=id?people.find(p=>Number(p.id)===id&&entityCategoryMatch(p,mode)):null;if(!x||used.has(id))continue;
+      const r=refreshRankChange(x,mode),actual=finiteValue(r.change)?Number(r.change):null;
+      manual.push({x,change:Number.isFinite(Number(slot?.change))?Number(slot.change):actual,oldRank:finiteValue(r.oldRank)?Number(r.oldRank):null,currentRank:finiteValue(r.currentRank)?Number(r.currentRank):viewRank(x,mode)});used.add(id);
+    }
+    for(const row of auto){if(manual.length>=5)break;if(used.has(Number(row.x.id)))continue;manual.push(row);used.add(Number(row.x.id));}
+    movers=manual.slice(0,5);
+  }
   if(!movers.length){
     const comparable=people.filter(x=>entityCategoryMatch(x,mode)).some(x=>finiteValue(refreshRankChange(x,mode).change));
     box.innerHTML=`<div class="rapid-rise-empty">${comparable?'이번 갱신에서 순위가 오른 정치인이 없습니다.':'비교 가능한 직전 게시 스냅샷이 아직 없습니다.<br>다음 Refresh/Publish부터 실제 상승폭이 표시됩니다.'}</div>`;
     return;
   }
-
   box.innerHTML=movers.map((v,i)=>{
     const x=v.x;
     const tags=whyNowKeywords(x);
@@ -10294,14 +10312,12 @@ function renderRapidRiseTop10(){
     return `<div class="rapid-rise-row" onclick="openDetail(${x.id})" title="${String(x.name).replace(/"/g,'&quot;')} 상세 보기">
       <div class="rapid-rise-order">${i+1}</div>
       <div class="avatar">${politicianPhotoHTML(x.name,x.id)}</div>
-      <div class="rapid-rise-copy">
-        <div class="rapid-rise-name">${x.name}</div>
-        <div class="rapid-rise-meta">${meta}</div>
-      </div>
-      <div class="rapid-rise-delta">▲ ${v.change}<small>${v.oldRank??'?'} → ${v.currentRank}</small></div>
+      <div class="rapid-rise-copy"><div class="rapid-rise-name">${x.name}</div><div class="rapid-rise-meta">${meta}</div></div>
+      <div class="rapid-rise-delta">${Number.isFinite(v.change)&&v.change>0?'▲ '+v.change:'―'}<small>${v.oldRank??'?'} → ${v.currentRank}</small></div>
     </div>`;
   }).join('');
 }
+
 function historyReadyMessage(mode){
   const map={rise6:['6시간 급상승','최소 2개의 6시간 스냅샷'],rise24:['24시간 급상승','최소 24시간의 스냅샷'],peak7d:['7일 최고순위','최소 7일 동안 축적된 스냅샷']};
   const [title,need]=map[mode]||['순위 기록','과거 스냅샷'];
@@ -10610,8 +10626,8 @@ function whyNowKeywords(x){
 
 function whyNowGlobalKeywords(category=keywordMode){
   // 상단 실시간 키워드는 사용자가 지금 정치권의 흐름을 한눈에 이해할 수 있도록
-  // 가능한 한 20개 이상을 확보하되, 화면 과밀과 저품질 반복을 막기 위해 25개로 제한한다.
-  const KEYWORD_MIN=20, KEYWORD_MAX=25;
+  // 핵심 이슈 15개만 선별해 한눈에 읽히도록 제한한다.
+  const KEYWORD_MIN=15, KEYWORD_MAX=15;
   const top=people.filter(x=>entityCategoryMatch(x,category)&&Number(x.id)!==300).slice().sort((a,b)=>viewRank(a,category)-viewRank(b,category)).slice(0,30);
   const pool=new Map();
   const owner=new Map();
@@ -10647,7 +10663,7 @@ function whyNowGlobalKeywords(category=keywordMode){
     if(result.length>=KEYWORD_MAX)break;
   }
 
-  // 2차: 엄격한 중복 제거 때문에 20개가 안 되면 정확히 같은 키워드만 제외하고
+  // 2차: 엄격한 중복 제거 때문에 15개가 안 되면 정확히 같은 키워드만 제외하고
   // 점수가 높은 근접 표현을 보충한다. 약한 일반어/인물명은 pool 단계에서 이미 제외된다.
   if(result.length<KEYWORD_MIN){
     for(const c of ranked){
@@ -10747,6 +10763,11 @@ function keywordSignalMeta(k,i){
   return {hot,rise,mark:hot?'HOT':rise?'UP':''};
 }
 
+const rankVisibleLimitByMode={all:100,assembly:100,metro:100,local:100};
+function showMoreRankRows(){rankVisibleLimitByMode[mode]=Math.min(600,Math.max(100,Number(rankVisibleLimitByMode[mode]||100))+100);renderRank();}
+window.showMoreRankRows=showMoreRankRows;
+function resetRankVisibleLimit(viewMode=mode){rankVisibleLimitByMode[viewMode]=100;}
+
 function renderRank(){
   if(!window.NOW_LIVE_READY){
     renderNowRankLoadingState();
@@ -10761,9 +10782,12 @@ function renderRank(){
   });
   data.sort((a,b)=>viewRank(a,mode)-viewRank(b,mode));
   const label=ENTITY_LABELS[mode]||'전체';
+  const totalMatched=data.length;
+  const limit=Math.max(100,Number(rankVisibleLimitByMode[mode]||100));
+  const visible=data.slice(0,limit);
   const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','NOW MOMENTUM','NOW INDEX'];
   let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
-  data.forEach(x=>{
+  visible.forEach(x=>{
     const vr=viewRank(x,mode), firstCell=(Number(x.id)===300||x.party==='공석')?'―':vr;
     const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x);
     const topClass=Number(vr)>=1&&Number(vr)<=3?` rank-top rank-top-${vr}`:'';
@@ -10787,19 +10811,23 @@ function renderRank(){
       ${sixth}
     </div>`;
   });
+  if(totalMatched>visible.length){
+    html+=`<div class="rank-more-wrap"><button class="rank-more-btn" type="button" onclick="showMoreRankRows()">더보기 <b>${visible.length.toLocaleString('ko-KR')}</b> / ${totalMatched.toLocaleString('ko-KR')}</button></div>`;
+  }
   document.getElementById("ranktable").innerHTML=html;
   renderMobileRankHeading();
   renderNowKeywordStrip();
   renderRapidRiseTop10();
   renderLiveDeskStamp();
 }
-document.getElementById("search").addEventListener("input",renderRank);
-document.getElementById("party").addEventListener("change",renderRank);
+document.getElementById("search").addEventListener("input",()=>{resetRankVisibleLimit(mode);renderRank();});
+document.getElementById("party").addEventListener("change",()=>{resetRankVisibleLimit(mode);renderRank();});
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
   mode=t.dataset.mode;
   keywordMode=mode;
+  resetRankVisibleLimit(mode);
   renderRank();
 }));
 document.querySelectorAll('[data-keyword-category]').forEach(t=>t.addEventListener('click',()=>{
@@ -11080,7 +11108,7 @@ function comparisonPhotoHTML(p,quality='standard'){
   return politicianPhotoHTML(p.name,p.id,quality);
 }
 function preloadPoliticianPhoto(p,size=360){
-  if(!p||entityTypeOf(p)==='president')return;try{const img=new Image();img.decoding='async';img.src=`/api/person-photo?id=${encodeURIComponent(p.id)}&s=${size>=300?360:160}&v=260`;}catch(_){}
+  if(!p||entityTypeOf(p)==='president')return;try{const img=new Image();img.decoding='async';img.src=`/api/person-photo?id=${encodeURIComponent(p.id)}&s=${size>=300?360:160}&v=262`;}catch(_){}
 }
 function resolvePersonByQuery(query, excludeId=null){
   const q=(query||"").trim().toLowerCase();
@@ -11578,7 +11606,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.1 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.2 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -11975,10 +12003,8 @@ function scheduleNowPhotoHydrator(){
   setTimeout(()=>{try{initPoliticianPhotoHydrator();}catch(_){}},350);
 }
 function updateNowStatus(snap,checking=false){
-  const status=document.getElementById('serverUpdateStatus'); if(!status)return;
-  const label={googleNews:'Google News',naverNews:'NAVER News',kakao:'Kakao/Daum',youtube:'YouTube',x:'X',internal:'정참시'};
-  const src=(snap?.sourceSummary||[]).map(x=>label[x]||x).join(' · ');
-  status.innerHTML=`<b>최근 게시:</b> ${snap?.timestamp||'-'}${checking?' · <span style="color:#64748b">최신 확인 중</span>':''}<br><b>수집 원천:</b> ${src||'운영 데이터'}`;
+  // v2.6.2: NOW ISSUE는 운영 콘텐츠만 보여주고 게시시각/수집원천 메타는 노출하지 않습니다.
+  renderLiveDeskStamp();
 }
 function applyPublishedNowRank(snap,{checking=false}={}){
   if(!snap || !Array.isArray(snap.members) || !snap.members.length || !snapshotMatchesRoster(snap))return false;
@@ -12068,7 +12094,7 @@ function readHomeSpeedCache(){try{const b=JSON.parse(localStorage.getItem(JJDD_H
 function applyHomeSnapshotPayload(j,{fromCache=false}={}){
   if(!j||!j.ok)return false;
   const snap=j.rank;if(snap&&Array.isArray(snap.members)&&snapshotMatchesRoster(snap)){const local=readNowPublicCache();if(!local||nowSnapshotStamp(snap)>=nowSnapshotStamp(local)){writeNowPublicCache(snap);applyPublishedNowRank(snap,{checking:false});}}
-  if(j.site){window.JJDD_SITE_SETTINGS={ok:true,...j.site};applyMetricOverridesToPeople(j.site.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.site.nowIssue);renderSurveySetting(j.site.survey,false);}
+  if(j.site){window.JJDD_SITE_SETTINGS={ok:true,...j.site};applyMetricOverridesToPeople(j.site.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.site.nowIssue);renderSurveySetting(j.site.survey,false);renderRapidRiseTop10();}
   if(Array.isArray(j.news)&&j.news.length){applyPublishedNewsPayload({posts:j.news},{cache:false,full:false});}
   syncResponsiveContent();requestAnimationFrame(syncSidebarWithPage);if(!fromCache)writeHomeSpeedCache(j);return true;
 }
@@ -12134,7 +12160,7 @@ function applyMetricOverridesToPeople(map,{rerender=false}={}){
 }
 
 async function loadSiteSettings(){
-  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);syncResponsiveContent();syncSidebarWithPage();}
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();syncResponsiveContent();syncSidebarWithPage();}
   catch(e){console.warn('site settings unavailable',e);}
 }
 async function submitSurveyVote(){
@@ -12591,6 +12617,12 @@ function renderVisitorStats(st){
   if(!st)return;const f=n=>Number(n||0).toLocaleString('ko-KR');
   const o=document.getElementById('visitorOnline'),t=document.getElementById('visitorToday'),a=document.getElementById('visitorTotal');
   if(o)o.textContent=f(st.online);if(t)t.textContent=f(st.today);if(a)a.textContent=f(st.total);
+  const vis=st.visibility||{online:true,today:true,total:true};
+  const online=vis.online!==false,today=vis.today!==false,total=vis.total!==false;
+  const oe=document.getElementById('visitorOnlineStat'),te=document.getElementById('visitorTodayStat'),ae=document.getElementById('visitorTotalStat');
+  if(oe)oe.style.display=online?'':'none';if(te)te.style.display=today?'':'none';if(ae)ae.style.display=total?'':'none';
+  const note=document.getElementById('visitorStatNote');if(note)note.style.display=online?'':'none';
+  const strip=document.getElementById('visitorStrip');if(strip)strip.style.display=(online||today||total)?'':'none';
 }
 async function touchVisitorStats(){
   try{const r=await fetch('/api/stats/visit',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:jjddVisitorSession()})});const j=await r.json();if(r.ok&&j?.stats)renderVisitorStats(j.stats);}catch(_){}
