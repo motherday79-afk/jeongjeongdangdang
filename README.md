@@ -1,4 +1,14 @@
-# 정참시 v2.6.4 · HUMAN ENTERPRISE PASS
+# 정참시 v2.7.0 · JEONGCHAMSI DESIGN SYSTEM 1.0
+
+## v2.7.0 · ENTERPRISE PORTAL / INSTANT HOME
+- 디자인 원칙: `많은 정보 + 강한 질서`. 민트 브랜드는 강조에만 사용하고, 흰색/중성 회색 중심의 포털형 정보 밀도로 재구성.
+- 상단 독립 `대통령` 메뉴 복원. NOW Rank 카테고리의 대통령 탭은 제거하고, 대통령 페이지 안에 대통령 공약 · 국정 방향 · 국무총리/부총리/주요 장관 조직도를 통합.
+- 메인 NOW Rank는 첫 화면 DOM을 TOP30으로 제한. TOP3는 정보 우선 카드, 4~30위는 압축 행, `TOP100 보기`로 확장.
+- 행별 SVG 모멘텀 차트를 첫 화면에서 제거하여 렌더링 비용 절감. 순위 변화는 작은 ▲/▼ 신호로 유지.
+- 재방문 시 `localStorage`의 직전 공개 NOW Rank를 네트워크보다 먼저 즉시 렌더링. `/api/home-snapshot?lite=1`은 설정/COLUMN/사이드바만 갱신하고 최신 전체 Rank는 idle 시점에 백그라운드 재검증.
+- 검색/정당 필터 입력 때 WHY NOW·급상승 사이드바를 매번 다시 계산하지 않도록 분리.
+- 상단 검색/알림은 텍스트 라벨 없는 정제된 라인 아이콘으로 통일. 모바일 하단 메뉴도 7개 주요 목적지의 라인 아이콘 시스템으로 통일.
+- 기존 SECURITY HARDENING, 방문자 ON/OFF, PHOTO MASTER, STALE-FIRST, 배지/추천/선물, IT’S ME, 비교분석, 어드민 기능은 유지.
 
 ## v2.6.4 HOTFIX · 초기 렌더링 복구
 - v2.6.3에서 메인 대통령/정부 블록을 제거한 뒤 남아 있던 `presPortrait`, `govIcon` 직접 DOM 초기화가 페이지 전체 스크립트를 중단시키던 문제 수정.

@@ -1601,6 +1601,44 @@ body:before{
 .government-org{margin-top:14px;border:1px solid #dfe9e6;border-radius:20px;background:#fff;padding:21px}.government-org-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:18px}.government-org-head .org-label{font-size:9px;font-weight:1000;letter-spacing:.15em;color:#0b8a77}.government-org-head h3{margin:4px 0 0;font-size:20px;letter-spacing:-.65px}.government-org-head p{margin:0;color:#7b8a85;font-size:9.5px}.org-tree{position:relative}.org-president-node{width:min(440px,100%);margin:0 auto 25px;padding:13px 15px;border:1px solid #cfe0db;border-radius:15px;background:#f6fbf9;display:flex;align-items:center;gap:12px;cursor:pointer;position:relative}.org-president-node:after{content:"";position:absolute;left:50%;bottom:-26px;width:1px;height:26px;background:#cfded9}.org-president-node .node-photo{width:46px;height:46px;border-radius:13px;overflow:hidden;background:#e4efec}.org-president-node .node-photo img{width:100%;height:100%;object-fit:cover}.org-president-node small,.org-card small{display:block;color:#79908a;font-size:8px;font-weight:850}.org-president-node b{font-size:14px}.org-tier{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:760px;margin:0 auto 18px}.org-tier:before{content:"";position:absolute;left:25%;right:25%;top:-13px;height:1px;background:#d3e1dd}.org-card{min-width:0;border:1px solid #e0e9e6;border-radius:14px;background:#fff;padding:11px;display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:center;cursor:pointer;transition:.16s}.org-card:hover{border-color:#bad8d0;box-shadow:0 7px 20px rgba(20,57,49,.07);transform:translateY(-1px)}.org-card-photo{width:42px;height:42px;border-radius:12px;overflow:hidden;background:#edf3f1}.org-card-photo img,.org-card-photo svg{width:100%;height:100%;object-fit:cover}.org-card b{display:block;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.org-card span{display:block;font-size:9px;color:#526a63;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.org-ministers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.org-ministers .org-card{grid-template-columns:36px minmax(0,1fr);padding:9px}.org-ministers .org-card-photo{width:36px;height:36px;border-radius:10px}.org-section-label{font-size:8px;font-weight:1000;letter-spacing:.15em;color:#91a29d;margin:17px 0 8px;text-align:center}.org-section-label:before,.org-section-label:after{content:"";display:inline-block;width:50px;height:1px;background:#e2eae7;vertical-align:middle;margin:0 9px}
 @media(max-width:1120px){.top-action-label{display:none}.top-action{min-width:38px!important;padding:0 9px!important}.president-command-grid{grid-template-columns:1fr}.president-command-actions{justify-content:flex-start}.org-ministers{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:780px){.searchline{display:grid!important;grid-template-columns:1fr!important;min-width:100%;margin-left:0}.president-command{padding:17px;border-radius:18px}.president-identity{grid-template-columns:72px minmax(0,1fr);gap:13px}.president-identity-photo{width:72px;height:72px;border-radius:20px}.president-command h2{font-size:24px}.president-policy-grid{grid-template-columns:1fr}.government-org{padding:15px}.org-tier{grid-template-columns:1fr}.org-tier:before,.org-president-node:after{display:none}.org-ministers{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:5px}.org-ministers .org-card{min-width:205px;scroll-snap-align:start}.tabs{overflow-x:auto;justify-content:flex-start!important}.tabs .tab{white-space:nowrap;flex:0 0 auto}.ranking-president-mode .head{display:none!important}}
+
+/* ===== v2.7.0 · JEONGCHAMSI DESIGN SYSTEM 1.0 =====
+   Principle: dense information, quiet chrome, clear hierarchy, instant interaction. */
+:root{
+  --bg:#f4f6f5;--panel:#fff;--ink:#151918;--muted:#6f7774;--line:#e5e9e7;
+  --mint:#1fb39b;--mint-dark:#0b8a75;--mint-soft:#edf8f5;--teal:#0b7365;
+  --shadow:0 4px 18px rgba(23,36,32,.045);--shadow-soft:0 2px 10px rgba(23,36,32,.035);
+  --radius:16px;
+}
+body{background:var(--bg);color:var(--ink);letter-spacing:-.12px}
+.topbar{background:rgba(255,255,255,.94);border-bottom:1px solid #e8ecea;backdrop-filter:blur(14px)}
+.nav{max-width:1360px;height:66px;padding:0 20px;gap:23px}
+.logo{gap:9px}.logo-mark{width:48px;height:30px;border-radius:10px 10px 10px 5px;box-shadow:none;background:linear-gradient(145deg,#22c7b8,#31cbbb)}
+.logo-mark:after{background:#22bda9;bottom:-4px;width:9px;height:6px}.logo-monogram{font-size:13px}.logo-live-dot{width:3px;height:3px;right:5px;top:5px}
+.logo-title{font-size:22px;letter-spacing:-1.2px;color:#14211e}.logo-subtitle{font-size:9px;margin-top:4px;color:#88918e}
+.navlinks{gap:2px;align-self:stretch;align-items:center}.navbtn{height:100%;padding:0 12px;border-radius:0;font-size:13px;font-weight:820;color:#4e5754;box-shadow:none!important;background:transparent!important}
+.navbtn:after{left:11px!important;right:11px!important;bottom:0!important;height:3px!important}.navbtn:hover{color:#111916}.navbtn.active{color:#087866}
+.navright{gap:7px}.top-action{width:38px!important;min-width:38px!important;height:38px!important;padding:0!important;border-radius:12px!important;background:#fff!important;border:1px solid #e3e8e6!important;box-shadow:none!important}.top-action:hover{transform:none!important;background:#f7faf9!important;border-color:#d4ddda!important;box-shadow:none!important}.top-action svg{width:17px;height:17px;stroke-width:1.7}.loginbtn{height:38px;padding:0 14px;border-radius:11px;box-shadow:none;border-color:#d7e7e2;font-size:12px;background:#f7fbfa}
+.visitor-strip{max-width:1360px!important;margin:0 auto!important;padding:6px 20px!important;min-height:32px!important;background:transparent!important;border:0!important;box-shadow:none!important;justify-content:flex-end!important;gap:15px!important;color:#7f8986!important}.visitor-stat{gap:5px!important}.visitor-stat b{font-size:11px!important}.visitor-stat small{font-size:9px!important}.visitor-stat-note{display:none!important}
+.app{max-width:1360px;padding:18px 20px 52px}.layout{grid-template-columns:minmax(0,1fr) 330px;gap:18px}.side{top:82px;height:calc(100vh - 100px)}.side-track{gap:10px}
+.card{border:1px solid var(--line);border-radius:15px;box-shadow:none;background:#fff}.cardpad{padding:16px}.side-title{margin-bottom:11px}.side-title h3{font-size:15px;letter-spacing:-.4px;color:#1c2522}.more{font-size:10px;color:#919a97}.live-desk-head{padding:4px 3px 8px!important;border:0!important;background:transparent!important;box-shadow:none!important}.live-desk-brand{font-size:10px!important;letter-spacing:-.1px!important;color:#495652!important}.live-desk-brand i{background:var(--mint)!important}.live-desk-time{font-size:8px!important;color:#a0a9a6!important}
+.issue-box{border:0;border-radius:10px;padding:0;background:transparent}.now-issue-main-title{font-size:17px!important}.now-issue-subtitle{font-size:12px!important;margin-top:5px!important}.now-issue-body{font-size:11px!important;line-height:1.65!important;margin-top:9px!important}.rapid-rise-note{display:none}.rapid-rise-row{padding:8px 0}.rapid-rise-row .avatar{width:34px;height:34px}.rapid-rise-name{font-size:12px}.rapid-rise-delta{font-size:13px}.survey-question-title{font-size:13px}.news-row{grid-template-columns:1fr 78px;gap:9px;padding:10px 0}.news-row h4{font-size:13px;line-height:1.42}.news-row p{display:none}.news-meta{font-size:9px;margin-top:5px}.thumb{width:78px;height:48px;border-radius:8px;box-shadow:none}
+.portal-head{align-items:center;margin:4px 0 12px;padding:0}.portal-eyebrow{display:flex;align-items:center;gap:7px;color:#7b8581;font-size:10px;font-weight:800;margin-bottom:5px}.portal-eyebrow span{width:6px;height:6px;border-radius:50%;background:var(--mint)}.head-left h1{font-size:25px;letter-spacing:-1px;line-height:1.15}.head-left .sub{margin-top:5px;font-size:11px;line-height:1.5;color:#8b9491}.searchline{display:grid;grid-template-columns:minmax(260px,1fr) 128px;gap:7px;min-width:440px}.search,.select{height:40px;border-radius:11px;box-shadow:none;padding:0 12px;font-size:12px}.search{width:auto}.select{width:auto}
+.now-keyword-panel{margin:10px 0 12px;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:#fff}.now-keyword-head{margin-bottom:8px}.now-keyword-head b{font-size:12px;color:#25322f}.now-keyword-head span{font-size:9px}.keyword-category-tabs{gap:5px;margin-bottom:8px}.keyword-category-tab{padding:4px 8px;font-size:9px;border-color:#e6ebe9;background:#f8faf9}.keyword-category-tab.active{background:#20332e;border-color:#20332e}.now-keyword-strip{gap:5px}.now-chip{padding:5px 8px;font-size:11px;border-color:#e1ebe8;background:#f9fbfa;color:#315f56}.now-chip:hover{transform:none;box-shadow:none;border-color:#a9d9cf;background:#f1faf7}
+.tabs{display:inline-flex;gap:2px;margin:0 0 10px;padding:3px;border:1px solid var(--line);border-radius:11px;background:#eef2f0}.tab{height:34px;padding:0 13px;border:0;border-radius:8px;background:transparent;box-shadow:none;font-size:11px;color:#65706c}.tab.active{background:#fff;color:#0a7866;box-shadow:0 1px 5px rgba(24,44,38,.07)}
+.ranktable{overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}.rank-top-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:9px}.rank-top-card{position:relative;min-height:150px;display:grid;grid-template-columns:60px minmax(0,1fr) 54px;gap:12px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff;cursor:pointer;overflow:hidden;transition:border-color .15s,transform .15s}.rank-top-card:hover{border-color:#bcd8d1;transform:translateY(-1px)}.rank-top-card-1{border-color:#b8ddd4;background:linear-gradient(180deg,#fff,#fbfefd)}.rank-top-rank{position:absolute;left:12px;top:9px;font-size:30px;font-weight:950;letter-spacing:-2px;color:#d4dfdc}.rank-top-card-1 .rank-top-rank{color:#97cec2}.rank-top-photo{width:58px;height:58px;border-radius:16px;overflow:hidden;background:#edf2f0;margin-top:18px}.rank-top-photo img,.rank-top-photo svg,.rank-top-photo .politician-photo{width:100%;height:100%;object-fit:cover;display:block}.rank-top-copy{min-width:0;margin-top:15px}.rank-top-meta{display:flex;gap:6px;min-width:0;color:#89938f;font-size:9px;white-space:nowrap;overflow:hidden}.rank-top-meta span{overflow:hidden;text-overflow:ellipsis}.rank-top-copy h3{margin:4px 0 5px;font-size:18px;letter-spacing:-.8px}.rank-top-copy p{margin:0;color:#5f6b67;font-size:10.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.rank-top-score{text-align:right;align-self:end;margin-bottom:6px}.rank-top-score>b{display:block;font-size:21px;letter-spacing:-1px;color:#163b34}.rank-top-score>span{display:block;font-size:8px;font-weight:900;color:#a0aaa6}.rank-delta{display:inline-flex;margin-top:4px;font-size:9px;font-weight:900}.rank-delta.up{color:#07866f}.rank-delta.down{color:#c05a5a}.rank-delta.same{color:#a0aaa6}
+.rank-list-shell{border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}.rank-list-head,.rank-clean-row{display:grid;grid-template-columns:62px minmax(270px,1fr) 160px 76px;gap:12px;align-items:center}.rank-list-head{height:36px;padding:0 14px;background:#f7f9f8;border-bottom:1px solid #e9edeb;color:#8e9894;font-size:9px;font-weight:900}.rank-clean-row{min-height:66px;padding:9px 14px;border-top:1px solid #eef1f0;cursor:pointer}.rank-clean-row:first-of-type{border-top:0}.rank-clean-row:hover{background:#fafcfb}.rank-clean-num{font-size:16px;font-weight:900;color:#263d37;display:flex;align-items:center;gap:6px}.rank-clean-num .rank-delta{margin:0;font-size:8px}.rank-clean-person{display:flex;align-items:center;gap:10px;min-width:0}.rank-clean-person .avatar{width:38px;height:38px;flex:0 0 38px;border:0;box-shadow:none}.rank-clean-person .pname{font-size:13px}.rank-clean-person .entity-chip{font-size:7px;padding:2px 5px}.rank-clean-person .person-headline{margin-top:3px;max-width:520px;font-size:9.5px;color:#79827f}.rank-clean-aff{min-width:0}.rank-clean-aff b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-clean-aff span{display:block;margin-top:3px;color:#8c9692;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-clean-score{text-align:right}.rank-clean-score b{display:block;font-size:15px;color:#173b34}.rank-clean-score span{font-size:8px;color:#9ca5a2;font-weight:850}.rank-more-wrap{padding:10px 0 0}.rank-more-btn{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;color:#26342f;font-size:11px;font-weight:900;cursor:pointer}.rank-more-btn span{margin-left:8px;color:#9aa39f;font-size:9px}.rank-more-btn:hover{border-color:#bddbd3;background:#fbfefd}.rank-footnote{margin-top:10px;font-size:10px;color:#8d9693}.rank-footnote .outline-btn{height:32px;border-radius:9px;font-size:10px;padding:0 10px}
+.president-page-shell{max-width:1160px;margin:0 auto}.president-page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:18px 2px 15px;border-bottom:1px solid var(--line);margin-bottom:14px}.president-page-head h1{margin:0;font-size:34px;letter-spacing:-1.5px}.president-page-head p{margin:7px 0 0;color:#77817d;font-size:12px;line-height:1.6}.president-home-action{height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 13px;font-size:11px;font-weight:850;cursor:pointer}.president-command{border:1px solid var(--line)!important;border-radius:16px!important;background:#fff!important;box-shadow:none!important}.president-command:before{display:none!important}.president-policy-grid{gap:10px}.policy-board,.government-org{border-color:var(--line);border-radius:15px;box-shadow:none}.policy-board-head div:first-child,.government-org-head .org-label,.president-kicker{color:#0a806d!important}.org-card{box-shadow:none!important}.org-card:hover{transform:none!important}
+.grid-news,.community-shell,.itsme-shell,.plus-dashboard-grid{gap:14px}.news-card,.news-writer-card,.community-list-card,.community-compose,.itsme-post,.itsme-compose,.plus-panel,.profilecard,.mycontent{box-shadow:none!important;border-color:var(--line)!important}.news-card{border-radius:15px}.news-title{font-size:20px}.article-wrap{border-radius:18px;box-shadow:none}.article-content h1{font-size:34px}
+.mobile-bottom-nav{grid-template-columns:repeat(7,1fr)!important}.mobile-nav-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.mobile-navbtn .mobile-nav-icon{font-size:0}
+@media(max-width:1120px){.layout{grid-template-columns:1fr}.side{position:static;height:auto;overflow:visible}.searchline{min-width:360px}.rank-list-head,.rank-clean-row{grid-template-columns:56px minmax(230px,1fr) 140px 70px}}
+@media(max-width:780px){
+  .nav{height:58px;padding:0 13px}.logo-mark{width:42px;height:27px}.logo-title{font-size:19px}.logo-subtitle{display:none}.top-action{width:34px!important;min-width:34px!important;height:34px!important}.app{padding:10px 10px 92px}.visitor-strip{padding:4px 12px!important;justify-content:center!important}
+  .portal-head{display:block}.head-left h1{font-size:22px}.head-left .sub{font-size:10px}.searchline{min-width:0;margin-top:10px;grid-template-columns:minmax(0,1fr) 108px}.search,.select{height:38px;font-size:11px}.now-keyword-panel{padding:10px}.now-keyword-head{align-items:flex-start}.now-keyword-head span{display:none}.keyword-category-tabs{overflow-x:auto;flex-wrap:nowrap}.now-keyword-strip{gap:4px}.now-chip{font-size:10px}.tabs{width:100%;overflow-x:auto}.tab{flex:1 0 auto;min-width:68px}
+  .rank-top-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:3px}.rank-top-card{min-width:86%;scroll-snap-align:start;grid-template-columns:58px minmax(0,1fr) 50px}.rank-list-head{display:none}.rank-clean-row{grid-template-columns:42px minmax(0,1fr) 54px;gap:8px;padding:9px 10px;min-height:62px}.rank-clean-aff{display:none}.rank-clean-num{font-size:14px}.rank-clean-person .avatar{width:36px;height:36px;flex-basis:36px}.rank-clean-person .pname{font-size:12px}.rank-clean-person .person-headline{max-width:200px;font-size:9px}.rank-clean-score b{font-size:14px}
+  .president-page-head{display:block;padding:10px 2px 12px}.president-page-head h1{font-size:27px}.president-home-action{margin-top:10px}.mobile-bottom-nav{left:6px;right:6px;bottom:6px;padding:5px 3px calc(5px + env(safe-area-inset-bottom));border-radius:16px}.mobile-navbtn{min-height:44px;font-size:7.5px;gap:2px}.mobile-nav-icon svg{width:16px;height:16px}
+}
+
 </style>
 
 </head>
@@ -1613,15 +1651,16 @@ body:before{
     </div>
     <div class="navlinks">
       <button class="navbtn active" data-page="ranking">NOW Rank</button>
-      <button class="navbtn" data-page="community">정뮤니티</button>
+      <button class="navbtn" data-page="president">대통령</button>
       <button class="navbtn" data-page="itsme">IT’S ME</button>
+      <button class="navbtn" data-page="community">정뮤니티</button>
       <button class="navbtn" data-page="news">COLUMN</button>
       <button class="navbtn" data-page="compare">비교분석</button>
       <button class="navbtn" data-page="my">MY</button>
     </div>
     <div class="navright">
-      <button class="iconbtn top-action" id="globalSearchBtn" aria-label="통합 검색" title="통합 검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.2 4.2"></path></svg><span class="top-action-label">SEARCH</span></button>
-      <button class="iconbtn notification-btn top-action" id="notificationBtn" aria-label="알림 설정" title="알림 설정"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.8 9.7a5.2 5.2 0 0 1 10.4 0c0 6 2.3 6.2 2.3 7.5H4.5c0-1.3 2.3-1.5 2.3-7.5Z"></path><path d="M10 20h4"></path></svg><span class="top-action-label">ALERT</span><i id="notificationStateDot" aria-hidden="true"></i></button>
+      <button class="iconbtn top-action" id="globalSearchBtn" aria-label="통합 검색" title="통합 검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.75"></circle><path d="M14.8 14.8 20 20"></path></svg></button>
+      <button class="iconbtn notification-btn top-action" id="notificationBtn" aria-label="알림 설정" title="알림 설정"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10a5 5 0 0 1 10 0v3.1c0 1.7.7 2.8 1.6 3.8H5.4C6.3 15.9 7 14.8 7 13.1V10Z"></path><path d="M10 19h4"></path></svg><i id="notificationStateDot" aria-hidden="true"></i></button>
       <button class="loginbtn" id="accountLoginBtn">로그인</button>
     </div>
   </div>
@@ -1649,10 +1688,11 @@ body:before{
             <span id="mobileAllRankMeta">1~300 전체 보기</span>
           </div>
         </section>
-        <div class="head">
+        <div class="head portal-head">
           <div class="head-left">
+            <div class="portal-eyebrow"><span></span>정치에 참여할 시간</div>
             <h1>정참시 NOW Rank</h1>
-            <div class="sub">국회의원·광역단체장·기초단체장의 뉴스·검색·현재 정치 이벤트·디지털 확산을 함께 추적해 “지금 누가 이슈의 중심인가”를 보여주는 실시간 정치 인텔리전스 랭킹입니다.</div>
+            <div class="sub">지금 대한민국 정치에서 누가, 왜 주목받고 있는지 한눈에 봅니다.</div>
           </div>
           <div class="searchline">
             <input id="search" class="search" placeholder="이름, 정당, 지역 검색" />
@@ -1669,8 +1709,6 @@ body:before{
           </div>
         </div>
 
-        <div class="demo-notice compact-product-note"><b>NOW Rank</b> · 공개 뉴스·검색·디지털 신호를 종합해 지금 정치권의 관심 흐름을 보여줍니다.</div>
-
 
         <section class="now-keyword-panel" aria-label="지금 정치권 키워드">
           <div class="now-keyword-head"><b>WHY NOW · 지금 정치권 키워드</b><span id="nowKeywordMeta">전체 TOP30 실시간 이슈 · 15개</span></div>
@@ -1683,28 +1721,25 @@ body:before{
           <div class="now-keyword-strip" id="nowKeywordStrip"><span class="sub" style="font-size:12px">키워드 계산 중…</span></div>
         </section>
 
-        <div class="local-now-brand" aria-label="LOCAL NOW"><b>LOCAL NOW</b><span>광역·기초단체장 실시간 흐름</span></div>
 
         <div class="tabs">
           <button class="tab active" data-mode="all">전체</button>
           <button class="tab" data-mode="assembly">국회의원</button>
           <button class="tab" data-mode="metro">광역단체장</button>
           <button class="tab" data-mode="local">기초단체장</button>
-          <button class="tab" data-mode="president">대통령</button>
         </div>
 
-        <section class="president-org-page" id="presidentOrgPanel" aria-label="대통령과 현 정부 조직" hidden></section>
         <section class="ranktable" id="ranktable"></section>
 
-        <div class="footer-note">
-          <div class="info-pill">ⓘ 전체는 국회의원·광역단체장·기초단체장을 함께 비교한 종합 NOW Rank입니다. 각 카테고리에서는 동일 직군 안에서의 순위를 보여주며, 검색 관심·언론 주목 지표는 각 인물 상세에서 확인할 수 있습니다. 직전 게시 대비 변화는 실제 게시 이력만 사용합니다.</div>
-          <button class="outline-btn">순위 산정 기준 안내</button>
+        <div class="footer-note rank-footnote">
+          <span>NOW Rank는 현재 정치 이슈의 관심 흐름을 보여줍니다.</span>
+          <button class="outline-btn">산정 기준</button>
         </div>
       </main>
 
       <aside class="side">
         <div class="side-track" data-sidebar-order="now-issue,survey,rapid-rise,news">
-        <div class="live-desk-head" aria-label="NOW LIVE DESK"><div class="live-desk-brand"><i></i>NOW LIVE DESK</div><div class="live-desk-time" id="liveDeskTime">LIVE SNAPSHOT</div></div>
+        <div class="live-desk-head" aria-label="NOW LIVE DESK"><div class="live-desk-brand"><i></i>지금 정치</div><div class="live-desk-time" id="liveDeskTime">LIVE SNAPSHOT</div></div>
         <section class="card cardpad" id="nowIssueCard">
           <div class="side-title">
             <h3>NOW ISSUE</h3>
@@ -1738,13 +1773,28 @@ body:before{
 
         <section class="card cardpad" id="sideNewsCard">
           <div class="side-title">
-            <h3>정참시 COLUMN</h3>
+            <h3>COLUMN</h3>
             <div class="more" onclick="showPage('news')">더보기 ›</div>
           </div>
           <div class="news-list" id="sideNews"></div>
         </section>
         </div>
       </aside>
+    </div>
+  </section>
+
+  <!-- PRESIDENT -->
+  <section class="page" id="page-president">
+    <div class="president-page-shell">
+      <header class="president-page-head">
+        <div>
+          <div class="portal-eyebrow"><span></span>대한민국 대통령과 현 정부</div>
+          <h1>대통령</h1>
+          <p>대통령의 약속, 정부의 방향, 그리고 국무총리·주요 장관의 구성을 한 페이지에서 확인합니다.</p>
+        </div>
+        <button class="president-home-action" type="button" onclick="showPage('ranking')">NOW Rank 보기</button>
+      </header>
+      <section class="president-org-page" id="presidentOrgPanel" aria-label="대통령과 현 정부 조직"></section>
     </div>
   </section>
 
@@ -9881,7 +9931,11 @@ const PRESIDENT_PAGE_DEFAULT={
   sourceLabel:'중앙선거관리위원회 당선인 공약 · 대통령 공식 국정발언 기반'
 };
 function presidentPageSetting(){return {...PRESIDENT_PAGE_DEFAULT,...(window.JJDD_SITE_SETTINGS?.presidentPage||{})};}
-function applyPresidentPageAvailability(){const cfg=presidentPageSetting(),tab=document.querySelector('.tab[data-mode="president"]');if(tab)tab.style.display=cfg.enabled===false?'none':'';if(cfg.enabled===false&&mode==='president'){mode='all';keywordMode='all';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.mode==='all'));renderRank();}}
+function applyPresidentPageAvailability(){
+  const cfg=presidentPageSetting();
+  document.querySelectorAll('[data-page="president"],[data-mobile-page="president"]').forEach(el=>el.style.display=cfg.enabled===false?'none':'');
+  if(cfg.enabled===false&&jjddActivePageName()==='president')showPage('ranking',{skipHistory:true,instant:true});
+}
 function presidentPolicyListHTML(items){return (Array.isArray(items)?items:[]).map((x,i)=>`<div class="policy-item-clean"><b>${siteEsc(x.title||'')}</b><p>${siteEsc(x.body||'')}</p></div>`).join('');}
 function renderPresidentOrganizationPage(){
   const host=document.getElementById('presidentOrgPanel');if(!host)return;
@@ -10160,11 +10214,11 @@ function renderMobileRankHeading(){
   const allTitle=document.getElementById('mobileAllRankTitle'),allMeta=document.getElementById('mobileAllRankMeta');
   const label=ENTITY_LABELS[mode]||'전체';
   if(allTitle){
-    allTitle.textContent=mode==='president'?'대통령 · 정부':(mode==='all'?'정참시 NOW Rank':(mode==='assembly'?'국회의원 NOW Rank':`LOCAL NOW · ${label}`));
+    allTitle.textContent=mode==='all'?'정참시 NOW Rank':(mode==='assembly'?'국회의원 NOW Rank':`${label} NOW Rank`);
   }
   if(allMeta){
     const count=people.filter(x=>entityCategoryMatch(x,mode)).length;
-    allMeta.textContent=count?`TOP ${Math.min(100,count)} 우선 노출${count>100?' · 더보기':''}`:'전체 보기';
+    allMeta.textContent=count?`우선 ${Math.min(30,count)}명 · TOP100 확장`:'전체 보기';
   }
 }
 
@@ -10801,78 +10855,69 @@ function keywordSignalMeta(k,i){
   return {hot,rise,mark:hot?'HOT':rise?'UP':''};
 }
 
-const rankVisibleLimitByMode={all:100,assembly:100,metro:100,local:100,president:100};
-function showMoreRankRows(){rankVisibleLimitByMode[mode]=Math.min(600,Math.max(100,Number(rankVisibleLimitByMode[mode]||100))+100);renderRank();}
+const rankVisibleLimitByMode={all:30,assembly:30,metro:30,local:30};
+function showMoreRankRows(){
+  const cur=Math.max(30,Number(rankVisibleLimitByMode[mode]||30));
+  rankVisibleLimitByMode[mode]=cur<100?100:Math.min(600,cur+100);
+  renderRank();
+}
 window.showMoreRankRows=showMoreRankRows;
-function resetRankVisibleLimit(viewMode=mode){rankVisibleLimitByMode[viewMode]=100;}
-
+function resetRankVisibleLimit(viewMode=mode){rankVisibleLimitByMode[viewMode]=30;}
+function rankDeltaCompact(x,viewMode=mode){
+  const raw=refreshRankChange(x,viewMode),ch=finiteValue(raw?.change)?Number(raw.change):0;
+  if(ch>0)return `<span class="rank-delta up">▲ ${Math.abs(ch)}</span>`;
+  if(ch<0)return `<span class="rank-delta down">▼ ${Math.abs(ch)}</span>`;
+  return `<span class="rank-delta same">—</span>`;
+}
+function rankTopCardHTML(x,viewMode=mode){
+  const vr=viewRank(x,viewMode),place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x),h=rankHeadlineFor(x);
+  return `<article class="rank-top-card rank-top-card-${vr}" onclick="openDetail(${x.id})">
+    <div class="rank-top-rank">${String(vr).padStart(2,'0')}</div>
+    <div class="rank-top-photo">${politicianPhotoHTML(x.name,x.id,'critical')}</div>
+    <div class="rank-top-copy"><div class="rank-top-meta"><span>${siteEsc(x.party||'')}</span><span>${siteEsc(place||'')}</span></div><h3>${siteEsc(x.name)}</h3>${h?`<p>${rankHeadlineEsc(h)}</p>`:''}</div>
+    <div class="rank-top-score"><b>${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'—'}</b><span>NOW</span>${rankDeltaCompact(x,viewMode)}</div>
+  </article>`;
+}
+function renderRankAncillary(){renderNowKeywordStrip();renderRapidRiseTop10();renderLiveDeskStamp();}
 function renderRank(){
-  const rankingMain=document.querySelector('#page-ranking .main');
-  const presidentPanel=document.getElementById('presidentOrgPanel');
-  const presidentMode=mode==='president';
-  if(rankingMain)rankingMain.classList.toggle('ranking-president-mode',presidentMode);
-  if(presidentPanel){presidentPanel.hidden=!presidentMode;if(presidentMode)renderPresidentOrganizationPage();}
-  if(presidentMode){renderMobileRankHeading();renderLiveDeskStamp();return;}
-  if(!window.NOW_LIVE_READY){
-    renderNowRankLoadingState();
-    return;
-  }
-  let q=document.getElementById("search").value.trim();
-  let p=document.getElementById("party").value;
+  if(!window.NOW_LIVE_READY){renderNowRankLoadingState();return;}
+  const q=document.getElementById("search").value.trim();
+  const p=document.getElementById("party").value;
   let data=people.filter(x=>{
     if(!entityCategoryMatch(x,mode))return false;
     const text=`${x.name} ${x.party} ${x.region} ${x.constituency||""} ${x.jurisdiction||""} ${x.office||""}`.toLowerCase();
     return (!q||text.includes(q.toLowerCase()))&&(p==="all"||x.party===p);
   });
   data.sort((a,b)=>viewRank(a,mode)-viewRank(b,mode));
-  const label=ENTITY_LABELS[mode]||'전체';
-  const totalMatched=data.length;
-  const limit=Math.max(100,Number(rankVisibleLimitByMode[mode]||100));
-  const visible=data.slice(0,limit);
-  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','NOW MOMENTUM','NOW INDEX'];
-  let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
-  visible.forEach(x=>{
-    const vr=viewRank(x,mode), firstCell=(Number(x.id)===300||x.party==='공석')?'―':vr;
-    const place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x);
-    const topClass=Number(vr)>=1&&Number(vr)<=3?` rank-top rank-top-${vr}`:'';
-    const signal=momentumSignalMeta(x,mode), signalClass=Number(vr)>3&&Number(vr)<=30?` rank-signal ${signal.cls}`:'';
-    const fifth=momentumCellHTML(x,mode);
-    const sixth=`<div class="score-stack"><span class="rankpill rank-${x.grade}">${x.grade}</span><b class="score-number">${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'—'}</b><small class="score-label">NOW INDEX</small></div>`;
-    const topSignal=Number(vr)===1?'LIVE LEADER':Number(vr)===2?'CHASE SIGNAL':Number(vr)===3?'TOP WATCH':'';
-    html += `<div class="row${topClass}${signalClass?' '+signalClass:''}" data-rank-ghost="${String(vr).padStart(2,'0')}" onclick="openDetail(${x.id})">
-      <div class="ranknum">${firstCell}</div>
-      <div class="person">
-        <div class="avatar">${politicianPhotoHTML(x.name,x.id,Number(vr)<=3?'critical':'standard')}</div>
-        <div class="person-copy">
-          <div class="pname">${x.name}<span class="entity-chip">${entityLabel(x)}</span>${topSignal?`<span class="top-signal-tag">${topSignal}</span>`:''}</div>
-          <div class="mobile-party-line ${partyClass[x.party]||"party-gray"}">${x.party}</div>
-          ${(()=>{const h=rankHeadlineFor(x);return h?`<div class="person-headline" title="${rankHeadlineEsc(h)}">${rankHeadlineEsc(h)}</div>`:'';})()}
-        </div>
-      </div>
-      <div class="${partyClass[x.party]||"party-gray"}">${x.party}</div>
-      <div>${place}</div>
-      ${fifth}
-      ${sixth}
-    </div>`;
+  const totalMatched=data.length,limit=Math.max(30,Number(rankVisibleLimitByMode[mode]||30)),visible=data.slice(0,limit);
+  const featureTop=!q&&p==='all';
+  const top=featureTop?visible.slice(0,3):[];
+  const rows=visible.slice(top.length);
+  let html='';
+  if(top.length)html+=`<div class="rank-top-grid">${top.map(x=>rankTopCardHTML(x,mode)).join('')}</div>`;
+  html+=`<div class="rank-list-shell"><div class="rank-list-head"><span>순위</span><span>정치인 · 지금 이슈</span><span>소속 · 지역</span><span>NOW</span></div>`;
+  rows.forEach(x=>{
+    const vr=viewRank(x,mode),place=entityTypeOf(x)==='assembly'?(x.constituency||x.region):entityOffice(x),h=rankHeadlineFor(x);
+    html+=`<article class="rank-clean-row" onclick="openDetail(${x.id})">
+      <div class="rank-clean-num">${Number(x.id)===300||x.party==='공석'?'―':vr}${rankDeltaCompact(x,mode)}</div>
+      <div class="rank-clean-person"><div class="avatar">${politicianPhotoHTML(x.name,x.id,vr<=8?'critical':'standard')}</div><div class="person-copy"><div class="pname">${siteEsc(x.name)}<span class="entity-chip">${entityLabel(x)}</span></div>${h?`<div class="person-headline">${rankHeadlineEsc(h)}</div>`:''}</div></div>
+      <div class="rank-clean-aff"><b class="${partyClass[x.party]||'party-gray'}">${siteEsc(x.party||'')}</b><span>${siteEsc(place||'')}</span></div>
+      <div class="rank-clean-score"><b>${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'—'}</b><span>${siteEsc(x.grade||'')}</span></div>
+    </article>`;
   });
+  html+='</div>';
   if(totalMatched>visible.length){
-    html+=`<div class="rank-more-wrap"><button class="rank-more-btn" type="button" onclick="showMoreRankRows()">더보기 <b>${visible.length.toLocaleString('ko-KR')}</b> / ${totalMatched.toLocaleString('ko-KR')}</button></div>`;
+    const label=visible.length<100?'TOP100 보기':'더보기';
+    html+=`<div class="rank-more-wrap"><button class="rank-more-btn" type="button" onclick="showMoreRankRows()">${label}<span>${visible.length.toLocaleString('ko-KR')} / ${totalMatched.toLocaleString('ko-KR')}</span></button></div>`;
   }
   document.getElementById("ranktable").innerHTML=html;
   renderMobileRankHeading();
-  renderNowKeywordStrip();
-  renderRapidRiseTop10();
-  renderLiveDeskStamp();
 }
 document.getElementById("search").addEventListener("input",()=>{resetRankVisibleLimit(mode);renderRank();});
 document.getElementById("party").addEventListener("change",()=>{resetRankVisibleLimit(mode);renderRank();});
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  t.classList.add("active");
-  mode=t.dataset.mode;
-  if(mode!=='president')keywordMode=mode;
-  resetRankVisibleLimit(mode);
-  renderRank();
+  t.classList.add("active");mode=t.dataset.mode;keywordMode=mode;resetRankVisibleLimit(mode);renderRank();renderRankAncillary();
 }));
 document.querySelectorAll('[data-keyword-category]').forEach(t=>t.addEventListener('click',()=>{
   keywordMode=t.dataset.keywordCategory||'all';
@@ -10948,6 +10993,7 @@ function showPage(name,opts={}){
     if(name==='community')jjddSetCommunityListSurface();
     if(name==='itsme')jjddSetItsMeListSurface();
   }
+  if(name==='president'){renderPresidentOrganizationPage();requestAnimationFrame(()=>renderPresidentTerm());}
   if(name==='news')loadPublishedNews(false).catch(()=>{});
   if(name==='community')loadCommunity().catch(()=>{});
   if(name==='itsme')loadItsMe().catch(()=>{});
@@ -11650,7 +11696,7 @@ function openDetail(id,opts={}){
           </div>
           <div class="radarbox">
             <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.4 · ${typeLabel} 실시간 이슈축</div>
+            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.7.0 · ${typeLabel} 실시간 이슈축</div>
           </div>
         </div>
       </section>
@@ -12087,6 +12133,8 @@ function applyPublishedNowRank(snap,{checking=false}={}){
   window.NOW_LIVE_READY=true;
   updateNowStatus(snap,checking);
   renderRank();
+  // First paint를 막지 않도록 WHY NOW/급상승/업데이트 시각은 다음 프레임에 계산합니다.
+  requestAnimationFrame(()=>setTimeout(renderRankAncillary,0));
   scheduleNowPhotoHydrator();
   return true;
 }
@@ -12138,23 +12186,31 @@ function readHomeSpeedCache(){try{const b=JSON.parse(localStorage.getItem(JJDD_H
 function applyHomeSnapshotPayload(j,{fromCache=false}={}){
   if(!j||!j.ok)return false;
   const snap=j.rank;if(snap&&Array.isArray(snap.members)&&snapshotMatchesRoster(snap)){const local=readNowPublicCache();if(!local||nowSnapshotStamp(snap)>=nowSnapshotStamp(local)){writeNowPublicCache(snap);applyPublishedNowRank(snap,{checking:false});}}
-  if(j.site){window.JJDD_SITE_SETTINGS={ok:true,...j.site};applyMetricOverridesToPeople(j.site.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.site.nowIssue);renderSurveySetting(j.site.survey,false);renderRapidRiseTop10();applyPresidentPageAvailability();if(mode==='president')renderPresidentOrganizationPage();}
+  if(j.site){window.JJDD_SITE_SETTINGS={ok:true,...j.site};applyMetricOverridesToPeople(j.site.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.site.nowIssue);renderSurveySetting(j.site.survey,false);renderRapidRiseTop10();applyPresidentPageAvailability();if(jjddActivePageName()==='president')renderPresidentOrganizationPage();}
   if(Array.isArray(j.news)&&j.news.length){applyPublishedNewsPayload({posts:j.news},{cache:false,full:false});}
   syncResponsiveContent();requestAnimationFrame(syncSidebarWithPage);if(!fromCache)writeHomeSpeedCache(j);return true;
 }
 async function loadHomeSnapshot(){
-  const cached=readHomeSpeedCache();if(cached)Promise.resolve().then(()=>applyHomeSnapshotPayload(cached,{fromCache:true}));
-  try{const r=await fetch('/api/home-snapshot',{cache:'default'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'HOME');applyHomeSnapshotPayload(j);return true;}
-  catch(e){console.warn('home snapshot unavailable',e);await Promise.allSettled([loadPublishedNowRank(),loadPublishedNews(false),loadSiteSettings()]);return false;}
+  const speedCached=readHomeSpeedCache();if(speedCached)Promise.resolve().then(()=>applyHomeSnapshotPayload(speedCached,{fromCache:true}));
+  const rankCached=readNowPublicCache();
+  try{
+    const url=rankCached?'/api/home-snapshot?lite=1':'/api/home-snapshot';
+    const r=await fetch(url,{cache:'default'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'HOME');applyHomeSnapshotPayload(j);return true;
+  }catch(e){console.warn('home snapshot unavailable',e);if(!rankCached)await Promise.allSettled([loadPublishedNowRank(),loadPublishedNews(false),loadSiteSettings()]);return false;}
 }
 initComparePage();
-if(!readNowPublicCache())renderNowRankLoadingState();
+const JJDD_BOOT_RANK_CACHE=readNowPublicCache();
+if(JJDD_BOOT_RANK_CACHE){
+  // v2.7.0 INSTANT HOME: network보다 먼저 직전 게시 화면을 즉시 그린 뒤 최신값은 뒤에서 교체합니다.
+  applyPublishedNowRank(JJDD_BOOT_RANK_CACHE,{checking:true});
+}else renderNowRankLoadingState();
 renderSideNews();
 renderNewsGrid();
 drawVotes();
 syncResponsiveContent();
 requestAnimationFrame(syncSidebarWithPage);
 loadHomeSnapshot();
+if(JJDD_BOOT_RANK_CACHE)jjddIdle(()=>loadPublishedNowRank(),900);
 jjddIdle(()=>loadPublishedNews(false),1400);
 // 메인 순위 first paint를 막지 않도록 의원 기본정보 검증은 뒤에서 시작합니다.
 jjddIdle(()=>loadMemberMasterIntegrity(),1800);
@@ -12203,7 +12259,7 @@ function applyMetricOverridesToPeople(map,{rerender=false}={}){
 }
 
 async function loadSiteSettings(){
-  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(mode==='president')renderPresidentOrganizationPage();syncResponsiveContent();syncSidebarWithPage();}
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(jjddActivePageName()==='president')renderPresidentOrganizationPage();syncResponsiveContent();syncSidebarWithPage();}
   catch(e){console.warn('site settings unavailable',e);}
 }
 async function submitSurveyVote(){
@@ -12824,12 +12880,13 @@ async function loadReferralDashboard(){
 <!-- NOW Rank v1.15 · Member Data Integrity · official Assembly photo/terms verification + investor copy. -->
 
 <nav class="mobile-bottom-nav" aria-label="모바일 주요 메뉴">
-  <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon">⌂</span><span>NOW</span></button>
-  <button class="mobile-navbtn" data-mobile-page="community"><span class="mobile-nav-icon">💬</span><span>정뮤니티</span></button>
-  <button class="mobile-navbtn" data-mobile-page="itsme"><span class="mobile-nav-icon">💡</span><span>IT’S ME</span></button>
-  <button class="mobile-navbtn" data-mobile-page="news"><span class="mobile-nav-icon">▤</span><span>COLUMN</span></button>
-  <button class="mobile-navbtn" data-mobile-page="compare"><span class="mobile-nav-icon">⇄</span><span>비교</span></button>
-  <button class="mobile-navbtn" data-mobile-page="my"><span class="mobile-nav-icon">○</span><span>MY</span></button>
+  <button class="mobile-navbtn active" data-mobile-page="ranking"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 17V9m6 8V5m6 12v-6m4 6H2"/></svg></span><span>NOW</span></button>
+  <button class="mobile-navbtn" data-mobile-page="president"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 10h16M6 10V7l6-3 6 3v3M6 10v8m4-8v8m4-8v8m4-8v8M3 20h18"/></svg></span><span>대통령</span></button>
+  <button class="mobile-navbtn" data-mobile-page="itsme"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4M8.5 14.5A6 6 0 1 1 15.5 14.5c-.9.7-1.3 1.3-1.5 2.1h-4c-.2-.8-.6-1.4-1.5-2.1Z"/></svg></span><span>IT’S ME</span></button>
+  <button class="mobile-navbtn" data-mobile-page="community"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4V5Z"/></svg></span><span>정뮤니티</span></button>
+  <button class="mobile-navbtn" data-mobile-page="news"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h4"/></svg></span><span>COLUMN</span></button>
+  <button class="mobile-navbtn" data-mobile-page="compare"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M7 7h13m0 0-3-3m3 3-3 3M17 17H4m0 0 3-3m-3 3 3 3"/></svg></span><span>비교</span></button>
+  <button class="mobile-navbtn" data-mobile-page="my"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg></span><span>MY</span></button>
 </nav>
 
 

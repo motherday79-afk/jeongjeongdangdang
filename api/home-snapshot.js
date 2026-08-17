@@ -23,8 +23,14 @@ module.exports=async function(req,res){
   res.setHeader('CDN-Cache-Control','public, max-age=15, stale-while-revalidate=45');
   res.setHeader('Vercel-CDN-Cache-Control','public, max-age=15, stale-while-revalidate=45');
   try{
+    const lite=String(req.query?.lite||'')==='1';
     const survey=await getSurvey();
-    const [rank,presidentPage,nowIssue,rapidRise,stats,metricMap,news]=await Promise.all([currentPublic(),getPresidentPage(),getNowIssue(),getRapidRise(),surveyStats(survey,null),getAllOverrides(),latestNews(16)]);
+    const baseTasks=[getPresidentPage(),getNowIssue(),getRapidRise(),surveyStats(survey,null),getAllOverrides(),latestNews(16)];
+    const [presidentPage,nowIssue,rapidRise,stats,metricMap,news]=await Promise.all(baseTasks);
+    // v2.7.0 INSTANT HOME: 재방문자는 브라우저의 직전 공개 Rank를 즉시 그리고,
+    // HOME endpoint에서는 우측 사이드바/설정/COLUMN만 가볍게 갱신합니다.
+    if(lite)return res.json({ok:true,lite:true,generatedAt:new Date().toISOString(),site:{presidentPage,nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:false},news});
+    const rank=await currentPublic();
     if(!rank)return res.status(404).json({ok:false,error:'published snapshot not found'});
     return res.json({ok:true,generatedAt:new Date().toISOString(),rank,site:{presidentPage,nowIssue,rapidRise,survey:{...survey,stats:publicSurveyStats(stats)},metricOverrides:publicOverrides(metricMap),loggedIn:false},news});
   }catch(e){return res.status(503).json({ok:false,error:'home snapshot unavailable'});}
