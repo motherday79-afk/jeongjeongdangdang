@@ -1,4 +1,4 @@
-# 정참시 v2.4.2 · BADGE TIER VISUAL UPGRADE + IT’S ME
+# 정참시 v2.4.3 · BADGE TIER VISUAL UPGRADE + IT’S ME
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -49,3 +49,12 @@
 - 정책 제목 라벨 16px, 입력 텍스트 17px로 확대
 - 정책 내용 라벨 16px, 본문 입력 텍스트 16px 및 행간 확대
 - 모바일에서도 입력창 높이와 여백을 함께 키워 가독성 강화
+
+
+## 5. v2.4.3 배지 카드 등급 재정의
+- STANDARD / SILVER: 배지 카드 전체를 실버 계열 배경으로 표시
+- GOLD: 배지 카드 전체를 골드 계열 배경으로 표시
+- PLATINUM: 배지 카드 전체를 정참시 민트 계열 배경으로 표시
+- 아이콘 뒤 배경보다 카드 전체 등급색이 먼저 인식되도록 시각 구조 수정
+- 특별배지 등급 재분류: IT’S ME 시즌 우승자·국회 전달·퍼스트팽귄·FIRST DISCOVERER = GOLD, 시민입법가·REAL POLICY = PLATINUM
+- IT’S ME 글쓰기 폰트는 v2.4.2의 과대 확대를 완화해 라벨 11px / 입력 13px / 제목 14px로 조정
