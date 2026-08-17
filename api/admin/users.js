@@ -3,7 +3,7 @@ const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {
   ROLES,PARTY_OPTIONS,userKey,publicUser,normalizeUsername,normalizeEmail,normalizePhone,
   validateUsername,validateEmail,validateNickname,validatePassword,validatePhone,validateRegion,validatePartyPreference,
-  usernameIndexKey,emailIndexKey,hashPassword,encryptSensitive,decryptSensitive
+  usernameIndexKey,emailIndexKey,hashPassword,encryptSensitive,decryptSensitive,ensureNicknameAvailable
 }=require('../../lib/user_auth');
 
 async function getUser(id){ return id ? getJSON(userKey(id)) : null; }
@@ -107,6 +107,7 @@ module.exports=async function(req,res){
       if(!validateUsername(nextUsername)) return res.status(400).json({ok:false,error:'아이디는 영문·숫자·밑줄(_)만 사용해 4~20자로 입력해주세요.'});
       if(nextEmail && !validateEmail(nextEmail)) return res.status(400).json({ok:false,error:'이메일 형식을 확인해주세요.'});
       if(!validateNickname(nextNickname)) return res.status(400).json({ok:false,error:'닉네임은 2~20자로 입력해주세요.'});
+      if(nextNickname!==String(u.nickname||'')){try{await ensureNicknameAvailable(nextNickname,u.id);}catch(e){return res.status(409).json({ok:false,error:e.message||String(e)});}}
       if(!validatePhone(nextPhone)) return res.status(400).json({ok:false,error:'전화번호를 확인해주세요.'});
       if(!nextRegion) return res.status(400).json({ok:false,error:'지역을 시·도부터 시·군·구까지 선택해주세요.'});
       if(!validatePartyPreference(nextParty)) return res.status(400).json({ok:false,error:'선호정당을 선택해주세요.'});

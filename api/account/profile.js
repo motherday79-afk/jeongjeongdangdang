@@ -1,6 +1,6 @@
 const {
   requireUser,saveUser,claimUsername,publicUser,validateNickname,encryptSensitive,decryptSensitive,
-  AGREEMENT_VERSIONS,PARTY_OPTIONS,normalizePhone,validatePhone,validateRegion
+  AGREEMENT_VERSIONS,PARTY_OPTIONS,normalizePhone,validatePhone,validateRegion,ensureNicknameAvailable
 }=require('../../lib/user_auth');
 module.exports=async function(req,res){
   if(!['POST','PATCH'].includes(req.method)) return res.status(405).json({ok:false,error:'Method not allowed'});
@@ -11,7 +11,9 @@ module.exports=async function(req,res){
   }
   if(Object.prototype.hasOwnProperty.call(b,'nickname')){
     if(!validateNickname(b.nickname)) return res.status(400).json({ok:false,error:'닉네임은 2~20자로 입력해주세요.'});
-    user.nickname=String(b.nickname).trim();
+    const nextNickname=String(b.nickname).trim();
+    if(nextNickname!==String(user.nickname||'')){try{await ensureNicknameAvailable(nextNickname,user.id);}catch(e){return res.status(409).json({ok:false,error:e.message||String(e)});}}
+    user.nickname=nextNickname;
   }
   if(Object.prototype.hasOwnProperty.call(b,'phone') || Object.prototype.hasOwnProperty.call(b,'regionMain') || Object.prototype.hasOwnProperty.call(b,'regionSub') || Object.prototype.hasOwnProperty.call(b,'regionDistrict')){
     const current=decryptSensitive(user.profileDataEnc)||{};

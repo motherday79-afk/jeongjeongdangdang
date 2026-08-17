@@ -29,6 +29,7 @@ const routes = {
   'community': require('./community'),
   'itsme': require('./itsme'),
   'badges': require('./badges'),
+  'referrals': require('./referrals'),
   'news': require('./news'),
   'rank/history': require('./rank/history'),
   'member-master': require('./member-master'),
