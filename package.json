@@ -1,7 +1,7 @@
 {
   "name": "jeongchamsi-now-rank",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.7.1",
   "engines": {"node": ">=20"},
   "dependencies": {
     "sharp": "^0.34.1"
