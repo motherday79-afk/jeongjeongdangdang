@@ -1,15 +1,35 @@
-# 정참시 v2.3.3 · SIGNAL HIERARCHY + COMPARE ARENA
+# 정참시 v2.4.0 · BADGE COLLECTION + IT’S ME
 
-## 이번 패치
-- TOP1~3 시각 계층 강화: 1위 HERO, 2·3위 준 HERO, LIVE LEADER/CHASE/TOP WATCH 신호 추가
-- 4~30위 NOW MOMENTUM을 SURGE/RISING/STEADY/COOLING/DROP 상태로 시각화
-- 정치인 상세페이지 SIGNAL/8축/기록 카드 hover micro-interaction 강화
-- 정참시News를 NEWSROOM 디자인으로 개편: LEAD STORY + 편집국 카드 계층
-- 정뮤니티를 COMMUNITY SIGNAL BOARD 피드로 개편
-- 비교분석을 VS ARENA로 전면 강화: 선택 단계 배경 그래픽, 두 인물 실시간 프리뷰, NOW INDEX/모멘텀/8축 평균/축별 점수·우세 비교
-- 비교 배경은 외부 이미지 파일 없이 CSS 그래픽 레이어로 구현
+## 1. 시민 배지 시스템
+- STANDARD 생활·출석·탐험·참여 배지
+- 분야별 상대등급: 활동회원 상위 35% SILVER · 상위 15% GOLD · 상위 1% PLATINUM
+- 분야: 정뮤니티 활동가 · 토론가 · 인플루언서 · 칼럼작가 · 정책설계자
+- 히든미션: 도시락 알리미 · 신데렐라 · 얼리버드 · 올빼미 시민
+- 히든배지 최초 발견자에게 FIRST DISCOVERER 기록
+- 명예/LEGACY: IT’S ME 시즌 우승자 · 시민입법가 · 국회 전달 · REAL POLICY
+- MY > 배지 컬렉션에서 획득/잠금/진행도/연속출석/팔로워 확인
+- 획득 배지 중 1개를 대표배지로 설정·해제
+- 대표배지는 정뮤니티·정참시News·IT’S ME 글과 댓글의 작성자명 옆에 표시
 
-## 성능/구조 보존
-- v2.3.0 빠른 Refresh 및 사진 최적화 API/lib 구조 변경 없음
-- 배포 파일 수 70개 유지
-- 새 이미지/디자인 자산 파일 추가 없음
+## 2. IT’S ME 시민정책 챌린지
+- 독립 메뉴와 시즌형 정책 게시판 신설
+- 기본 말머리: 잇츠미? 국회의원! / 대통령! / 시장! / 장관! / 시의원!
+- 시즌 종료까지 DAYS / HOURS / MIN / SEC 카운트다운
+- 정책 제안 · 좋아요 · 댓글 · 팔로우
+- 좋아요와 댓글을 결합한 CITIZEN SIGNAL 표시
+- 정참시 PICK · 시즌 우승작 표시
+- 시즌 우승 지정 시 작성자에게 우승자 배지 자동 지급
+- 브라우저 뒤로가기에서 정책 상세 ↔ 목록 상태 복원
+
+## 3. 관리자 통제
+- PC·모바일 관리자 메뉴에 `배지 · IT’S ME` 동일하게 추가
+- 전체 배지 카탈로그 활성화/비활성화
+- 회원 검색 후 배지 수동 지급·회수
+- IT’S ME 시즌명 · 주제 · 시작/종료 · 말머리 · 포상 설정
+- 정책 게시글 정참시 PICK / 우승 지정 / 수정 / 삭제
+
+## 4. 기존 기능 보존
+- v2.3.0 빠른 Refresh 및 사진 최적화 구조 유지
+- 기존 NOW SIGNAL TERMINAL, TOP3/Signal Feed, NOW LIVE DESK, 상세페이지, VS ARENA 디자인 유지
+- 기존 현역 정치인 542명 + 정부 참고인사 20명 사진 감사 구조 유지
+- 신규 이미지/디자인 자산 파일 추가 없음

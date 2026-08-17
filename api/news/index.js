@@ -3,6 +3,7 @@ const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {authenticate,capabilities,rateLimit}=require('../../lib/user_auth');
 const {getSession,requireAdmin}=require('../../lib/auth');
 const {flushDue}=require('../../lib/editorial');
+const {getRepresentativeBadge,getRepresentativeBadges,recordActivity}=require('../../lib/badges');
 
 const POSTS='jjdd:news:posts:v1';
 const IMAGE_PREFIX='jjdd:news:image:v1:';
@@ -12,7 +13,7 @@ const MAX_IMAGE_BYTES=1200*1024;
 
 function cleanText(v,max){return String(v||'').replace(/\u0000/g,'').trim().slice(0,max);}
 function safeCategory(v){const x=cleanText(v,20);return CATEGORIES.includes(x)?x:'정치';}
-function publicPost(p){return {id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,role:p.role,createdAt:p.createdAt,hasImage:Boolean(p.hasImage),imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}`:null};}
+async function publicPost(p,repOverride){return {id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,hasImage:Boolean(p.hasImage),imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}`:null,representativeBadge:repOverride!==undefined?repOverride:(p.authorId&&!String(p.authorId).startsWith('admin:')?await getRepresentativeBadge(p.authorId).catch(()=>null):null)};}
 function looksLikeImage(buf,mime){
   if(mime==='image/jpeg')return buf.length>3&&buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff;
   if(mime==='image/png')return buf.length>8&&buf.subarray(0,8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
@@ -38,8 +39,7 @@ async function writerContext(req){
   return null;
 }
 async function listPosts(limit=60){
-  const rows=await cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(MAX_POSTS-1,Number(limit||60)-1))) ]).catch(()=>[]);
-  return (Array.isArray(rows)?rows:[]).map(x=>{try{return publicPost(JSON.parse(x));}catch(_){return null;}}).filter(Boolean);
+  const rows=await cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(MAX_POSTS-1,Number(limit||60)-1))) ]).catch(()=>[]),posts=[];for(const x of (Array.isArray(rows)?rows:[])){try{posts.push(JSON.parse(x));}catch(_){}}const reps=await getRepresentativeBadges(posts.map(p=>p.authorId)).catch(()=>({}));return Promise.all(posts.map(p=>publicPost(p,p.authorId&&!String(p.authorId).startsWith('admin:')?reps[p.authorId]??null:null)));
 }
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
@@ -65,7 +65,7 @@ module.exports=async function(req,res){
       if(b.removeImage===true){await cmd(['DEL',IMAGE_PREFIX+row.post.id]).catch(()=>{});hasImage=false;}
       if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+row.post.id,image);hasImage=true;}
       const next={...row.post,category:safeCategory(b.category),title,excerpt,content,hasImage,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};
-      await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);return res.json({ok:true,post:publicPost(next)});
+      await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);return res.json({ok:true,post:await publicPost(next)});
     }
     if(action==='create'){
       const writer=await writerContext(req);if(!writer)return res.status(403).json({ok:false,error:'정참시News 작성은 PRO 이상 회원만 가능합니다.'});
@@ -74,7 +74,7 @@ module.exports=async function(req,res){
       const id=`n_${Date.now().toString(36)}_${crypto.randomBytes(4).toString('hex')}`,image=parseImageData(b.imageData),createdAt=new Date().toISOString();
       if(image)await setJSON(IMAGE_PREFIX+id,image);
       const post={id,category:safeCategory(b.category),title,excerpt,content,author:writer.nickname,authorId:writer.id,role:writer.role,createdAt,hasImage:Boolean(image),schemaVersion:1};
-      await cmd(['LPUSH',POSTS,JSON.stringify(post)]);await cmd(['LTRIM',POSTS,'0',String(MAX_POSTS-1)]);return res.json({ok:true,post:publicPost(post)});
+      await cmd(['LPUSH',POSTS,JSON.stringify(post)]);await cmd(['LTRIM',POSTS,'0',String(MAX_POSTS-1)]);if(writer.id&&!String(writer.id).startsWith('admin:'))await recordActivity(writer.id,'columns',1);return res.json({ok:true,post:await publicPost(post)});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});
   }catch(e){return res.status(500).json({ok:false,error:e.message||String(e)});}

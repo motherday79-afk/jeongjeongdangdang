@@ -1,5 +1,6 @@
 const {requireUser,verifyPassword,usernameIndexKey,emailIndexKey,userKey,clearSessionCookie}=require('../../lib/user_auth');
 const {cmd}=require('../../lib/store');
+const {clearUserData}=require('../../lib/badges');
 module.exports=async function(req,res){
   if(req.method!=='POST') return res.status(405).json({ok:false,error:'Method not allowed'});
   const user=await requireUser(req,res); if(!user) return;
@@ -11,5 +12,6 @@ module.exports=async function(req,res){
   await cmd(['DEL',...keys]);
   await cmd(['SREM','jjdd:users',user.id]).catch(()=>{});
   res.setHeader('Set-Cookie',clearSessionCookie());
+  await clearUserData(user.id).catch(()=>{});
   return res.json({ok:true});
 };

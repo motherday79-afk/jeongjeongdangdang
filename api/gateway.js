@@ -27,6 +27,8 @@ const routes = {
   'stats/visit': require('./stats/visit'),
   'cron/finalize-visitors': require('./cron/finalize-visitors'),
   'community': require('./community'),
+  'itsme': require('./itsme'),
+  'badges': require('./badges'),
   'news': require('./news'),
   'rank/history': require('./rank/history'),
   'member-master': require('./member-master'),
