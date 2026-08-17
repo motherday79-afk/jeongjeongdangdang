@@ -1,3 +1,14 @@
+## v2.8.0 · POLITICAL PORTAL HOME · PRESIDENT FIRST · KEYWORD RAIL
+- `/` 첫 화면을 NOW Rank 단독 화면에서 **정참시 정치 포털 HOME**으로 전환했습니다. 기존 NOW Rank는 독립 서비스로 그대로 보존합니다.
+- HOME 최상단에 **정치 통합검색 + 6개 서비스 바로가기**를 배치해 대통령 / NOW Rank / 정뮤니티 / COLUMN / 비교분석 / IT’S ME로 즉시 진입합니다.
+- 포털 첫 핵심 콘텐츠는 **대한민국 대통령**입니다. 대통령·현 정부 소개, 임기, 핵심 국정 아젠다, 대통령/정부 페이지 진입을 한 개의 대형 PRESIDENT FIRST 블록으로 묶었습니다.
+- HOME 오른쪽은 **LIVE POLITICS 레일**로 통합해 실시간 정치키워드 15개, NOW ISSUE, 실시간 급상승, 정참시 설문을 세로로 이어서 보여줍니다.
+- HOME 본문에 NOW Rank TOP10, 정뮤니티 최신글, COLUMN, 비교분석, IT’S ME를 포털 모듈로 재배치했습니다.
+- NOW Rank 상단에 있던 실시간 정치키워드 영역을 제거하고 **오른쪽 LIVE DESK 내부 세로형 키워드 레일**로 이동했습니다. 모바일에서는 NOW 요약 흐름의 첫 카드로 이동합니다.
+- 키워드 hover/focus 스타일을 하나의 최종 규칙으로 고정해 HOT/UP/일반 상태 모두 **흰 글자·흰 배경 충돌이 발생하지 않도록** 정리했습니다.
+- v2.7.3의 562명 PHOTO MASTER, 상세 8 AXIS, PLUS 점수 제한, 빠른 Refresh, 보안/계정/배지/IT’S ME 구조는 그대로 보존합니다.
+- v2.8.0 첫 진입부터 HOME을 보여주도록 UI route storage key를 새 버전으로 분리했습니다.
+
 
 ## v2.7.3 · DETAIL DISCIPLINE + PHOTO MASTER COMPLETE
 - 실시간 정치키워드는 `max-height`로 자르지 않고 실제 DOM 행을 계산해 정확히 2줄만 노출합니다.
