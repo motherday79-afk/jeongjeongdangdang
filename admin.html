@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>정참시 관리자 · v2.7.2</title>
+<title>정참시 관리자 · v2.7.3</title>
 <style>
 :root{--bg:#f3f7f6;--panel:#fff;--ink:#111827;--muted:#64748b;--mint:#28b7a2;--mint2:#0f766e;--line:#dfe8e5;--danger:#b91c1c;--warn:#b45309;--blue:#1d4ed8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -50,7 +50,7 @@ body.user-admin-modal-open{overflow:hidden!important}
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.7.2 · DESIGN SYSTEM 1.2 · DETAIL RAILS</div></div>
+  <div class="head"><div><div class="logo">정참시 · NOW Rank 관리자</div><div class="status">현역 정치인 542명 · 국회 공석 1석 데이터 감사 콘솔</div></div><div class="pill">v2.7.3 · DESIGN SYSTEM 1.2 · DETAIL RAILS</div></div>
 
   <section class="card" id="loginCard">
     <h2 style="margin-top:0">관리자 로그인</h2>
@@ -115,10 +115,11 @@ body.user-admin-modal-open{overflow:hidden!important}
 
         <div class="admin-page" data-admin-page="photos">
           <section class="card">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">PHOTO MASTER · SPEED CACHE</h2><div class="status">검증된 인물사진을 정참시 내부 저장소에 <b>160px / 360px WebP</b>로 최적화해 보관합니다. 메인·비교분석은 이 MASTER를 먼저 사용하고, 기존 사진 검증/LKG 구조는 비상 fallback으로 유지됩니다.</div></div><div class="actions" style="margin-top:0"><button class="mint" id="buildPhotoMasterBtn">562명 MASTER 구축</button><button class="ghost" id="reloadPhotoMasterBtn">상태 새로고침</button></div></div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">PHOTO MASTER · PERMANENT ASSET</h2><div class="status">562명 인물사진을 정참시 내부 저장소에 <b>160px / 360px WebP</b>로 영구 보관합니다. 공개화면은 PHOTO MASTER를 최우선으로 사용하며 외부 원본은 최초 구축·관리자 교체·비상 복구에만 사용됩니다.</div></div><div class="actions" style="margin-top:0"><button class="mint" id="buildPhotoMasterBtn">562명 MASTER 완전구축</button><button class="ghost" id="reloadPhotoMasterBtn">상태 새로고침</button></div></div>
             <div class="progress"><span id="photoMasterBar"></span></div><div class="status" id="photoMasterStatus">PHOTO MASTER 상태를 불러오는 중입니다.</div>
             <div class="kpis" id="photoMasterKpis" style="grid-template-columns:repeat(4,minmax(120px,1fr));margin-top:12px"></div>
-            <div class="photo-help"><b>운영 방법</b> · 배포 후 한 번 <b>562명 MASTER 구축</b>을 실행하면 이후 방문자는 외부 원본 조회 없이 정참시 저장 사진을 우선 받습니다. 사진을 직접 교체하거나 자동 복구하면 해당 인물 MASTER는 자동 무효화되어 새 사진으로 다시 생성됩니다.</div>
+            <div class="photo-help"><b>영구 PHOTO MASTER</b> · 562명 사진을 160px / 360px WebP로 정참시 저장소에 영구 보관합니다. 공개화면은 MASTER를 최우선으로 사용하며 직접 사진을 바꾸면 해당 인물 MASTER도 즉시 다시 생성합니다.</div>
+            <div class="photo-help" id="photoMasterMissing" style="display:none"></div>
           </section>
           <section class="card">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">전체 인물 사진 검수 · 복구</h2><div class="status">정참시 DB의 현역 정치인 542명 + 정부 주요 인사 20명, <b>총 562명</b>을 검사합니다. <b>검수·자동복구 과정에서 기존 정상 사진은 먼저 삭제하지 않으며</b>, 검증된 새 후보가 확보된 경우에만 교체합니다.</div></div><div class="actions" style="margin-top:0"><button class="mint" id="startPhotoAuditBtn">562명 전체 검수 시작</button><button class="primary" id="repairProblemPhotosBtn" disabled>문제 항목 자동 복구</button></div></div>
@@ -487,12 +488,22 @@ function renderPhotoAudit(run){
 let photoMasterRows=[],photoMasterRunning=false;
 function renderPhotoMasterStatus(j){
   photoMasterRows=Array.isArray(j?.rows)?j.rows:photoMasterRows;const total=Number(j?.total||photoMasterRows.length||562),ready=Number(j?.ready||photoMasterRows.filter(x=>x.ready160&&x.ready360).length||0),bytes=Number(j?.bytes||photoMasterRows.reduce((n,x)=>n+Number(x.bytes||0),0)),pct=total?Math.round(ready/total*100):0;
-  const bar=$('#photoMasterBar'),st=$('#photoMasterStatus'),k=$('#photoMasterKpis'),btn=$('#buildPhotoMasterBtn');if(bar)bar.style.width=`${pct}%`;if(st)st.innerHTML=`MASTER 준비 <b>${ready.toLocaleString('ko-KR')} / ${total.toLocaleString('ko-KR')}명</b> · ${pct}% · 저장 ${(bytes/1024/1024).toFixed(1)}MB`;if(k)k.innerHTML=`<div><b>${ready}</b><span>완료 인물</span></div><div><b>${Math.max(0,total-ready)}</b><span>남은 인물</span></div><div><b>${pct}%</b><span>구축률</span></div><div><b>${(bytes/1024/1024).toFixed(1)}MB</b><span>MASTER 용량</span></div>`;if(btn&&!photoMasterRunning)btn.textContent=ready>=total?'562명 MASTER 재확인':'562명 MASTER 구축';
+  const bar=$('#photoMasterBar'),st=$('#photoMasterStatus'),k=$('#photoMasterKpis'),btn=$('#buildPhotoMasterBtn'),miss=$('#photoMasterMissing');if(bar)bar.style.width=`${pct}%`;if(st)st.innerHTML=`MASTER 준비 <b>${ready.toLocaleString('ko-KR')} / ${total.toLocaleString('ko-KR')}명</b> · ${pct}% · 저장 ${(bytes/1024/1024).toFixed(1)}MB`;if(k)k.innerHTML=`<div><b>${ready}</b><span>완료 인물</span></div><div><b>${Math.max(0,total-ready)}</b><span>남은 인물</span></div><div><b>${pct}%</b><span>구축률</span></div><div><b>${(bytes/1024/1024).toFixed(1)}MB</b><span>MASTER 용량</span></div>`;if(btn&&!photoMasterRunning)btn.textContent=ready>=total?'562/562 MASTER 확인':'562명 MASTER 완전구축';
+  const missing=Array.isArray(j?.missing)?j.missing:[];if(miss){if(missing.length){miss.style.display='block';miss.innerHTML=`<b>미구축 ${missing.length}명</b> · ${missing.slice(0,40).map(x=>esc(x.name||x.id)).join(' · ')}${missing.length>40?' 외 '+(missing.length-40)+'명':''}`;}else{miss.style.display='block';miss.innerHTML='<b class="good">562 / 562 COMPLETE</b> · 공개 인물 사진 MASTER가 모두 준비되어 있습니다.';}}
 }
 async function loadPhotoMasterStatus(){const j=await api('/api/admin/photo-master');renderPhotoMasterStatus(j);return j;}
 async function buildPhotoMasterAll(){
-  if(photoMasterRunning)return;let j=await loadPhotoMasterStatus();const all=Array.isArray(j.rows)?j.rows:[],pending=all.filter(x=>!(x.ready160&&x.ready360)).map(x=>Number(x.id)).filter(Boolean);if(!pending.length){$('#photoMasterStatus').innerHTML='<b class="good">PHOTO MASTER 562명 구축이 완료되어 있습니다.</b>';return;}if(!confirm(`PHOTO MASTER 미구축 ${pending.length}명을 생성할까요? 기존 정상 사진은 변경하지 않고 WebP 캐시만 만듭니다.`))return;
-  const btn=$('#buildPhotoMasterBtn');photoMasterRunning=true;btn.disabled=true;let done=0,failed=0;try{for(let i=0;i<pending.length;i+=4){const ids=pending.slice(i,i+4);try{const out=await api('/api/admin/photo-master',{method:'POST',body:JSON.stringify({action:'warm',ids})}),rows=Array.isArray(out.rows)?out.rows:[];done+=rows.filter(x=>x.ok).length;failed+=rows.filter(x=>!x.ok).length;}catch(_){failed+=ids.length;}const progress=Math.min(99,Math.round((i+ids.length)/pending.length*100));$('#photoMasterBar').style.width=`${progress}%`;$('#photoMasterStatus').textContent=`PHOTO MASTER 구축 중 · ${Math.min(i+ids.length,pending.length)} / ${pending.length}명 · 성공 ${done} · 재확인 ${failed}`;}j=await loadPhotoMasterStatus();$('#photoMasterStatus').innerHTML=`<b class="good">PHOTO MASTER 구축 완료</b> · 성공 ${done}명${failed?` · 재확인 ${failed}명`:''}`;}finally{photoMasterRunning=false;btn.disabled=false;await loadPhotoMasterStatus().catch(()=>{});}
+  if(photoMasterRunning)return;if(!confirm('562명 PHOTO MASTER를 완전구축할까요? 누락 사진은 최대 3회 다시 수집하고, 완성된 MASTER는 영구 보관합니다.'))return;
+  const btn=$('#buildPhotoMasterBtn');photoMasterRunning=true;btn.disabled=true;let totalDone=0;
+  try{
+    for(let pass=1;pass<=3;pass++){
+      let j=await loadPhotoMasterStatus(),pending=(Array.isArray(j.missing)?j.missing:[]).map(x=>Number(x.id)).filter(Boolean);if(!pending.length)break;
+      let done=0,failed=0;
+      for(let i=0;i<pending.length;i+=6){const ids=pending.slice(i,i+6);try{const out=await api('/api/admin/photo-master',{method:'POST',body:JSON.stringify({action:'warm',ids,force:pass>1})}),rows=Array.isArray(out.rows)?out.rows:[];done+=rows.filter(x=>x.ok).length;failed+=rows.filter(x=>!x.ok).length;}catch(_){failed+=ids.length;}const progress=Math.round((i+ids.length)/pending.length*100);$('#photoMasterBar').style.width=`${Math.min(99,progress)}%`;$('#photoMasterStatus').textContent=`PHOTO MASTER ${pass}/3차 · ${Math.min(i+ids.length,pending.length)} / ${pending.length}명 · 성공 ${done} · 재시도 ${failed}`;}
+      totalDone+=done;
+    }
+    const final=await loadPhotoMasterStatus();if(final.complete){await api('/api/admin/photo-master',{method:'POST',body:JSON.stringify({action:'persist'})}).catch(()=>{});$('#photoMasterStatus').innerHTML='<b class="good">PHOTO MASTER 562 / 562 완전구축 완료</b> · 외부 원본은 이후 교체/복구 작업에만 사용됩니다.';}else{$('#photoMasterStatus').innerHTML=`<span class="bad">MASTER 미구축 ${final.missing?.length||0}명</span> · 아래 명단은 직접 등록 후 다시 완전구축을 실행해주세요.`;}
+  }finally{photoMasterRunning=false;btn.disabled=false;await loadPhotoMasterStatus().catch(()=>{});}
 }
 $('#buildPhotoMasterBtn').onclick=()=>buildPhotoMasterAll().catch(e=>{$('#photoMasterStatus').textContent='MASTER 구축 오류: '+e.message;photoMasterRunning=false;$('#buildPhotoMasterBtn').disabled=false;});$('#reloadPhotoMasterBtn').onclick=()=>loadPhotoMasterStatus().catch(e=>{$('#photoMasterStatus').textContent='MASTER 상태 조회 오류: '+e.message;});
 
@@ -538,7 +549,7 @@ async function runNowRankRefresh(mode='quick'){
     let npo=0,npt=Number(np.total||0);if(np.configured&&npt>0){while(npo<npt){$('#refreshStatus').textContent=`0차 Name Pulse 갱신 · ${npo}/${npt} · 나머지는 직전 정상값 유지`;const nb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'name-pulse-batch',draftId,offset:npo,size:14})});npo=nb.nextOffset;$('#bar').style.width=`${Math.round((npo/Math.max(1,npt))*15)}%`;}}
     let offset=0,total=collectTotal;while(offset<total){$('#refreshStatus').textContent=`1차 뉴스·포털 선택 수집 · ${offset}/${total} · 전체 542명 중 필요한 인물만 갱신`;const b=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'batch',draftId,offset,size:8})});offset=b.nextOffset;$('#bar').style.width=`${15+Math.round((offset/Math.max(1,total))*55)}%`;}
     const prep=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'prepare-enrichment',draftId})});let eo=0,et=prep.total||0;if(et&&(prep.configured?.keyless||prep.configured?.youtube||prep.configured?.x||prep.configured?.bigKinds)){while(eo<et){$('#refreshStatus').textContent=`2차 상위·급등·이벤트 심층 보강 · ${eo}/${et}${prep.configured?.bigKinds?' · BIG KINDS 포함':''}`;const eb=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'enrich',draftId,offset:eo,size:5})});eo=eb.nextOffset;$('#bar').style.width=`${70+Math.round((eo/Math.max(1,et))*22)}%`;}}
-    $('#refreshStatus').textContent=`542명 전체 스냅샷 재계산 중 · 새 수집 ${total}명 + 정상 캐시 ${carried}명`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent=`v2.7.2 · ${mode==='full'?'전체 재수집':'빠른 Refresh'} 미리보기 완료 · 새 수집 ${total}명 / 재사용 ${carried}명 · 아직 공개되지 않았습니다.`;renderPreview(fin.preview);
+    $('#refreshStatus').textContent=`542명 전체 스냅샷 재계산 중 · 새 수집 ${total}명 + 정상 캐시 ${carried}명`;const fin=await api('/api/admin/refresh',{method:'POST',body:JSON.stringify({action:'finalize',draftId})});$('#bar').style.width='100%';$('#refreshStatus').textContent=`v2.7.3 · ${mode==='full'?'전체 재수집':'빠른 Refresh'} 미리보기 완료 · 새 수집 ${total}명 / 재사용 ${carried}명 · 아직 공개되지 않았습니다.`;renderPreview(fin.preview);
   }catch(e){$('#refreshStatus').textContent='오류: '+e.message;}finally{quickBtn.disabled=false;fullBtn.disabled=false;}
 }
 $('#refreshBtn').onclick=()=>runNowRankRefresh('quick');

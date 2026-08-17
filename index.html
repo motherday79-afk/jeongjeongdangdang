@@ -1629,7 +1629,7 @@ body{font-size:var(--type-md);background:#f7f9f8}
 
 
 <style id="v272DetailRailsStyles">
-/* ===== v2.7.2 · DETAIL RAILS / PIXEL DISCIPLINE ===== */
+/* ===== v2.7.3 · DETAIL RAILS / PIXEL DISCIPLINE ===== */
 :root{
   --rail-gap:20px;--rail-radius:15px;--rail-line:#e1e7e5;
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;
@@ -1702,7 +1702,72 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .home-main-rail>.ranktable{margin-top:0}.ranktable .row:not(.header){min-height:62px!important}
   .site-footer{margin-top:22px;padding:26px 15px 94px}
 }
-/* ===== /v2.7.2 ===== */
+/* ===== /v2.7.3 ===== */
+
+/* ===== v2.7.3 · Detail Discipline / Sticky Rail / 8 AXIS / PHOTO MASTER ===== */
+/* 실시간 정치키워드: 글자를 자르는 max-height 방식 폐기, JS가 완성된 두 행만 남김 */
+#nowKeywordStrip{max-height:none!important;overflow:visible!important;padding:1px 0 2px!important;align-items:center!important;row-gap:7px!important}
+#nowKeywordStrip .now-chip.keyword-clipped{display:none!important}
+#nowKeywordPanel.expanded #nowKeywordStrip .now-chip.keyword-clipped{display:inline-flex!important}
+.now-keyword-toggle{min-height:32px;margin-top:9px!important;padding:6px 12px!important}
+
+/* PC 메인: 오른쪽 레일은 화면을 따라오다가 좌측 콘텐츠의 바닥에서 자연스럽게 멈춤 */
+@media(min-width:1121px){
+  .home-rails{align-items:stretch!important}
+  .home-rails>.side{position:relative!important;top:auto!important;align-self:stretch!important;height:auto!important;overflow:visible!important;min-width:0}
+  .home-rails .side-track{position:sticky!important;top:94px!important;height:auto!important;min-height:0!important;display:block!important;transform:none!important;overflow:hidden!important}
+  .home-rails .side-track>#sideNewsCard{flex:none!important}
+}
+
+/* Sidebar는 정보가 주인공: 진한 초록 면적을 줄이고 민트는 포인트로만 */
+.home-rails .side-track{border-color:#dfe7e4!important;background:#fff!important;box-shadow:0 8px 26px rgba(20,46,41,.045)!important}
+.home-rails .live-desk-head{background:#f7f9f8!important;color:#24312e!important;border-bottom:1px solid #e4ebe8!important}
+.home-rails .live-desk-head:after{display:none!important}
+.home-rails .live-desk-brand{color:#32423e!important;letter-spacing:.09em!important}
+.home-rails .live-desk-brand i{background:#1caf96!important;box-shadow:0 0 0 4px rgba(28,175,150,.08)!important}
+.home-rails .live-desk-time{color:#8b9894!important}
+.home-rails .side-track>.card{background:#fff!important}
+.home-rails .side-track>.card:hover{background:#fbfcfc!important}
+.home-rails .side-track .rapid-rise-delta{background:#f1f7f5!important;color:#15806d!important}
+
+/* NOW Rank: 메인은 '순위→인물→정당→지역/직위→변동'만, 읽히는 크기를 보장 */
+.ranktable .row{grid-template-columns:68px minmax(250px,1fr) 150px 180px 124px!important}
+.ranktable .header>div{font-size:13px!important;font-weight:800!important;letter-spacing:-.15px!important;color:#5d6b67!important;text-transform:none!important}
+.ranktable .header{min-height:48px!important;background:#f7f9f8!important;border-bottom:1px solid #e3eae7!important}
+.ranktable .row:not(.header)>div:nth-child(3),.ranktable .row:not(.header)>div:nth-child(4){font-size:13.5px!important;font-weight:650!important;color:#52615d}
+.ranktable .row:not(.header)>div:nth-child(5){font-size:13px!important}
+.ranktable:before{height:20px!important;padding-top:7px!important;background:#f1f5f3!important;color:#7a8984!important;font-size:7px!important;letter-spacing:.11em!important}
+.ranktable .pname{font-size:15px!important}
+.ranktable .person-headline{font-size:11.5px!important}
+
+/* 상세: 모든 인물 8축, 라벨 영역을 폴리곤 바깥에 확보 */
+.radarbox{overflow:visible!important;padding-left:8px!important;padding-right:8px!important}
+.radarbox svg.eight-axis-radar,.combined-radar svg{overflow:visible!important;max-width:100%;margin:0 auto}
+.radar-axis-label{font-size:11.5px;font-weight:800;fill:#56635f;letter-spacing:-.15px}
+.detail-eight-axis{align-items:start!important}
+.metric-plus-lock{display:flex;align-items:center;gap:6px;margin:10px 0 4px;color:#8a9793}.metric-plus-lock b{font-size:8px;padding:4px 6px;border-radius:6px;background:#153a32;color:#bfece1;letter-spacing:.09em}.metric-plus-lock span{font-size:10px;font-weight:750}
+.detail-now-score{font-size:18px;color:#183d34;margin-left:5px}.detail-score-plus{display:inline-flex;margin-left:5px;padding:4px 6px;border-radius:6px;background:#eef5f3;color:#527069;font-size:8px;font-weight:950;vertical-align:3px;letter-spacing:.08em}
+.detail-current-brief{grid-column:1/-1;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0 0 2px;padding:17px 18px;border:1px solid #dce7e3;border-radius:16px;background:#f8faf9}.detail-current-brief>div:first-child{min-width:0}.detail-current-brief span{display:block;color:#13816f;font-size:11px;font-weight:900;margin-bottom:6px}.detail-current-brief h4{margin:0;color:#22322e;font-size:14px;line-height:1.7;font-weight:760;word-break:keep-all}.detail-current-brief p{margin:7px 0 0;color:#687772;font-size:11.5px;line-height:1.6}.detail-current-chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto}.detail-current-chips b,.detail-context-tags span{display:inline-flex;padding:6px 8px;border-radius:8px;background:#edf6f3;color:#267265;font-size:10px;font-weight:850}
+.detail-context-copy{font-size:12.5px;line-height:1.7;color:#52625d;font-weight:650;word-break:keep-all}.detail-context-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.detail-source-disclosure{grid-column:1/-1;border-top:1px solid #e3e9e7;margin-top:2px;padding-top:10px}.detail-source-disclosure summary{cursor:pointer;color:#74817d;font-size:11px;font-weight:800;list-style:none}.detail-source-disclosure summary::-webkit-details-marker{display:none}.detail-source-disclosure summary:after{content:' +'}.detail-source-disclosure[open] summary:after{content:' −'}.detail-source-disclosure>div{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;margin-top:10px;padding:12px 14px;border-radius:12px;background:#f8faf9}.detail-source-disclosure span{font-size:10px;color:#88948f}.detail-source-disclosure b{font-size:10.5px;color:#4d5b57}
+
+@media(max-width:1120px){
+  .home-rails .side-track{position:static!important}
+  .ranktable .row{grid-template-columns:58px minmax(200px,1fr) 120px 150px 100px!important}
+}
+@media(max-width:780px){
+  #nowKeywordStrip{max-height:none!important}
+  .ranktable .row{grid-template-columns:42px minmax(0,1fr) 76px!important}
+  .ranktable .row> :nth-child(3),.ranktable .row> :nth-child(4){display:none!important}
+  .ranktable .header>div{font-size:11px!important}
+  .ranktable .header>div:nth-child(3),.ranktable .header>div:nth-child(4){display:none!important}
+  .ranktable .row:not(.header)>div:nth-child(5){font-size:12px!important}
+  .detail-current-brief{display:block;padding:14px}.detail-current-chips{justify-content:flex-start;margin-top:10px}
+  .radar-axis-label{font-size:12px!important}.radarbox{padding:4px 2px!important}
+  .detail-source-disclosure>div{grid-template-columns:1fr;gap:3px}.detail-source-disclosure b{margin-bottom:5px}
+}
+@media(max-width:420px){.ranktable .row{grid-template-columns:38px minmax(0,1fr) 68px!important}}
+/* ===== /v2.7.3 ===== */
 </style>
 </head>
 <body>
@@ -2358,9 +2423,9 @@ function politicianPhotoHTML(name,seedv=1,quality="standard"){
     const masterSize=quality==='high'?360:160;
     const loading=(quality==='high'||quality==='critical')?'eager':'lazy';
     const priority=quality==='critical'?' fetchpriority="high"':'';
-    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&s=${masterSize}&v=262`;
+    const src=`/api/person-photo?id=${encodeURIComponent(memberId)}&s=${masterSize}&v=273`;
     const title='사진 출처: 정참시 PHOTO MASTER · 검증 원본 기반';
-    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="photo-master-v262" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="${loading}" decoding="async"${priority} referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
+    return `<span class="politician-photo server-person-photo" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" data-photo-server="1"><img src="${photoAttr(src)}" alt="${photoAttr(name)} 사진" title="${photoAttr(title)}" data-photo-source="photo-master-v273" data-photo-quality="${quality}" data-photo-name="${enc}" data-photo-seed="${seedv}" loading="${loading}" decoding="async"${priority} referrerpolicy="no-referrer" onerror="handlePoliticianPhotoError(this)"></span>`;
   }
   const ambiguous=PHOTO_AMBIGUOUS_MEMBER_IDS.has(memberId);
   const cached=politicianPhotoCache[String(memberId)];
@@ -10315,7 +10380,7 @@ document.addEventListener('click',(e)=>{
   setMobileNavActive(name);
   showPage(name);
 });
-window.addEventListener('resize',()=>{syncResponsiveContent(); requestAnimationFrame(syncSidebarWithPage);},{passive:true});
+window.addEventListener('resize',()=>{syncResponsiveContent();},{passive:true});
 
 
 function nowRankHistory(){
@@ -10838,12 +10903,25 @@ function syncNowKeywordToggle(){
   const panel=document.getElementById('nowKeywordPanel'),strip=document.getElementById('nowKeywordStrip'),btn=document.getElementById('nowKeywordToggle');
   if(!panel||!strip||!btn)return;
   const expanded=panel.classList.contains('expanded');
+  const chips=[...strip.querySelectorAll('.now-chip')];
+  chips.forEach(chip=>chip.classList.remove('keyword-clipped'));
+  let hidden=0;
+  if(!expanded&&chips.length){
+    // 정확히 두 개의 '완성된 행'만 남깁니다. max-height로 글자를 자르지 않습니다.
+    const rowTops=[];
+    for(const chip of chips){
+      const top=Math.round(chip.offsetTop);
+      if(!rowTops.some(v=>Math.abs(v-top)<=2))rowTops.push(top);
+    }
+    rowTops.sort((a,b)=>a-b);
+    if(rowTops.length>2){
+      const second=rowTops[1];
+      chips.forEach(chip=>{if(Math.round(chip.offsetTop)>second+2){chip.classList.add('keyword-clipped');hidden++;}});
+    }
+  }
   btn.setAttribute('aria-expanded',expanded?'true':'false');
   btn.innerHTML=expanded?'접기 <span>⌃</span>':'더보기 <span>⌄</span>';
-  requestAnimationFrame(()=>{
-    const needs=expanded || strip.scrollHeight>strip.clientHeight+2;
-    btn.style.display=needs?'inline-flex':'none';
-  });
+  btn.style.display=(expanded||hidden>0)?'inline-flex':'none';
 }
 function renderNowKeywordStrip(){
   const el=document.getElementById('nowKeywordStrip'); if(!el)return;
@@ -10859,6 +10937,8 @@ document.getElementById('nowKeywordToggle')?.addEventListener('click',()=>{
   document.getElementById('nowKeywordPanel')?.classList.toggle('expanded');
   syncNowKeywordToggle();
 });
+let jjddKeywordResizeTimer=null;
+window.addEventListener('resize',()=>{clearTimeout(jjddKeywordResizeTimer);jjddKeywordResizeTimer=setTimeout(syncNowKeywordToggle,80);},{passive:true});
 function openWhyNowByKeyword(keyword){
   const owner=window.NOW_KEYWORD_OWNER?.[keyword];
   const x=(owner?people.find(p=>p.id===owner):null)||people.slice().sort((a,b)=>a.rank-b.rank).find(p=>whyNowKeywords(p).includes(keyword));
@@ -10954,7 +11034,7 @@ function renderRank(){
   const totalMatched=data.length;
   const limit=Math.max(30,Number(rankVisibleLimitByMode[mode]||30));
   const visible=data.slice(0,limit);
-  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','변동','NOW 지수'];
+  const headers=[mode==='all'?'전체순위':'순위','정치인','정당','지역 · 직위','변동'];
   let html=`<div class="row header">${headers.map(h=>`<div>${h}</div>`).join('')}</div>`;
   visible.forEach(x=>{
     const vr=viewRank(x,mode), firstCell=(Number(x.id)===300||x.party==='공석')?'―':vr;
@@ -10962,7 +11042,6 @@ function renderRank(){
     const topClass=Number(vr)>=1&&Number(vr)<=3?` rank-top rank-top-${vr}`:'';
     const signal=momentumSignalMeta(x,mode), signalClass=Number(vr)>3&&Number(vr)<=30?` rank-signal ${signal.cls}`:'';
     const fifth=momentumCellHTML(x,mode);
-    const sixth=`<div class="score-stack"><span class="rankpill rank-${x.grade}">${x.grade}</span><b class="score-number">${Number.isFinite(x.rank2Score)?x.rank2Score.toFixed(1):'—'}</b><small class="score-label">NOW INDEX</small></div>`;
     const topSignal=Number(vr)===1?'LIVE LEADER':Number(vr)===2?'CHASE SIGNAL':Number(vr)===3?'TOP WATCH':'';
     html += `<div class="row${topClass}${signalClass?' '+signalClass:''}" data-rank-ghost="${String(vr).padStart(2,'0')}" onclick="openDetail(${x.id})">
       <div class="ranknum">${firstCell}</div>
@@ -10977,7 +11056,6 @@ function renderRank(){
       <div class="${partyClass[x.party]||"party-gray"}">${x.party}</div>
       <div>${place}</div>
       ${fifth}
-      ${sixth}
     </div>`;
   });
   if(totalMatched>visible.length){
@@ -11221,9 +11299,28 @@ function pointsFor(metrics){
 function gridPoly(r,n=5){
   const cx=170,cy=170; let pts=[]; for(let i=0;i<n;i++){let a=-Math.PI/2+i*2*Math.PI/n; pts.push(`${cx+Math.cos(a)*r},${cy+Math.sin(a)*r}`);} return pts.join(" ");
 }
+const JJDD_EIGHT_AXIS_LABELS=["언론 주목도","대중 관심도","디지털 영향력","대중 반응도","정책 활동도","의정 활동도","정치 영향력","인지도"];
+function eightAxisMetrics(metrics=[]){
+  const src=Array.isArray(metrics)?metrics:[];
+  const map=new Map(src.map(m=>[String(m?.[0]||'').trim(),m]));
+  return JJDD_EIGHT_AXIS_LABELS.map((label,i)=>{
+    const found=map.get(label)||src[i]||[];
+    const grade=String(found?.[1]||'C');
+    const fallback={S:95,A:85,B:75,C:65,D:50}[grade]||50;
+    const score=Number.isFinite(Number(found?.[2]))?Number(found[2]):fallback;
+    return [label,grade,score];
+  });
+}
 function labels(metrics){
-  const cx=170, cy=170, r=146, n=metrics.length;
-  return metrics.map((m,i)=>{const a=-Math.PI/2+i*2*Math.PI/n, x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r; const anchor=Math.cos(a)>.3?"start":Math.cos(a)<-.3?"end":"middle"; return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="12" font-weight="800" fill="#5f6662">${m[0]}</text>`;}).join("");
+  const cx=170,cy=170,r=156,n=metrics.length;
+  return metrics.map((m,i)=>{
+    const a=-Math.PI/2+i*2*Math.PI/n,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+    const anchor=Math.cos(a)>.28?"start":Math.cos(a)<-.28?"end":"middle";
+    const parts=String(m?.[0]||'').trim().split(/\s+/).filter(Boolean);
+    if(parts.length<=1)return `<text class="radar-axis-label" x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle">${parts[0]||''}</text>`;
+    const first=parts.shift(),second=parts.join(' ');
+    return `<text class="radar-axis-label" x="${x}" y="${y-6}" text-anchor="${anchor}"><tspan x="${x}" dy="0">${first}</tspan><tspan x="${x}" dy="14">${second}</tspan></text>`;
+  }).join("");
 }
 function radarAxes(metrics){ const n=metrics.length; return Array.from({length:n},(_,i)=>{let a=-Math.PI/2+i*2*Math.PI/n;return `<line x1="170" y1="170" x2="${170+Math.cos(a)*116}" y2="${170+Math.sin(a)*116}"/>`;}).join(""); }
 
@@ -11278,7 +11375,7 @@ function comparisonPhotoHTML(p,quality='standard'){
   return politicianPhotoHTML(p.name,p.id,quality);
 }
 function preloadPoliticianPhoto(p,size=360){
-  if(!p||entityTypeOf(p)==='president')return;try{const img=new Image();img.decoding='async';img.src=`/api/person-photo?id=${encodeURIComponent(p.id)}&s=${size>=300?360:160}&v=262`;}catch(_){}
+  if(!p||entityTypeOf(p)==='president')return;try{const img=new Image();img.decoding='async';img.src=`/api/person-photo?id=${encodeURIComponent(p.id)}&s=${size>=300?360:160}&v=273`;}catch(_){}
 }
 function resolvePersonByQuery(query, excludeId=null){
   const q=(query||"").trim().toLowerCase();
@@ -11295,14 +11392,15 @@ function resolvePersonByQuery(query, excludeId=null){
 }
 
 function combinedRadarSVG(a,b){
-  return `<svg viewBox="0 0 420 390" aria-label="정치인 비교 레이더">
+  const am=eightAxisMetrics(a.metrics||[]),bm=eightAxisMetrics(b.metrics||[]);
+  return `<svg viewBox="-80 -50 500 440" aria-label="정치인 비교 레이더">
     <g fill="none" stroke="#e7eeec">
-      <polygon points="${gridPoly(116,a.metrics.length)}"/><polygon points="${gridPoly(92,a.metrics.length)}"/><polygon points="${gridPoly(68,a.metrics.length)}"/><polygon points="${gridPoly(44,a.metrics.length)}"/><polygon points="${gridPoly(20,a.metrics.length)}"/>
-      ${radarAxes(a.metrics)}
+      <polygon points="${gridPoly(116,8)}"/><polygon points="${gridPoly(92,8)}"/><polygon points="${gridPoly(68,8)}"/><polygon points="${gridPoly(44,8)}"/><polygon points="${gridPoly(20,8)}"/>
+      ${radarAxes(am)}
     </g>
-    <polygon points="${pointsFor(a.metrics)}" fill="rgba(40,183,162,.14)" stroke="#28b7a2" stroke-width="3.5"/>
-    <polygon points="${pointsFor(b.metrics)}" fill="rgba(124,58,237,.10)" stroke="#7c3aed" stroke-width="3.5"/>
-    ${labels(a.metrics)}
+    <polygon points="${pointsFor(am)}" fill="rgba(40,183,162,.14)" stroke="#28b7a2" stroke-width="3.5"/>
+    <polygon points="${pointsFor(bm)}" fill="rgba(124,58,237,.10)" stroke="#7c3aed" stroke-width="3.5"/>
+    ${labels(am)}
   </svg>`;
 }
 
@@ -11722,7 +11820,20 @@ function detailSignalBoardHTML(x){
   </div>`;
 }
 function detailMetricCardsHTML(metrics=[]){
-  return metrics.map(m=>{const val=Number.isFinite(Number(m?.[2]))?Math.max(0,Math.min(100,Number(m[2]))):null;return `<div class="metric"><div class="metric-top"><span>${m[0]}</span><b class="rankpill rank-${m[1]}">${m[1]==="NA"?"N/A":m[1]}</b></div><b class="metric-value">${val===null?'—':val.toFixed(0)}<small>${val===null?'':'/100'}</small></b><span class="metric-meter"><i style="width:${val===null?0:val}%"></i></span></div>`;}).join('');
+  const plus=hasPlusAccess();
+  return eightAxisMetrics(metrics).map(m=>{const val=Number.isFinite(Number(m?.[2]))?Math.max(0,Math.min(100,Number(m[2]))):null;return `<div class="metric"><div class="metric-top"><span>${m[0]}</span><b class="rankpill rank-${m[1]}">${m[1]==="NA"?"N/A":m[1]}</b></div>${plus?`<b class="metric-value">${val===null?'—':val.toFixed(0)}<small>${val===null?'':'/100'}</small></b>`:`<div class="metric-plus-lock"><b>PLUS</b><span>상세 점수</span></div>`}<span class="metric-meter"><i style="width:${val===null?0:val}%"></i></span></div>`;}).join('');
+}
+function detailNowBriefHTML(x,typeLabel){
+  const metrics=eightAxisMetrics(x?.metrics||[]).slice().sort((a,b)=>Number(b?.[2]||0)-Number(a?.[2]||0));
+  const strengths=metrics.slice(0,2).map(m=>m[0]);
+  const headline=rankHeadlineFor(x);
+  const role=x?.partyRole||entityOffice(x);
+  const place=entityTypeOf(x)==='assembly'?(x?.constituency||x?.region):(x?.jurisdiction||x?.region);
+  const summary=`${x.name}은(는) ${x.party}${role?` · ${role}`:''}${place?` · ${place}`:''}에서 활동하는 ${typeLabel}입니다. 현재 NOW Rank ${x.rank}위이며 ${strengths.length?strengths.join('·')+' 축에서 상대적으로 강한 신호가 관측됩니다.':''}`;
+  return `<div class="detail-current-brief"><div><span>지금 이 인물</span><h4>${summary}</h4>${headline?`<p>최근 핵심 흐름 · ${rankHeadlineEsc(headline)}</p>`:''}</div><div class="detail-current-chips">${strengths.map(v=>`<b>${v}</b>`).join('')}</div></div>`;
+}
+function detailSourceDisclosureHTML(x,type){
+  return `<details class="detail-source-disclosure"><summary>데이터 기준 · 출처 보기</summary><div><span>기본정보</span><b>공식 기록 우선</b><span>NOW Rank · 8 AXIS</span><b>공개 뉴스·검색·이슈 신호</b><span>사진</span><b>정참시 PHOTO MASTER</b><span>순위 이력</span><b>실제 게시 스냅샷 누적</b></div></details>`;
 }
 
 function openDetail(id,opts={}){
@@ -11730,12 +11841,9 @@ function openDetail(id,opts={}){
   if(!x)return;
   if(!opts.skipHistory)jjddPushModalHistory('person',{id:Number(id)});
   trackJJDD('profile',x);
-  const type=entityTypeOf(x), typeLabel=entityLabel(x), refresh=refreshChangeText(x,type);
+  const type=entityTypeOf(x), typeLabel=entityLabel(x), refresh=refreshChangeText(x,type), detailMetrics=eightAxisMetrics(x.metrics||[]), plusScore=hasPlusAccess();
   const suffix=type==='assembly'?' 의원':` · ${entityOffice(x)}`;
   const place=type==='assembly'?(x.constituency||x.region):(x.jurisdiction||x.region);
-  const nowExplain=type==='assembly'
-    ?'NOW Rank는 의정활동의 우열을 평가하는 점수가 아니라 지금 정치 이슈의 중심에 있는 정도를 측정합니다. 뉴스·검색·이벤트 중심성·디지털 확산을 중심으로 계산하며, 당선 횟수 자체는 NOW Rank 점수가 아닙니다.'
-    :'NOW Rank는 지방행정 성과의 우열을 판정하는 점수가 아니라 지금 정치·지역 이슈의 중심에 있는 정도를 측정합니다. 뉴스·검색·지역 현안·디지털 확산을 중심으로 현재의 관심 모멘텀을 보여줍니다.';
   document.getElementById("modalEyebrow").innerText=`Person Detail · ${typeLabel}`;
   document.getElementById("modalTitle").innerText=`${typeLabel} 상세`;
   document.getElementById("detail").innerHTML=`
@@ -11747,14 +11855,14 @@ function openDetail(id,opts={}){
           <div class="detail-live-tag"><i></i>NOW PROFILE · ${typeLabel.toUpperCase()}</div>
           <h2 class="h2" style="font-size:32px">${x.name}${suffix}</h2>
           <div class="sub" style="margin-top:6px">${x.party} · ${place}${x.partyRole?` · <b>${x.partyRole}</b>`:''}</div>
-          <div class="photo-safe-note">● Vercel 서버 사진 검증 · 이름/직위/지역 교차확인 · 미확인 시 안전 기본이미지</div>
+          <div class="photo-safe-note">● 정참시 PHOTO MASTER</div>
           <div class="detail-member-actions">${plusWatchButtonHTML(x)}</div>
         </div>
       </div>
       <div class="detail-stats">
         <div class="stat"><strong>${x.rank}위</strong><span>${typeLabel} NOW Rank</span></div>
         <div class="stat"><strong class="change ${refresh.cls}">${refresh.text}</strong><span>직전 게시 대비</span><small class="refresh-route">${refresh.route}</small></div>
-        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${Number.isFinite(x.rank2Score)?` <span style="font-size:18px">${x.rank2Score.toFixed(1)}</span>`:""}</strong><span>NOW 등급 · 지수</span><small style="display:block;margin-top:3px;color:#94a3b8;font-size:10px">Overall ${Number.isFinite(x.overallRank)?x.overallRank+'위':'-'} · Evidence ${Number.isFinite(x.evidenceConfidence)?x.evidenceConfidence.toFixed(0):'-'}% · Sources ${Number(x.sourceCount||0)}</small></div>
+        <div class="stat"><strong><span class="rankpill rank-${x.grade}" style="height:34px;font-size:16px">${x.grade}</span>${plusScore&&Number.isFinite(x.rank2Score)?` <span class="detail-now-score">${x.rank2Score.toFixed(1)}</span>`:` <span class="detail-score-plus">PLUS</span>`}</strong><span>${plusScore?'NOW 등급 · 상세 지수':'NOW 등급 · 상세 점수는 PLUS'}</span></div>
       </div>
     </div>
     ${detailSignalBoardHTML(x)}
@@ -11769,14 +11877,14 @@ function openDetail(id,opts={}){
     <div class="detail-flow">
       <section class="detail-section" id="detail-now">
         <div class="detail-section-head"><span class="detail-section-index">NOW</span><h3>지금 이 인물은</h3></div>
-        <div class="profile" style="margin-top:0">
+        ${detailNowBriefHTML(x,typeLabel)}
+        <div class="profile detail-eight-axis" style="margin-top:14px">
           <div>
-            <div class="ranks">${detailMetricCardsHTML(x.metrics||[])}</div>
-            <div class="why"><h4>왜 움직였나요?</h4><p>${nowExplain}</p></div>
+            <div class="ranks">${detailMetricCardsHTML(detailMetrics)}</div>
           </div>
           <div class="radarbox">
-            <svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,(x.metrics||[]).length)}"/><polygon points="${gridPoly(92,(x.metrics||[]).length)}"/><polygon points="${gridPoly(68,(x.metrics||[]).length)}"/><polygon points="${gridPoly(44,(x.metrics||[]).length)}"/><polygon points="${gridPoly(20,(x.metrics||[]).length)}"/>${radarAxes(x.metrics||[])}</g><polygon points="${pointsFor(x.metrics||[])}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(x.metrics||[])}</svg>
-            <div class="sub" style="text-align:center;font-size:13px">정참시 NOW Rank v2.6.4 · ${typeLabel} 실시간 이슈축</div>
+            <svg viewBox="-80 -50 500 440" class="eight-axis-radar" aria-label="8개 평가축 레이더"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,8)}"/><polygon points="${gridPoly(92,8)}"/><polygon points="${gridPoly(68,8)}"/><polygon points="${gridPoly(44,8)}"/><polygon points="${gridPoly(20,8)}"/>${radarAxes(detailMetrics)}</g><polygon points="${pointsFor(detailMetrics)}" fill="rgba(40,183,162,.18)" stroke="#28b7a2" stroke-width="3"/>${labels(detailMetrics)}</svg>
+            <div class="sub" style="text-align:center;font-size:13px">8 AXIS · ${typeLabel} 현재 신호</div>
           </div>
         </div>
       </section>
@@ -11793,9 +11901,10 @@ function openDetail(id,opts={}){
         <div class="detail-section-head"><span class="detail-section-index">RECORD</span><h3>공식 기록과 이력</h3></div>
         <div class="record-grid">
           ${entityRecordCardsHTML(x)}
-          <div class="record-card"><h4>정참시 데이터 구분</h4><div class="record-list"><div class="record-item"><span>신상·소속·직위</span><b>공식정보 우선</b></div><div class="record-item"><span>NOW Rank·8축</span><b>실시간 이슈 분석</b></div><div class="record-item"><span>검색 관심·언론 주목</span><b>관측 데이터</b></div><div class="record-item"><span>사진 신원</span><b>${type==='assembly'?'국회 공식사진 우선':'지방정부·공식협의회 사진만 허용'}</b></div></div></div>
-          <div class="record-card"><h4>공식 기록 원칙</h4><div class="record-list"><div class="record-item"><span>성과 평가</span><b>NOW Rank와 분리</b></div><div class="record-item"><span>선거·임기 이력</span><b>공식 원문 우선</b></div><div class="record-item"><span>사진 불확실</span><b>기본 이미지로 대체</b></div><div class="record-item"><span>사용자 평점</span><b>랭킹 미반영</b></div></div><div class="why" style="margin-top:12px"><h4>정참시의 원칙</h4><p>RECORD는 공식 기록을, NOW는 현재의 모멘텀을 보여줍니다. 확인되지 않은 사진이나 이력을 억지로 채우지 않습니다.</p></div></div>
+          <div class="record-card detail-context-card"><h4>현재 포지션</h4><div class="record-list"><div class="record-item"><span>현재 직책</span><b>${x.partyRole||entityOffice(x)}</b></div><div class="record-item"><span>소속</span><b>${x.party}</b></div><div class="record-item"><span>지역 · 선거구</span><b>${place||'-'}</b></div><div class="record-item"><span>NOW Rank</span><b>${x.rank}위 · ${x.grade}등급</b></div></div></div>
+          <div class="record-card detail-context-card"><h4>최근 핵심 흐름</h4><div class="detail-context-copy">${rankHeadlineFor(x)?rankHeadlineEsc(rankHeadlineFor(x)):'최근 공개 신호를 바탕으로 현재 정치적 관심 흐름을 추적하고 있습니다.'}</div><div class="detail-context-tags">${detailMetrics.slice().sort((a,b)=>Number(b[2])-Number(a[2])).slice(0,3).map(m=>`<span>${m[0]}</span>`).join('')}</div></div>
           ${proDetailAnalysisCardHTML(x)}
+          ${detailSourceDisclosureHTML(x,type)}
         </div>
       </section>
     </div>`;
@@ -11857,7 +11966,7 @@ function openPresident(opts={}){
           <div class="source-note">이 8개 지표는 공개된 이력·현재 직책과 여론 흐름을 비교용으로 재구성한 비랭킹 참고 프로필입니다. 정부가 발표한 공식 평가점수나 직무수행 성적표가 아니며, 실제 여론조사 수치와는 별도로 표시합니다.</div>
         </div>
         <div class="radarbox">
-          <svg viewBox="0 0 340 340">
+          <svg viewBox="-80 -50 500 440" class="eight-axis-radar">
             <g fill="none" stroke="#e7eeec">
               <polygon points="${gridPoly(116,president.metrics.length)}"/><polygon points="${gridPoly(92,president.metrics.length)}"/><polygon points="${gridPoly(68,president.metrics.length)}"/><polygon points="${gridPoly(44,president.metrics.length)}"/><polygon points="${gridPoly(20,president.metrics.length)}"/>
               ${radarAxes(president.metrics)}
@@ -11922,7 +12031,7 @@ function openGovPerson(i,opts={}){
       <div class="detail-section-head"><span class="detail-section-index">REFERENCE</span><h3>비랭킹 비교 프로필</h3></div>
       <div class="profile" style="margin-top:0">
         <div><div class="ranks">${g.metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b class="rankpill rank-${m[1]}" style="height:30px;font-size:15px;min-width:48px">${m[1]}</b></div>`).join("")}</div><div class="reference-note">공개 이력과 현재 직책을 같은 8개 비교 축으로 정리한 참고 프로필입니다. NOW Rank 순위에는 반영되지 않으며 공식 평가점수나 업무 성과평가가 아닙니다.</div></div>
-        <div class="radarbox"><svg viewBox="0 0 340 340"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,g.metrics.length)}"/><polygon points="${gridPoly(92,g.metrics.length)}"/><polygon points="${gridPoly(68,g.metrics.length)}"/><polygon points="${gridPoly(44,g.metrics.length)}"/><polygon points="${gridPoly(20,g.metrics.length)}"/>${radarAxes(g.metrics)}</g><polygon points="${pointsFor(g.metrics)}" fill="rgba(15,118,110,.16)" stroke="#0f766e" stroke-width="3"/>${labels(g.metrics)}</svg><div class="sub" style="text-align:center;font-size:13px">대통령·정부 주요 인사도 비교분석에서 함께 선택할 수 있습니다.</div></div>
+        <div class="radarbox"><svg viewBox="-80 -50 500 440" class="eight-axis-radar"><g fill="none" stroke="#e7eeec"><polygon points="${gridPoly(116,g.metrics.length)}"/><polygon points="${gridPoly(92,g.metrics.length)}"/><polygon points="${gridPoly(68,g.metrics.length)}"/><polygon points="${gridPoly(44,g.metrics.length)}"/><polygon points="${gridPoly(20,g.metrics.length)}"/>${radarAxes(g.metrics)}</g><polygon points="${pointsFor(g.metrics)}" fill="rgba(15,118,110,.16)" stroke="#0f766e" stroke-width="3"/>${labels(g.metrics)}</svg><div class="sub" style="text-align:center;font-size:13px">대통령·정부 주요 인사도 비교분석에서 함께 선택할 수 있습니다.</div></div>
       </div>
     </div>
     <div class="why"><h4>정부 조직 내 역할</h4><p>대통령 페이지의 정부 조직에서 현재 직위와 소관 부처를 함께 확인할 수 있습니다. 비교분석에서는 비랭킹 참고 프로필로 선택할 수 있습니다.</p></div>`;
@@ -11956,12 +12065,8 @@ document.querySelectorAll(".mymenu").forEach(btn=>{
   });
 });
 
-function syncSidebarWithPage(){
-  const track=document.querySelector('#page-ranking .side-track');
-  if(track) track.style.transform='translate3d(0,0,0)';
-}
-window.addEventListener('scroll', syncSidebarWithPage, {passive:true});
-window.addEventListener('resize', syncSidebarWithPage);
+// v2.7.3: PC sidebar movement is pure CSS sticky. Scroll-time JS work is intentionally removed.
+function syncSidebarWithPage(){ /* CSS sticky owns the rail */ }
 
 
 function politicianMatches(query, excludeId=null, limit=8){
@@ -12252,7 +12357,7 @@ function applyHomeSnapshotPayload(j,{fromCache=false}={}){
   const snap=j.rank;if(snap&&Array.isArray(snap.members)&&snapshotMatchesRoster(snap)){const local=readNowPublicCache();if(!local||nowSnapshotStamp(snap)>=nowSnapshotStamp(local)){writeNowPublicCache(snap);applyPublishedNowRank(snap,{checking:false});}}
   if(j.site){window.JJDD_SITE_SETTINGS={ok:true,...j.site};applyMetricOverridesToPeople(j.site.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.site.nowIssue);renderSurveySetting(j.site.survey,false);renderRapidRiseTop10();applyPresidentPageAvailability();if(document.getElementById('page-president')?.classList.contains('active'))renderPresidentOrganizationPage();}
   if(Array.isArray(j.news)&&j.news.length){applyPublishedNewsPayload({posts:j.news},{cache:false,full:false});}
-  syncResponsiveContent();requestAnimationFrame(syncSidebarWithPage);if(!fromCache)writeHomeSpeedCache(j);return true;
+  syncResponsiveContent();if(!fromCache)writeHomeSpeedCache(j);return true;
 }
 async function loadHomeSnapshot(){
   const cached=readHomeSpeedCache();if(cached)Promise.resolve().then(()=>applyHomeSnapshotPayload(cached,{fromCache:true}));
@@ -12265,7 +12370,7 @@ renderSideNews();
 renderNewsGrid();
 drawVotes();
 syncResponsiveContent();
-requestAnimationFrame(syncSidebarWithPage);
+
 loadHomeSnapshot();
 jjddIdle(()=>loadPublishedNews(false),1400);
 // 메인 순위 first paint를 막지 않도록 의원 기본정보 검증은 뒤에서 시작합니다.
@@ -12315,7 +12420,7 @@ function applyMetricOverridesToPeople(map,{rerender=false}={}){
 }
 
 async function loadSiteSettings(){
-  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(document.getElementById('page-president')?.classList.contains('active'))renderPresidentOrganizationPage();syncResponsiveContent();syncSidebarWithPage();}
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(document.getElementById('page-president')?.classList.contains('active'))renderPresidentOrganizationPage();syncResponsiveContent();}
   catch(e){console.warn('site settings unavailable',e);}
 }
 async function submitSurveyVote(){
