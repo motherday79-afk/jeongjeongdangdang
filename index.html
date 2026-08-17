@@ -1923,6 +1923,81 @@ button,input,select,textarea{font-size:14px}
 /* ===== /v2.8.4 ===== */
 </style>
 
+
+<style id="v285HomeContentFlowAlignment">
+/* ===== v2.8.5 · HOME CONTENT FLOW + CARD ALIGNMENT ===== */
+/* FONT LOCK: no font-size changes in this patch. */
+.portal-home-main{align-content:start}
+.portal-content-pair{align-items:stretch}
+.portal-community-module,.portal-home-survey-module{min-height:0!important}
+.portal-community-module .portal-story-board{height:100%;align-content:start}
+
+/* COMMUNITY / editorial card geometry: image and copy always share one exact card height. */
+.portal-feature-story{grid-template-columns:minmax(190px,42%) minmax(0,1fr)!important;align-items:stretch!important;min-height:294px!important;height:auto!important}
+.portal-feature-story .visual{position:relative!important;align-self:stretch!important;min-height:294px!important;height:auto!important;overflow:hidden!important;background:#edf5f2!important}
+.portal-feature-story .visual>img,.portal-feature-story .visual>svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center!important}
+.portal-feature-story .copy{display:flex!important;flex-direction:column!important;min-width:0!important;padding:18px 18px 16px!important}
+.portal-feature-story .copy h3{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.portal-feature-story .copy p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.portal-feature-story .copy .meta{margin-top:auto!important;padding-top:12px!important}
+
+.portal-mini-list{align-content:start}
+.portal-mini-item{grid-template-columns:116px minmax(0,1fr)!important;align-items:stretch!important;min-height:94px!important;padding:10px!important}
+.portal-mini-item .thumb{position:relative!important;height:auto!important;min-height:74px!important;align-self:stretch!important;overflow:hidden!important}
+.portal-mini-item .thumb>img,.portal-mini-item .thumb>svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center!important}
+.portal-mini-item .copy{display:flex!important;flex-direction:column!important;justify-content:center!important;min-width:0!important}
+.portal-mini-item .copy b{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;max-height:none!important;overflow:hidden!important}
+.portal-mini-item .statline{margin-top:auto!important;padding-top:5px!important}
+
+/* HOME survey replaces the duplicate small COLUMN block. */
+.portal-home-survey-module{display:flex;flex-direction:column}
+.portal-home-survey-body{padding:18px;display:grid;gap:12px;flex:1}
+.portal-home-survey-question{padding:16px;border:1px solid #e3ebe8;border-radius:15px;background:linear-gradient(135deg,#f7fbfa,#f0f8f5)}
+.portal-home-survey-question b{display:block;color:#20352f;line-height:1.5}
+.portal-home-survey-question p{margin:7px 0 0;color:#71817c;line-height:1.65}
+.portal-home-survey-options{display:grid;gap:8px}
+.portal-home-survey-option{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 11px;border:1px solid #e7eeec;border-radius:11px;background:#fff}
+.portal-home-survey-option span{min-width:0;color:#354943;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portal-home-survey-option b{color:#0d806d}
+.portal-home-survey-track{grid-column:1/-1;height:6px;border-radius:99px;background:#edf2f0;overflow:hidden}
+.portal-home-survey-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0d8b75,#49c8b3)}
+.portal-home-survey-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:3px;color:#7f8d89}
+.portal-home-survey-foot button{border:0;border-radius:10px;background:#133d34;color:#fff;padding:9px 12px;font-weight:900;cursor:pointer;white-space:nowrap}
+
+/* IT'S ME becomes real HOME content, not only a promotional tile. */
+.portal-itsme-module{overflow:hidden}
+.portal-itsme-home{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:0}
+.portal-itsme-lead{padding:21px;border-right:1px solid #e8efec;background:linear-gradient(135deg,#173d34,#103128);color:#f6fffc;cursor:pointer}
+.portal-itsme-lead .tag{display:inline-flex;padding:5px 8px;border-radius:999px;background:rgba(91,218,190,.13);color:#75e0c9;font-weight:950}
+.portal-itsme-lead h3{margin:11px 0 7px;line-height:1.45}
+.portal-itsme-lead p{margin:0;color:#b8cdc7;line-height:1.7;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.portal-itsme-lead .meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px;color:#91b7ad;font-weight:800}
+.portal-itsme-list{display:grid;background:#fff}
+.portal-itsme-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:13px 15px;border:0;border-bottom:1px solid #edf2f0;background:#fff;text-align:left;cursor:pointer}
+.portal-itsme-item:last-child{border-bottom:0}.portal-itsme-item:hover{background:#f8fbfa}
+.portal-itsme-item .rank{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#eef7f4;color:#0d806d;font-weight:1000}
+.portal-itsme-item .copy{min-width:0}.portal-itsme-item .copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#273a34}.portal-itsme-item .copy span{display:block;margin-top:4px;color:#87948f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portal-itsme-item em{font-style:normal;color:#0d806d;font-weight:950;white-space:nowrap}
+
+/* Compare remains the final tool CTA and spans the main rail. */
+.portal-action-pair.portal-action-single{grid-template-columns:1fr!important}
+.portal-action-pair.portal-action-single .portal-action-card{min-height:146px}
+
+@media(max-width:980px){
+  .portal-feature-story{grid-template-columns:minmax(170px,40%) minmax(0,1fr)!important}
+  .portal-itsme-home{grid-template-columns:1fr}.portal-itsme-lead{border-right:0;border-bottom:1px solid #e8efec}
+}
+@media(max-width:780px){
+  .portal-feature-story{grid-template-columns:1fr!important;min-height:0!important}
+  .portal-feature-story .visual{min-height:220px!important;height:220px!important}
+  .portal-feature-story .copy{padding:16px!important}
+  .portal-mini-item{grid-template-columns:104px minmax(0,1fr)!important;min-height:90px!important}
+  .portal-home-survey-foot{align-items:flex-start;flex-direction:column}.portal-home-survey-foot button{width:100%}
+  .portal-itsme-item{grid-template-columns:38px minmax(0,1fr)}.portal-itsme-item em{grid-column:2}
+}
+/* ===== /v2.8.5 ===== */
+</style>
+
 </head>
 <body>
 <div class="topbar">
@@ -2017,18 +2092,20 @@ button,input,select,textarea{font-size:14px}
               <div class="portal-module-head compact"><div><span>COMMUNITY</span><h2>지금 시민들이 말하는 것</h2></div><button type="button" onclick="showPage('community')">더보기 →</button></div>
               <div id="portalCommunityList" class="portal-text-feed"><div class="portal-skeleton">정뮤니티를 불러오는 중입니다.</div></div>
             </section>
-            <section class="portal-module portal-column-module">
-              <div class="portal-module-head compact"><div><span>COLUMN</span><h2>오늘 읽을 정치</h2></div><button type="button" onclick="showPage('news')">더보기 →</button></div>
-              <div id="portalColumnList" class="portal-text-feed"><div class="portal-skeleton">COLUMN을 불러오는 중입니다.</div></div>
+            <section class="portal-module portal-home-survey-module">
+              <div class="portal-module-head compact"><div><span>SURVEY</span><h2>지금 시민들의 선택</h2></div><button type="button" onclick="showPage('survey')">설문 더보기 →</button></div>
+              <div id="portalSurveyFeature" class="portal-home-survey-body"><div class="portal-skeleton">설문을 불러오는 중입니다.</div></div>
             </section>
           </div>
 
-          <div class="portal-action-pair">
+          <section class="portal-module portal-itsme-module">
+            <div class="portal-module-head"><div><span>IT’S ME</span><h2>시민이 지금 정치에 제안하는 것</h2></div><button type="button" onclick="showPage('itsme')">전체 제안 보기 →</button></div>
+            <div id="portalItsMeFeature"><div class="portal-skeleton">시민 정책제안을 불러오는 중입니다.</div></div>
+          </section>
+
+          <div class="portal-action-pair portal-action-single">
             <section class="portal-action-card compare" onclick="showPage('compare')">
-              <div><span>COMPARE</span><h3>두 정치인을<br>같은 기준으로 비교하세요.</h3><p>NOW 흐름과 8 AXIS를 한 화면에서.</p></div><b>비교분석 시작 →</b>
-            </section>
-            <section class="portal-action-card itsme" onclick="showPage('itsme')">
-              <div><span>IT’S ME</span><h3>정치의 주인공이<br>당신이라면?</h3><p>시민의 정책 아이디어를 제안하고 토론하세요.</p></div><b>정책 제안하기 →</b>
+              <div><span>COMPARE</span><h3>두 정치인을 같은 기준으로 비교하세요.</h3><p>NOW 흐름과 8 AXIS를 한 화면에서 비교하고, 관심 지표의 차이를 직접 확인하세요.</p></div><b>비교분석 시작 →</b>
             </section>
           </div>
         </main>
@@ -13390,6 +13467,32 @@ function portalPollHTML(){
   const text=document.getElementById('surveyBody')?.innerText?.replace(/\s+/g,' ').trim()||'지금 정치 현안에 대한 시민의 생각을 확인해보세요.';
   return `<b>${portalEsc(title)}</b><p>${portalEsc(portalTrim(text,128))}</p><button type="button" onclick="showPage('survey')">설문 보기 →</button>`;
 }
+function portalSurveyFeatureHTML(){
+  const survey=window.JJDD_SITE_SETTINGS?.survey||{};
+  const title=survey.title||survey.question||document.getElementById('surveyTitle')?.textContent?.trim()||'지금 정치 현안에 대해 어떻게 생각하시나요?';
+  const subtitle=survey.subtitle||'정참시 이용자들의 선택을 확인하고 직접 참여해보세요.';
+  const options=Array.isArray(survey.options)&&survey.options.length?survey.options:['매우 긍정적','긍정적','보통','부정적'];
+  const stats=survey.stats||{};
+  const counts=Array.isArray(stats.counts)&&stats.counts.length===options.length?stats.counts:options.map((_,i)=>[58,28,9,5][i]||0);
+  const total=Number(stats.total||counts.reduce((a,b)=>a+Number(b||0),0));
+  const sum=Math.max(1,counts.reduce((a,b)=>a+Number(b||0),0));
+  return `<div class="portal-home-survey-question"><b>${portalEsc(title)}</b><p>${portalEsc(portalTrim(subtitle,150))}</p></div>
+    <div class="portal-home-survey-options">${options.slice(0,4).map((o,i)=>{const pct=sum?Number(counts[i]||0)/sum*100:0;return `<div class="portal-home-survey-option"><span>${portalEsc(o)}</span><b>${pct.toFixed(0)}%</b><div class="portal-home-survey-track"><i style="width:${Math.max(2,pct)}%"></i></div></div>`}).join('')}</div>
+    <div class="portal-home-survey-foot"><span>${total?`현재 ${total.toLocaleString('ko-KR')}명 참여`:'현재 진행 중인 설문입니다.'}</span><button type="button" onclick="showPage('survey')">설문 더보기 →</button></div>`;
+}
+const JJDD_HOME_ITSME_DEMO=[
+  {id:null,roleTag:'국회의원',title:'청년 전세대출 심사를 실제 주거비 부담 중심으로 바꿔주세요',content:'소득 숫자만으로는 보이지 않는 월세·보증금·통근비 부담까지 정책 설계에 반영됐으면 합니다.',author:'생활정책제안',likeCount:184,commentCount:31,score:614},
+  {id:null,roleTag:'시장',title:'지역 빈집을 청년 임대주택과 창업공간으로 연결해주세요',content:'방치된 빈집을 주거와 지역경제를 함께 살리는 공간으로 바꾸자는 제안입니다.',author:'지역살림',likeCount:127,commentCount:24,score:429},
+  {id:null,roleTag:'국회의원',title:'국회의원 정책자료를 시민이 검색하기 쉽게 공개해주세요',content:'정책자료와 의정활동 기록을 주제별로 쉽게 찾을 수 있으면 좋겠습니다.',author:'의정돋보기',likeCount:96,commentCount:18,score:324},
+  {id:null,roleTag:'장관',title:'소상공인 폐업 뒤 재기지원 기간을 더 길게 가져가주세요',content:'폐업 직후뿐 아니라 실제 재취업·재창업 시점까지 이어지는 지원이 필요합니다.',author:'골목경제',likeCount:83,commentCount:16,score:281}
+];
+function portalItsMeHTML(){
+  const rows=(Array.isArray(itsmePosts)&&itsmePosts.length?itsmePosts:JJDD_HOME_ITSME_DEMO).slice(0,4);
+  if(!rows.length)return '<div class="portal-empty"><b>시민 정책제안을 준비하고 있습니다.</b><button type="button" onclick="showPage(\'itsme\')">IT\'S ME 보기 →</button></div>';
+  const lead=rows[0],rest=rows.slice(1);
+  const open=(p)=>p?.id?`openItsMePost('${String(p.id).replace(/'/g,"\\'")}')`:`showPage('itsme')`;
+  return `<div class="portal-itsme-home"><article class="portal-itsme-lead" onclick="${open(lead)}"><span class="tag">잇츠미? ${portalEsc(lead.roleTag||'시민')}!</span><h3>${portalEsc(portalTrim(lead.title,92))}</h3><p>${portalEsc(portalTrim(lead.content,210))}</p><div class="meta"><span>${portalEsc(lead.author||'정참시 시민')}</span><span>♥ ${Number(lead.likeCount||0).toLocaleString('ko-KR')}</span><span>댓글 ${Number(lead.commentCount||0).toLocaleString('ko-KR')}</span></div></article><div class="portal-itsme-list">${rest.map((p,i)=>`<button type="button" class="portal-itsme-item" onclick="${open(p)}"><span class="rank">0${i+2}</span><span class="copy"><b>${portalEsc(portalTrim(p.title,70))}</b><span>${portalEsc(p.roleTag||'정책제안')} · ${portalEsc(p.author||'정참시 시민')}</span></span><em>♥ ${Number(p.likeCount||0).toLocaleString('ko-KR')}</em></button>`).join('')}</div></div>`;
+}
 function portalCommunityHTML(){
   if(!communityPosts.length)return `<div class="portal-empty"><b>정뮤니티의 새 글을 준비하고 있습니다.</b><span>시민 정치광장으로 바로 들어가 보세요.</span><button type="button" onclick="showPage('community')">정뮤니티 보기 →</button></div>`;
   const rows=communityPosts.slice(0,4),lead=rows[0],rest=rows.slice(1);
@@ -13408,14 +13511,15 @@ function renderPortalHome(){
   const rise=document.getElementById('portalRiseList');if(rise)rise.innerHTML=portalRiseHTML();
   const poll=document.getElementById('portalPollMirror');if(poll)poll.innerHTML=portalPollHTML();
   const community=document.getElementById('portalCommunityList');if(community)community.innerHTML=portalCommunityHTML();
-  const column=document.getElementById('portalColumnList');if(column)column.innerHTML=portalColumnHTML();
+  const surveyFeature=document.getElementById('portalSurveyFeature');if(surveyFeature)surveyFeature.innerHTML=portalSurveyFeatureHTML();
+  const itsmeFeature=document.getElementById('portalItsMeFeature');if(itsmeFeature)itsmeFeature.innerHTML=portalItsMeHTML();
   const stamp=document.getElementById('portalLiveStamp');if(stamp){try{stamp.textContent=new Intl.DateTimeFormat('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'}).format(new Date())+' KST';}catch(_){stamp.textContent='NOW';}}
   registerPoliticianPhotoSlots(document.getElementById('page-home')||document);
 }
 window.renderPortalHome=renderPortalHome;window.portalSearchGo=portalSearchGo;
 document.getElementById('portalSearchSubmit')?.addEventListener('click',portalSearchGo);
 document.getElementById('portalSearchInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')portalSearchGo();});
-document.addEventListener('DOMContentLoaded',()=>{document.body.classList.toggle('portal-home-mode',document.getElementById('page-home')?.classList.contains('active'));renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});});
+document.addEventListener('DOMContentLoaded',()=>{document.body.classList.toggle('portal-home-mode',document.getElementById('page-home')?.classList.contains('active'));renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});loadItsMe(false).then(renderPortalHome).catch(()=>{});});
 
 function closePortalDrawer(skipHistory=false){
   const back=document.getElementById('portalDrawerBackdrop');if(!back)return;back.classList.remove('open');back.setAttribute('aria-hidden','true');document.body.style.overflow='';
