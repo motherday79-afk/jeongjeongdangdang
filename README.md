@@ -1,4 +1,4 @@
-# 정참시 v2.4.5 · REFERRAL + SECRET COLLECTION + GIFT
+# 정참시 v2.4.6 · REFERRAL + SECRET COLLECTION + GIFT
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -68,7 +68,7 @@
 - 8 AXIS HEAD-TO-HEAD 하단에 PLUS 전용 자연어 `한줄요약` 카드 추가
 
 
-## 6. v2.4.5 추천인 · SECRET COLLECTION
+## 6. v2.4.6 추천인 · SECRET COLLECTION
 - 회원가입 선택항목에 `추천인 닉네임` 추가 · 아이디가 아닌 실제 회원 닉네임으로 확인
 - 신규 닉네임 중복 방지 강화 · 추천관계는 가입 완료 후 일반 회원이 변경 불가
 - 유효 추천 기준: 추천가입 후 7일 경과 + 서로 다른 날짜 3일 이상 활동
@@ -82,3 +82,8 @@
 - 관리자에서 추천관계 VALID/PENDING/INVALID 처리, 전체 재계산, 시즌 필수배지/기간/선물명 설정, 배송주소·택배사·송장·배송상태 관리
 - 회원탈퇴 시 추천관계 무효화 및 해당 회원의 선물 배송정보 제거
 - 이용약관/개인정보처리방침 v5에 추천관계·SECRET GIFT 배송정보 처리 내용 반영
+
+
+## v2.4.6 HOTFIX + PRO PREVIEW
+- IT’S ME current route is mirrored to sessionStorage as well as History API so browser refresh restores the IT’S ME list or the current IT’S ME post instead of falling back to NOW Rank.
+- Comparison result now includes a PRO preview section under PLUS: `POLITICAL INTELLIGENCE MANAGEMENT PROPOSAL` with a `문의하기` action.
