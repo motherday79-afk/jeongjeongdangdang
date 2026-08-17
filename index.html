@@ -1838,6 +1838,42 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 /* ===== /v2.8.1 ===== */
 </style>
 
+
+<style id="v282PortalRealContentStyles">
+/* ===== v2.8.2 · PORTAL REAL CONTENT / HOME CHROME ===== */
+body.portal-home-mode .topbar,body.portal-home-mode .visitor-strip{display:none!important}
+body.portal-home-mode .app{padding-top:0!important}
+body.portal-home-mode{background:#fbfcfc}
+#page-home{position:relative}
+.portal-home-shell{position:relative;padding-top:74px}
+.portal-home-chrome{position:absolute;left:0;right:0;top:13px;height:46px;display:flex;align-items:center;justify-content:space-between;z-index:20;pointer-events:none}
+.portal-home-chrome>*{pointer-events:auto}
+.portal-chrome-left,.portal-chrome-right{display:flex;align-items:center;gap:9px}
+.portal-chrome-btn{width:42px;height:42px;display:grid;place-items:center;border:1px solid #dce7e3;border-radius:14px;background:#fff;color:#173a32;box-shadow:0 7px 20px rgba(21,58,50,.055);cursor:pointer;position:relative}
+.portal-chrome-btn:hover{background:#f2f9f7;border-color:#c9ddd7}
+.portal-chrome-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.portal-chrome-btn.menu svg{width:23px;height:23px}.portal-chrome-btn.star svg{fill:none}
+.portal-chrome-count{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#0d8c76;color:#fff;font-size:8px;font-weight:1000;display:grid;place-items:center;border:2px solid #fbfcfc}
+.portal-chrome-label{margin-left:2px;color:#1b2e29;font-size:18px;font-weight:1000;letter-spacing:-.6px}.portal-chrome-label small{display:block;color:#92a09c;font-size:7px;letter-spacing:.1em;font-weight:850;margin-top:1px}
+.portal-home-search{padding-top:0!important}
+.portal-drawer-backdrop{position:fixed;inset:0;background:rgba(15,32,27,.24);backdrop-filter:blur(2px);z-index:900;opacity:0;visibility:hidden;transition:.18s ease}
+.portal-drawer-backdrop.open{opacity:1;visibility:visible}
+.portal-drawer{position:absolute;top:0;bottom:0;width:min(390px,92vw);background:#fff;box-shadow:0 24px 80px rgba(18,50,42,.18);padding:24px;overflow:auto}
+.portal-drawer.left{left:0}.portal-drawer.right{right:0}
+.portal-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:17px;border-bottom:1px solid #e8efec}.portal-drawer-head h2{margin:0;color:#172b26;font-size:22px;letter-spacing:-.8px}.portal-drawer-head small{display:block;color:#8b9995;font-size:9px;margin-top:3px}.portal-drawer-close{width:34px;height:34px;border:0;border-radius:10px;background:#f2f6f5;color:#445a54;font-size:18px;cursor:pointer}
+.portal-service-groups{display:grid;gap:18px;margin-top:18px}.portal-service-group h3{margin:0 0 8px;color:#85938f;font-size:8px;letter-spacing:.16em}.portal-service-links{display:grid;grid-template-columns:1fr 1fr;gap:7px}.portal-service-links button{min-height:56px;padding:11px 12px;border:1px solid #e3ebe8;border-radius:12px;background:#fff;text-align:left;color:#253832;cursor:pointer}.portal-service-links button:hover{background:#f5faf8}.portal-service-links b{display:block;font-size:12px}.portal-service-links small{display:block;color:#8e9b97;font-size:8px;margin-top:3px}
+.portal-drawer-list{display:grid;gap:8px;margin-top:16px}.portal-drawer-item{padding:13px;border:1px solid #e6ecea;border-radius:13px;background:#fff}.portal-drawer-item .top{display:flex;align-items:center;justify-content:space-between;gap:10px}.portal-drawer-item b{color:#253a34;font-size:12px}.portal-drawer-item em{font-style:normal;color:#0d8a74;font-size:8px;font-weight:1000}.portal-drawer-item p{margin:5px 0 0;color:#7e8d88;font-size:9px;line-height:1.55}.portal-drawer-item button{margin-top:8px;border:0;background:#edf7f4;color:#126f5f;border-radius:8px;padding:7px 9px;font-size:8px;font-weight:900;cursor:pointer}
+.portal-fav-tabs{display:flex;gap:6px;overflow:auto;margin-top:15px}.portal-fav-tabs button{white-space:nowrap;border:1px solid #e0e8e5;background:#fff;border-radius:999px;padding:7px 10px;color:#66756f;font-size:8px;font-weight:900}.portal-fav-tabs button.active{background:#173d34;color:#fff;border-color:#173d34}
+.portal-today-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;padding:14px}.portal-today-card{min-width:0;border:1px solid #e6ecea;border-radius:15px;overflow:hidden;background:#fff;cursor:pointer;text-align:left}.portal-today-card:hover{border-color:#cfe0da;transform:translateY(-1px)}.portal-today-card .photo{height:124px;background:#edf5f2;overflow:hidden}.portal-today-card:first-child .photo{height:164px}.portal-today-card .photo img{width:100%;height:100%;object-fit:cover;display:block}.portal-today-card .body{padding:12px}.portal-today-card .tag{color:#0e8b75;font-size:7.5px;font-weight:1000;letter-spacing:.12em}.portal-today-card h3{margin:6px 0 5px;color:#1d302a;font-size:14px;line-height:1.4;letter-spacing:-.4px}.portal-today-card:first-child h3{font-size:18px}.portal-today-card p{margin:0;color:#76847f;font-size:9px;line-height:1.55}.portal-today-card small{display:block;margin-top:8px;color:#9aa5a1;font-size:7.5px}
+.portal-story-board{padding:12px!important}.portal-feature-story{grid-template-columns:46% minmax(0,1fr)!important}.portal-feature-story .visual{min-height:190px!important}.portal-feature-story .visual img{object-position:center}.portal-feature-story .copy{padding:17px 15px 15px 0!important}.portal-feature-story h3{font-size:17px!important}.portal-mini-item{grid-template-columns:105px minmax(0,1fr)!important;padding:8px!important}.portal-mini-item .thumb{height:72px!important}.portal-mini-item .thumb img{object-position:center}
+.portal-community-module,.portal-column-module{min-height:480px!important}
+.community-post-thumb img{width:100%;height:100%;object-fit:cover}
+.portal-action-card.compare:after,.portal-action-card.itsme:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;background-size:cover;background-position:right center}.portal-action-card.compare:after{background-image:url('/assets/portal/community-meeting.webp')}.portal-action-card.itsme:after{background-image:url('/assets/portal/youth-policy.webp');opacity:.08}.portal-action-card>div,.portal-action-card>b{position:relative;z-index:1}
+@media(max-width:1120px){.portal-home-shell{padding-top:66px}.portal-home-chrome{left:8px;right:8px}.portal-today-grid{grid-template-columns:1fr 1fr}.portal-today-card:first-child{grid-column:1/-1}.portal-feature-story{grid-template-columns:1fr!important}.portal-feature-story .copy{padding:0 14px 14px!important}}
+@media(max-width:780px){.portal-home-shell{padding-top:60px}.portal-chrome-label{font-size:15px}.portal-chrome-label small{display:none}.portal-chrome-btn{width:38px;height:38px;border-radius:12px}.portal-home-search h1{font-size:29px}.portal-today-grid{grid-template-columns:1fr}.portal-today-card:first-child{grid-column:auto}.portal-today-card .photo,.portal-today-card:first-child .photo{height:180px}.portal-service-grid{grid-template-columns:repeat(3,1fr)}.portal-feature-story .visual{min-height:180px!important}}
+/* ===== /v2.8.2 ===== */
+</style>
+
 </head>
 <body>
 <div class="topbar">
@@ -1877,6 +1913,16 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   <!-- Political Portal HOME -->
   <section class="page active" id="page-home">
     <div class="portal-home-shell">
+      <div class="portal-home-chrome" aria-label="정참시 홈 빠른 기능">
+        <div class="portal-chrome-left">
+          <button class="portal-chrome-btn menu" id="portalAllMenuBtn" type="button" aria-label="전체 서비스"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="portal-chrome-label">정참시<small>대한민국 정치 포털</small></div>
+        </div>
+        <div class="portal-chrome-right">
+          <button class="portal-chrome-btn" id="portalAlertBtn" type="button" aria-label="알림"><svg viewBox="0 0 24 24"><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 5.8 2.2 6.1 2.2 7.3H4.3c0-1.2 2.2-1.5 2.2-7.3Z"/><path d="M10 20h4"/></svg><span class="portal-chrome-count">3</span></button>
+          <button class="portal-chrome-btn star" id="portalFavoriteBtn" type="button" aria-label="즐겨찾기"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.7l6.2-.9L12 3Z"/></svg><span class="portal-chrome-count">5</span></button>
+        </div>
+      </div>
       <section class="portal-home-search" aria-label="정참시 정치 통합검색">
         <div class="portal-home-eyebrow"><i></i> 대한민국 정치 포털</div>
         <h1>대한민국 정치, <b>지금 한눈에.</b></h1>
@@ -1908,6 +1954,15 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
               <button type="button" onclick="showPage('ranking')">전체순위 보기 →</button>
             </div>
             <div class="portal-rank-list" id="portalRankList"><div class="portal-skeleton">NOW Rank를 불러오는 중입니다.</div></div>
+          </section>
+
+          <section class="portal-module portal-today-module">
+            <div class="portal-module-head"><div><span>TODAY POLITICS</span><h2>오늘 정치에서 봐야 할 3가지</h2></div><button type="button" onclick="showPage('news')">전체 COLUMN 보기 →</button></div>
+            <div class="portal-today-grid">
+              <button class="portal-today-card" type="button" onclick="openArticle(0)"><div class="photo"><img src="/assets/portal/youth-policy.webp" alt="청년정책 관련 정참시 생성 이미지"></div><div class="body"><span class="tag">PRESIDENT · YOUTH</span><h3>청년정책 대전환, 무엇이 달라져야 체감될까</h3><p>지원의 양보다 참여와 기회, 주거·일자리의 연결이 중요해지는 이유를 정리합니다.</p><small>자료 기준 · 대통령실 2026.08.14 공개 브리핑</small></div></button>
+              <button class="portal-today-card" type="button" onclick="openArticle(1)"><div class="photo"><img src="/assets/portal/community-meeting.webp" alt="반도체 정책 토론 관련 정참시 생성 이미지"></div><div class="body"><span class="tag">INDUSTRY · POLICY</span><h3>반도체 특별법 시행, 산업 지원은 어디까지 체감될까</h3><p>국가 지원 체계가 지역 인프라와 일자리까지 이어질 조건을 봅니다.</p><small>자료 기준 · 2026.08.11 반도체 특별법 시행</small></div></button>
+              <button class="portal-today-card" type="button" onclick="openArticle(2)"><div class="photo"><img src="/assets/portal/housing-economy.webp" alt="주택 공급 정책 관련 정참시 생성 이미지"></div><div class="body"><span class="tag">HOUSING · ECONOMY</span><h3>주택공급 매주 현장점검, 발표보다 중요한 것은 속도</h3><p>공급계획의 숫자가 실제 입주와 생활 안정으로 연결되는 지점을 짚습니다.</p><small>자료 기준 · 대한민국 정책브리핑</small></div></button>
+            </div>
           </section>
 
           <div class="portal-content-pair">
@@ -10230,139 +10285,30 @@ function renderPresidentOrganizationPage(){
 }
 
 const demoCommunityPosts = [
-  {
-    id:'demo_comm_1',category:'자유토론',title:'김민석 대표 체제, 첫 일성보다 중요한 건 결국 실행 속도 아닐까요?',
-    content:'대표 선출 직후 메시지는 충분히 강했는데, 결국 시민들이 보는 건 언제 어떤 팀으로 움직이느냐인 것 같습니다. 전당대회 열기가 끝난 뒤에도 민생과 현안 대응에서 속도가 유지되는지가 더 중요해 보입니다.',
-    author:'민생체감',role:'PLUS',createdAt:'2026-08-18T09:12:00+09:00',commentCount:18,likeCount:42,imageType:'leadership',demo:true
-  },
-  {
-    id:'demo_comm_2',category:'정책',title:'청년 주거대책, 숫자보다 체감이 먼저라는 말에 공감하시나요?',
-    content:'정책 발표는 늘 큰 숫자와 계획으로 시작하지만 실제로 청년들이 묻는 건 월세, 대출, 출퇴근 거리 같은 생활 문제인 것 같습니다. 발표 이후 반응이 빠르게 올라온 이유도 결국 체감 포인트를 건드렸기 때문 아닐까요.',
-    author:'주거현실파',role:'FREE',createdAt:'2026-08-18T08:36:00+09:00',commentCount:12,likeCount:27,imageType:'housing',demo:true
-  },
-  {
-    id:'demo_comm_3',category:'지역정치',title:'구미시장 이슈가 전국 키워드로 번진 이유, 지역정치도 이제는 전국전 같네요',
-    content:'예전에는 지역 현안이 지역 안에서만 소비되는 느낌이 강했는데, 지금은 한 장면이 바로 전국 키워드가 되는 것 같습니다. 지역정치가 중앙정치와 실시간으로 연결되는 시대라는 걸 보여주는 사례처럼 보입니다.',
-    author:'지방정치읽기',role:'PLUS',createdAt:'2026-08-18T07:55:00+09:00',commentCount:9,likeCount:19,imageType:'cityhall',demo:true
-  },
-  {
-    id:'demo_comm_4',category:'질문',title:'대통령실 조직 개편이 나오면 총리·장관 라인까지 분위기가 달라질까요?',
-    content:'대통령실이 메시지와 정책 속도를 끌어올리기 위해 조직 정비를 검토한다는 이야기가 있으면, 결국 그 여파는 국무총리와 장관 라인까지 번질 수밖에 없다고 봅니다. 실제로 어떤 부처가 더 주목받게 될지도 궁금합니다.',
-    author:'정치초점',role:'FREE',createdAt:'2026-08-18T07:18:00+09:00',commentCount:7,likeCount:15,imageType:'office',demo:true
-  },
-  {
-    id:'demo_comm_5',category:'자유토론',title:'정청래와 김민석, 지지층이 기대하는 포인트가 생각보다 꽤 다르네요',
-    content:'한쪽은 강한 투쟁력과 선명성을, 다른 한쪽은 조직 안정과 확장성을 기대하는 분위기가 읽힙니다. 같은 당 안에서도 정치인에게 기대하는 역할이 이렇게 다르다는 게 흥미롭습니다.',
-    author:'정당관찰자',role:'PLUS',createdAt:'2026-08-17T22:40:00+09:00',commentCount:16,likeCount:33,imageType:'debate',demo:true
-  },
-  {
-    id:'demo_comm_6',category:'정책',title:'반도체 특별법 논의, 결국 지역 일자리까지 연결돼야 체감될 것 같아요',
-    content:'산업 지원이 수도권 대기업 중심으로만 읽히면 일반 시민에게는 먼 이야기처럼 느껴질 수 있습니다. 지역 대학, 협력업체, 청년 일자리까지 연결되는 그림이 보여야 정책 메시지도 더 강해질 것 같습니다.',
-    author:'데이터좋아',role:'PLUS',createdAt:'2026-08-17T21:58:00+09:00',commentCount:11,likeCount:24,imageType:'semiconductor',demo:true
-  }
+  {id:'demo_comm_1',category:'정책',title:'청년정책, 지원금보다 “정책 결정에 참여할 기회”가 더 중요하지 않을까요?',content:'대통령실이 8월 14일 청년정책 전문가 간담회를 열고 청년정책의 전환 방향을 논의했습니다. 개인적으로는 지원 액수만 늘리는 방식보다 청년이 실제 정책 설계와 평가 과정에 들어가는 구조가 훨씬 중요해 보입니다. 여러분은 어떤 변화가 가장 먼저 체감돼야 한다고 보시나요?',author:'청년정책읽기',role:'PLUS',createdAt:'2026-08-18T00:12:00.000Z',commentCount:3,likeCount:61,imageUrl:'/assets/portal/youth-policy.webp',demo:true},
+  {id:'demo_comm_2',category:'정책',title:'반도체 특별법 시행, 기업 지원만큼 지역 인프라와 인재가 따라가야 하지 않을까요?',content:'8월 11일부터 반도체산업 경쟁력 강화 및 지원에 관한 특별법이 시행됐습니다. 국가 차원의 지원 체계가 생기는 건 분명 큰 변화인데, 결국 시민이 체감하려면 교통·전력·용수·인재 양성과 지역 일자리까지 연결돼야 할 것 같습니다. 산업정책이 생활정책이 되는 지점이 중요해 보입니다.',author:'산업지도',role:'PLUS',createdAt:'2026-08-17T23:36:00.000Z',commentCount:2,likeCount:44,imageUrl:'/assets/portal/community-meeting.webp',demo:true},
+  {id:'demo_comm_3',category:'자유토론',title:'주택공급 “매주 현장 점검”, 숫자 발표보다 실제 입주 속도를 봐야겠죠?',content:'정부가 주택공급 상황을 최우선 과제로 관리하고 현장을 정기적으로 점검하겠다고 밝힌 흐름을 보면, 이제는 계획 물량보다 인허가부터 착공·입주까지 얼마나 빨라지는지가 더 중요해 보입니다. 공급 대책을 평가할 때 여러분은 어떤 숫자를 가장 먼저 보시나요?',author:'집값체감',role:'FREE',createdAt:'2026-08-17T22:55:00.000Z',commentCount:2,likeCount:58,imageUrl:'/assets/portal/housing-economy.webp',demo:true},
+  {id:'demo_comm_4',category:'질문',title:'청년정책이 주거·일자리·교육으로 따로 움직이면 체감이 떨어지는 이유가 뭘까요?',content:'청년 입장에서는 주거, 일자리, 교육이 각각 다른 정책이 아니라 한 번에 연결된 삶의 문제인데 정부 정책은 부처별로 나뉘는 경우가 많습니다. 이번 청년정책 논의를 계기로 한 사람의 생애경로 중심으로 묶는 방식이 가능할지 궁금합니다.',author:'정책초점',role:'FREE',createdAt:'2026-08-17T22:18:00.000Z',commentCount:1,likeCount:29,imageUrl:'/assets/portal/youth-policy.webp',demo:true},
+  {id:'demo_comm_5',category:'지역정치',title:'반도체 지원이 수도권과 비수도권의 새로운 경쟁 구도를 만들 수도 있겠네요',content:'특별법 시행 이후 실제 투자와 기반시설 지원이 어디에 집중되는지가 지역 정치에서도 큰 쟁점이 될 것 같습니다. 지자체장과 지역 국회의원의 역할도 더 커질 수밖에 없겠죠. 지역이 체감할 수 있는 기준을 무엇으로 잡아야 할지 이야기해보고 싶습니다.',author:'지역정치현장',role:'PLUS',createdAt:'2026-08-17T13:40:00.000Z',commentCount:1,likeCount:36,imageUrl:'/assets/portal/community-meeting.webp',demo:true},
+  {id:'demo_comm_6',category:'자유토론',title:'부동산 정책은 결국 “발표한 날”보다 “입주하는 날”에 평가받는 것 같습니다',content:'대책 발표 직후에는 공급 규모와 지역이 화제가 되지만 시민 입장에서는 실제로 집이 언제 지어지고 어떤 가격으로 공급되는지가 핵심입니다. 정치권이 주택정책을 설명할 때도 계획과 실적을 분리해서 보여주면 좋겠습니다.',author:'생활정치',role:'FREE',createdAt:'2026-08-17T12:58:00.000Z',commentCount:1,likeCount:41,imageUrl:'/assets/portal/housing-economy.webp',demo:true}
 ];
 
 const demoCommunityComments = {
-  demo_comm_1:[
-    {id:'dc11',author:'균형감각',role:'FREE',content:'말씀대로 선언보다 인선과 일정이 먼저 보이면 체감이 확 달라질 것 같습니다.',createdAt:'2026-08-18T09:20:00+09:00'},
-    {id:'dc12',author:'국회앞시민',role:'PLUS',content:'첫 100일에 무엇을 우선순위로 두는지 보면 방향이 더 분명해질 것 같아요.',createdAt:'2026-08-18T09:28:00+09:00'},
-    {id:'dc13',author:'민트포털',role:'FREE',content:'전당대회 이후 바로 민생 현안으로 넘어가느냐가 핵심이겠네요.',createdAt:'2026-08-18T09:34:00+09:00'}
-  ],
-  demo_comm_2:[
-    {id:'dc21',author:'서울자취생',role:'FREE',content:'대책이 크더라도 월세 부담이 바로 줄지 않으면 피부에 와닿지 않더라고요.',createdAt:'2026-08-18T08:44:00+09:00'},
-    {id:'dc22',author:'주거연구자',role:'PLUS',content:'공급도 중요하지만 청년층이 당장 만나는 금융 조건이 같이 풀려야 합니다.',createdAt:'2026-08-18T08:49:00+09:00'}
-  ],
-  demo_comm_3:[
-    {id:'dc31',author:'대구경북체크',role:'FREE',content:'지역 이슈가 전국으로 번지는 속도가 정말 빨라졌습니다.',createdAt:'2026-08-18T08:02:00+09:00'},
-    {id:'dc32',author:'정치현장파',role:'PLUS',content:'SNS와 포털 검색이 붙으면 지역정치도 바로 전국 이슈가 되네요.',createdAt:'2026-08-18T08:15:00+09:00'}
-  ],
-  demo_comm_4:[
-    {id:'dc41',author:'행정부읽기',role:'FREE',content:'대통령실 개편은 결국 부처 메시지까지 바꾸는 신호로 읽히는 것 같습니다.',createdAt:'2026-08-18T07:26:00+09:00'},
-    {id:'dc42',author:'정책관찰자',role:'PLUS',content:'특히 경제와 민생 라인에서 누가 전면에 서는지가 중요할 것 같아요.',createdAt:'2026-08-18T07:31:00+09:00'}
-  ],
-  demo_comm_5:[
-    {id:'dc51',author:'당원시선',role:'FREE',content:'두 사람을 바라보는 기대가 다르다는 말에 공감합니다.',createdAt:'2026-08-17T22:48:00+09:00'},
-    {id:'dc52',author:'의정스캐너',role:'PLUS',content:'선명성과 확장성 사이에서 당심과 민심이 어떻게 만나는지가 포인트겠죠.',createdAt:'2026-08-17T22:56:00+09:00'}
-  ],
-  demo_comm_6:[
-    {id:'dc61',author:'산업지도',role:'FREE',content:'지역 대학과 협력업체까지 연결되면 정말 체감도가 달라질 것 같습니다.',createdAt:'2026-08-17T22:06:00+09:00'},
-    {id:'dc62',author:'청년일자리',role:'PLUS',content:'산업 정책도 결국 내 일자리 이야기로 설명돼야 관심이 붙는 것 같아요.',createdAt:'2026-08-17T22:12:00+09:00'}
-  ]
+ demo_comm_1:[{id:'dc11',author:'취준생A',role:'FREE',content:'정책을 다 만든 뒤 의견을 받는 것보다 처음부터 청년이 들어가는 구조가 있었으면 좋겠습니다.',createdAt:'2026-08-18T00:20:00.000Z'},{id:'dc12',author:'현장행정',role:'PLUS',content:'참여도 중요하지만 실제 예산과 사업 평가 권한까지 연결돼야 형식적 참여를 피할 수 있을 것 같아요.',createdAt:'2026-08-18T00:28:00.000Z'},{id:'dc13',author:'서울청년',role:'FREE',content:'주거와 일자리를 한 정책 묶음으로 보는 방식이 가장 먼저 필요하다고 봅니다.',createdAt:'2026-08-18T00:34:00.000Z'}],
+ demo_comm_2:[{id:'dc21',author:'산단근무자',role:'FREE',content:'공장만 들어오고 교통이나 정주환경이 못 따라오면 지역 주민 입장에선 체감이 낮습니다.',createdAt:'2026-08-17T23:44:00.000Z'},{id:'dc22',author:'산업정책관찰',role:'PLUS',content:'전력과 용수 같은 인프라 비용을 누가 어떻게 분담하는지도 중요한 포인트라고 봅니다.',createdAt:'2026-08-17T23:49:00.000Z'}],
+ demo_comm_3:[{id:'dc31',author:'무주택30대',role:'FREE',content:'착공과 입주 예정 물량을 같은 화면에서 계속 보여주면 정책을 판단하기 쉬울 것 같아요.',createdAt:'2026-08-17T23:02:00.000Z'},{id:'dc32',author:'도시계획읽기',role:'PLUS',content:'인허가 단축만큼 교통과 학교 같은 기반시설이 같이 가는지도 봐야 합니다.',createdAt:'2026-08-17T23:15:00.000Z'}],
+ demo_comm_4:[{id:'dc41',author:'청년공무원',role:'FREE',content:'부처별 사업을 한 번에 안내받을 수 있는 통합 창구부터 필요하다고 느낍니다.',createdAt:'2026-08-17T22:26:00.000Z'}],
+ demo_comm_5:[{id:'dc51',author:'지방산업',role:'FREE',content:'지역 인재 채용 비율과 협력업체 매출 같은 지표도 같이 공개됐으면 좋겠습니다.',createdAt:'2026-08-17T13:48:00.000Z'}],
+ demo_comm_6:[{id:'dc61',author:'실수요자',role:'FREE',content:'발표 물량과 실제 입주 물량을 매년 비교해주는 데이터가 있으면 좋겠네요.',createdAt:'2026-08-17T13:06:00.000Z'}]
 };
 
 const demoNewsArticles = [
-  {
-    title:'김민석 체제 출범, 민주당의 첫 100일은 무엇이 달라질까',
-    cat:'정치',author:'정참시 COLUMN 정치부',date:'2026.08.18 09:30',
-    excerpt:'새 지도부 출범 이후 당의 메시지, 인선, 민생 대응 속도가 어떻게 달라질지를 정참시 시선으로 풀어낸 샘플 COLUMN입니다.',
-    body:[
-      '김민석 대표 체제가 출범한 뒤 정치권의 시선은 자연스럽게 민주당의 첫 100일에 쏠리고 있다. 이제 관심은 승리의 순간보다 그 이후 어떤 팀과 어떤 우선순위로 움직이느냐에 맞춰진다.',
-      '정참시는 이 흐름을 단순히 인물 기사로만 다루지 않고, 당의 메시지 관리와 민생 이슈 대응, 경쟁 주자들과의 관계 설정이라는 세 갈래 축으로 바라보는 편이 더 유효하다고 본다.',
-      '특히 대표 선출 이후 검색량과 정뮤니티 반응에서 반복적으로 관찰되는 키워드는 “속도”와 “안정”이다. 지지층은 빠른 대응을 기대하면서도 동시에 체계적인 운영을 요구하고 있다.',
-      '이 COLUMN은 실제 기사를 그대로 가져오지 않고, 현재 정치 현안을 바탕으로 새롭게 작성한 샘플 콘텐츠다. HOME 화면에서 이미지와 기사 제목, 요약, 메타정보가 함께 배치될 때 어떤 인상을 주는지 보기 위한 목적도 담고 있다.'
-    ],
-    type:'leadership'
-  },
-  {
-    title:'대통령실 조직 개편론, 정책 추진 속도와 메시지 관리가 관건',
-    cat:'정책',author:'정참시 COLUMN 정책팀',date:'2026.08.18 08:55',
-    excerpt:'대통령실이 국정 추진력을 높이기 위해 조직 정비에 나설 경우 무엇이 달라질지를 정리한 샘플 COLUMN입니다.',
-    body:[
-      '정치권에서 대통령실 조직 개편 가능성이 거론될 때 가장 먼저 나오는 질문은 누가 자리를 옮기느냐보다 메시지와 정책 집행 속도가 실제로 달라지느냐다.',
-      '대통령실은 국민과 가장 가까운 국정 창구이기 때문에, 홍보와 조정, 정책 우선순위의 변화는 총리실과 각 부처의 움직임까지 연쇄적으로 바꿀 수 있다.',
-      '정참시는 이 주제를 인사 뉴스가 아니라 운영 체계의 변화로 바라본다. 어떤 분야가 전면에 서는지, 민생과 산업 가운데 어느 메시지가 더 강해지는지가 훨씬 중요할 수 있다.',
-      '정치 포털 HOME에서는 이런 콘텐츠가 대통령 카드와 연결되어 “오늘 대통령과 정부에서 무엇을 봐야 하는가”를 설명하는 역할을 맡게 된다.'
-    ],
-    type:'office'
-  },
-  {
-    title:'청년 주거대책 발표 이후 관심도 급등… 왜 지금 다시 주거인가',
-    cat:'민생',author:'정참시 COLUMN 사회부',date:'2026.08.18 08:18',
-    excerpt:'청년 주거정책 발표 뒤 검색, 커뮤니티 반응, 정치인 관심도가 함께 움직였다는 설정으로 구성한 샘플 COLUMN입니다.',
-    body:[
-      '청년 주거대책이 발표된 뒤 온라인 공간에서 반응이 빠르게 늘어나는 장면은 더 이상 낯설지 않다. 주거는 단순한 정책 분야를 넘어 청년층의 생활 안정감과 직결된 이슈이기 때문이다.',
-      '특히 정치인은 청년층의 반응을 통해 정책 메시지의 명확성과 체감도를 동시에 시험받는다. 공급과 금융, 생활 비용 가운데 무엇을 더 전면에 내세우느냐에 따라 반응의 온도도 달라질 수 있다.',
-      '정참시는 이런 흐름을 단순 기사 요약이 아니라 NOW Rank 상승 배경과 연결된 설명 콘텐츠로 확장하는 방향을 상정하고 있다.',
-      '이 글 역시 저작권 이슈를 피하기 위해 실제 기사 문장을 쓰지 않고, 현안을 바탕으로 새롭게 작성한 샘플 COLUMN이다.'
-    ],
-    type:'housing'
-  },
-  {
-    title:'반도체 특별법 절충안, 지역 산업 생태계 경쟁의 시험대',
-    cat:'산업',author:'정참시 COLUMN 데이터팀',date:'2026.08.18 07:48',
-    excerpt:'반도체 특별법을 둘러싼 논의가 산업 지원을 넘어 지역 일자리 경쟁으로 이어지는 지점을 짚어본 샘플 COLUMN입니다.',
-    body:[
-      '반도체 특별법 논의는 대기업 지원 여부에만 머물지 않는다. 실제로는 인재 양성과 협력업체 생태계, 지역 투자 분산까지 포함한 넓은 산업정책의 문제에 가깝다.',
-      '정참시 관점에서 보면 이 주제는 정책 자체보다 “누가 어떤 언어로 설명하느냐”에 따라 관심도 차이가 크게 난다. 산업 의제를 생활 의제로 번역하는 정치인의 능력이 중요해지는 이유다.',
-      '지역 일자리와 연계된 설명이 붙는 순간, 정책 기사는 수도권 중심 뉴스에서 벗어나 더 넓은 대중성을 확보할 수 있다.',
-      'HOME의 COLUMN 섹션에서는 이런 산업·정책 콘텐츠도 부담 없이 읽히도록 이미지와 짧은 요약, 메타정보를 먼저 보여주는 방식을 적용한다.'
-    ],
-    type:'semiconductor'
-  },
-  {
-    title:'구미·안성·남양주… 기초단체장 이슈가 전국 정치가 되는 순간',
-    cat:'지역',author:'정참시 COLUMN 지역부',date:'2026.08.18 07:20',
-    excerpt:'지역 정치 이슈가 실시간 키워드와 포털 관심도로 전국화되는 흐름을 보여주기 위한 샘플 COLUMN입니다.',
-    body:[
-      '지역정치는 종종 중앙정치의 그림자처럼 취급되지만, 최근의 흐름은 다르다. 특정 지자체장의 발언이나 갈등, 정책 실험이 빠르게 전국 키워드로 번지면서 중앙정치 못지않은 주목도를 얻는다.',
-      '이는 포털 검색과 SNS, 정뮤니티 반응이 서로 맞물리기 때문이다. 한 지역에서 시작된 장면이 전국적 관심사로 이동하는 속도가 이전보다 훨씬 빨라졌다.',
-      '정참시는 이런 현상을 단순한 지역 뉴스가 아니라 전국 정치의 감정선과 연결되는 데이터 현상으로 해석한다.',
-      '따라서 지역정치 콘텐츠 역시 HOME에서 충분한 존재감을 가질 수 있으며, 오히려 정치 포털의 차별점이 될 수 있다.'
-    ],
-    type:'cityhall'
-  },
-  {
-    title:'정청래와 김민석, 같은 당 안에서 기대가 갈리는 세 가지 장면',
-    cat:'현장',author:'정참시 COLUMN 분석실',date:'2026.08.18 06:58',
-    excerpt:'두 정치인을 둘러싼 지지층의 기대 차이를 선명성, 조직력, 확장성이라는 세 축으로 정리한 샘플 COLUMN입니다.',
-    body:[
-      '같은 당 안에서도 정치인에게 기대하는 역할은 생각보다 분명하게 갈린다. 어떤 인물에게는 투쟁력과 선명성이, 또 다른 인물에게는 조직 운영과 확장성이 우선적으로 요구된다.',
-      '정참시에서 관찰하는 흥미로운 지점은 이 기대 차이가 단순 팬심이 아니라 키워드 반응과 게시글 제목, 비교분석 조회 흐름에도 그대로 드러난다는 점이다.',
-      '따라서 특정 인물을 둘러싼 관심을 이해하려면 순위만 볼 것이 아니라, 그 인물에게 무엇이 기대되고 무엇이 논쟁거리인지 함께 읽어야 한다.',
-      '이 COLUMN은 그런 접근을 보여주기 위한 예시이며, HOME의 비교분석 유도 카드와도 자연스럽게 연결되는 읽을거리 역할을 수행한다.'
-    ],
-    type:'debate'
-  }
+ {title:'청년정책 대전환, 무엇이 달라져야 “체감”될까',cat:'정책',author:'정참시 COLUMN 정책팀',date:'2026.08.18 09:30',excerpt:'대통령실의 청년정책 전문가 간담회를 계기로, 지원 중심 정책을 참여·기회·생활 연결형 정책으로 바꾸기 위해 필요한 조건을 짚습니다.',body:['대통령실은 8월 14일 청년정책 전문가 간담회를 열고 청년정책의 전환 방향을 논의했다. 이 흐름에서 중요한 질문은 정책의 규모보다 청년이 실제로 무엇을 다르게 느끼게 되느냐다.','청년의 삶에서는 일자리, 주거, 교육과 자산 형성이 따로 움직이지 않는다. 취업이 늦어지면 주거 독립이 늦어지고, 주거비가 높으면 교육과 도전의 선택지가 줄어든다. 따라서 부처별 지원을 단순히 더하는 방식만으로는 체감도를 높이기 어렵다.','정책 결정 과정에 청년이 참여하는 방식도 중요하다. 완성된 정책에 의견을 묻는 수준을 넘어 문제 정의와 사업 평가 단계에 당사자가 들어가야 정책 언어와 현실의 거리를 줄일 수 있다.','정참시는 앞으로 청년정책을 볼 때 예산 규모만이 아니라 참여 구조, 주거·일자리 연계, 실제 수혜까지 걸리는 시간을 함께 보는 방식이 필요하다고 본다.','자료 기준: 대통령실 2026년 8월 14일 공개 브리핑. 본문은 정참시가 현안을 바탕으로 새롭게 작성한 분석 콘텐츠입니다.'],type:'youth',imageUrl:'/assets/portal/youth-policy.webp',demo:true},
+ {title:'반도체 특별법 시행, 산업 지원이 지역의 일자리까지 닿으려면',cat:'산업',author:'정참시 COLUMN 데이터팀',date:'2026.08.18 08:55',excerpt:'8월 11일 시행된 반도체 특별법을 단순 기업 지원을 넘어 인프라·인재·지역경제의 연결 구조라는 관점에서 봅니다.',body:['2026년 8월 11일 반도체산업 경쟁력 강화 및 지원에 관한 특별법이 시행됐다. 제도적 지원 체계가 본격 가동되면서 이제 관심은 “얼마나 지원하느냐”에서 “지원이 실제 생산과 고용으로 얼마나 빨리 연결되느냐”로 이동한다.','반도체 투자는 공장 부지만으로 완성되지 않는다. 전력, 용수, 교통, 협력업체, 연구 인력과 정주 여건이 동시에 따라가야 한다. 그래서 산업정책은 자연스럽게 지역정책과 교육정책의 성격까지 갖게 된다.','지역 정치의 역할도 커진다. 지자체와 지역 국회의원은 투자 유치 숫자뿐 아니라 지역 인재 채용, 협력기업 성장, 생활 인프라 개선이라는 결과를 설명해야 한다.','정참시는 특별법 시행 이후 정치인의 산업정책 메시지가 어느 지역에서 더 강한 반응을 얻는지도 NOW 흐름과 연결해 볼 수 있다고 본다.','자료 기준: 2026년 8월 11일 반도체 특별법 시행 관련 공개자료. 본문은 정참시가 현안을 바탕으로 새롭게 작성한 분석 콘텐츠입니다.'],type:'semiconductor',imageUrl:'/assets/portal/community-meeting.webp',demo:true},
+ {title:'주택공급 매주 현장점검, 발표보다 중요한 것은 “입주까지 걸리는 시간”',cat:'민생',author:'정참시 COLUMN 사회부',date:'2026.08.18 08:18',excerpt:'정부가 주택공급 상황을 최우선 과제로 관리하겠다고 밝힌 가운데, 공급 정책을 시민 관점에서 평가할 핵심 기준을 살펴봅니다.',body:['정부가 주택공급 상황을 주요 과제로 관리하고 현장 점검을 강화하는 흐름에서 가장 중요한 지표는 계획 물량 자체가 아니다. 시민이 체감하는 공급은 결국 실제 착공과 입주로 완성된다.','부동산 정책은 발표 시점의 숫자와 실제 사업 속도 사이에 큰 간격이 생기기 쉽다. 인허가, 토지 확보, 공사비, 기반시설 등 여러 단계가 연결돼 있기 때문이다.','그래서 정책 평가도 발표 물량, 인허가 물량, 착공 물량, 입주 물량을 구분해 보는 방식이 필요하다. 같은 “공급”이라는 단어 안에서도 시민의 체감은 단계마다 크게 다르다.','정참시는 향후 정치인의 주택정책 메시지를 볼 때 공급 규모뿐 아니라 진행률과 지역별 속도를 함께 보여주는 데이터 구성을 고민할 수 있다.','자료 기준: 대한민국 정책브리핑의 최근 주택공급 관리 관련 공개자료. 본문은 정참시가 현안을 바탕으로 새롭게 작성한 분석 콘텐츠입니다.'],type:'housing',imageUrl:'/assets/portal/housing-economy.webp',demo:true},
+ {title:'청년정책을 하나의 생애경로로 묶어야 하는 이유',cat:'데이터',author:'정참시 COLUMN 분석실',date:'2026.08.18 07:48',excerpt:'주거·일자리·교육을 각각의 지원사업이 아니라 하나의 연결된 경로로 보는 정책 설계의 장단점을 분석합니다.',body:['청년정책이 복잡하게 느껴지는 이유 중 하나는 실제 삶은 연결돼 있는데 정책은 부처와 사업 단위로 나뉘기 때문이다.','취업, 주거, 자산 형성, 교육은 서로 영향을 주고받는다. 따라서 정책을 이용하는 사람 입장에서는 여러 제도를 직접 조합해야 하는 부담이 생긴다.','통합형 설계는 이 부담을 줄일 수 있지만, 반대로 하나의 기준으로 모든 청년을 묶는 위험도 있다. 지역과 소득, 가족 형태에 따라 필요한 지원이 다르기 때문이다.','중요한 것은 통합과 맞춤을 동시에 구현하는 구조다. 정참시는 이런 정책을 비교할 때 접근성, 연계성, 실제 이용률을 함께 보는 지표가 필요하다고 본다.'],type:'youth',imageUrl:'/assets/portal/youth-policy.webp',demo:true},
+ {title:'반도체 산업정책, “공장 유치” 다음의 정치가 시작됐다',cat:'지역',author:'정참시 COLUMN 지역부',date:'2026.08.18 07:20',excerpt:'대규모 산업 투자가 지역 일자리와 정주 환경으로 이어지는 과정에서 지역정치가 맡게 될 새로운 역할을 살펴봅니다.',body:['대규모 반도체 투자를 둘러싼 지역 경쟁은 공장 유치로 끝나지 않는다. 기업이 들어온 뒤 지역 주민의 삶이 어떻게 달라지는지가 다음 정치 의제가 된다.','교통, 주택, 교육, 의료와 같은 정주 환경이 따라오지 않으면 산업단지의 고용 효과가 지역에 충분히 남지 않을 수 있다.','이 때문에 지역 정치인은 투자 규모를 알리는 역할에서 벗어나, 산업과 생활을 연결하는 조정자의 역할을 요구받는다.','정참시는 지역정치의 영향력을 평가할 때 산업 유치와 함께 실제 인구·고용·생활 인프라 변화를 같이 보는 방향이 필요하다고 본다.'],type:'semiconductor',imageUrl:'/assets/portal/community-meeting.webp',demo:true},
+ {title:'주택공급 정책을 볼 때 반드시 나눠봐야 할 네 개의 숫자',cat:'데이터',author:'정참시 COLUMN 데이터팀',date:'2026.08.18 06:58',excerpt:'계획·인허가·착공·입주를 구분하면 같은 공급대책도 전혀 다르게 읽힙니다.',body:['주택공급 정책에서 가장 자주 생기는 혼선은 서로 다른 단계의 숫자를 모두 “공급”으로 부르는 데서 시작한다.','계획 물량은 정책 의지를 보여주지만, 인허가는 실제 사업 가능성을, 착공은 공사 진행을, 입주는 시민이 체감하는 결과를 뜻한다.','정치권의 주택정책을 비교할 때 이 네 단계가 섞여 있으면 과장과 오해가 생기기 쉽다. 같은 숫자라도 어떤 단계인지 명확히 표시하는 것이 중요하다.','정참시 비교분석에서도 향후 주택정책을 다룰 경우 이 네 단계와 지역별 진행 속도를 분리해 보여주는 방식이 유용할 수 있다.'],type:'housing',imageUrl:'/assets/portal/housing-economy.webp',demo:true}
 ];
 
 let newsArticles=[...demoNewsArticles];
@@ -11415,6 +11361,7 @@ function showPage(name,opts={}){
   const target=document.getElementById("page-"+name);
   if(!target)return;
   target.classList.add("active");
+  document.body.classList.toggle('portal-home-mode',name==='home');
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
   setMobileNavActive(name);
   if(!preserveSubview){
@@ -11532,7 +11479,7 @@ function setNewsWriterAccess(canWrite,me){
 }
 function applyPublishedNewsPayload(j,{cache=true,full=true}={}){
   publishedNewsPosts=Array.isArray(j?.posts)?j.posts:[];newsIsAdmin=Boolean(j?.isAdmin);if(full){newsFullLoaded=true;setNewsWriterAccess(j?.canWrite,j?.me);}else setNewsWriterAccess(Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro||window.JJDD_ACCOUNT_USER?.role==='ADMIN'),window.JJDD_ACCOUNT_USER);
-  newsArticles=publishedNewsPosts.length?publishedNewsPosts.map(normalizePublishedNews):[...demoNewsArticles];renderSideNews();renderNewsGrid();
+  {const live=publishedNewsPosts.map(normalizePublishedNews);const ids=new Set(live.map(x=>String(x.id||x.title)));newsArticles=[...demoNewsArticles.filter(x=>!ids.has(String(x.id||x.title))),...live];}renderSideNews();renderNewsGrid();
   if(cache&&full)jjddSpeedWrite('news',{posts:publishedNewsPosts});
   const st=document.getElementById('newsLoadStatus');if(st)st.textContent=publishedNewsPosts.length?'':'아직 발행된 정참시 COLUMN가 없어 샘플 화면을 표시하고 있습니다.';
 }
@@ -13166,7 +13113,7 @@ async function touchVisitorStats(){
 }
 jjddIdle(touchVisitorStats,1200);setInterval(touchVisitorStats,120000);
 
-let communityPosts=[],communityCategoryFilter='all',communitySelectedPost=null,communityIsAdmin=false,communityLoadPromise=null;
+let communityPosts=[...demoCommunityPosts],communityCategoryFilter='all',communitySelectedPost=null,communityIsAdmin=false,communityLoadPromise=null;
 async function communityApi(opts={}){
   const url=opts.url||'/api/community';const init={credentials:'same-origin',...(opts.init||{})};
   if(init.body&&!init.headers)init.headers={'Content-Type':'application/json'};
@@ -13184,7 +13131,7 @@ function renderCommunityPosts(){
   el.querySelectorAll('[data-community-post]').forEach(card=>card.onclick=()=>openCommunityPost(card.dataset.communityPost));
 }
 async function revalidateCommunity(){
-  if(communityLoadPromise)return communityLoadPromise;communityLoadPromise=(async()=>{try{const j=await communityApi({url:'/api/community?limit=60'});communityPosts=Array.isArray(j.posts)?j.posts:[];communityIsAdmin=Boolean(j.isAdmin);jjddSpeedWrite('community',{posts:communityPosts});renderCommunityPosts();if(communitySelectedPost){const fresh=communityPosts.find(x=>String(x.id)===String(communitySelectedPost.id));if(fresh)communitySelectedPost=fresh;}return true;}catch(e){const el=document.getElementById('communityList');if(el&&!communityPosts.length)el.innerHTML=`<div class="community-empty">정뮤니티를 불러오지 못했습니다.<br>${accountEsc(e.message)}</div>`;return false;}finally{communityLoadPromise=null;}})();return communityLoadPromise;
+  if(communityLoadPromise)return communityLoadPromise;communityLoadPromise=(async()=>{try{const j=await communityApi({url:'/api/community?limit=60'});{const live=Array.isArray(j.posts)?j.posts:[];const ids=new Set(live.map(x=>String(x.id)));communityPosts=[...demoCommunityPosts.filter(x=>!ids.has(String(x.id))),...live];}communityIsAdmin=Boolean(j.isAdmin);jjddSpeedWrite('community',{posts:communityPosts});renderCommunityPosts();if(communitySelectedPost){const fresh=communityPosts.find(x=>String(x.id)===String(communitySelectedPost.id));if(fresh)communitySelectedPost=fresh;}return true;}catch(e){const el=document.getElementById('communityList');if(el&&!communityPosts.length)el.innerHTML=`<div class="community-empty">정뮤니티를 불러오지 못했습니다.<br>${accountEsc(e.message)}</div>`;return false;}finally{communityLoadPromise=null;}})();return communityLoadPromise;
 }
 async function loadCommunity(force=false){
   renderCommunityLoginState();if(!force&&communityPosts.length){renderCommunityPosts();revalidateCommunity();return true;}
@@ -13197,7 +13144,7 @@ async function openCommunityPost(id,opts={}){
   if(!p&&opts.skipHistory){await loadCommunity(false);p=communityPosts.find(x=>String(x.id)===String(id));}
   if(!p)return false;communitySelectedPost=p;
   const list=document.getElementById('communityListView'),detail=document.getElementById('communityDetailView'),box=document.getElementById('communityDetail');if(!list||!detail||!box)return false;
-  list.style.display='none';detail.style.display='block';box.innerHTML=`<div class="community-post-top"><span class="community-badge">${accountEsc(p.category)}</span><span>${accountEsc(p.author)} ${representativeBadgeHTML(p.representativeBadge)} · ${accountEsc(p.role||'FREE')} · ${communityDate(p.createdAt)}</span></div><h2>${accountEsc(p.title)}</h2><div class="community-detail-meta"><span>♥ 공감 ${Number(p.likeCount||0).toLocaleString('ko-KR')}</span><span>댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</span><span>정참시 콘텐츠 목업</span></div><div class="community-detail-cover">${communityVisual(p)}</div><div class="badge-author-line"><button class="itsme-action ${p.liked?'active':''}" id="communityLikeCurrent" type="button">${p.liked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount||0).toLocaleString('ko-KR')}</button></div>${mainAdminToolsHTML('community',p)}<div class="community-detail-body">${accountEsc(p.content)}</div>`;bindMainAdminTools();
+  list.style.display='none';detail.style.display='block';box.innerHTML=`<div class="community-post-top"><span class="community-badge">${accountEsc(p.category)}</span><span>${accountEsc(p.author)} ${representativeBadgeHTML(p.representativeBadge)} · ${accountEsc(p.role||'FREE')} · ${communityDate(p.createdAt)}</span></div><h2>${accountEsc(p.title)}</h2><div class="community-detail-meta"><span>♥ 공감 ${Number(p.likeCount||0).toLocaleString('ko-KR')}</span><span>댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</span><span>정참시 정뮤니티</span></div><div class="community-detail-cover">${communityVisual(p)}</div><div class="badge-author-line"><button class="itsme-action ${p.liked?'active':''}" id="communityLikeCurrent" type="button">${p.liked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount||0).toLocaleString('ko-KR')}</button></div>${mainAdminToolsHTML('community',p)}<div class="community-detail-body">${accountEsc(p.content)}</div>`;bindMainAdminTools();
   document.getElementById('communityLikeCurrent')?.addEventListener('click',()=>communityLikePost(p.id));
   document.getElementById('communityCommentInput').value='';document.getElementById('communityCommentStatus').textContent='';renderCommunityLoginState();
   if(!opts.skipHistory&&!JJDD_RESTORING_UI_HISTORY){jjddEnsureUiHistory();jjddWriteUiHistory({page:'community',view:'post',postId:String(p.id)});}
@@ -13343,7 +13290,23 @@ function renderPortalHome(){
 window.renderPortalHome=renderPortalHome;window.portalSearchGo=portalSearchGo;
 document.getElementById('portalSearchSubmit')?.addEventListener('click',portalSearchGo);
 document.getElementById('portalSearchInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')portalSearchGo();});
-document.addEventListener('DOMContentLoaded',()=>{renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});});
+document.addEventListener('DOMContentLoaded',()=>{document.body.classList.toggle('portal-home-mode',document.getElementById('page-home')?.classList.contains('active'));renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});});
+
+function closePortalDrawer(){
+  const back=document.getElementById('portalDrawerBackdrop');if(!back)return;back.classList.remove('open');back.setAttribute('aria-hidden','true');
+  ['portalServiceDrawer','portalAlertDrawer','portalFavoriteDrawer'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true;});
+}
+function openPortalDrawer(id){
+  const back=document.getElementById('portalDrawerBackdrop'),target=document.getElementById(id);if(!back||!target)return;closePortalDrawer();target.hidden=false;back.classList.add('open');back.setAttribute('aria-hidden','false');
+}
+window.closePortalDrawer=closePortalDrawer;
+document.getElementById('portalAllMenuBtn')?.addEventListener('click',()=>openPortalDrawer('portalServiceDrawer'));
+document.getElementById('portalAlertBtn')?.addEventListener('click',()=>openPortalDrawer('portalAlertDrawer'));
+document.getElementById('portalFavoriteBtn')?.addEventListener('click',()=>openPortalDrawer('portalFavoriteDrawer'));
+document.querySelectorAll('[data-portal-close]').forEach(b=>b.addEventListener('click',closePortalDrawer));
+document.getElementById('portalDrawerBackdrop')?.addEventListener('click',e=>{if(e.target.id==='portalDrawerBackdrop')closePortalDrawer();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePortalDrawer();});
+
 // ===== /v2.8.0 =====
 
 // ===== v2.5.1 Referral + SECRET COLLECTION =====
@@ -13450,6 +13413,26 @@ async function loadReferralDashboard(){
     <button class="why-now-action" id="whyNowDetailBtn">관련 지표 · 근거 보기</button>
     <button class="why-now-save" id="whyNowSaveBtn">☆ 관심 이슈 저장 · PLUS</button>
   </div>
+</div>
+
+
+<div class="portal-drawer-backdrop" id="portalDrawerBackdrop" aria-hidden="true">
+  <aside class="portal-drawer left" id="portalServiceDrawer" hidden>
+    <div class="portal-drawer-head"><div><h2>정참시 전체서비스</h2><small>정치의 모든 기능을 한곳에서</small></div><button class="portal-drawer-close" type="button" data-portal-close>×</button></div>
+    <div class="portal-service-groups">
+      <section class="portal-service-group"><h3>지금 정치</h3><div class="portal-service-links"><button onclick="showPage('home');closePortalDrawer()"><b>HOME</b><small>오늘 정치 한눈에</small></button><button onclick="showPage('ranking');closePortalDrawer()"><b>NOW Rank</b><small>실시간 정치 순위</small></button><button onclick="showPage('president');closePortalDrawer()"><b>대통령 · 정부</b><small>국정과 조직</small></button><button onclick="showPage('compare');closePortalDrawer()"><b>비교분석</b><small>정치인 맞대결</small></button></div></section>
+      <section class="portal-service-group"><h3>읽고 참여하기</h3><div class="portal-service-links"><button onclick="showPage('community');closePortalDrawer()"><b>정뮤니티</b><small>시민 정치광장</small></button><button onclick="showPage('news');closePortalDrawer()"><b>COLUMN</b><small>정치 인사이트</small></button><button onclick="showPage('itsme');closePortalDrawer()"><b>IT'S ME</b><small>정책제안 · 나의 정치</small></button><button onclick="showPage('my');closePortalDrawer()"><b>MY</b><small>활동과 배지</small></button></div></section>
+    </div>
+  </aside>
+  <aside class="portal-drawer right" id="portalAlertDrawer" hidden>
+    <div class="portal-drawer-head"><div><h2>알림</h2><small>내가 놓치면 아쉬운 정치 변화</small></div><button class="portal-drawer-close" type="button" data-portal-close>×</button></div>
+    <div class="portal-drawer-list"><div class="portal-drawer-item"><div class="top"><b>관심 정치인 순위 변동</b><em>NOW</em></div><p>저장한 정치인의 NOW Rank가 크게 움직이면 여기에서 알려줍니다.</p></div><div class="portal-drawer-item"><div class="top"><b>정뮤니티 답글</b><em>NEW</em></div><p>내 글과 댓글에 새 반응이 달리면 한 번에 확인할 수 있습니다.</p></div><div class="portal-drawer-item"><div class="top"><b>새 COLUMN</b><em>3</em></div><p>관심 주제와 정치인에 연결된 새 분석글을 모아봅니다.</p></div></div>
+  </aside>
+  <aside class="portal-drawer right" id="portalFavoriteDrawer" hidden>
+    <div class="portal-drawer-head"><div><h2>관심함</h2><small>별표한 정치 콘텐츠를 한곳에</small></div><button class="portal-drawer-close" type="button" data-portal-close>×</button></div>
+    <div class="portal-fav-tabs"><button class="active">전체</button><button>정치인</button><button>COLUMN</button><button>비교분석</button><button>정뮤니티</button><button>IT'S ME</button></div>
+    <div class="portal-drawer-list"><div class="portal-drawer-item"><div class="top"><b>이재명 대통령</b><em>정치인</em></div><p>대통령 · 정부 페이지와 최근 NOW 흐름</p><button onclick="openPresident();closePortalDrawer()">열기 →</button></div><div class="portal-drawer-item"><div class="top"><b>청년정책 대전환, 무엇이 달라져야 체감될까</b><em>COLUMN</em></div><p>오늘 읽을 정치에 저장한 분석 콘텐츠</p><button onclick="openArticle(0);closePortalDrawer()">읽기 →</button></div><div class="portal-drawer-item"><div class="top"><b>이재명 ↔ 한동훈</b><em>비교분석</em></div><p>저장한 비교 기준을 다시 확인합니다.</p><button onclick="showPage('compare');closePortalDrawer()">비교하기 →</button></div></div>
+  </aside>
 </div>
 
 </body>

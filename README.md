@@ -223,3 +223,10 @@
 - 어드민 보안 화면에서 환경 키 설정 상태, MFA 상태, 복구코드 잔여수, 세션 정책을 확인
 - `SECURITY_DEPLOY_CHECKLIST.md` 추가: Vercel 환경변수/MFA/WAF 운영 적용 절차
 - Vercel Dashboard의 WAF Rate Limit은 프로젝트 계정 설정이므로 코드가 임의 활성화하지 않으며 체크리스트에 권장 규칙을 명시
+
+## v2.8.2 · POLITICAL PORTAL REAL CONTENT
+- HOME 전용 최소 상단: 전체서비스 / 알림 / 관심함
+- 3개 현안 기반 신규 정뮤니티 6건 + 댓글/공감 샘플
+- 신규 COLUMN 6건 + 콘텐츠 대표 이미지
+- TODAY POLITICS 3개 현안 카드 추가
+- 공개된 실제 게시물이 있어도 샘플 콘텐츠와 함께 노출되어 포털 레이아웃 검토 가능
