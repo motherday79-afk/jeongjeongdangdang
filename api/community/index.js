@@ -34,6 +34,26 @@ async function publicPost(p,count,likes,me,repOverride,likedOverride){
   const dynamicComments=Number(count||0),dynamicLikes=Number(likes||0),baseComments=p.demo?Number(p.commentCount||0):0,baseLikes=p.demo?Number(p.likeCount||0):0;
   return {id:p.id,category:p.category,title:p.title,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,commentCount:p.demo?baseComments+dynamicComments:Number(count??p.commentCount??0),likeCount:p.demo?baseLikes+dynamicLikes:Number(likes??p.likeCount??0),liked:Boolean(liked),representativeBadge:repOverride!==undefined?repOverride:(p.authorId?await getRepresentativeBadge(p.authorId).catch(()=>null):null),imageUrl:p.imageUrl||null,imageType:p.imageType||null,demo:Boolean(p.demo)};
 }
+async function batchLiked(posts,me){
+  const out={};if(!me?.id||!posts.length)return out;
+  const keys=posts.map(p=>likeKey(p.id)),script=`local o={} for i,k in ipairs(KEYS) do o[i]=redis.call('SISMEMBER',k,ARGV[1]) end return o`;
+  const vals=await cmd(['EVAL',script,String(keys.length),...keys,String(me.id)]).catch(()=>[]);
+  posts.forEach((p,i)=>{out[p.id]=Boolean(Number(vals?.[i]||0));});return out;
+}
+async function findPostRow(id){
+  const rows=await cmd(['LRANGE',POSTS,'0','299']).catch(()=>[]),target=String(id||'');
+  for(let i=0;i<(rows||[]).length;i++){try{const p=JSON.parse(rows[i]);if(String(p.id)===target)return {index:i,raw:rows[i],post:p};}catch(_){}}return null;
+}
+async function listPosts(limit=60,me=null){
+  const lim=Math.max(1,Math.min(99,Number(limit||60)));
+  const [rows,countsRaw,likesRaw]=await Promise.all([cmd(['LRANGE',POSTS,'0',String(lim-1)]).catch(()=>[]),cmd(['HGETALL',COMMENT_COUNTS]).catch(()=>null),cmd(['HGETALL',LIKE_COUNTS]).catch(()=>null)]);
+  const counts=parseHash(countsRaw),likes=parseHash(likesRaw),stored=[];
+  for(const x of (Array.isArray(rows)?rows:[])){try{stored.push(JSON.parse(x));}catch(_){}}
+  const demoIds=new Set(DEMO_POSTS.map(p=>String(p.id)));
+  const posts=[...DEMO_POSTS,...stored.filter(p=>!demoIds.has(String(p.id)))].slice(0,lim);
+  const [reps,liked]=await Promise.all([getRepresentativeBadges(posts.map(p=>p.authorId)).catch(()=>({})),batchLiked(posts,me)]);
+  return Promise.all(posts.map(p=>publicPost(p,counts[p.id],likes[p.id],me,p.authorId?reps[p.authorId]??null:null,liked[p.id]??false)));
+}
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');const b=req.body||{},action=String(b.action||req.query?.action||'list');
   try{

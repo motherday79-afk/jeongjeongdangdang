@@ -240,3 +240,12 @@
 - 신규 COLUMN 6건 + 콘텐츠 대표 이미지
 - TODAY POLITICS 3개 현안 카드 추가
 - 공개된 실제 게시물이 있어도 샘플 콘텐츠와 함께 노출되어 포털 레이아웃 검토 가능
+
+
+## v2.8.4 · PORTAL SERVICE RAIL + INTERACTION STABILITY
+- v2.8.3 typography is locked: this patch does not change existing font-size rules.
+- HOME drawers (all services / alerts / favorites) close by X, outside backdrop, ESC, and browser/mobile Back.
+- HOME right rail is split into independent service cards; LIVE POLITICS wrapper removed and realtime keywords are the first card.
+- Favorites tabs now filter and open 정치인 / COLUMN / 비교분석 / 정뮤니티 / IT'S ME items.
+- Community/COLUMN demo images are embedded as deploy-safe image data with failure fallback.
+- Survey opens as a dedicated 정참시 설문 page instead of jumping to the old sidebar/ranking surface.
