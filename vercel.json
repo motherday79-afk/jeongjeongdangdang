@@ -1,21 +1,89 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    { "src": "api/rank/current.js", "use": "@vercel/node" },
-    { "src": "api/person-photo.js", "use": "@vercel/node" },
-    { "src": "api/gateway.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" }
+    {
+      "src": "api/rank/current.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/person-photo.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/gateway.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/api/rank/current", "dest": "/api/rank/current.js" },
-    { "src": "/api/person-photo", "dest": "/api/person-photo.js" },
-    { "src": "/api/(.*)", "dest": "/api/gateway.js?__path=$1" },
-    { "handle": "filesystem" },
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/admin", "dest": "/admin.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Content-Security-Policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
+        "Strict-Transport-Security": "max-age=31536000"
+      },
+      "continue": true
+    },
+    {
+      "src": "/admin",
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/admin.html",
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/admin/(.*)",
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/rank/current",
+      "dest": "/api/rank/current.js"
+    },
+    {
+      "src": "/api/person-photo",
+      "dest": "/api/person-photo.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/gateway.js?__path=$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ],
   "crons": [
-    { "path": "/api/cron/finalize-visitors", "schedule": "0 15 * * *" }
+    {
+      "path": "/api/cron/finalize-visitors",
+      "schedule": "0 15 * * *"
+    }
   ]
 }

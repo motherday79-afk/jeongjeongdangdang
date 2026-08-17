@@ -1,4 +1,4 @@
-# 정참시 v2.4.9 · MEMBER MANAGEMENT TRUE MODAL HOTFIX
+# 정참시 v2.5.0 · SECURITY HARDENING 1
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -94,10 +94,23 @@
 - sessionStorage/history에 저장된 공개 페이지를 로그인 세션 요청 전에 즉시 pre-paint하여 현재 섹션을 그대로 유지
 - IT’S ME 상세글은 IT’S ME 화면을 먼저 유지한 뒤 데이터 로딩 완료 시 같은 상세글로 복원
 
-## v2.4.9 회원관리 TRUE MODAL 핫픽스
+## v2.5.0 회원관리 TRUE MODAL 핫픽스
 - 회원관리 `관리` 클릭 시 남아 있던 `scrollIntoView()` 강제 하단 스크롤 로직 완전 제거
 - 회원 상세를 페이지 하단 패널이 아닌 viewport 고정 오버레이 모달로 분리
 - 모달 오픈 동안 배경 스크롤 잠금
 - 닫기 / 배경 클릭 / ESC 지원
 - 저장·등급변경·정지·비밀번호 재설정 후에도 모달 위치 유지
 - 모달 닫기 시 기존 회원 목록 스크롤 위치 복원
+
+## v2.5.0 SECURITY HARDENING 1
+- 관리자 로그인 전용 방어: 동일 IP/관리자 ID 기준 10분 내 연속 시도 제한 + 로그인 실패 5회 누적 시 10분 잠금
+- 관리자 로그인 성공/실패/잠금/오류, 비밀번호 변경, 전체 세션 종료 이벤트를 Redis 감사로그로 기록
+- 감사로그 화면에서는 IP를 마스킹하고 식별용 해시와 User-Agent를 함께 보존
+- 관리자 세션 버전 도입: 비밀번호 변경 또는 `모든 관리자 세션 종료` 실행 시 기존 관리자 쿠키 전체 즉시 무효화
+- 관리자 보안 화면에 세션 버전·잠금정책·최근 보안 이벤트·전체 세션 종료 기능 추가
+- 공개 API 게이트웨이에 공통 burst guard 추가: 읽기 600회/분, 쓰기 180회/분. 기존 로그인/회원가입/게시판별 세부 제한은 그대로 중첩 적용
+- 관리자 Refresh/사진 전체검수 등 내부 운영 API는 로그인 세션 검증 후 공통 public burst guard에서 제외하여 기존 운영 성능 보존
+- 보안 응답 헤더 추가: nosniff, DENY frame, Referrer-Policy, Permissions-Policy, 제한형 CSP, HSTS
+- `/admin`, `/admin.html`, `/api/admin/*` 응답은 no-store로 캐시 금지
+- 기존 v2.4.9 회원관리 TRUE MODAL, v2.3.0 빠른 Refresh/사진 LKG 구조 보존
+- 다음 보안 단계: Vercel Firewall/WAF edge rate limit 및 관리자 MFA

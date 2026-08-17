@@ -1,5 +1,7 @@
 // NOW Rank v1.10.5 Hobby Gateway
 // A single Vercel Function dispatches all API routes internally.
+const {validateAdminSession,clearCookie}=require('../lib/auth');
+const {globalApiGuard,applyRateLimitResponse}=require('../lib/security');
 const routes = {
   'admin/login': require('./admin/login'),
   'admin/logout': require('./admin/logout'),
@@ -9,6 +11,7 @@ const routes = {
   'admin/rollback': require('./admin/rollback'),
   'admin/users': require('./admin/users'),
   'admin/password': require('./admin/password'),
+  'admin/security': require('./admin/security'),
   'admin/person-photo': require('./admin/person-photo'),
   'admin/photo-audit': require('./admin/photo-audit'),
   'admin/member-metrics': require('./admin/member-metrics'),
@@ -60,6 +63,18 @@ module.exports = async function gateway(req, res){
   // Do not expose internal routing marker to endpoint handlers.
   if(req.query && Object.prototype.hasOwnProperty.call(req.query,'__path')) delete req.query.__path;
   try{
+    // v2.5.0: centralized admin session-version validation. A password change or
+    // explicit global logout invalidates every previously issued admin cookie.
+    if(key.startsWith('admin/') && !['admin/login','admin/logout'].includes(key)){
+      const adminSession=await validateAdminSession(req);
+      if(!adminSession){
+        res.setHeader('Set-Cookie',clearCookie());
+        return res.status(401).json({ok:false,error:'관리자 세션이 만료되었거나 무효화되었습니다. 다시 로그인해주세요.'});
+      }
+    }else{
+      const guard=await globalApiGuard(req,key);
+      if(!guard.ok)return applyRateLimitResponse(res,guard);
+    }
     return await handler(req,res);
   }catch(e){
     console.error('gateway route error', key, e);
