@@ -1,4 +1,4 @@
-# 정참시 v2.4.6 · REFERRAL + SECRET COLLECTION + GIFT
+# 정참시 v2.4.8 · IT’S ME NO-FLASH REFRESH + ADMIN MEMBER MODAL
 
 ## 1. 시민 배지 시스템
 - STANDARD 생활·출석·탐험·참여 배지
@@ -87,3 +87,9 @@
 ## v2.4.6 HOTFIX + PRO PREVIEW
 - IT’S ME current route is mirrored to sessionStorage as well as History API so browser refresh restores the IT’S ME list or the current IT’S ME post instead of falling back to NOW Rank.
 - Comparison result now includes a PRO preview section under PLUS: `POLITICAL INTELLIGENCE MANAGEMENT PROPOSAL` with a `문의하기` action.
+
+
+## v2.4.8 hotfix
+- IT’S ME 새로고침 시 NOW Rank 메인이 먼저 잠깐 보였다가 복원되던 초기 렌더링 순서 수정
+- sessionStorage/history에 저장된 공개 페이지를 로그인 세션 요청 전에 즉시 pre-paint하여 현재 섹션을 그대로 유지
+- IT’S ME 상세글은 IT’S ME 화면을 먼저 유지한 뒤 데이터 로딩 완료 시 같은 상세글로 복원
