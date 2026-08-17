@@ -2114,8 +2114,8 @@ button,input,select,textarea{font-size:14px}
         <p>대한민국 정치의 인물·이슈·데이터와 시민의 목소리를 한곳에서.</p>
         <div class="portal-searchbox">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.2 4.2"></path></svg>
-          <input id="portalSearchInput" placeholder="정치인, 정당, 지역, 정치키워드 검색" autocomplete="off">
-          <button id="portalSearchSubmit" type="button">검색</button>
+          <input id="portalSearchInput" placeholder="정치인, 정당, 지역, 정치키워드 검색" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();portalSearchGo();}">
+          <button id="portalSearchSubmit" type="button" onclick="portalSearchGo()">검색</button>
         </div>
         <div class="portal-service-grid" aria-label="정참시 서비스 바로가기">
           <button type="button" onclick="showPage('president')"><span class="portal-service-icon">大</span><b>대통령</b><small>대통령 · 정부</small></button>
@@ -13144,6 +13144,24 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
 });
 // ===== v2.2.7 Global search + account notification preference =====
 function globalSearchEsc(v){return accountEsc(v);}
+function globalSearchNormalized(v){return String(v||'').replace(/[\s·._\-#]+/g,'').toLowerCase();}
+function globalSearchHaystack(p){
+  return [p?.name,p?.party,p?.region,p?.constituency,p?.jurisdiction,p?.office,p?.ministry,p?.role,p?.partyRole,entityLabel(p)]
+    .filter(Boolean).join(' ').toLowerCase();
+}
+function openGlobalSearchResult(item){
+  if(!item)return false;
+  closeGlobalSearch(true);
+  const type=entityTypeOf(item);
+  if(type==='president'){openPresident();return true;}
+  if(type==='government'){
+    const idx=governmentOfficials.findIndex(g=>String(g.id)===String(item.id));
+    if(idx>=0){openGovPerson(idx);return true;}
+  }
+  const person=people.find(p=>String(p.id)===String(item.id));
+  if(person){openDetail(person.id);return true;}
+  return false;
+}
 function openGlobalSearch(initialQuery='',context={}){
   const modal=document.getElementById('globalSearchModal');if(!modal)return;
   document.getElementById('notificationPopover')?.classList.remove('show');
@@ -13158,22 +13176,39 @@ function closeGlobalSearch(skipHistory=false){
   jjddReleaseOverlayHistory('global-search',skipHistory);
 }
 function renderGlobalSearchResults(query,context={}){
-  const box=document.getElementById('globalSearchResults');if(!box)return;const raw=String(query||'').trim(),q=raw.toLowerCase();
+  const box=document.getElementById('globalSearchResults');if(!box)return;
+  const raw=String(query||'').trim(),q=raw.toLowerCase(),nq=globalSearchNormalized(raw);
   const help=document.getElementById('globalSearchTitle');
-  if(!q){if(help)help.textContent='국회의원 · 광역/기초단체장 · 대통령 · 현 정부 주요 인사를 한 번에 검색합니다.';box.innerHTML='<div class="global-search-empty">이름, 정당, 지역 또는 직위를 입력해보세요.</div>';return;}
-  const nq=portalNormalizeSearchName(raw);
-  let rows=comparisonPool().filter(p=>`${p.name||''} ${p.party||''} ${p.region||''} ${p.constituency||''} ${p.jurisdiction||''} ${p.office||''} ${p.ministry||''} ${p.role||''}`.toLowerCase().includes(q));
-  const exact=rows.filter(p=>portalNormalizeSearchName(p?.name)===nq);
-  rows=[...exact,...rows.filter(p=>!exact.includes(p))].slice(0,30);
-  if(help){
-    if(exact.length>1)help.textContent=`‘${raw}’ 동명이인 ${exact.length}명 · 사진, 정당, 지역, 현재 직위를 확인한 뒤 선택하세요.`;
-    else if(exact.length===1)help.textContent=`‘${raw}’과 정확히 일치하는 인물 1명 · 아래 정보를 확인하세요.`;
-    else help.textContent=`‘${raw}’ 검색결과 · 이름, 정당, 지역, 직위가 함께 표시됩니다.`;
+  if(!q){
+    if(help)help.textContent='정치인 · 정당 · 지역 · 직위 · 정부 주요 인사를 한 번에 검색합니다.';
+    box.innerHTML='<div class="global-search-empty">이름, 정당, 지역 또는 직위를 입력해보세요.</div>';
+    return;
   }
-  if(!rows.length){box.innerHTML='<div class="global-search-empty">검색 결과가 없습니다.</div>';return;}
-  const notice=exact.length>1?`<div class="global-search-disambig"><b>동명이인 ${exact.length}명</b><span>이름만으로 자동 이동하지 않습니다. 사진 · 정당 · 지역 · 현재 직위를 확인하고 원하는 인물을 선택하세요.</span></div>`:'';
+  const pool=comparisonPool();
+  const exactName=pool.filter(p=>globalSearchNormalized(p?.name)===nq);
+  const exactParty=pool.filter(p=>globalSearchNormalized(p?.party)===nq);
+  const starts=pool.filter(p=>{
+    if(exactName.includes(p)||exactParty.includes(p))return false;
+    return [p?.name,p?.party,p?.region,p?.constituency,p?.jurisdiction,p?.office,p?.ministry,p?.role,p?.partyRole]
+      .some(v=>globalSearchNormalized(v).startsWith(nq));
+  });
+  const contains=pool.filter(p=>{
+    if(exactName.includes(p)||exactParty.includes(p)||starts.includes(p))return false;
+    return globalSearchHaystack(p).includes(q) || globalSearchNormalized(globalSearchHaystack(p)).includes(nq);
+  });
+  const rows=[...exactName,...exactParty,...starts,...contains].filter((p,i,a)=>a.findIndex(x=>String(x.id)===String(p.id))===i).slice(0,40);
+  if(help){
+    if(exactName.length>1)help.textContent=`‘${raw}’ 동명이인 ${exactName.length}명 · 사진, 정당, 지역, 현재 직위를 확인한 뒤 선택하세요.`;
+    else if(exactName.length===1)help.textContent=`‘${raw}’과 정확히 일치하는 인물입니다.`;
+    else if(exactParty.length)help.textContent=`‘${raw}’ 소속 인물 ${exactParty.length}명 · 원하는 인물을 선택하세요.`;
+    else help.textContent=`‘${raw}’ 검색결과 · 이름, 정당, 지역, 직위를 함께 검색했습니다.`;
+  }
+  if(!rows.length){box.innerHTML='<div class="global-search-empty">검색 결과가 없습니다. 이름·정당·지역·직위를 다시 확인해주세요.</div>';return;}
+  const notice=exactName.length>1?`<div class="global-search-disambig"><b>동명이인 ${exactName.length}명</b><span>이름만으로 자동 이동하지 않습니다. 사진 · 정당 · 지역 · 현재 직위를 확인하고 원하는 인물을 선택하세요.</span></div>`:'';
   box.innerHTML=notice+rows.map(p=>`<div class="global-search-result" data-global-search-id="${globalSearchEsc(p.id)}"><div class="global-search-avatar">${globalSearchResultPhoto(p)}</div><div><div class="global-search-name">${globalSearchEsc(p.name)}</div><div class="global-search-meta">${globalSearchEsc([p.party,p.jurisdiction||p.constituency||p.region,entityOffice(p)].filter(Boolean).join(' · '))}</div></div><div class="global-search-type">${globalSearchEsc(entityLabel(p))}</div></div>`).join('');
-  box.querySelectorAll('[data-global-search-id]').forEach(el=>el.addEventListener('click',()=>{const item=findComparisonPerson(el.dataset.globalSearchId);if(item)openGlobalSearchResult(item);}));
+  box.querySelectorAll('[data-global-search-id]').forEach(el=>el.addEventListener('click',()=>{
+    const item=findComparisonPerson(el.dataset.globalSearchId);if(item)openGlobalSearchResult(item);
+  }));
 }
 document.getElementById('globalSearchBtn')?.addEventListener('click',openGlobalSearch);
 document.getElementById('globalSearchClose')?.addEventListener('click',closeGlobalSearch);
@@ -13490,12 +13525,17 @@ function portalPartyClassName(p){return partyClass?.[p]||'party-gray';}
 function portalNormalizeSearchName(v){return String(v||'').replace(/[\s·._-]+/g,'').toLowerCase();}
 function portalSearchGo(){
   const input=document.getElementById('portalSearchInput'),q=String(input?.value||'').trim();if(!q)return;
-  const nq=portalNormalizeSearchName(q);
-  const exact=comparisonPool().filter(x=>portalNormalizeSearchName(x?.name)===nq);
+  const nq=globalSearchNormalized(q);
+  const pool=comparisonPool();
+  const exact=pool.filter(x=>globalSearchNormalized(x?.name)===nq);
   if(exact.length===1){openGlobalSearchResult(exact[0]);return;}
   if(exact.length>1){openGlobalSearch(q,{disambiguate:true,exactCount:exact.length});return;}
-  const keyword=(whyNowGlobalKeywords('all')||[]).find(k=>String(k).replace(/[_\s#]+/g,'').includes(q.replace(/[_\s#]+/g,'')));
+  // A political keyword can open its WHY NOW view only when it is an exact/strong keyword match.
+  const keyword=(whyNowGlobalKeywords('all')||[]).find(k=>{
+    const nk=globalSearchNormalized(k);return nk===nq || (nq.length>=4&&nk.includes(nq));
+  });
   if(keyword){openWhyNowByKeyword(keyword);return;}
+  // Party / region / office / partial-name queries always open the visible result selector.
   openGlobalSearch(q,{disambiguate:false});
 }
 function portalPresidentHTML(){
@@ -13607,8 +13647,7 @@ function renderPortalHome(){
   registerPoliticianPhotoSlots(document.getElementById('page-home')||document);
 }
 window.renderPortalHome=renderPortalHome;window.portalSearchGo=portalSearchGo;
-document.getElementById('portalSearchSubmit')?.addEventListener('click',portalSearchGo);
-document.getElementById('portalSearchInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')portalSearchGo();});
+// v2.8.6.1 search handlers are bound inline on the HOME controls for resilient execution.
 document.addEventListener('DOMContentLoaded',()=>{document.body.classList.toggle('portal-home-mode',document.getElementById('page-home')?.classList.contains('active'));renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});loadItsMe(false).then(renderPortalHome).catch(()=>{});});
 
 function closePortalDrawer(skipHistory=false){
