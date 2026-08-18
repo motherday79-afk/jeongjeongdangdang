@@ -1,10 +1,18 @@
-## v2.8.8.6 · HOME COLUMN LIVE SOURCE
+## v2.8.8.7 · SURVEY COMMUNITY SWAP
+
+### v2.8.8.7 변경사항
+- HOME에서 `지금 시민들의 선택` 설문 모듈과 `지금 시민들이 말하는 것` 정뮤니티 모듈의 위치를 서로 교체했습니다.
+- HOME 설문 카드가 각 설문의 모든 선택지를 자동으로 노출합니다. 선택지가 3개면 3개, 4개면 4개, 그 이상이어도 등록된 전체 선택지를 표시합니다.
+- 각 선택지에 득표율과 득표수, 카드 하단에 총 투표수를 표시합니다.
+- 선택지 텍스트는 더 이상 한 줄 말줄임으로 숨기지 않고 전체 문구를 표시합니다.
+- 설문 카드 높이는 선택지 개수에 맞춰 자동 확장되고, PC/태블릿/모바일 반응형을 유지합니다.
+
 
 - HOME의 `오늘 정치에서 봐야 할 3가지`를 정적 HTML/내장 이미지에서 제거하고 `/api/news` 서버 COLUMN 데이터로 직접 렌더링합니다.
 - 관리자에서 COLUMN 대표사진을 바꾸면 HOME / COLUMN 목록 / 상세가 동일한 `imageVersion` URL을 사용합니다.
 - HOME snapshot의 COLUMN 캐시를 `no-store`로 변경하고, 브라우저 30분 HOME 캐시에서 COLUMN 데이터를 제거했습니다.
 - 이전 빌드의 HOME COLUMN 캐시는 새 키로 하드 리셋합니다.
-- 관리자 화면 버전: v2.8.8.6 · HOME COLUMN LIVE SOURCE
+- 관리자 화면 버전: v2.8.8.7 · SURVEY COMMUNITY SWAP
 
 ## v2.8.8.5 · COLUMN ADMIN AUTH SYNC
 
