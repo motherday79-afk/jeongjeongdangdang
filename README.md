@@ -1,3 +1,11 @@
+## v2.8.8.9 · HOME CONTENT ORDER
+
+### v2.8.8.9 변경사항
+- HOME 메인 콘텐츠 순서를 `NOW RANK → IT’S ME → COLUMN → 지금 시민들의 선택(설문) → COMMUNITY`로 재배치했습니다.
+- 대통령 정보 영역과 우측 실시간 레일, 하단 비교분석/IT’S ME 액션 카드는 기존 구조를 유지합니다.
+- v2.8.8.8 통합검색 복구, 설문 카드 개별 상세 버튼 제거, COLUMN 이미지 실시간 동기화 구조는 그대로 유지합니다.
+- 관리자 화면 버전: v2.8.8.9 · HOME CONTENT ORDER
+
 ## v2.8.8.8 · SEARCH RESTORE / SURVEY CLEANUP
 
 ### v2.8.8.8 변경사항
