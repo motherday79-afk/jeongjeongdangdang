@@ -3,19 +3,13 @@ const {requireAdmin}=require('../../lib/auth');
 const store=require('../../lib/store');
 const {photoRoster,findEntity}=require('../../lib/political_roster');
 const {auditMember,repairMember,recheckMember,summarize}=require('../../lib/photo_audit');
-const {invalidatePhotoMaster,buildPhotoMaster}=require('../../lib/photo_master');
+const {invalidatePhotoMaster}=require('../../lib/photo_master');
 
 const TTL=24*60*60;
 const LATEST='jjdd:photo-audit:latest:v3-safe-nondestructive';
 function key(id){return `jjdd:photo-audit:run:${id}:v3-safe-nondestructive`;}
 function runId(){return `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;}
 async function saveRun(run){await store.setJSON(key(run.id),run,TTL);await store.setJSON(LATEST,run,TTL);return run;}
-
-async function rebuildMaster(mid){
-  await invalidatePhotoMaster(mid).catch(()=>{});
-  try{const out=await buildPhotoMaster(mid,{force:true});return {ok:true,cached:Boolean(out?.cached)};}
-  catch(e){return {ok:false,error:String(e?.message||e)};}
-}
 function mergeResults(run,rows,rosterLength){const byId=new Map((run.results||[]).map(x=>[String(x.id),x]));for(const x of rows||[])byId.set(String(x.id),x);const results=[...byId.values()].sort((a,b)=>Number(a.id)-Number(b.id));return {...run,results,summary:summarize(results,rosterLength),updatedAt:new Date().toISOString()};}
 module.exports=async function(req,res){
   if(!requireAdmin(req,res))return;
@@ -52,7 +46,7 @@ module.exports=async function(req,res){
     const id=String(req.body?.runId||'');if(!id)return res.status(400).json({ok:false,error:'runId가 필요합니다.'});
     const run=await store.getJSON(key(id)).catch(()=>null);if(!run)return res.status(404).json({ok:false,error:'사진 검수 작업을 찾을 수 없습니다.'});
     const ids=[...(Array.isArray(req.body?.ids)?req.body.ids:[])].map(Number).filter(Boolean).slice(0,2),batch=[];
-    for(const mid of ids){const m=findEntity(mid);if(!m)continue;const row=await repairMember(m);row.photoMaster=await rebuildMaster(mid);batch.push(row);await new Promise(r=>setTimeout(r,280));}
+    for(const mid of ids){const m=findEntity(mid);if(!m)continue;batch.push(await repairMember(m));await invalidatePhotoMaster(mid).catch(()=>{});await new Promise(r=>setTimeout(r,280));}
     let next=mergeResults(run,batch,roster.length);next={...next,repairRuns:Number(run.repairRuns||0)+batch.length,lastRepairAt:new Date().toISOString()};
     await saveRun(next);
     return res.json({ok:true,runId:id,batch,summary:next.summary,run:next});
@@ -60,13 +54,13 @@ module.exports=async function(req,res){
   if(action==='repair-one'){
     const mid=Number(req.body?.id||0),m=findEntity(mid);if(!m)return res.status(404).json({ok:false,error:'정치인을 찾을 수 없습니다.'});
     const run=await store.getJSON(LATEST).catch(()=>null);if(!run)return res.status(404).json({ok:false,error:'먼저 전체 사진 검수를 실행해주세요.'});
-    const row=await repairMember(m);row.photoMaster=await rebuildMaster(mid);let next=mergeResults(run,[row],roster.length);next={...next,repairRuns:Number(run.repairRuns||0)+1,lastRepairAt:new Date().toISOString()};await saveRun(next);
+    const row=await repairMember(m);await invalidatePhotoMaster(mid).catch(()=>{});let next=mergeResults(run,[row],roster.length);next={...next,repairRuns:Number(run.repairRuns||0)+1,lastRepairAt:new Date().toISOString()};await saveRun(next);
     return res.json({ok:true,result:row,summary:next.summary,run:next});
   }
   if(action==='recheck-one'){
     const mid=Number(req.body?.id||0),m=findEntity(mid);if(!m)return res.status(404).json({ok:false,error:'정치인을 찾을 수 없습니다.'});
     const run=await store.getJSON(LATEST).catch(()=>null);if(!run)return res.status(404).json({ok:false,error:'먼저 전체 사진 검수를 실행해주세요.'});
-    const row=await recheckMember(m);row.photoMaster=await rebuildMaster(mid);const next=mergeResults(run,[row],roster.length);await saveRun(next);return res.json({ok:true,result:row,summary:next.summary,run:next});
+    const row=await recheckMember(m);await invalidatePhotoMaster(mid).catch(()=>{});const next=mergeResults(run,[row],roster.length);await saveRun(next);return res.json({ok:true,result:row,summary:next.summary,run:next});
   }
   return res.status(400).json({ok:false,error:'지원하지 않는 action입니다.'});
 };

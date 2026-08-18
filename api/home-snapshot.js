@@ -15,7 +15,7 @@ async function latestNews(limit=16){
   const rows=await store.cmd(['LRANGE',NEWS_POSTS,'0',String(Math.max(0,Math.min(30,Number(limit||16))-1))]).catch(()=>[]),posts=[];
   for(const raw of (rows||[])){try{posts.push(JSON.parse(raw));}catch(_){}}
   const reps=await getRepresentativeBadges(posts.map(p=>p.authorId)).catch(()=>({}));
-  return posts.map(p=>({id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,hasImage:Boolean(p.hasImage),imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}`:null,representativeBadge:p.authorId&&!String(p.authorId).startsWith('admin:')?reps[p.authorId]??null:null}));
+  return posts.map(p=>{const iv=String(p.imageVersion||p.imageUpdatedAt||p.updatedAt||p.createdAt||'1').replace(/[^A-Za-z0-9._:-]/g,'').slice(0,80)||'1';return {id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,updatedAt:p.updatedAt||null,hasImage:Boolean(p.hasImage),imageVersion:iv,imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}&v=${encodeURIComponent(iv)}`:null,representativeBadge:p.authorId&&!String(p.authorId).startsWith('admin:')?reps[p.authorId]??null:null};});
 }
 module.exports=async function(req,res){
   if(req.method!=='GET')return res.status(405).json({ok:false,error:'Method not allowed'});

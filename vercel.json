@@ -33,20 +33,6 @@
       "continue": true
     },
     {
-      "src": "/",
-      "headers": {
-        "Cache-Control": "no-store, max-age=0, must-revalidate"
-      },
-      "continue": true
-    },
-    {
-      "src": "/index.html",
-      "headers": {
-        "Cache-Control": "no-store, max-age=0, must-revalidate"
-      },
-      "continue": true
-    },
-    {
       "src": "/admin",
       "headers": {
         "Cache-Control": "no-store, max-age=0"
