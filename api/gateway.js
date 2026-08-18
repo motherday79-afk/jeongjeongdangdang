@@ -27,6 +27,7 @@ const routes = {
   'account/watchlist': require('./account/watchlist'),
   'account/delete': require('./account/delete'),
   'site-settings': require('./site-settings'),
+  'surveys': require('./surveys'),
   'home-snapshot': require('./home-snapshot'),
   'billing/checkout': require('./billing/checkout'),
   'stats/visit': require('./stats/visit'),

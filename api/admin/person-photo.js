@@ -3,7 +3,7 @@ const {findEntity}=require('../../lib/political_roster');
 const {getJSON,setJSON,del}=require('../../lib/store');
 const {invalidatePersonPhoto,probePhotoRecord}=require('../../lib/local_photo');
 const {recheckMember}=require('../../lib/photo_audit');
-const {invalidatePhotoMaster}=require('../../lib/photo_master');
+const {invalidatePhotoMaster,buildPhotoMaster}=require('../../lib/photo_master');
 
 function key(id){return `jjdd:local-photo:override:${id}`;}
 module.exports=async function(req,res){
@@ -17,7 +17,8 @@ module.exports=async function(req,res){
   if(req.method==='DELETE'){
     await del(key(id)).catch(()=>{});await invalidatePersonPhoto(id);await invalidatePhotoMaster(id).catch(()=>{});
     const audit=await recheckMember(m).catch(()=>null);
-    return res.json({ok:true,deleted:true,audit});
+    const master=await buildPhotoMaster(id,{force:true}).catch(()=>null);
+    return res.json({ok:true,deleted:true,audit,master:Boolean(master?.ok)});
   }
   if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
   const url=String(req.body?.url||'').trim(),profileUrl=String(req.body?.profileUrl||'').trim();
@@ -28,5 +29,6 @@ module.exports=async function(req,res){
   rec.width=Number(probe.width||0)||null;rec.height=Number(probe.height||0)||null;
   await setJSON(key(id),rec);await invalidatePersonPhoto(id);await invalidatePhotoMaster(id).catch(()=>{});
   const audit=await recheckMember(m).catch(()=>null);
-  return res.json({ok:true,photo:rec,probe,audit});
+  const master=await buildPhotoMaster(id,{force:true}).catch(()=>null);
+  return res.json({ok:true,photo:rec,probe,audit,master:Boolean(master?.ok)});
 };
