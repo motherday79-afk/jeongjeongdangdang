@@ -15,7 +15,7 @@ const MAX_IMAGE_BYTES=1200*1024;
 
 function cleanText(v,max){return String(v||'').replace(/\u0000/g,'').trim().slice(0,max);}
 function safeCategory(v){const x=cleanText(v,20);return CATEGORIES.includes(x)?x:'정치';}
-async function publicPost(p,repOverride){return {id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,hasImage:Boolean(p.hasImage),imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}`:(p.imageUrl||null),representativeBadge:repOverride!==undefined?repOverride:(p.authorId&&!String(p.authorId).startsWith('admin:')?await getRepresentativeBadge(p.authorId).catch(()=>null):null)};}
+async function publicPost(p,repOverride){const imageVersion=String(p.imageVersion||p.updatedAt||p.createdAt||'1');return {id:p.id,category:p.category,title:p.title,excerpt:p.excerpt,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,updatedAt:p.updatedAt||null,imageVersion,hasImage:Boolean(p.hasImage),imageUrl:p.hasImage?`/api/news?action=image&id=${encodeURIComponent(p.id)}&v=${encodeURIComponent(imageVersion)}`:(p.imageUrl||null),representativeBadge:repOverride!==undefined?repOverride:(p.authorId&&!String(p.authorId).startsWith('admin:')?await getRepresentativeBadge(p.authorId).catch(()=>null):null)};}
 function looksLikeImage(buf,mime){
   if(mime==='image/jpeg')return buf.length>3&&buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff;
   if(mime==='image/png')return buf.length>8&&buf.subarray(0,8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
@@ -49,7 +49,7 @@ module.exports=async function(req,res){
   try{
     if(req.method==='GET'&&action==='image'){
       const id=cleanText(req.query?.id,100);if(!id)return res.status(400).end();const img=await getJSON(IMAGE_PREFIX+id);if(!img?.data||!/^image\/(jpeg|png|webp)$/.test(String(img.mime||'')))return res.status(404).end();
-      const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control','public, max-age=31536000, immutable');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);
+      const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control',req.query?.v?'public, max-age=31536000, immutable':'no-cache, max-age=0, must-revalidate');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);
     }
     if(req.method==='GET'||action==='list'){
       await flushDue(12).catch(()=>{});
@@ -64,11 +64,12 @@ module.exports=async function(req,res){
         if(row)await cmd(['LREM',POSTS,'1',row.raw]);if(isSeed)await cmd(['SADD',HIDDEN_SEEDS,id]).catch(()=>{});await cmd(['DEL',IMAGE_PREFIX+id]).catch(()=>{});return res.json({ok:true,deletedId:id});
       }
       const title=cleanText(b.title,100),content=cleanText(b.content,12000);let excerpt=cleanText(b.excerpt,260);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 본문을 2자 이상 입력해주세요.'});if(!excerpt)excerpt=content.replace(/\s+/g,' ').slice(0,180);
-      let hasImage=Boolean(row?.post?.hasImage),imageUrl=row?.post?.imageUrl||(isSeed?SEED_IMAGE_URLS[id]:null);
-      if(b.removeImage===true){await cmd(['DEL',IMAGE_PREFIX+id]).catch(()=>{});hasImage=false;imageUrl=null;}
-      if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+id,image);hasImage=true;imageUrl=null;}
-      const base=row?.post||{id,author:'정참시 운영팀',authorId:`admin:${admin.id||'admin'}`,role:'ADMIN',createdAt:new Date().toISOString(),schemaVersion:1,seedOverride:true,imageUrl};
-      const next={...base,category:safeCategory(b.category),title,excerpt,content,hasImage,imageUrl,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};
+      let hasImage=Boolean(row?.post?.hasImage),imageUrl=row?.post?.imageUrl||(isSeed?SEED_IMAGE_URLS[id]:null),imageChanged=false;
+      if(b.removeImage===true){await cmd(['DEL',IMAGE_PREFIX+id]).catch(()=>{});hasImage=false;imageUrl=null;imageChanged=true;}
+      if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+id,image);hasImage=true;imageUrl=null;imageChanged=true;}
+      const now=new Date().toISOString();
+      const base=row?.post||{id,author:'정참시 운영팀',authorId:`admin:${admin.id||'admin'}`,role:'ADMIN',createdAt:now,schemaVersion:1,seedOverride:true,imageUrl};
+      const next={...base,category:safeCategory(b.category),title,excerpt,content,hasImage,imageUrl,imageVersion:imageChanged?now:(base.imageVersion||base.updatedAt||base.createdAt||now),updatedAt:now,adminEditedAt:now,adminEditedBy:String(admin.id||'admin')};
       if(row)await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);else{await cmd(['LPUSH',POSTS,JSON.stringify(next)]);await cmd(['LTRIM',POSTS,'0',String(MAX_POSTS-1)]);}
       if(isSeed)await cmd(['SREM',HIDDEN_SEEDS,id]).catch(()=>{});return res.json({ok:true,post:await publicPost(next)});
     }
@@ -78,7 +79,7 @@ module.exports=async function(req,res){
       const b=req.body||{},title=cleanText(b.title,100),content=cleanText(b.content,12000);let excerpt=cleanText(b.excerpt,260);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 본문을 2자 이상 입력해주세요.'});if(!excerpt)excerpt=content.replace(/\s+/g,' ').slice(0,180);
       const id=`n_${Date.now().toString(36)}_${crypto.randomBytes(4).toString('hex')}`,image=parseImageData(b.imageData),createdAt=new Date().toISOString();
       if(image)await setJSON(IMAGE_PREFIX+id,image);
-      const post={id,category:safeCategory(b.category),title,excerpt,content,author:writer.nickname,authorId:writer.id,role:writer.role,createdAt,hasImage:Boolean(image),schemaVersion:1};
+      const post={id,category:safeCategory(b.category),title,excerpt,content,author:writer.nickname,authorId:writer.id,role:writer.role,createdAt,imageVersion:createdAt,hasImage:Boolean(image),schemaVersion:1};
       await cmd(['LPUSH',POSTS,JSON.stringify(post)]);await cmd(['LTRIM',POSTS,'0',String(MAX_POSTS-1)]);if(writer.id&&!String(writer.id).startsWith('admin:'))await recordActivity(writer.id,'columns',1);return res.json({ok:true,post:await publicPost(post)});
     }
     return res.status(400).json({ok:false,error:'Unknown action'});

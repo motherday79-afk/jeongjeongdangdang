@@ -1641,6 +1641,15 @@ body{font-size:var(--type-md);background:#f7f9f8}
 @media(max-width:1120px){.service-launcher{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}.service-launcher::-webkit-scrollbar{display:none}.side{position:static;height:auto}.layout{grid-template-columns:1fr}.site-footer{padding-bottom:110px}}
 @media(max-width:780px){.portal-header{padding:0 14px}.nav{height:58px}.logo-mark{width:38px;height:29px}.logo-title{font-size:19px}.logo-subtitle{display:none}.service-launcher{display:none}.visitor-strip{margin-top:0!important}.app{padding:12px 12px 28px}.head{display:block;margin-top:4px}.head-left h1{font-size:23px}.searchline{margin-top:10px}.search,.select{width:100%;height:39px}.now-keyword-head b{font-size:15px}.now-keyword-strip{max-height:62px}.site-footer{padding:28px 15px 100px}.site-footer-brand,.site-footer-bottom{align-items:flex-start;flex-direction:column}.site-footer-services{gap:10px 18px}.mobile-bottom-nav{grid-template-columns:repeat(7,1fr)!important}.mobile-navbtn{font-size:12px!important;padding:4px 1px}.mobile-navbtn .mobile-nav-icon{font-size:0!important}.president-page-head{align-items:flex-start;flex-direction:column;gap:4px}.president-page-head h1{font-size:23px}}
 /* ===== /v2.7.1 ===== */
+
+/* ===== v2.8.8.1 · COLUMN IMAGE DISCIPLINE / NO TYPOGRAPHY CHANGE ===== */
+.article-wrap{overflow:visible}
+.article-content{max-width:940px;margin:0 auto}
+.article-content .article-hero{width:100%;height:clamp(280px,34vw,420px);max-height:420px;margin:22px 0 10px;border-radius:18px;overflow:hidden;background:#d9ede9;aspect-ratio:auto!important}
+.article-content .article-hero .news-upload-image,.article-content .article-hero svg{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.article-content .article-image-caption{margin:-1px 2px 18px;color:#7b8794;line-height:1.6}
+@media(max-width:780px){.article-content .article-hero{height:56vw;min-height:190px;max-height:300px;margin:18px 0 8px;border-radius:14px}.article-content .article-image-caption{margin-bottom:14px}}
+/* ===== /v2.8.8.1 ===== */
 </style>
 
 
@@ -2474,7 +2483,6 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
     <div id="articleView" style="display:none">
       <button class="backbtn" onclick="backToNews()">← 칼럼 목록으로</button>
       <div class="article-wrap">
-        <div class="article-hero" id="articleHero"></div>
         <div class="article-content" id="articleContent"></div>
       </div>
     </div>
@@ -11679,7 +11687,7 @@ function normalizePublishedNews(p){
   const content=String(p?.content||'').trim();
   return {
     id:p?.id||null,title:String(p?.title||''),cat:String(p?.category||'정치'),author:String(p?.author||'정참시'),authorId:p?.authorId||null,role:String(p?.role||'PRO'),representativeBadge:p?.representativeBadge||null,
-    createdAt:p?.createdAt||null,date:newsDate(p?.createdAt),excerpt:String(p?.excerpt||content.slice(0,150)),content,body:content?content.split(/\n\s*\n/).map(v=>v.trim()).filter(Boolean):[],
+    createdAt:p?.createdAt||null,updatedAt:p?.updatedAt||null,imageVersion:p?.imageVersion||null,date:newsDate(p?.createdAt),excerpt:String(p?.excerpt||content.slice(0,150)),content,body:content?content.split(/\n\s*\n/).map(v=>v.trim()).filter(Boolean):[],
     type:'published',imageUrl:p?.imageUrl||null,published:true
   };
 }
@@ -11724,13 +11732,14 @@ function openArticle(idx,opts={}){
   showPage('news',{skipHistory:true,preserveSubview:true,scroll:false});
   document.getElementById('newsListView').style.display='none';
   document.getElementById('articleView').style.display='block';
-  const hero=document.getElementById('articleHero');hero.classList.toggle('has-upload',Boolean(a.imageUrl));hero.innerHTML=newsVisual(a);
   const paras=(Array.isArray(a.body)?a.body:[String(a.content||'')]).filter(Boolean);
   document.getElementById('articleContent').innerHTML = `
     <div class="kicker">${newsEsc(a.cat)}</div>
     <h1>${newsEsc(a.title)}</h1>
     <div class="article-meta">${newsEsc(a.author)} ${representativeBadgeHTML(a.representativeBadge)} · ${newsEsc(a.date||newsDate(a.createdAt))}</div>
     ${mainAdminToolsHTML('news',a)}
+    <div class="article-hero ${a.imageUrl?'has-upload':''}" id="articleHero">${newsVisual(a)}</div>
+    ${a.imageUrl?`<div class="article-image-caption">대표 이미지 · 정참시 COLUMN</div>`:''}
     ${paras.map(p=>`<p>${newsEsc(p)}</p>`).join('')}
   `;
   bindMainAdminTools();
@@ -11760,6 +11769,7 @@ function setNewsWriterAccess(canWrite,me){
 function applyPublishedNewsPayload(j,{cache=true,full=true}={}){
   publishedNewsPosts=Array.isArray(j?.posts)?j.posts:[];newsIsAdmin=Boolean(j?.isAdmin);if(full){newsFullLoaded=true;setNewsWriterAccess(j?.canWrite,j?.me);}else setNewsWriterAccess(Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro||window.JJDD_ACCOUNT_USER?.role==='ADMIN'),window.JJDD_ACCOUNT_USER);
   {const live=publishedNewsPosts.map(normalizePublishedNews),liveById=new Map(live.filter(x=>x.id).map(x=>[String(x.id),x])),hidden=new Set((j?.hiddenSeedIds||[]).map(String)),seedIds=new Set(demoNewsArticles.map(x=>String(x.id)));const seeded=demoNewsArticles.filter(x=>!hidden.has(String(x.id))).map(x=>liveById.get(String(x.id))||x),extras=live.filter(x=>!seedIds.has(String(x.id)));newsArticles=[...seeded,...extras];}renderSideNews();renderNewsGrid();
+  if(typeof renderPortalHome==='function')renderPortalHome();
   if(cache&&full)jjddSpeedWrite('news',{posts:publishedNewsPosts});
   const st=document.getElementById('newsLoadStatus');if(st)st.textContent=publishedNewsPosts.length?'':'아직 발행된 정참시 COLUMN가 없어 샘플 화면을 표시하고 있습니다.';
 }
@@ -12230,6 +12240,7 @@ function jjddCloseActiveOverlayVisual(){
 // Opening a detail popup creates an in-page history entry so the browser Back button
 // closes/restores the popup instead of navigating away from 정참시.
 const JJDD_MODAL_HISTORY_KEY='__jjddModal';
+let JJDD_MODAL_PARENT_OVERLAY_SNAPSHOT=null;
 function jjddModalHistoryState(){
   const st=history.state;
   return st && typeof st==='object' ? st[JJDD_MODAL_HISTORY_KEY] : null;
@@ -12297,6 +12308,13 @@ window.addEventListener('popstate',(event)=>{
   }
   const modalState=event.state&&typeof event.state==='object'?event.state[JJDD_MODAL_HISTORY_KEY]:null;
   if(modalState){jjddRestoreModalFromHistory(modalState);return;}
+  const parentSnapshot=JJDD_MODAL_PARENT_OVERLAY_SNAPSHOT;
+  if(parentSnapshot&&!modalState){
+    JJDD_MODAL_PARENT_OVERLAY_SNAPSHOT=null;
+    jjddHardCloseModal();
+    jjddRestorePortalDrawerSnapshot(parentSnapshot);
+    return;
+  }
   jjddHardCloseModal();
   jjddRestoreUiFromHistory(event.state&&typeof event.state==='object'?event.state[JJDD_UI_HISTORY_KEY]:null).catch(()=>{});
 });
@@ -13710,6 +13728,7 @@ window.renderPortalHome=renderPortalHome;window.portalSearchGo=portalSearchGo;
 // v2.8.6.1 search handlers are bound inline on the HOME controls for resilient execution.
 document.addEventListener('DOMContentLoaded',()=>{document.body.classList.toggle('portal-home-mode',document.getElementById('page-home')?.classList.contains('active'));renderPortalHome();loadCommunity(false).then(renderPortalHome).catch(()=>{});loadPublishedNews(false).then(renderPortalHome).catch(()=>{});loadItsMe(false).then(renderPortalHome).catch(()=>{});});
 
+let JJDD_FAVORITE_ACTIVE_FILTER='all';
 function closePortalDrawer(skipHistory=false){
   const back=document.getElementById('portalDrawerBackdrop');if(!back)return;back.classList.remove('open');back.setAttribute('aria-hidden','true');document.body.style.overflow='';
   ['portalServiceDrawer','portalAlertDrawer','portalFavoriteDrawer'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true;});
@@ -13718,6 +13737,23 @@ function closePortalDrawer(skipHistory=false){
 function openPortalDrawer(id){
   const back=document.getElementById('portalDrawerBackdrop'),target=document.getElementById(id);if(!back||!target)return;closePortalDrawer(true);target.hidden=false;back.classList.add('open');back.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';jjddPushOverlayHistory('portal-drawer',id);
 }
+function jjddCapturePortalDrawerSnapshot(){
+  const back=document.getElementById('portalDrawerBackdrop');if(!back?.classList.contains('open'))return null;
+  const id=['portalServiceDrawer','portalAlertDrawer','portalFavoriteDrawer'].find(x=>{const el=document.getElementById(x);return el&&!el.hidden;});if(!id)return null;
+  const drawer=document.getElementById(id),list=id==='portalFavoriteDrawer'?document.getElementById('portalFavoriteList'):null;
+  return {id,filter:JJDD_FAVORITE_ACTIVE_FILTER,drawerScroll:Number(drawer?.scrollTop||0),listScroll:Number(list?.scrollTop||0)};
+}
+function jjddRestorePortalDrawerSnapshot(snapshot){
+  if(!snapshot?.id)return false;
+  const back=document.getElementById('portalDrawerBackdrop'),target=document.getElementById(snapshot.id);if(!back||!target)return false;
+  if(snapshot.id==='portalFavoriteDrawer')renderPortalFavorites(snapshot.filter||'all');
+  ['portalServiceDrawer','portalAlertDrawer','portalFavoriteDrawer'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=id!==snapshot.id;});
+  target.hidden=false;back.classList.add('open');back.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';JJDD_ACTIVE_OVERLAY={type:'portal-drawer',id:snapshot.id};
+  try{const base={...(history.state||{})};delete base[JJDD_MODAL_HISTORY_KEY];base[JJDD_OVERLAY_HISTORY_KEY]={type:'portal-drawer',id:snapshot.id};history.replaceState(base,document.title);}catch(_){ }
+  requestAnimationFrame(()=>{target.scrollTop=Number(snapshot.drawerScroll||0);const list=document.getElementById('portalFavoriteList');if(list&&snapshot.id==='portalFavoriteDrawer')list.scrollTop=Number(snapshot.listScroll||0);});
+  return true;
+}
+function jjddSuspendDrawerForModal(){const snapshot=jjddCapturePortalDrawerSnapshot();if(!snapshot)return null;closePortalDrawer(true);return snapshot;}
 window.closePortalDrawer=closePortalDrawer;
 
 // ===== v2.8.4 · PORTAL SERVICE RAIL + INTERACTION STABILITY =====
@@ -13735,6 +13771,7 @@ function portalFavoriteItems(){
   return [...watchedItems,...base];
 }
 function renderPortalFavorites(filter='all'){
+  JJDD_FAVORITE_ACTIVE_FILTER=filter||'all';
   const list=document.getElementById('portalFavoriteList');if(!list)return;
   const all=portalFavoriteItems();const rows=filter==='all'?all:all.filter(x=>x.type===filter);
   list.innerHTML=rows.length?rows.map(x=>`<div class="portal-drawer-item" data-favorite-type="${portalEsc(x.type)}"><div class="top"><b>${portalEsc(x.title)}</b><em>${portalEsc(x.label)}</em></div><p>${portalEsc(x.desc)}</p><button type="button" data-fav-open="${portalEsc(x.type)}" data-fav-title="${portalEsc(x.title)}">열기 →</button></div>`).join(''):`<div class="portal-fav-empty">이 항목에 저장된 콘텐츠가 아직 없습니다.</div>`;
@@ -13745,12 +13782,13 @@ function renderPortalFavorites(filter='all'){
 window.renderPortalFavorites=renderPortalFavorites;
 function runPortalFavorite(item){
   if(!item)return;
+  if(item.type==='politician'){
+    const snapshot=jjddSuspendDrawerForModal();if(snapshot)JJDD_MODAL_PARENT_OVERLAY_SNAPSHOT=snapshot;
+    const watched=people.find(p=>p.name===item.title||String(item.action||'').includes(`openDetail(${Number(p.id)})`));
+    if(watched&&Number.isFinite(Number(watched.id))){openDetail(Number(watched.id));return;}
+    openPresident();return;
+  }
   jjddPortalNavigateAfterOverlay(()=>{
-    if(item.type==='politician'){
-      const watched=people.find(p=>p.name===item.title||String(item.action||'').includes(`openDetail(${Number(p.id)})`));
-      if(watched&&Number.isFinite(Number(watched.id))){openDetail(Number(watched.id));return;}
-      openPresident();return;
-    }
     if(item.type==='column'){openArticle(0);return;}
     if(item.type==='compare'){showPage('compare');return;}
     if(item.type==='community'){showPage('community');setTimeout(()=>openCommunityPost('demo_comm_1'),80);return;}
