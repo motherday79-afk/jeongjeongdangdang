@@ -1,3 +1,11 @@
+## v2.8.8.6 · HOME COLUMN LIVE SOURCE
+
+- HOME의 `오늘 정치에서 봐야 할 3가지`를 정적 HTML/내장 이미지에서 제거하고 `/api/news` 서버 COLUMN 데이터로 직접 렌더링합니다.
+- 관리자에서 COLUMN 대표사진을 바꾸면 HOME / COLUMN 목록 / 상세가 동일한 `imageVersion` URL을 사용합니다.
+- HOME snapshot의 COLUMN 캐시를 `no-store`로 변경하고, 브라우저 30분 HOME 캐시에서 COLUMN 데이터를 제거했습니다.
+- 이전 빌드의 HOME COLUMN 캐시는 새 키로 하드 리셋합니다.
+- 관리자 화면 버전: v2.8.8.6 · HOME COLUMN LIVE SOURCE
+
 ## v2.8.8.5 · COLUMN ADMIN AUTH SYNC
 
 - 메인 사이트에서 `ADMIN`으로 표시되는 회원 계정과 관리자 콘솔 세션의 COLUMN 수정 권한을 일치시켰습니다.
