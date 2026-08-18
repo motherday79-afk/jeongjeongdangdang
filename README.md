@@ -1,3 +1,14 @@
+## v2.8.8.3 · SEARCH PAGE + COLUMN CONSISTENCY
+
+- 통합검색 결과를 팝업이 아닌 정식 포털 검색 페이지로 전환했습니다.
+- 정치인 상세는 검색결과 페이지 위의 상세 오버레이로 열려 검색 맥락을 유지합니다.
+- COLUMN은 session stale-first 캐시를 제거하고 서버 저장값을 단일 Source of Truth로 사용합니다.
+- 관리자 COLUMN 사진/본문 수정 직후 HOME · COLUMN 목록 · 상세가 동일 최신 데이터로 다시 렌더됩니다.
+- index.html과 COLUMN API는 오래된 배포/데이터가 반복 새로고침에서 재등장하지 않도록 no-store 정책을 강화했습니다.
+- ‘칼럼 목록으로’ 버튼은 브라우저 이전페이지가 아니라 항상 COLUMN 목록으로 이동합니다.
+- 관리자 화면 버전: v2.8.8.3 · SEARCH PAGE + COLUMN CONSISTENCY
+- 기존 확정 폰트 크기는 변경하지 않았습니다.
+
 ## v2.8.8.2 · PORTAL SEARCH RESULTS
 - HOME 통합검색에서 정치인 이름이 정확히 1명 일치해도 상세로 자동 이동하지 않습니다. 모든 검색은 먼저 포털 통합검색 결과를 보여줍니다.
 - `김민석`처럼 인물 검색 시 BEST MATCH 프로필 진입 카드와 관련 COLUMN / 정뮤니티 / 실시간 정치키워드를 함께 노출하며, 관련 콘텐츠가 없으면 0건 상태를 명시합니다.

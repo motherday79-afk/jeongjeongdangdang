@@ -2144,6 +2144,25 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
 /* ===== /v2.8.8.2 ===== */
 </style>
 
+
+<style id="v2883PortalSearchPageStyles">
+/* ===== v2.8.8.3 · PORTAL SEARCH PAGE / COLUMN CONSISTENCY ===== */
+.portal-search-page-shell{max-width:1180px;margin:0 auto;padding:2px 0 42px}
+.portal-search-page-head{padding:22px 24px 18px;border:1px solid #dfe8e5;border-radius:18px;background:#fff}
+.portal-search-page-head .kicker{color:#0d866f;font-weight:950;letter-spacing:.08em}
+.portal-search-page-head h1{margin:5px 0 6px;color:#1d332c;letter-spacing:-.7px}
+.portal-search-page-head p{margin:0;color:#71817b;line-height:1.6}
+.portal-search-page-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin-top:16px}
+.portal-search-page-form input{min-width:0;height:48px;border:2px solid #2ab49d;border-radius:14px;background:#fff;padding:0 15px;color:#20342e;font:inherit;outline:0}
+.portal-search-page-form button{height:48px;border:0;border-radius:13px;background:#183f35;color:#fff;padding:0 22px;font:inherit;font-weight:950;cursor:pointer}
+.portal-search-page-tabs{margin-top:14px;border:0!important;border-radius:14px;background:#f7faf9!important;padding-left:0!important;padding-right:0!important}
+.portal-search-page-results{display:grid;gap:14px;margin-top:16px}
+.portal-search-page-results .global-search-section{padding:14px;border:1px solid #dfe8e5;border-radius:17px;background:#fff;margin:0}
+.portal-search-page-results .global-search-result{cursor:pointer}
+@media(max-width:780px){.portal-search-page-shell{padding-bottom:28px}.portal-search-page-head{padding:17px 14px}.portal-search-page-form{grid-template-columns:1fr}.portal-search-page-form button{width:100%}.portal-search-page-results{gap:10px}}
+/* ===== /v2.8.8.3 ===== */
+</style>
+
 </head>
 <body>
 <div class="topbar portal-global-topbar">
@@ -2312,6 +2331,32 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
         <section class="card"><div class="cardpad"><div class="kicker">ABOUT</div><h3>설문 운영 기준</h3><div class="sub">회원 기준 1계정 1회 참여를 원칙으로 하며, 결과는 정참시 내부 참여 데이터입니다. 외부 여론조사와 동일한 통계조사가 아닙니다.</div></div></section>
         <section class="card"><div class="cardpad"><div class="kicker">SURVEY LIST</div><h3>설문 목록</h3><div class="survey-archive-list" id="surveyArchiveList"></div></div></section>
       </aside>
+    </div>
+  </section>
+
+  <!-- Portal Search Results -->
+  <section class="page" id="page-search">
+    <div class="portal-search-page-shell">
+      <section class="portal-search-page-head">
+        <div class="kicker">JEONGCHAMSI SEARCH</div>
+        <h1>정참시 통합검색</h1>
+        <p id="portalSearchPageTitle">정치인 · 정당 · 정치키워드 · COLUMN · 정뮤니티를 한 페이지에서 확인합니다.</p>
+        <div class="portal-search-page-form">
+          <input id="portalSearchPageInput" autocomplete="off" placeholder="정치인, 정당, 키워드, COLUMN, 정뮤니티 검색" aria-label="정참시 통합검색어">
+          <button id="portalSearchPageSubmit" type="button">검색</button>
+        </div>
+        <div class="global-search-tabs portal-search-page-tabs" id="portalSearchPageTabs" role="tablist" aria-label="통합검색 결과 분류">
+          <button type="button" class="active" data-global-search-tab="all" aria-selected="true">전체</button>
+          <button type="button" data-global-search-tab="people" aria-selected="false">정치인</button>
+          <button type="button" data-global-search-tab="party" aria-selected="false">정당</button>
+          <button type="button" data-global-search-tab="column" aria-selected="false">COLUMN</button>
+          <button type="button" data-global-search-tab="community" aria-selected="false">정뮤니티</button>
+          <button type="button" data-global-search-tab="keyword" aria-selected="false">키워드</button>
+        </div>
+      </section>
+      <div class="portal-search-page-results" id="portalSearchPageResults">
+        <div class="global-search-empty">검색어를 입력하면 정참시 안의 관련 콘텐츠를 한 번에 보여드립니다.</div>
+      </div>
     </div>
   </section>
 
@@ -11772,10 +11817,12 @@ function openArticle(idx,opts={}){
 }
 window.openArticle = openArticle;
 function backToNews(){
-  const st=jjddUiHistoryState();
-  if(st?.page==='news'&&st?.view==='article'){try{history.back();return;}catch(_){ }}
+  // “칼럼 목록으로” is an in-service navigation command, not browser Back.
+  // It must always reveal the COLUMN list regardless of where the article was opened from.
+  showPage('news',{skipHistory:true,preserveSubview:true,scroll:false});
   jjddSetNewsListSurface();
   jjddWriteUiHistory({page:'news',view:'list'},{replace:true});
+  window.scrollTo({top:0,behavior:'auto'});
 }
 window.backToNews = backToNews;
 async function newsApi(url='/api/news',init){
@@ -11787,22 +11834,23 @@ function setNewsWriterAccess(canWrite,me){
   if(card)card.style.display=newsCanWrite?'block':'none';if(mark)mark.style.display=newsCanWrite?'inline-flex':'none';
   const status=document.getElementById('newsWriteStatus');if(status&&newsCanWrite&&me?.role)status.textContent=`${me.nickname||'작성자'} · ${me.role} 권한`;
 }
-function applyPublishedNewsPayload(j,{cache=true,full=true}={}){
+function applyPublishedNewsPayload(j,{cache=false,full=true}={}){
   publishedNewsPosts=Array.isArray(j?.posts)?j.posts:[];newsIsAdmin=Boolean(j?.isAdmin);if(full){newsFullLoaded=true;setNewsWriterAccess(j?.canWrite,j?.me);}else setNewsWriterAccess(Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro||window.JJDD_ACCOUNT_USER?.role==='ADMIN'),window.JJDD_ACCOUNT_USER);
   {const live=publishedNewsPosts.map(normalizePublishedNews),liveById=new Map(live.filter(x=>x.id).map(x=>[String(x.id),x])),hidden=new Set((j?.hiddenSeedIds||[]).map(String)),seedIds=new Set(demoNewsArticles.map(x=>String(x.id)));const seeded=demoNewsArticles.filter(x=>!hidden.has(String(x.id))).map(x=>liveById.get(String(x.id))||x),extras=live.filter(x=>!seedIds.has(String(x.id)));newsArticles=[...seeded,...extras];}renderSideNews();renderNewsGrid();
+  // HOME, list and article all consume the same freshly returned server objects.
   if(typeof renderPortalHome==='function')renderPortalHome();
-  if(cache&&full)jjddSpeedWrite('news',{posts:publishedNewsPosts});
+  // Explicitly delete the old stale-first COLUMN cache from previous builds.
+  jjddSpeedDrop('news');
   const st=document.getElementById('newsLoadStatus');if(st)st.textContent=publishedNewsPosts.length?'':'아직 발행된 정참시 COLUMN가 없어 샘플 화면을 표시하고 있습니다.';
 }
 async function revalidatePublishedNews(){
   if(newsLoadPromise)return newsLoadPromise;
-  newsLoadPromise=(async()=>{try{const j=await newsApi('/api/news?limit=60');applyPublishedNewsPayload(j,{cache:true,full:true});return true;}catch(e){const st=document.getElementById('newsLoadStatus');if(st&&!publishedNewsPosts.length)st.textContent='정참시 COLUMN 저장소 연결을 확인해주세요.';return false;}finally{newsLoadPromise=null;}})();
+  newsLoadPromise=(async()=>{try{const j=await newsApi('/api/news?limit=60&_='+Date.now());applyPublishedNewsPayload(j,{cache:false,full:true});return true;}catch(e){const st=document.getElementById('newsLoadStatus');if(st&&!publishedNewsPosts.length)st.textContent='정참시 COLUMN 저장소 연결을 확인해주세요.';return false;}finally{newsLoadPromise=null;}})();
   return newsLoadPromise;
 }
 async function loadPublishedNews(force=false){
   const st=document.getElementById('newsLoadStatus');if(st&&force)st.textContent='정참시 COLUMN를 불러오는 중입니다…';
-  if(!force&&!publishedNewsPosts.length){const cached=jjddSpeedRead('news',21600000);if(cached?.posts){applyPublishedNewsPayload({posts:cached.posts},{cache:false,full:false});revalidatePublishedNews();return true;}}
-  if(!force&&publishedNewsPosts.length){setNewsWriterAccess(Boolean(window.JJDD_ACCOUNT_USER?.capabilities?.pro||window.JJDD_ACCOUNT_USER?.role==='ADMIN'),window.JJDD_ACCOUNT_USER);if(!newsFullLoaded)revalidatePublishedNews();return true;}
+  // Network-first by design: COLUMN admin state, imageVersion and edited content have one source of truth.
   return revalidatePublishedNews();
 }
 function blobToDataURL(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('이미지를 읽지 못했습니다.'));r.readAsDataURL(blob);});}
@@ -12316,6 +12364,9 @@ async function jjddRestoreUiFromHistory(st){
     }
     if(page==='survey'&&route.view==='poll'){
       showPage('survey',{skipHistory:true,instant:true});await loadSurveyPosts(false);selectSurveyPost(route.surveyId,{skipHistory:true,instant:true,scroll:false});return;
+    }
+    if(page==='search'){
+      showPage('search',{skipHistory:true,instant:true,scroll:false});GLOBAL_SEARCH_ACTIVE_TAB=['all','people','party','column','community','keyword'].includes(route.tab)?route.tab:'all';GLOBAL_SEARCH_LAST_QUERY=String(route.query||'');const input=document.getElementById('portalSearchPageInput');if(input)input.value=GLOBAL_SEARCH_LAST_QUERY;globalSearchSyncTabs();renderGlobalSearchResults(GLOBAL_SEARCH_LAST_QUERY,{});globalSearchWarmContent(GLOBAL_SEARCH_LAST_QUERY,{});return;
     }
     showPage(page,{skipHistory:true,instant:true});
   }finally{JJDD_RESTORING_UI_HISTORY=false;}
@@ -13245,7 +13296,7 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);loadSiteSettings();st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
-// ===== v2.8.8.2 · PORTAL SEARCH RESULTS =====
+// ===== v2.8.8.3 · PORTAL SEARCH PAGE / COLUMN CONSISTENCY =====
 function globalSearchEsc(v){return accountEsc(v);}
 function globalSearchNormalized(v){return String(v||'').replace(/[\s·._\-#]+/g,'').toLowerCase();}
 function globalSearchHaystack(p){
@@ -13274,35 +13325,48 @@ function globalSearchQueryTerms(raw,partyMatches=[]){
   (partyMatches||[]).forEach(p=>{add(p.name);(p.aliases||[]).forEach(add);});return [...terms];
 }
 function openGlobalSearchParty(party){
-  closeGlobalSearch(true);showPage('ranking',{instant:true});mode='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode==='all'));
+  showPage('ranking',{instant:true});mode='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode==='all'));
   const partySelect=document.getElementById('party'),rankSearch=document.getElementById('search');let has=false;
   if(partySelect){has=[...partySelect.options].some(o=>o.value===party||o.textContent===party);partySelect.value=has?party:'all';}
   if(rankSearch)rankSearch.value=has?'':party;resetRankVisibleLimit('all');renderRank();
 }
 function openGlobalSearchResult(item){
-  if(!item)return false;closeGlobalSearch(true);const type=entityTypeOf(item);
+  if(!item)return false;const type=entityTypeOf(item);
   if(type==='president'){openPresident();return true;}if(type==='government'){const idx=governmentOfficials.findIndex(g=>String(g.id)===String(item.id));if(idx>=0){openGovPerson(idx);return true;}}
   const person=people.find(p=>String(p.id)===String(item.id));if(person){openDetail(person.id);return true;}return false;
 }
 function openGlobalSearchCommunityResult(id){
   const target=String(id||''),existing=communityPosts.find(p=>String(p.id)===target),demo=typeof demoCommunityPosts!=='undefined'?demoCommunityPosts.find(p=>String(p.id)===target):null;
-  if(!existing&&demo)communityPosts=[...communityPosts,demo];closeGlobalSearch(true);showPage('community',{skipHistory:true,instant:true});setTimeout(()=>openCommunityPost(target,{instant:true}),40);
+  if(!existing&&demo)communityPosts=[...communityPosts,demo];showPage('community',{skipHistory:true,instant:true});setTimeout(()=>openCommunityPost(target,{instant:true}),40);
 }
 function globalSearchWarmContent(query,context={}){
   const jobs=[];if(typeof loadPublishedNews==='function')jobs.push(Promise.resolve(loadPublishedNews(false)).catch(()=>false));if(typeof loadCommunity==='function')jobs.push(Promise.resolve(loadCommunity(false)).catch(()=>false));
-  if(!jobs.length)return;Promise.allSettled(jobs).then(()=>{const modal=document.getElementById('globalSearchModal'),input=document.getElementById('globalSearchInput');if(modal?.classList.contains('show')&&String(input?.value||'').trim()===String(query||'').trim())renderGlobalSearchResults(query,context);});
+  if(!jobs.length)return;Promise.allSettled(jobs).then(()=>{const page=document.getElementById('page-search'),input=document.getElementById('portalSearchPageInput');if(page?.classList.contains('active')&&String(input?.value||'').trim()===String(query||'').trim())renderGlobalSearchResults(query,context);});
 }
 function openGlobalSearch(initialQuery='',context={}){
-  const modal=document.getElementById('globalSearchModal');if(!modal)return;document.getElementById('notificationPopover')?.classList.remove('show');modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';jjddPushOverlayHistory('global-search','globalSearchModal');
-  GLOBAL_SEARCH_ACTIVE_TAB='all';GLOBAL_SEARCH_LAST_CONTEXT=context||{};globalSearchSyncTabs();const input=document.getElementById('globalSearchInput'),q=String(initialQuery||'').trim();if(input){input.value=q;renderGlobalSearchResults(q,context);setTimeout(()=>input.focus(),40);}globalSearchWarmContent(q,context);
+  const q=String(initialQuery||'').trim();
+  // Search is a first-class portal PAGE. No search-result modal is opened.
+  const modal=document.getElementById('globalSearchModal');if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
+  document.body.style.overflow='';
+  GLOBAL_SEARCH_ACTIVE_TAB='all';GLOBAL_SEARCH_LAST_CONTEXT=context||{};GLOBAL_SEARCH_LAST_QUERY=q;
+  showPage('search',{skipHistory:true,instant:true,scroll:false});
+  const input=document.getElementById('portalSearchPageInput');if(input)input.value=q;
+  globalSearchSyncTabs();renderGlobalSearchResults(q,context);globalSearchWarmContent(q,context);
+  if(!JJDD_RESTORING_UI_HISTORY){
+    const state={page:'search',view:'results',query:q,tab:GLOBAL_SEARCH_ACTIVE_TAB};
+    const cur=jjddUiHistoryState();jjddWriteUiHistory(state,{replace:Boolean(cur?.page==='search')});
+  }
+  window.scrollTo({top:0,behavior:'auto'});setTimeout(()=>input?.focus(),30);
 }
-function closeGlobalSearch(skipHistory=false){const modal=document.getElementById('globalSearchModal');if(!modal)return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';jjddReleaseOverlayHistory('global-search',skipHistory);}
-function globalSearchSyncTabs(){document.querySelectorAll('[data-global-search-tab]').forEach(btn=>{const on=btn.dataset.globalSearchTab===GLOBAL_SEARCH_ACTIVE_TAB;btn.classList.toggle('active',on);btn.setAttribute('aria-selected',String(on));});}
-function setGlobalSearchTab(tab){GLOBAL_SEARCH_ACTIVE_TAB=['all','people','party','column','community','keyword'].includes(tab)?tab:'all';globalSearchSyncTabs();renderGlobalSearchResults(GLOBAL_SEARCH_LAST_QUERY,GLOBAL_SEARCH_LAST_CONTEXT);}
-function globalSearchEmptyBlock(text){return `<div class="global-search-empty-section">${globalSearchEsc(text)}</div>`;}
-function globalSearchSectionHTML(label,count,body,emptyText='관련 결과가 아직 없습니다.'){
-  return `<section class="global-search-section"><div class="global-search-section-head"><b>${globalSearchEsc(label)}</b><span>${Number(count||0).toLocaleString('ko-KR')}건</span></div><div class="global-search-section-body">${body||globalSearchEmptyBlock(emptyText)}</div></section>`;
+function closeGlobalSearch(skipHistory=false){
+  const modal=document.getElementById('globalSearchModal');if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
+  document.body.style.overflow='';
 }
+function runPortalSearchPage(){
+  const input=document.getElementById('portalSearchPageInput'),q=String(input?.value||'').trim();GLOBAL_SEARCH_ACTIVE_TAB='all';GLOBAL_SEARCH_LAST_QUERY=q;GLOBAL_SEARCH_LAST_CONTEXT={};globalSearchSyncTabs();renderGlobalSearchResults(q,{});globalSearchWarmContent(q,{});
+  if(!JJDD_RESTORING_UI_HISTORY)jjddWriteUiHistory({page:'search',view:'results',query:q,tab:'all'},{replace:true});
+}
+
 function globalSearchResultPhoto(item){
   if(!item)return '';const type=entityTypeOf(item);if(type==='president')return presidentPortraitSVG();return politicianPhotoHTML(item.name,item.id,'standard');
 }
@@ -13315,7 +13379,7 @@ function globalSearchPartyCard(x,representative=false){
   return `<button type="button" class="global-search-party-card" data-global-party="${globalSearchEsc(x.name)}"><span><b>${globalSearchEsc(x.name)}</b><span>소속 정치인 ${Number(x.count||0).toLocaleString('ko-KR')}명 · 전체보기</span></span><strong>정당</strong></button>`;
 }
 function renderGlobalSearchResults(query,context={}){
-  const box=document.getElementById('globalSearchResults');if(!box)return;const raw=String(query||'').trim(),nq=globalSearchNormalized(raw),help=document.getElementById('globalSearchTitle');GLOBAL_SEARCH_LAST_QUERY=raw;GLOBAL_SEARCH_LAST_CONTEXT=context||GLOBAL_SEARCH_LAST_CONTEXT||{};
+  const pageActive=document.getElementById('page-search')?.classList.contains('active');const box=pageActive?document.getElementById('portalSearchPageResults'):document.getElementById('globalSearchResults');if(!box)return;const raw=String(query||'').trim(),nq=globalSearchNormalized(raw),help=pageActive?document.getElementById('portalSearchPageTitle'):document.getElementById('globalSearchTitle');GLOBAL_SEARCH_LAST_QUERY=raw;GLOBAL_SEARCH_LAST_CONTEXT=context||GLOBAL_SEARCH_LAST_CONTEXT||{};
   if(!nq){if(help)help.textContent='정치인 · 정당 · 지역 · 정치키워드 · COLUMN · 정뮤니티를 한 번에 검색합니다.';box.innerHTML='<div class="global-search-empty">이름, 정당, 지역, 키워드 또는 게시글 제목을 입력해보세요.</div>';return;}
   const pool=comparisonPool(),partyMatches=globalSearchPartyMatches(raw),terms=globalSearchQueryTerms(raw,partyMatches),exactName=pool.filter(p=>globalSearchNormalized(p?.name)===nq);
   const peopleScored=pool.map(p=>{const fields=[p?.name,p?.party,p?.region,p?.constituency,p?.jurisdiction,p?.office,p?.ministry,p?.role,p?.partyRole,entityLabel(p)];let score=0;if(globalSearchNormalized(p?.name)===nq)score=120;else if(globalSearchAnyMatch(p?.name,terms))score=95;else if(terms.some(t=>globalSearchNormalized(p?.party)===t))score=85;else if(globalSearchAnyMatch(p?.party,terms))score=75;else if(fields.some(v=>globalSearchAnyMatch(v,terms)))score=50;return {p,score};}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||String(a.p.name||'').localeCompare(String(b.p.name||''),'ko'));
@@ -13363,16 +13427,19 @@ function renderGlobalSearchResults(query,context={}){
   box.innerHTML=html;
   box.querySelectorAll('[data-global-party]').forEach(el=>el.addEventListener('click',()=>openGlobalSearchParty(el.dataset.globalParty)));
   box.querySelectorAll('[data-global-search-id]').forEach(el=>el.addEventListener('click',()=>{const item=findComparisonPerson(el.dataset.globalSearchId);if(item)openGlobalSearchResult(item);}));
-  box.querySelectorAll('[data-global-keyword]').forEach(el=>el.addEventListener('click',()=>{closeGlobalSearch(true);openWhyNowByKeyword(el.dataset.globalKeyword);}));
-  box.querySelectorAll('[data-global-news-index]').forEach(el=>el.addEventListener('click',()=>{closeGlobalSearch(true);openArticle(Number(el.dataset.globalNewsIndex));}));
+  box.querySelectorAll('[data-global-keyword]').forEach(el=>el.addEventListener('click',()=>{openWhyNowByKeyword(el.dataset.globalKeyword);}));
+  box.querySelectorAll('[data-global-news-index]').forEach(el=>el.addEventListener('click',()=>{openArticle(Number(el.dataset.globalNewsIndex));}));
   box.querySelectorAll('[data-global-community-id]').forEach(el=>el.addEventListener('click',()=>openGlobalSearchCommunityResult(el.dataset.globalCommunityId)));
 }
 document.getElementById('globalSearchBtn')?.addEventListener('click',()=>openGlobalSearch(''));
+document.getElementById('portalSearchPageSubmit')?.addEventListener('click',runPortalSearchPage);
+document.getElementById('portalSearchPageInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runPortalSearchPage();}});
+document.getElementById('portalSearchPageTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-global-search-tab]');if(btn)setGlobalSearchTab(btn.dataset.globalSearchTab);});
 document.getElementById('globalSearchClose')?.addEventListener('click',()=>closeGlobalSearch());
 document.getElementById('globalSearchInput')?.addEventListener('input',e=>renderGlobalSearchResults(e.target.value,{}));
 document.getElementById('globalSearchTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-global-search-tab]');if(btn)setGlobalSearchTab(btn.dataset.globalSearchTab);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeGlobalSearch();document.getElementById('notificationPopover')?.classList.remove('show');}});
-// ===== /v2.8.8.2 =====
+// ===== /v2.8.8.3 =====
 
 function accountNotificationEnabled(){return Boolean(window.JJDD_ACCOUNT_USER?.notifications?.enabled);}
 function renderNotificationUI(){
@@ -13421,13 +13488,13 @@ function closeMainAdminEditor(skipHistory=false){const ov=document.getElementByI
 async function saveMainAdminContent(){
   const type=mainAdminEditType,id=mainAdminEditId,st=document.getElementById('mainAdminEditStatus'),btn=document.getElementById('mainAdminEditSave'),title=document.getElementById('mainAdminEditTitle').value.trim(),content=document.getElementById('mainAdminEditContent').value.trim(),category=document.getElementById('mainAdminEditCategory').value;if(!id||title.length<2||content.length<2){st.textContent='제목과 내용을 2자 이상 입력해주세요.';return;}
   btn.disabled=true;st.textContent='저장 중…';try{
-    const body={action:'admin-update',id,title,content,category,removeImage:document.getElementById('mainAdminEditRemoveImage').checked};if(mainAdminEditImageData)body.imageData=mainAdminEditImageData;if(type==='news'){body.excerpt=document.getElementById('mainAdminEditExcerpt').value.trim();await newsApi('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});await loadPublishedNews(true);const idx=newsArticles.findIndex(x=>String(x.id)===String(id));closeMainAdminEditor();if(idx>=0)openArticle(idx,{skipHistory:true,scroll:false});}
+    const body={action:'admin-update',id,title,content,category,removeImage:document.getElementById('mainAdminEditRemoveImage').checked};if(mainAdminEditImageData)body.imageData=mainAdminEditImageData;if(type==='news'){body.excerpt=document.getElementById('mainAdminEditExcerpt').value.trim();await newsApi('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});jjddSpeedDrop('news');await loadPublishedNews(true);const idx=newsArticles.findIndex(x=>String(x.id)===String(id));closeMainAdminEditor();if(idx>=0)openArticle(idx,{skipHistory:true,scroll:false});}
     else{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}});await loadCommunity(true);closeMainAdminEditor();await openCommunityPost(id,{skipHistory:true,scroll:false});}
   }catch(e){st.textContent=e.message;}finally{btn.disabled=false;}
 }
 async function deleteMainAdminContent(type,id){
   if(!id||!confirm(type==='news'?'이 정참시 COLUMN 칼럼을 삭제할까요?':'이 정뮤니티 게시글과 댓글을 삭제할까요?'))return;try{
-    if(type==='news'){await newsApi('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin-delete',id})});await loadPublishedNews(true);jjddSetNewsListSurface();}
+    if(type==='news'){await newsApi('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin-delete',id})});jjddSpeedDrop('news');await loadPublishedNews(true);jjddSetNewsListSurface();}
     else{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin-delete',id})}});communitySelectedPost=null;await loadCommunity(true);jjddSetCommunityListSurface();}
   }catch(e){alert(e.message);}
 }
@@ -13692,9 +13759,9 @@ function portalPartyClassName(p){return partyClass?.[p]||'party-gray';}
 function portalNormalizeSearchName(v){return String(v||'').replace(/[\s·._-]+/g,'').toLowerCase();}
 function portalSearchGo(){
   const input=document.getElementById('portalSearchInput'),q=String(input?.value||'').trim();if(!q)return;
-  const nq=globalSearchNormalized(q),pool=comparisonPool(),exact=pool.filter(x=>globalSearchNormalized(x?.name)===nq);
-  openGlobalSearch(q,{disambiguate:exact.length>1,exactCount:exact.length});
+  openGlobalSearch(q,{});
 }
+
 function portalPresidentHTML(){
   const cfg=presidentPageSetting();
   const agenda=Array.isArray(cfg.agenda)?cfg.agenda.slice(0,2):[];

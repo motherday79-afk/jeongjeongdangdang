@@ -44,12 +44,12 @@ async function listPosts(limit=60){
   const rows=await cmd(['LRANGE',POSTS,'0',String(Math.max(0,Math.min(MAX_POSTS-1,Number(limit||60)-1))) ]).catch(()=>[]),posts=[];for(const x of (Array.isArray(rows)?rows:[])){try{posts.push(JSON.parse(x));}catch(_){}}const reps=await getRepresentativeBadges(posts.map(p=>p.authorId)).catch(()=>({}));return Promise.all(posts.map(p=>publicPost(p,p.authorId&&!String(p.authorId).startsWith('admin:')?reps[p.authorId]??null:null)));
 }
 module.exports=async function(req,res){
-  res.setHeader('Cache-Control','no-store');
+  res.setHeader('Cache-Control','no-store, max-age=0, must-revalidate');res.setHeader('CDN-Cache-Control','no-store');res.setHeader('Vercel-CDN-Cache-Control','no-store');
   const action=String(req.query?.action||req.body?.action||'list');
   try{
     if(req.method==='GET'&&action==='image'){
       const id=cleanText(req.query?.id,100);if(!id)return res.status(400).end();const img=await getJSON(IMAGE_PREFIX+id);if(!img?.data||!/^image\/(jpeg|png|webp)$/.test(String(img.mime||'')))return res.status(404).end();
-      const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control',req.query?.v?'public, max-age=31536000, immutable':'no-cache, max-age=0, must-revalidate');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);
+      const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control',req.query?.v?'public, max-age=31536000, immutable':'no-store, max-age=0, must-revalidate');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);
     }
     if(req.method==='GET'||action==='list'){
       await flushDue(12).catch(()=>{});
