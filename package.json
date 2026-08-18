@@ -1,7 +1,7 @@
 {
   "name": "jeongchamsi-now-rank",
   "private": true,
-  "version": "2.7.3",
+  "version": "2.8.8.7",
   "engines": {
     "node": ">=20"
   },
