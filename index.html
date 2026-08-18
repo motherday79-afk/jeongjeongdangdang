@@ -2131,6 +2131,19 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
 @media(max-width:780px){.survey-comment-write>div,.survey-admin-actions{align-items:stretch;flex-direction:column}.survey-comment-write button,.survey-admin-actions button{width:100%}}
 /* ===== /v2.8.8 ===== */
 </style>
+
+<style id="v2882PortalSearchResultStyles">
+/* ===== v2.8.8.2 · PORTAL SEARCH RESULTS / TYPOGRAPHY LOCK ===== */
+.global-search-tabs{display:flex;gap:6px;overflow-x:auto;padding:9px 14px 10px;border-top:1px solid #edf2f0;border-bottom:1px solid #e7eeeb;background:#fbfcfc;scrollbar-width:none}
+.global-search-tabs::-webkit-scrollbar{display:none}.global-search-tabs button{flex:0 0 auto;border:1px solid #dfe9e6;border-radius:999px;background:#fff;color:#5f716b;padding:7px 11px;font-weight:900;cursor:pointer;white-space:nowrap}.global-search-tabs button:hover{background:#f2f8f6}.global-search-tabs button.active{background:#183f35;border-color:#183f35;color:#fff}
+.global-search-representative{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:12px;padding:15px;border:1px solid #d6e7e2;border-radius:16px;background:linear-gradient(135deg,#f9fdfc,#eef8f5);color:#20362f;cursor:pointer;text-align:left;width:100%}.global-search-representative:hover{background:linear-gradient(135deg,#f4faf8,#e7f4ef)}
+.global-search-representative .photo{width:58px;height:58px;border-radius:16px;overflow:hidden;background:#e8f1ee}.global-search-representative .photo img,.global-search-representative .photo svg{width:100%;height:100%;display:block;object-fit:cover}
+.global-search-representative .copy{min-width:0}.global-search-representative .copy>span{display:block;color:#0b816c;font-weight:950;margin-bottom:3px}.global-search-representative .copy>b{display:block;color:#1f342e}.global-search-representative .copy>small{display:block;margin-top:4px;color:#71817c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.global-search-representative .action{color:#0b7d69;font-weight:950;white-space:nowrap}
+.global-search-representative.party{grid-template-columns:minmax(0,1fr) auto}.global-search-representative.party .copy>small{white-space:normal}.global-search-empty-section{padding:14px;border:1px dashed #dfe8e5;border-radius:13px;background:#fafcfc;color:#7d8c87;line-height:1.55}.global-search-section-body{display:grid;gap:6px}.global-search-result-caption{padding:2px 10px 7px;color:#778782;line-height:1.5}.global-search-box{max-height:min(84vh,820px)}
+@media(max-width:780px){.global-search-representative{grid-template-columns:50px minmax(0,1fr);align-items:start}.global-search-representative .photo{width:50px;height:50px}.global-search-representative .action{grid-column:2}.global-search-representative.party{grid-template-columns:1fr}.global-search-representative.party .action{grid-column:1}.global-search-tabs{padding-left:12px;padding-right:12px}}
+/* ===== /v2.8.8.2 ===== */
+</style>
+
 </head>
 <body>
 <div class="topbar portal-global-topbar">
@@ -2771,6 +2784,14 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
       <button class="global-search-close" id="globalSearchClose" aria-label="검색 닫기">✕</button>
     </div>
     <div class="global-search-help" id="globalSearchTitle">정치인 · 정당 · 지역 · 정치키워드 · COLUMN · 정뮤니티를 한 번에 검색합니다.</div>
+    <div class="global-search-tabs" id="globalSearchTabs" role="tablist" aria-label="통합검색 결과 분류">
+      <button type="button" class="active" data-global-search-tab="all" role="tab" aria-selected="true">전체</button>
+      <button type="button" data-global-search-tab="people" role="tab" aria-selected="false">정치인</button>
+      <button type="button" data-global-search-tab="party" role="tab" aria-selected="false">정당</button>
+      <button type="button" data-global-search-tab="column" role="tab" aria-selected="false">COLUMN</button>
+      <button type="button" data-global-search-tab="community" role="tab" aria-selected="false">정뮤니티</button>
+      <button type="button" data-global-search-tab="keyword" role="tab" aria-selected="false">키워드</button>
+    </div>
     <div class="global-search-results" id="globalSearchResults"><div class="global-search-empty">이름, 정당, 지역 또는 직위를 입력해보세요.</div></div>
   </div>
 </div>
@@ -13224,7 +13245,7 @@ document.getElementById('deleteAccountBtn')?.addEventListener('click',async()=>{
   const st=document.getElementById('deleteAccountStatus'),pw=document.getElementById('deletePassword').value;if(!pw){st.textContent='현재 비밀번호를 입력해주세요.';return;}if(!confirm('정말 정참시 회원 계정을 탈퇴할까요? 계정과 관심 정당, PLUS 저장정보가 함께 삭제됩니다.'))return;st.textContent='탈퇴 처리 중...';
   try{await accountApi('/api/account/delete',{method:'POST',body:JSON.stringify({password:pw})});setAccountUI(null);loadSiteSettings();st.textContent='';alert('회원 탈퇴가 완료되었습니다.');showPage('ranking');}catch(e){st.textContent=e.message;}
 });
-// ===== v2.2.7 Global search + account notification preference =====
+// ===== v2.8.8.2 · PORTAL SEARCH RESULTS =====
 function globalSearchEsc(v){return accountEsc(v);}
 function globalSearchNormalized(v){return String(v||'').replace(/[\s·._\-#]+/g,'').toLowerCase();}
 function globalSearchHaystack(p){
@@ -13233,7 +13254,11 @@ function globalSearchHaystack(p){
 const GLOBAL_SEARCH_PARTY_ALIASES={
   '더불어민주당':['민주당','민주','더민주'],'국민의힘':['국힘','국민'],'조국혁신당':['혁신당','조국'],'개혁신당':['개혁'],'진보당':['진보'],'사회민주당':['사민당','사회민주'],'기본소득당':['기본소득']
 };
+let GLOBAL_SEARCH_ACTIVE_TAB='all';
+let GLOBAL_SEARCH_LAST_QUERY='';
+let GLOBAL_SEARCH_LAST_CONTEXT={};
 function globalSearchTextMatch(value,nq){if(!nq)return false;const nv=globalSearchNormalized(value);return Boolean(nv&&nv.includes(nq));}
+function globalSearchAnyMatch(value,terms){return (terms||[]).some(term=>globalSearchTextMatch(value,term));}
 function globalSearchPartyCatalog(){
   const map=new Map();comparisonPool().forEach(p=>{const party=String(p?.party||'').trim();if(!party||party==='공석'||party==='정부')return;map.set(party,(map.get(party)||0)+1);});
   return [...map.entries()].map(([name,count])=>({name,count,aliases:GLOBAL_SEARCH_PARTY_ALIASES[name]||[]}));
@@ -13243,6 +13268,10 @@ function globalSearchPartyMatches(raw){
   return globalSearchPartyCatalog().filter(p=>globalSearchTextMatch(p.name,nq)||p.aliases.some(a=>globalSearchTextMatch(a,nq))).sort((a,b)=>{
     const ae=globalSearchNormalized(a.name)===nq||a.aliases.some(x=>globalSearchNormalized(x)===nq),be=globalSearchNormalized(b.name)===nq||b.aliases.some(x=>globalSearchNormalized(x)===nq);return Number(be)-Number(ae)||b.count-a.count;
   });
+}
+function globalSearchQueryTerms(raw,partyMatches=[]){
+  const terms=new Set();const add=v=>{const n=globalSearchNormalized(v);if(n)terms.add(n);};add(raw);
+  (partyMatches||[]).forEach(p=>{add(p.name);(p.aliases||[]).forEach(add);});return [...terms];
 }
 function openGlobalSearchParty(party){
   closeGlobalSearch(true);showPage('ranking',{instant:true});mode='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode==='all'));
@@ -13259,48 +13288,91 @@ function openGlobalSearchCommunityResult(id){
   const target=String(id||''),existing=communityPosts.find(p=>String(p.id)===target),demo=typeof demoCommunityPosts!=='undefined'?demoCommunityPosts.find(p=>String(p.id)===target):null;
   if(!existing&&demo)communityPosts=[...communityPosts,demo];closeGlobalSearch(true);showPage('community',{skipHistory:true,instant:true});setTimeout(()=>openCommunityPost(target,{instant:true}),40);
 }
+function globalSearchWarmContent(query,context={}){
+  const jobs=[];if(typeof loadPublishedNews==='function')jobs.push(Promise.resolve(loadPublishedNews(false)).catch(()=>false));if(typeof loadCommunity==='function')jobs.push(Promise.resolve(loadCommunity(false)).catch(()=>false));
+  if(!jobs.length)return;Promise.allSettled(jobs).then(()=>{const modal=document.getElementById('globalSearchModal'),input=document.getElementById('globalSearchInput');if(modal?.classList.contains('show')&&String(input?.value||'').trim()===String(query||'').trim())renderGlobalSearchResults(query,context);});
+}
 function openGlobalSearch(initialQuery='',context={}){
   const modal=document.getElementById('globalSearchModal');if(!modal)return;document.getElementById('notificationPopover')?.classList.remove('show');modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';jjddPushOverlayHistory('global-search','globalSearchModal');
-  const input=document.getElementById('globalSearchInput'),q=String(initialQuery||'').trim();if(input){input.value=q;renderGlobalSearchResults(q,context);setTimeout(()=>input.focus(),40);}
+  GLOBAL_SEARCH_ACTIVE_TAB='all';GLOBAL_SEARCH_LAST_CONTEXT=context||{};globalSearchSyncTabs();const input=document.getElementById('globalSearchInput'),q=String(initialQuery||'').trim();if(input){input.value=q;renderGlobalSearchResults(q,context);setTimeout(()=>input.focus(),40);}globalSearchWarmContent(q,context);
 }
 function closeGlobalSearch(skipHistory=false){const modal=document.getElementById('globalSearchModal');if(!modal)return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';jjddReleaseOverlayHistory('global-search',skipHistory);}
-function globalSearchSectionHTML(label,count,body){if(!body)return '';return `<section class="global-search-section"><div class="global-search-section-head"><b>${globalSearchEsc(label)}</b><span>${Number(count||0).toLocaleString('ko-KR')}건</span></div>${body}</section>`;}
+function globalSearchSyncTabs(){document.querySelectorAll('[data-global-search-tab]').forEach(btn=>{const on=btn.dataset.globalSearchTab===GLOBAL_SEARCH_ACTIVE_TAB;btn.classList.toggle('active',on);btn.setAttribute('aria-selected',String(on));});}
+function setGlobalSearchTab(tab){GLOBAL_SEARCH_ACTIVE_TAB=['all','people','party','column','community','keyword'].includes(tab)?tab:'all';globalSearchSyncTabs();renderGlobalSearchResults(GLOBAL_SEARCH_LAST_QUERY,GLOBAL_SEARCH_LAST_CONTEXT);}
+function globalSearchEmptyBlock(text){return `<div class="global-search-empty-section">${globalSearchEsc(text)}</div>`;}
+function globalSearchSectionHTML(label,count,body,emptyText='관련 결과가 아직 없습니다.'){
+  return `<section class="global-search-section"><div class="global-search-section-head"><b>${globalSearchEsc(label)}</b><span>${Number(count||0).toLocaleString('ko-KR')}건</span></div><div class="global-search-section-body">${body||globalSearchEmptyBlock(emptyText)}</div></section>`;
+}
 function globalSearchResultPhoto(item){
-  if(!item)return '';
-  const type=entityTypeOf(item);
-  if(type==='president')return presidentPortraitSVG();
-  return politicianPhotoHTML(item.name,item.id,'standard');
+  if(!item)return '';const type=entityTypeOf(item);if(type==='president')return presidentPortraitSVG();return politicianPhotoHTML(item.name,item.id,'standard');
+}
+function globalSearchPersonCard(p,representative=false){
+  if(representative)return `<button type="button" class="global-search-representative" data-global-search-id="${globalSearchEsc(p.id)}"><span class="photo">${globalSearchResultPhoto(p)}</span><span class="copy"><span>BEST MATCH · 정치인</span><b>${globalSearchEsc(p.name)}</b><small>${globalSearchEsc([p.party,p.jurisdiction||p.constituency||p.region,entityOffice(p)].filter(Boolean).join(' · '))}</small></span><span class="action">상세보기 →</span></button>`;
+  return `<div class="global-search-result" data-global-search-id="${globalSearchEsc(p.id)}"><div class="global-search-avatar">${globalSearchResultPhoto(p)}</div><div><div class="global-search-name">${globalSearchEsc(p.name)}</div><div class="global-search-meta">${globalSearchEsc([p.party,p.jurisdiction||p.constituency||p.region,entityOffice(p)].filter(Boolean).join(' · '))}</div></div><div class="global-search-type">${globalSearchEsc(entityLabel(p))}</div></div>`;
+}
+function globalSearchPartyCard(x,representative=false){
+  if(representative)return `<button type="button" class="global-search-representative party" data-global-party="${globalSearchEsc(x.name)}"><span class="copy"><span>BEST MATCH · 정당</span><b>${globalSearchEsc(x.name)}</b><small>소속 정치인 ${Number(x.count||0).toLocaleString('ko-KR')}명 · 관련 정치인과 정참시 콘텐츠를 함께 확인하세요.</small></span><span class="action">소속 정치인 전체보기 →</span></button>`;
+  return `<button type="button" class="global-search-party-card" data-global-party="${globalSearchEsc(x.name)}"><span><b>${globalSearchEsc(x.name)}</b><span>소속 정치인 ${Number(x.count||0).toLocaleString('ko-KR')}명 · 전체보기</span></span><strong>정당</strong></button>`;
 }
 function renderGlobalSearchResults(query,context={}){
-  const box=document.getElementById('globalSearchResults');if(!box)return;const raw=String(query||'').trim(),nq=globalSearchNormalized(raw),help=document.getElementById('globalSearchTitle');
+  const box=document.getElementById('globalSearchResults');if(!box)return;const raw=String(query||'').trim(),nq=globalSearchNormalized(raw),help=document.getElementById('globalSearchTitle');GLOBAL_SEARCH_LAST_QUERY=raw;GLOBAL_SEARCH_LAST_CONTEXT=context||GLOBAL_SEARCH_LAST_CONTEXT||{};
   if(!nq){if(help)help.textContent='정치인 · 정당 · 지역 · 정치키워드 · COLUMN · 정뮤니티를 한 번에 검색합니다.';box.innerHTML='<div class="global-search-empty">이름, 정당, 지역, 키워드 또는 게시글 제목을 입력해보세요.</div>';return;}
-  const pool=comparisonPool(),exactName=pool.filter(p=>globalSearchNormalized(p?.name)===nq);
-  const peopleMatches=pool.map(p=>{const fields=[p?.name,p?.party,p?.region,p?.constituency,p?.jurisdiction,p?.office,p?.ministry,p?.role,p?.partyRole,entityLabel(p)];let score=0;if(globalSearchNormalized(p?.name)===nq)score=100;else if(globalSearchTextMatch(p?.name,nq))score=80;else if(globalSearchNormalized(p?.party)===nq)score=70;else if(globalSearchTextMatch(p?.party,nq))score=65;else if(fields.some(v=>globalSearchTextMatch(v,nq)))score=45;return {p,score};}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||String(a.p.name||'').localeCompare(String(b.p.name||''),'ko')).map(x=>x.p);
-  const partyMatches=globalSearchPartyMatches(raw);
-  const keywords=(whyNowGlobalKeywords('all')||[]).filter(k=>globalSearchTextMatch(k,nq)).slice(0,10);
-  const columns=(newsArticles||[]).map((a,i)=>({a,i,score:globalSearchTextMatch(a?.title,nq)?90:globalSearchTextMatch(a?.cat,nq)?70:globalSearchTextMatch(a?.excerpt,nq)?55:globalSearchTextMatch(Array.isArray(a?.body)?a.body.join(' '):a?.content,nq)?40:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
+  const pool=comparisonPool(),partyMatches=globalSearchPartyMatches(raw),terms=globalSearchQueryTerms(raw,partyMatches),exactName=pool.filter(p=>globalSearchNormalized(p?.name)===nq);
+  const peopleScored=pool.map(p=>{const fields=[p?.name,p?.party,p?.region,p?.constituency,p?.jurisdiction,p?.office,p?.ministry,p?.role,p?.partyRole,entityLabel(p)];let score=0;if(globalSearchNormalized(p?.name)===nq)score=120;else if(globalSearchAnyMatch(p?.name,terms))score=95;else if(terms.some(t=>globalSearchNormalized(p?.party)===t))score=85;else if(globalSearchAnyMatch(p?.party,terms))score=75;else if(fields.some(v=>globalSearchAnyMatch(v,terms)))score=50;return {p,score};}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||String(a.p.name||'').localeCompare(String(b.p.name||''),'ko'));
+  const peopleMatches=peopleScored.map(x=>x.p);
+  const keywordsAll=(whyNowGlobalKeywords('all')||[]).map(k=>({k,score:globalSearchAnyMatch(k,terms)?80:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.k);
+  const columnsAll=(newsArticles||[]).map((a,i)=>({a,i,score:globalSearchAnyMatch(a?.title,terms)?100:globalSearchAnyMatch(a?.cat,terms)?70:globalSearchAnyMatch(a?.excerpt,terms)?65:globalSearchAnyMatch(a?.author,terms)?55:globalSearchAnyMatch(Array.isArray(a?.body)?a.body.join(' '):a?.content,terms)?45:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
   const communitySource=(communityPosts&&communityPosts.length)?communityPosts:(typeof demoCommunityPosts!=='undefined'?demoCommunityPosts:[]);
-  const communities=communitySource.map(p=>({p,score:globalSearchTextMatch(p?.title,nq)?90:globalSearchTextMatch(p?.category,nq)?70:globalSearchTextMatch(p?.content,nq)?45:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
-  const total=partyMatches.length+peopleMatches.length+keywords.length+columns.length+communities.length;
+  const communitiesAll=communitySource.map(p=>({p,score:globalSearchAnyMatch(p?.title,terms)?100:globalSearchAnyMatch(p?.category,terms)?70:globalSearchAnyMatch(p?.author,terms)?55:globalSearchAnyMatch(p?.content,terms)?45:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  const total=partyMatches.length+peopleMatches.length+keywordsAll.length+columnsAll.length+communitiesAll.length;
+  const exactParty=partyMatches.find(p=>globalSearchNormalized(p.name)===nq||(p.aliases||[]).some(a=>globalSearchNormalized(a)===nq));
+  const bestPerson=exactName.length===1?exactName[0]:null,bestParty=!bestPerson?(exactParty||((partyMatches.length===1)?partyMatches[0]:null)):null;
   if(help)help.textContent=exactName.length>1?`‘${raw}’ 동명이인 ${exactName.length}명 · 정당·지역·직위를 확인하고 선택하세요.`:`‘${raw}’ 통합검색 · 관련 결과 ${total.toLocaleString('ko-KR')}건`;
-  if(!total){box.innerHTML='<div class="global-search-empty">검색 결과가 없습니다. 다른 이름·정당·지역·키워드로 검색해보세요.</div>';return;}
-  const partyHTML=partyMatches.slice(0,5).map(x=>`<button type="button" class="global-search-party-card" data-global-party="${globalSearchEsc(x.name)}"><span><b>${globalSearchEsc(x.name)}</b><span>관련 정치인 ${x.count.toLocaleString('ko-KR')}명 · NOW Rank에서 보기</span></span><strong>정당</strong></button>`).join('');
-  const peopleHTML=peopleMatches.slice(0,30).map(p=>`<div class="global-search-result" data-global-search-id="${globalSearchEsc(p.id)}"><div class="global-search-avatar">${globalSearchResultPhoto(p)}</div><div><div class="global-search-name">${globalSearchEsc(p.name)}</div><div class="global-search-meta">${globalSearchEsc([p.party,p.jurisdiction||p.constituency||p.region,entityOffice(p)].filter(Boolean).join(' · '))}</div></div><div class="global-search-type">${globalSearchEsc(entityLabel(p))}</div></div>`).join('');
-  const keywordHTML=keywords.length?`<div class="global-search-keyword-grid">${keywords.map(k=>`<button type="button" class="global-search-keyword" data-global-keyword="${globalSearchEsc(k)}"><span>#</span><b>${globalSearchEsc(String(k).replace(/\s+/g,'_'))}</b></button>`).join('')}</div>`:'';
-  const columnHTML=columns.map(x=>`<button type="button" class="global-search-content-result" data-global-news-index="${x.i}"><span><b>${globalSearchEsc(x.a.title||'COLUMN')}</b><small>${globalSearchEsc([x.a.cat,x.a.author].filter(Boolean).join(' · '))}</small></span><em>COLUMN</em></button>`).join('');
-  const communityHTML=communities.map(x=>`<button type="button" class="global-search-content-result" data-global-community-id="${globalSearchEsc(x.p.id)}"><span><b>${globalSearchEsc(x.p.title||x.p.content||'정뮤니티')}</b><small>${globalSearchEsc([x.p.category,x.p.author].filter(Boolean).join(' · '))}</small></span><em>정뮤니티</em></button>`).join('');
+  if(!total){box.innerHTML='<div class="global-search-empty">검색 결과가 없습니다. 관련 콘텐츠가 아직 등록되지 않았거나 다른 검색어가 필요합니다.</div>';return;}
+  const peopleHTML=peopleMatches.slice(0,30).map(p=>globalSearchPersonCard(p,false)).join('');
+  const partyHTML=partyMatches.slice(0,8).map(x=>globalSearchPartyCard(x,false)).join('');
+  const keywordHTML=keywordsAll.length?`<div class="global-search-keyword-grid">${keywordsAll.slice(0,12).map(k=>`<button type="button" class="global-search-keyword" data-global-keyword="${globalSearchEsc(k)}"><span>#</span><b>${globalSearchEsc(String(k).replace(/\s+/g,'_'))}</b></button>`).join('')}</div>`:'';
+  const columnHTML=columnsAll.slice(0,12).map(x=>`<button type="button" class="global-search-content-result" data-global-news-index="${x.i}"><span><b>${globalSearchEsc(x.a.title||'COLUMN')}</b><small>${globalSearchEsc([x.a.cat,x.a.author].filter(Boolean).join(' · '))}</small></span><em>COLUMN</em></button>`).join('');
+  const communityHTML=communitiesAll.slice(0,12).map(x=>`<button type="button" class="global-search-content-result" data-global-community-id="${globalSearchEsc(x.p.id)}"><span><b>${globalSearchEsc(x.p.title||x.p.content||'정뮤니티')}</b><small>${globalSearchEsc([x.p.category,x.p.author].filter(Boolean).join(' · '))}</small></span><em>정뮤니티</em></button>`).join('');
+  const repHTML=bestPerson?globalSearchSectionHTML('대표 결과',1,globalSearchPersonCard(bestPerson,true)):bestParty?globalSearchSectionHTML('대표 결과',1,globalSearchPartyCard(bestParty,true)):'';
   const notice=exactName.length>1?`<div class="global-search-disambig"><b>동명이인 ${exactName.length}명</b><span>이름만으로 자동 이동하지 않습니다. 사진 · 정당 · 지역 · 현재 직위를 확인한 뒤 선택하세요.</span></div>`:'';
-  box.innerHTML=notice+globalSearchSectionHTML('정당',partyMatches.length,partyHTML)+globalSearchSectionHTML('정치인 · 정부 인사',peopleMatches.length,peopleHTML)+globalSearchSectionHTML('실시간 정치키워드',keywords.length,keywordHTML)+globalSearchSectionHTML('COLUMN',columns.length,columnHTML)+globalSearchSectionHTML('정뮤니티',communities.length,communityHTML);
+  let html='';
+  if(GLOBAL_SEARCH_ACTIVE_TAB==='all'){
+    html=notice+repHTML;
+    if(bestPerson){
+      html+=globalSearchSectionHTML('관련 COLUMN',columnsAll.length,columnHTML,`‘${raw}’이(가) 언급된 COLUMN이 아직 없습니다.`);
+      html+=globalSearchSectionHTML('관련 정뮤니티',communitiesAll.length,communityHTML,`‘${raw}’이(가) 언급된 정뮤니티 글이 아직 없습니다.`);
+      html+=globalSearchSectionHTML('관련 정치키워드',keywordsAll.length,keywordHTML,`‘${raw}’ 관련 실시간 정치키워드가 아직 없습니다.`);
+    }else if(bestParty){
+      html+=globalSearchSectionHTML('소속 · 관련 정치인',peopleMatches.length,peopleHTML,`${bestParty.name} 소속 정치인 결과가 아직 없습니다.`);
+      html+=globalSearchSectionHTML('관련 COLUMN',columnsAll.length,columnHTML,`${bestParty.name} 관련 COLUMN이 아직 없습니다.`);
+      html+=globalSearchSectionHTML('관련 정뮤니티',communitiesAll.length,communityHTML,`${bestParty.name} 관련 정뮤니티 글이 아직 없습니다.`);
+      html+=globalSearchSectionHTML('관련 정치키워드',keywordsAll.length,keywordHTML,`${bestParty.name} 관련 실시간 정치키워드가 아직 없습니다.`);
+    }else{
+      html+=globalSearchSectionHTML('정당',partyMatches.length,partyHTML,'관련 정당 결과가 아직 없습니다.');
+      html+=globalSearchSectionHTML('정치인 · 정부 인사',peopleMatches.length,peopleHTML,'관련 정치인 결과가 아직 없습니다.');
+      html+=globalSearchSectionHTML('COLUMN',columnsAll.length,columnHTML,'관련 COLUMN이 아직 없습니다.');
+      html+=globalSearchSectionHTML('정뮤니티',communitiesAll.length,communityHTML,'관련 정뮤니티 글이 아직 없습니다.');
+      html+=globalSearchSectionHTML('실시간 정치키워드',keywordsAll.length,keywordHTML,'관련 실시간 정치키워드가 아직 없습니다.');
+    }
+  }else if(GLOBAL_SEARCH_ACTIVE_TAB==='people')html=globalSearchSectionHTML('정치인 · 정부 인사',peopleMatches.length,peopleHTML,'관련 정치인 결과가 아직 없습니다.');
+  else if(GLOBAL_SEARCH_ACTIVE_TAB==='party')html=globalSearchSectionHTML('정당',partyMatches.length,partyHTML,'관련 정당 결과가 아직 없습니다.');
+  else if(GLOBAL_SEARCH_ACTIVE_TAB==='column')html=globalSearchSectionHTML('COLUMN',columnsAll.length,columnHTML,`‘${raw}’ 관련 COLUMN이 아직 없습니다.`);
+  else if(GLOBAL_SEARCH_ACTIVE_TAB==='community')html=globalSearchSectionHTML('정뮤니티',communitiesAll.length,communityHTML,`‘${raw}’ 관련 정뮤니티 글이 아직 없습니다.`);
+  else if(GLOBAL_SEARCH_ACTIVE_TAB==='keyword')html=globalSearchSectionHTML('실시간 정치키워드',keywordsAll.length,keywordHTML,`‘${raw}’ 관련 실시간 정치키워드가 아직 없습니다.`);
+  box.innerHTML=html;
   box.querySelectorAll('[data-global-party]').forEach(el=>el.addEventListener('click',()=>openGlobalSearchParty(el.dataset.globalParty)));
   box.querySelectorAll('[data-global-search-id]').forEach(el=>el.addEventListener('click',()=>{const item=findComparisonPerson(el.dataset.globalSearchId);if(item)openGlobalSearchResult(item);}));
   box.querySelectorAll('[data-global-keyword]').forEach(el=>el.addEventListener('click',()=>{closeGlobalSearch(true);openWhyNowByKeyword(el.dataset.globalKeyword);}));
   box.querySelectorAll('[data-global-news-index]').forEach(el=>el.addEventListener('click',()=>{closeGlobalSearch(true);openArticle(Number(el.dataset.globalNewsIndex));}));
   box.querySelectorAll('[data-global-community-id]').forEach(el=>el.addEventListener('click',()=>openGlobalSearchCommunityResult(el.dataset.globalCommunityId)));
 }
-document.getElementById('globalSearchBtn')?.addEventListener('click',openGlobalSearch);
-document.getElementById('globalSearchClose')?.addEventListener('click',closeGlobalSearch);
+document.getElementById('globalSearchBtn')?.addEventListener('click',()=>openGlobalSearch(''));
+document.getElementById('globalSearchClose')?.addEventListener('click',()=>closeGlobalSearch());
 document.getElementById('globalSearchInput')?.addEventListener('input',e=>renderGlobalSearchResults(e.target.value,{}));
+document.getElementById('globalSearchTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-global-search-tab]');if(btn)setGlobalSearchTab(btn.dataset.globalSearchTab);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeGlobalSearch();document.getElementById('notificationPopover')?.classList.remove('show');}});
+// ===== /v2.8.8.2 =====
 
 function accountNotificationEnabled(){return Boolean(window.JJDD_ACCOUNT_USER?.notifications?.enabled);}
 function renderNotificationUI(){
@@ -13621,7 +13693,6 @@ function portalNormalizeSearchName(v){return String(v||'').replace(/[\s·._-]+/g
 function portalSearchGo(){
   const input=document.getElementById('portalSearchInput'),q=String(input?.value||'').trim();if(!q)return;
   const nq=globalSearchNormalized(q),pool=comparisonPool(),exact=pool.filter(x=>globalSearchNormalized(x?.name)===nq);
-  if(exact.length===1){openGlobalSearchResult(exact[0]);return;}
   openGlobalSearch(q,{disambiguate:exact.length>1,exactCount:exact.length});
 }
 function portalPresidentHTML(){
