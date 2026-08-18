@@ -1,5 +1,5 @@
 const crypto=require('crypto');
-const {cmd}=require('../../lib/store');
+const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {authenticate,requireUser,rateLimit}=require('../../lib/user_auth');
 const {getSession,requireAdmin}=require('../../lib/auth');
 const {flushDue}=require('../../lib/editorial');
@@ -7,10 +7,19 @@ const {getRepresentativeBadge,getRepresentativeBadges,recordActivity}=require('.
 const POSTS='jjdd:community:posts:v1';
 const COMMENT_COUNTS='jjdd:community:comment-counts:v1';
 const LIKE_COUNTS='jjdd:community:like-counts:v1';
+const IMAGE_PREFIX='jjdd:community:image:v1:';
+const HIDDEN_SEEDS='jjdd:community:hidden-seeds:v1';
+const MAX_IMAGE_BYTES=1200*1024;
 function likeKey(id){return `jjdd:community:likes:${String(id)}`}
 function escText(v,max){return String(v||'').replace(/\u0000/g,'').trim().slice(0,max);}
 function safeCategory(v){const x=escText(v,20);return ['자유토론','정책','지역정치','질문'].includes(x)?x:'자유토론';}
 function parseHash(v){if(!v)return{};if(!Array.isArray(v)&&typeof v==='object')return v;const out={};for(let i=0;i<(v||[]).length;i+=2)out[String(v[i])]=v[i+1];return out;}
+function looksLikeImage(buf,mime){
+  if(mime==='image/jpeg')return buf.length>3&&buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff;
+  if(mime==='image/png')return buf.length>8&&buf.subarray(0,8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
+  if(mime==='image/webp')return buf.length>12&&buf.subarray(0,4).toString('ascii')==='RIFF'&&buf.subarray(8,12).toString('ascii')==='WEBP';return false;
+}
+function parseImageData(v){if(!v)return null;const m=String(v).match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/i);if(!m)throw new Error('지원하지 않는 이미지 형식입니다.');const mime=m[1].toLowerCase(),buf=Buffer.from(m[2],'base64');if(!buf.length||buf.length>MAX_IMAGE_BYTES)throw new Error('최적화된 대표 이미지는 1.2MB 이하만 저장할 수 있습니다.');if(!looksLikeImage(buf,mime))throw new Error('이미지 파일 내용이 올바르지 않습니다.');return {mime,data:buf.toString('base64'),bytes:buf.length};}
 
 const DEMO_POSTS=[
 {id:'demo_comm_1',category:'정책',title:'청년정책, 지원금보다 “정책 결정에 참여할 기회”가 더 중요하지 않을까요?',content:'대통령실이 8월 14일 청년정책 전문가 간담회를 열고 청년정책의 전환 방향을 논의했습니다. 개인적으로는 지원 액수만 늘리는 방식보다 청년이 실제 정책 설계와 평가 과정에 들어가는 구조가 훨씬 중요해 보입니다. 여러분은 어떤 변화가 가장 먼저 체감돼야 한다고 보시나요?',author:'청년정책읽기',authorId:null,role:'PLUS',createdAt:'2026-08-18T00:12:00.000Z',commentCount:3,likeCount:61,imageUrl:'/assets/portal/youth-policy.webp',demo:true},
@@ -31,8 +40,8 @@ demo_comm_6:[{id:'dc61',author:'실수요자',authorId:null,role:'FREE',content:
 async function getPostById(id){const found=await findPostRow(id);if(found)return found.post;return DEMO_POSTS.find(p=>String(p.id)===String(id))||null;}
 async function publicPost(p,count,likes,me,repOverride,likedOverride){
   let liked=likedOverride;if(liked===undefined)liked=me?.id?Boolean(Number(await cmd(['SISMEMBER',likeKey(p.id),String(me.id)]).catch(()=>0))):false;
-  const dynamicComments=Number(count||0),dynamicLikes=Number(likes||0),baseComments=p.demo?Number(p.commentCount||0):0,baseLikes=p.demo?Number(p.likeCount||0):0;
-  return {id:p.id,category:p.category,title:p.title,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,commentCount:p.demo?baseComments+dynamicComments:Number(count??p.commentCount??0),likeCount:p.demo?baseLikes+dynamicLikes:Number(likes??p.likeCount??0),liked:Boolean(liked),representativeBadge:repOverride!==undefined?repOverride:(p.authorId?await getRepresentativeBadge(p.authorId).catch(()=>null):null),imageUrl:p.imageUrl||null,imageType:p.imageType||null,demo:Boolean(p.demo)};
+  const seedLikeBase=Boolean(p.demo||p.seedOverride),dynamicComments=Number(count||0),dynamicLikes=Number(likes||0),baseComments=seedLikeBase?Number(p.commentCount||0):0,baseLikes=seedLikeBase?Number(p.likeCount||0):0;
+  return {id:p.id,category:p.category,title:p.title,content:p.content,author:p.author,authorId:p.authorId||null,role:p.role,createdAt:p.createdAt,commentCount:seedLikeBase?baseComments+dynamicComments:Number(count??p.commentCount??0),likeCount:seedLikeBase?baseLikes+dynamicLikes:Number(likes??p.likeCount??0),liked:Boolean(liked),representativeBadge:repOverride!==undefined?repOverride:(p.authorId?await getRepresentativeBadge(p.authorId).catch(()=>null):null),imageUrl:p.hasImage?`/api/community?action=image&id=${encodeURIComponent(p.id)}`:(p.imageUrl||null),imageType:p.imageType||null,demo:Boolean(p.demo)};
 }
 async function batchLiked(posts,me){
   const out={};if(!me?.id||!posts.length)return out;
@@ -46,25 +55,26 @@ async function findPostRow(id){
 }
 async function listPosts(limit=60,me=null){
   const lim=Math.max(1,Math.min(99,Number(limit||60)));
-  const [rows,countsRaw,likesRaw]=await Promise.all([cmd(['LRANGE',POSTS,'0',String(lim-1)]).catch(()=>[]),cmd(['HGETALL',COMMENT_COUNTS]).catch(()=>null),cmd(['HGETALL',LIKE_COUNTS]).catch(()=>null)]);
-  const counts=parseHash(countsRaw),likes=parseHash(likesRaw),stored=[];
-  for(const x of (Array.isArray(rows)?rows:[])){try{stored.push(JSON.parse(x));}catch(_){}}
-  const demoIds=new Set(DEMO_POSTS.map(p=>String(p.id)));
-  const posts=[...DEMO_POSTS,...stored.filter(p=>!demoIds.has(String(p.id)))].slice(0,lim);
+  const [rows,countsRaw,likesRaw,hiddenRaw]=await Promise.all([cmd(['LRANGE',POSTS,'0','299']).catch(()=>[]),cmd(['HGETALL',COMMENT_COUNTS]).catch(()=>null),cmd(['HGETALL',LIKE_COUNTS]).catch(()=>null),cmd(['SMEMBERS',HIDDEN_SEEDS]).catch(()=>[])]);
+  const counts=parseHash(countsRaw),likes=parseHash(likesRaw),stored=[];for(const x of (Array.isArray(rows)?rows:[])){try{stored.push(JSON.parse(x));}catch(_){}}
+  const hidden=new Set((Array.isArray(hiddenRaw)?hiddenRaw:[]).map(String)),storedById=new Map(stored.map(p=>[String(p.id),p])),demoIds=new Set(DEMO_POSTS.map(p=>String(p.id)));
+  const merged=DEMO_POSTS.filter(p=>!hidden.has(String(p.id))).map(p=>storedById.get(String(p.id))||p);
+  stored.forEach(p=>{if(!demoIds.has(String(p.id)))merged.push(p);});const posts=merged.slice(0,lim);
   const [reps,liked]=await Promise.all([getRepresentativeBadges(posts.map(p=>p.authorId)).catch(()=>({})),batchLiked(posts,me)]);
   return Promise.all(posts.map(p=>publicPost(p,counts[p.id],likes[p.id],me,p.authorId?reps[p.authorId]??null:null,liked[p.id]??false)));
 }
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');const b=req.body||{},action=String(b.action||req.query?.action||'list');
   try{
+    if(req.method==='GET'&&action==='image'){const id=escText(req.query?.id,100);if(!id)return res.status(400).end();const img=await getJSON(IMAGE_PREFIX+id);if(!img?.data||!/^image\/(jpeg|png|webp)$/.test(String(img.mime||'')))return res.status(404).end();const buf=Buffer.from(img.data,'base64');if(!looksLikeImage(buf,img.mime))return res.status(404).end();res.setHeader('Content-Type',img.mime);res.setHeader('Cache-Control','public, max-age=31536000, immutable');res.setHeader('X-Content-Type-Options','nosniff');return res.status(200).end(buf);}
     if(req.method==='GET'||action==='list'){
       await flushDue(12).catch(()=>{});const me=await authenticate(req).catch(()=>null),posts=await listPosts(Number(req.query?.limit||60),me);const admin=getSession(req);return res.json({ok:true,posts,canWrite:Boolean(me),isAdmin:Boolean(admin),me:me?{id:me.id,nickname:me.nickname,role:me.role}:(admin?{nickname:'정참시 관리자',role:'ADMIN'}:null)});
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     if(action==='admin-update'||action==='admin-delete'){
-      const admin=requireAdmin(req,res);if(!admin)return;const row=await findPostRow(b.id);if(!row)return res.status(404).json({ok:false,error:'게시글을 찾을 수 없습니다.'});
-      if(action==='admin-delete'){await cmd(['LREM',POSTS,'1',row.raw]);await cmd(['DEL',`jjdd:community:comments:${row.post.id}`]).catch(()=>{});await cmd(['DEL',likeKey(row.post.id)]).catch(()=>{});await cmd(['HDEL',COMMENT_COUNTS,String(row.post.id)]).catch(()=>{});await cmd(['HDEL',LIKE_COUNTS,String(row.post.id)]).catch(()=>{});return res.json({ok:true,deletedId:row.post.id});}
-      const title=escText(b.title,80),content=escText(b.content,4000);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 내용을 2자 이상 입력해주세요.'});const next={...row.post,category:safeCategory(b.category),title,content,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);return res.json({ok:true,post:await publicPost(next)});
+      const admin=requireAdmin(req,res);if(!admin)return;const id=escText(b.id,100),row=await findPostRow(id),seed=DEMO_POSTS.find(p=>String(p.id)===id),isSeed=Boolean(seed);if(!row&&!isSeed)return res.status(404).json({ok:false,error:'게시글을 찾을 수 없습니다.'});
+      if(action==='admin-delete'){if(row)await cmd(['LREM',POSTS,'1',row.raw]);if(isSeed)await cmd(['SADD',HIDDEN_SEEDS,id]).catch(()=>{});await cmd(['DEL',`jjdd:community:comments:${id}`]).catch(()=>{});await cmd(['DEL',likeKey(id)]).catch(()=>{});await cmd(['DEL',IMAGE_PREFIX+id]).catch(()=>{});await cmd(['HDEL',COMMENT_COUNTS,id]).catch(()=>{});await cmd(['HDEL',LIKE_COUNTS,id]).catch(()=>{});return res.json({ok:true,deletedId:id});}
+      const title=escText(b.title,80),content=escText(b.content,4000);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 내용을 2자 이상 입력해주세요.'});const base=row?.post||{...seed,demo:false,seedOverride:true,author:'정참시 운영팀',authorId:`admin:${admin.id||'admin'}`,role:'ADMIN'};let hasImage=Boolean(base.hasImage);let imageUrl=base.imageUrl||null;if(b.removeImage===true){await cmd(['DEL',IMAGE_PREFIX+id]).catch(()=>{});hasImage=false;imageUrl=null;}if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+id,image);hasImage=true;imageUrl=null;}const next={...base,id,category:safeCategory(b.category),title,content,hasImage,imageUrl,updatedAt:new Date().toISOString(),adminEditedAt:new Date().toISOString(),adminEditedBy:String(admin.id||'admin')};if(row)await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);else{await cmd(['LPUSH',POSTS,JSON.stringify(next)]);await cmd(['LTRIM',POSTS,'0','299']);}if(isSeed)await cmd(['SREM',HIDDEN_SEEDS,id]).catch(()=>{});return res.json({ok:true,post:await publicPost(next)});
     }
     if(action==='create'){
       const user=await requireUser(req,res);if(!user)return;const lim=await rateLimit(req,'community-create',12,3600);if(!lim.ok)return res.status(429).json({ok:false,error:'짧은 시간에 글 작성이 너무 많습니다. 잠시 후 다시 시도해주세요.'});const title=escText(b.title,80),content=escText(b.content,4000);if(title.length<2||content.length<2)return res.status(400).json({ok:false,error:'제목과 내용을 2자 이상 입력해주세요.'});const post={id:`p_${Date.now().toString(36)}_${crypto.randomBytes(3).toString('hex')}`,category:safeCategory(b.category),title,content,author:String(user.nickname||user.username||'회원').slice(0,20),authorId:user.id,role:user.role||'FREE',createdAt:new Date().toISOString(),commentCount:0,likeCount:0};await cmd(['LPUSH',POSTS,JSON.stringify(post)]);await cmd(['LTRIM',POSTS,'0','299']);await recordActivity(user.id,'communityPosts',1);return res.json({ok:true,post:await publicPost(post,0,0,user)});

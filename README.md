@@ -275,3 +275,12 @@
 - Favorites tabs now filter and open 정치인 / COLUMN / 비교분석 / 정뮤니티 / IT'S ME items.
 - Community/COLUMN demo images are embedded as deploy-safe image data with failure fallback.
 - Survey opens as a dedicated 정참시 설문 page instead of jumping to the old sidebar/ranking surface.
+
+
+## v2.8.7 Portal Unification
+- 통합검색 결과 렌더링 복구
+- HOME 샘플 COLUMN/정뮤니티 관리자 수정·이미지 교체·삭제 지원
+- NOW Rank 우측 레일을 HOME 포털 레일과 통일
+- 단독 페이지 상단을 공통 포털 헤더로 통일
+- 비교분석 외 대형 진초록 면적 완화
+- 기존 폰트 크기 값은 변경하지 않음
