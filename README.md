@@ -1,3 +1,12 @@
+## v2.8.8.5 · COLUMN ADMIN AUTH SYNC
+
+- 메인 사이트에서 `ADMIN`으로 표시되는 회원 계정과 관리자 콘솔 세션의 COLUMN 수정 권한을 일치시켰습니다.
+- 메인에서 관리자 수정 버튼은 보이는데 저장 시 `관리자 로그인이 필요합니다.`가 뜨던 인증 분리 문제를 수정했습니다.
+- 관리자 콘솔 세션은 기존 stateless 쿠키 확인이 아니라 서버 세션 검증(`validateAdminSession`)을 사용해 만료/폐기 상태를 정확히 반영합니다.
+- 새 대표사진을 선택하면 `기존 대표사진 제거`가 자동 해제되고, 반대로 제거를 체크하면 선택한 새 사진을 비워 두 동작이 충돌하지 않게 했습니다.
+- v2.8.8.4의 SHA-256 imageVersion / 이미지 API no-store / HOME·COLUMN 목록·상세 동시 갱신 구조는 그대로 유지합니다.
+- 관리자 화면 버전: v2.8.8.5 · COLUMN ADMIN AUTH SYNC
+
 ## v2.8.8.4 · COLUMN IMAGE HARD RESET
 
 - COLUMN 대표사진 교체 시 이미지 바이트 SHA-256 기반 revision을 생성해 imageVersion으로 사용
