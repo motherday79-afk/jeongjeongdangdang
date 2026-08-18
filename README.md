@@ -1,45 +1,13 @@
-## v2.8.8.9 · HOME CONTENT ORDER
+## v2.8.8.5 · COLUMN LEAD HEIGHT SYNC
 
-### v2.8.8.9 변경사항
-- HOME 메인 콘텐츠 순서를 `NOW RANK → IT’S ME → COLUMN → 지금 시민들의 선택(설문) → COMMUNITY`로 재배치했습니다.
-- 대통령 정보 영역과 우측 실시간 레일, 하단 비교분석/IT’S ME 액션 카드는 기존 구조를 유지합니다.
-- v2.8.8.8 통합검색 복구, 설문 카드 개별 상세 버튼 제거, COLUMN 이미지 실시간 동기화 구조는 그대로 유지합니다.
-- 관리자 화면 버전: v2.8.8.9 · HOME CONTENT ORDER
+- HOME의 TODAY POLITICS / COLUMN 대표 카드에서 왼쪽 이미지 영역과 오른쪽 글 영역의 세로 높이를 정확히 동일하게 고정
+- COLUMN 카드에만 적용하여 COMMUNITY 등 공통 카드 레이아웃에는 영향 없음
+- 모바일(780px 이하)은 기존 세로형 구조 유지
+- 기존 v2.8.8.4 COLUMN 이미지 저장/캐시 하드리셋 로직 유지
+- 기존 폰트 크기 변경 없음
+- 관리자 화면 버전: v2.8.8.5 · COLUMN LEAD HEIGHT SYNC
 
-## v2.8.8.8 · SEARCH RESTORE / SURVEY CLEANUP
-
-### v2.8.8.8 변경사항
-- 통합검색 페이지 전환 과정에서 누락됐던 `globalSearchSyncTabs` / `setGlobalSearchTab` / `globalSearchEmptyBlock` / `globalSearchSectionHTML` 4개 렌더링 헬퍼를 복구했습니다.
-- `김민석`, `정청래`, `더불어 민주당` 등 정치인·정당 검색이 0건/무반응으로 끝나지 않고 실제 결과 카드와 건수를 다시 렌더링합니다.
-- 통합검색의 전체 / 정치인 / 정당 / COLUMN / 정뮤니티 / 키워드 탭 전환도 함께 복구했습니다.
-- HOME `지금 시민들의 선택` 3개 설문 카드의 개별 `설문 상세` 버튼을 모두 제거했습니다. 상단 `전체 설문 보기 →` 동선만 유지합니다.
-- v2.8.8.7의 설문 전체 선택지 노출, 득표율·득표수·총 투표수, 설문/커뮤니티 위치 교체는 그대로 유지합니다.
-- 관리자 화면 버전: v2.8.8.8 · SEARCH RESTORE / SURVEY CLEANUP
-
-## v2.8.8.7 · SURVEY COMMUNITY SWAP
-
-### v2.8.8.7 변경사항
-- HOME에서 `지금 시민들의 선택` 설문 모듈과 `지금 시민들이 말하는 것` 정뮤니티 모듈의 위치를 서로 교체했습니다.
-- HOME 설문 카드가 각 설문의 모든 선택지를 자동으로 노출합니다. 선택지가 3개면 3개, 4개면 4개, 그 이상이어도 등록된 전체 선택지를 표시합니다.
-- 각 선택지에 득표율과 득표수, 카드 하단에 총 투표수를 표시합니다.
-- 선택지 텍스트는 더 이상 한 줄 말줄임으로 숨기지 않고 전체 문구를 표시합니다.
-- 설문 카드 높이는 선택지 개수에 맞춰 자동 확장되고, PC/태블릿/모바일 반응형을 유지합니다.
-
-
-- HOME의 `오늘 정치에서 봐야 할 3가지`를 정적 HTML/내장 이미지에서 제거하고 `/api/news` 서버 COLUMN 데이터로 직접 렌더링합니다.
-- 관리자에서 COLUMN 대표사진을 바꾸면 HOME / COLUMN 목록 / 상세가 동일한 `imageVersion` URL을 사용합니다.
-- HOME snapshot의 COLUMN 캐시를 `no-store`로 변경하고, 브라우저 30분 HOME 캐시에서 COLUMN 데이터를 제거했습니다.
-- 이전 빌드의 HOME COLUMN 캐시는 새 키로 하드 리셋합니다.
-- 관리자 화면 버전: v2.8.8.7 · SURVEY COMMUNITY SWAP
-
-## v2.8.8.5 · COLUMN ADMIN AUTH SYNC
-
-- 메인 사이트에서 `ADMIN`으로 표시되는 회원 계정과 관리자 콘솔 세션의 COLUMN 수정 권한을 일치시켰습니다.
-- 메인에서 관리자 수정 버튼은 보이는데 저장 시 `관리자 로그인이 필요합니다.`가 뜨던 인증 분리 문제를 수정했습니다.
-- 관리자 콘솔 세션은 기존 stateless 쿠키 확인이 아니라 서버 세션 검증(`validateAdminSession`)을 사용해 만료/폐기 상태를 정확히 반영합니다.
-- 새 대표사진을 선택하면 `기존 대표사진 제거`가 자동 해제되고, 반대로 제거를 체크하면 선택한 새 사진을 비워 두 동작이 충돌하지 않게 했습니다.
-- v2.8.8.4의 SHA-256 imageVersion / 이미지 API no-store / HOME·COLUMN 목록·상세 동시 갱신 구조는 그대로 유지합니다.
-- 관리자 화면 버전: v2.8.8.5 · COLUMN ADMIN AUTH SYNC
+---
 
 ## v2.8.8.4 · COLUMN IMAGE HARD RESET
 

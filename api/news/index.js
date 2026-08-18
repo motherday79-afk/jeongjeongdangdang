@@ -1,7 +1,7 @@
 const crypto=require('crypto');
 const {cmd,getJSON,setJSON}=require('../../lib/store');
 const {authenticate,capabilities,rateLimit}=require('../../lib/user_auth');
-const {validateAdminSession}=require('../../lib/auth');
+const {getSession,requireAdmin}=require('../../lib/auth');
 const {flushDue}=require('../../lib/editorial');
 const {getRepresentativeBadge,getRepresentativeBadges,recordActivity}=require('../../lib/badges');
 
@@ -35,19 +35,8 @@ async function findPostRow(id){
   return null;
 }
 
-async function contentAdminContext(req){
-  // Main-site ADMIN accounts and the dedicated admin-console session are both
-  // valid content-moderation authorities. This keeps the UI authority shown on
-  // HOME/COLUMN identical to the authority accepted by the save endpoint.
-  const adminSession=await validateAdminSession(req).catch(()=>null);
-  if(adminSession)return {id:String(adminSession.id||'admin'),source:'ADMIN_SESSION'};
-  const user=await authenticate(req).catch(()=>null);
-  if(user&&capabilities(user.role).admin)return {id:String(user.id||user.username||'admin'),source:'ADMIN_ACCOUNT'};
-  return null;
-}
 async function writerContext(req){
-  const adminSession=await validateAdminSession(req).catch(()=>null);
-  if(adminSession)return {id:`admin:${adminSession.id||'admin'}`,nickname:'정참시 운영팀',role:'ADMIN'};
+  const admin=getSession(req);if(admin)return {id:`admin:${admin.id||'admin'}`,nickname:'정참시 운영팀',role:'ADMIN'};
   const user=await authenticate(req).catch(()=>null);
   if(user&&capabilities(user.role).pro)return {id:user.id,nickname:String(user.nickname||user.username||'PRO 회원').slice(0,30),role:user.role};
   return null;
@@ -69,7 +58,7 @@ module.exports=async function(req,res){
     }
     if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
     if(action==='admin-update'||action==='admin-delete'){
-      const admin=await contentAdminContext(req);if(!admin)return res.status(401).json({ok:false,error:'관리자 로그인이 필요합니다.'});
+      const admin=requireAdmin(req,res);if(!admin)return;
       const b=req.body||{},id=cleanText(b.id,100),row=await findPostRow(id),isSeed=/^demo_news_\d+$/.test(id);
       if(!row&&!isSeed)return res.status(404).json({ok:false,error:'기사를 찾을 수 없습니다.'});
       if(action==='admin-delete'){
@@ -81,7 +70,7 @@ module.exports=async function(req,res){
       let imageRevision=null;if(b.imageData){const image=parseImageData(b.imageData);await setJSON(IMAGE_PREFIX+id,image);hasImage=true;imageUrl=null;imageChanged=true;imageRevision=image.revision;}
       const now=new Date().toISOString();
       const base=row?.post||{id,author:'정참시 운영팀',authorId:`admin:${admin.id||'admin'}`,role:'ADMIN',createdAt:now,schemaVersion:1,seedOverride:true,imageUrl};
-      const next={...base,category:safeCategory(b.category),title,excerpt,content,hasImage,imageUrl,imageVersion:imageChanged?(imageRevision||`rev_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`):(base.imageVersion||base.updatedAt||base.createdAt||now),updatedAt:now,adminEditedAt:now,adminEditedBy:`${admin.source}:${String(admin.id||'admin')}`};
+      const next={...base,category:safeCategory(b.category),title,excerpt,content,hasImage,imageUrl,imageVersion:imageChanged?(imageRevision||`rev_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`):(base.imageVersion||base.updatedAt||base.createdAt||now),updatedAt:now,adminEditedAt:now,adminEditedBy:String(admin.id||'admin')};
       if(row)await cmd(['LSET',POSTS,String(row.index),JSON.stringify(next)]);else{await cmd(['LPUSH',POSTS,JSON.stringify(next)]);await cmd(['LTRIM',POSTS,'0',String(MAX_POSTS-1)]);}
       if(isSeed)await cmd(['SREM',HIDDEN_SEEDS,id]).catch(()=>{});return res.json({ok:true,post:await publicPost(next)});
     }
