@@ -2102,6 +2102,26 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
 /* ===== /v2.8.7 ===== */
 </style>
 
+
+<style id="v288PollDiscussionStyles">
+/* ===== v2.8.8 · POLL DISCUSSION / HISTORY DISCIPLINE / FAST REACTION ===== */
+.survey-discussion{margin-top:18px;padding-top:16px;border-top:1px solid #e7eeeb}
+.survey-discussion-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.survey-discussion-head h3{margin:4px 0 0}.survey-discussion-head h3 span{color:#0e8a74}
+.survey-comment-write{margin-top:12px;padding:12px;border:1px solid #e3ebe8;border-radius:13px;background:#fbfdfc}
+.survey-comment-write textarea{width:100%;min-height:82px;resize:vertical;border:0;outline:0;background:transparent;color:inherit;font:inherit;line-height:1.6}
+.survey-comment-write>div{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.survey-comment-write button,.survey-admin-actions button{border:0;border-radius:10px;background:#17473c;color:#fff;padding:9px 12px;font-weight:900;cursor:pointer}
+.survey-comment-list{display:grid;gap:8px;margin-top:12px}.survey-comment-list .community-comment{position:relative}
+.survey-comment-admin-delete{position:absolute;right:10px;top:10px;border:0;background:#f4f6f5;color:#6e7b77;border-radius:8px;padding:5px 8px;cursor:pointer}
+.survey-admin-inline{margin-top:18px;padding:16px;border:1px solid #dfe9e6;border-radius:14px;background:#f8fbfa}
+.survey-admin-inline h3{margin:4px 0 12px}.survey-admin-inline label{display:grid;gap:6px;margin-top:10px;font-weight:850}
+.survey-admin-inline input,.survey-admin-inline textarea,.survey-admin-inline select{width:100%;border:1px solid #dce6e2;border-radius:10px;background:#fff;padding:9px 10px;color:inherit;font:inherit}.survey-admin-inline textarea{min-height:74px;resize:vertical}
+.survey-admin-actions{display:flex;align-items:center;gap:10px;margin-top:12px}.survey-admin-actions span{color:#71807b}
+.survey-archive-item.active{border-color:#55bca9;background:#eff9f6;box-shadow:inset 3px 0 0 #15957e}.survey-archive-item em{display:block;margin-top:4px;color:#0d806d;font-style:normal;font-weight:850}
+@media(max-width:780px){.survey-comment-write>div,.survey-admin-actions{align-items:stretch;flex-direction:column}.survey-comment-write button,.survey-admin-actions button{width:100%}}
+/* ===== /v2.8.8 ===== */
+</style>
 </head>
 <body>
 <div class="topbar portal-global-topbar">
@@ -2250,11 +2270,25 @@ body:not(.portal-home-mode) .app{padding-top:18px!important}
           <div class="kicker">CURRENT POLL</div>
           <h2 id="surveyPageTitle">정참시 설문</h2>
           <div id="surveyPageBody" class="survey-page-body"></div>
+          <section class="survey-discussion" id="surveyDiscussion">
+            <div class="survey-discussion-head"><div><div class="kicker">DISCUSSION</div><h3>댓글 토론 <span id="surveyCommentCount">0</span></h3></div></div>
+            <div class="survey-comment-write"><textarea id="surveyCommentInput" maxlength="1400" placeholder="이 설문에 대한 의견을 남겨보세요."></textarea><div><span id="surveyCommentStatus"></span><button type="button" id="surveyCommentBtn">댓글 등록</button></div></div>
+            <div id="surveyCommentList" class="survey-comment-list"></div>
+          </section>
+          <section class="survey-admin-inline" id="surveyAdminInline" hidden>
+            <div class="kicker">ADMIN EDIT</div><h3>설문 게시물 수정</h3>
+            <label>설문 제목<input id="surveyInlineTitle" maxlength="100"></label>
+            <label>설명<textarea id="surveyInlineSubtitle" maxlength="500"></textarea></label>
+            <label>선택지 · 한 줄에 하나씩<textarea id="surveyInlineOptions" maxlength="700"></textarea></label>
+            <label id="surveyInlineCountsWrap">결과값 · 쉼표로 구분<input id="surveyInlineCounts" maxlength="200"></label>
+            <label>상태<select id="surveyInlineStatus"><option value="ACTIVE">진행 중</option><option value="ENDED">종료</option></select></label>
+            <div class="survey-admin-actions"><button type="button" id="surveyInlineSaveBtn">수정 저장</button><span id="surveyInlineStatusText"></span></div>
+          </section>
         </div>
       </section>
       <aside class="survey-page-side">
         <section class="card"><div class="cardpad"><div class="kicker">ABOUT</div><h3>설문 운영 기준</h3><div class="sub">회원 기준 1계정 1회 참여를 원칙으로 하며, 결과는 정참시 내부 참여 데이터입니다. 외부 여론조사와 동일한 통계조사가 아닙니다.</div></div></section>
-        <section class="card"><div class="cardpad"><div class="kicker">ARCHIVE</div><h3>이전 설문</h3><div class="survey-archive-list" id="surveyArchiveList"></div></div></section>
+        <section class="card"><div class="cardpad"><div class="kicker">SURVEY LIST</div><h3>설문 목록</h3><div class="survey-archive-list" id="surveyArchiveList"></div></div></section>
       </aside>
     </div>
   </section>
@@ -11601,7 +11635,7 @@ function showPage(name,opts={}){
   }
   if(name==='home'||name==='ranking')renderPortalHome();
   if(name==='president'){const pp=document.getElementById('presidentOrgPanel');if(pp)pp.hidden=false;renderPresidentOrganizationPage();}
-  if(name==='survey')renderSurveyPage();
+  if(name==='survey'){renderSurveyPage();loadSurveyPosts(false).catch(()=>{});}
   if(name==='news')loadPublishedNews(false).catch(()=>{});
   if(name==='community')loadCommunity().catch(()=>{});
   if(name==='itsme')loadItsMe().catch(()=>{});
@@ -12159,6 +12193,14 @@ async function loadRankHistoryForDetail(x,days=JJDD_RANK_HISTORY_DEFAULT_DAYS,fo
 // All drawer/popup surfaces follow one rule: X, outside backdrop, ESC and mobile/browser Back close the top overlay first.
 const JJDD_OVERLAY_HISTORY_KEY='__jjddOverlay';
 let JJDD_ACTIVE_OVERLAY=null;
+let JJDD_AFTER_OVERLAY_CLOSE=null;
+function jjddPortalNavigateAfterOverlay(fn){
+  if(typeof fn!=='function')return;
+  if(JJDD_ACTIVE_OVERLAY&&jjddOverlayHistoryState()){JJDD_AFTER_OVERLAY_CLOSE=fn;try{history.back();return;}catch(_){}}
+  if(JJDD_ACTIVE_OVERLAY)jjddCloseActiveOverlayVisual();
+  fn();
+}
+window.jjddPortalNavigateAfterOverlay=jjddPortalNavigateAfterOverlay;
 function jjddOverlayHistoryState(){const st=history.state;return st&&typeof st==='object'?st[JJDD_OVERLAY_HISTORY_KEY]:null;}
 function jjddPushOverlayHistory(type,id){
   JJDD_ACTIVE_OVERLAY={type,id};
@@ -12240,11 +12282,19 @@ async function jjddRestoreUiFromHistory(st){
       if(!ok)showPage('itsme',{skipHistory:true,instant:true});
       return;
     }
+    if(page==='survey'&&route.view==='poll'){
+      showPage('survey',{skipHistory:true,instant:true});await loadSurveyPosts(false);selectSurveyPost(route.surveyId,{skipHistory:true,instant:true,scroll:false});return;
+    }
     showPage(page,{skipHistory:true,instant:true});
   }finally{JJDD_RESTORING_UI_HISTORY=false;}
 }
 window.addEventListener('popstate',(event)=>{
-  if(JJDD_ACTIVE_OVERLAY){jjddCloseActiveOverlayVisual();return;}
+  if(JJDD_ACTIVE_OVERLAY){
+    jjddCloseActiveOverlayVisual();
+    const after=JJDD_AFTER_OVERLAY_CLOSE;JJDD_AFTER_OVERLAY_CLOSE=null;
+    if(after)setTimeout(()=>after(),0);
+    return;
+  }
   const modalState=event.state&&typeof event.state==='object'?event.state[JJDD_MODAL_HISTORY_KEY]:null;
   if(modalState){jjddRestoreModalFromHistory(modalState);return;}
   jjddHardCloseModal();
@@ -12920,7 +12970,7 @@ function applyMetricOverridesToPeople(map,{rerender=false}={}){
 }
 
 async function loadSiteSettings(){
-  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(document.getElementById('page-president')?.classList.contains('active'))renderPresidentOrganizationPage();if(document.getElementById('page-survey')?.classList.contains('active'))renderSurveyPage();syncResponsiveContent();renderPortalHome();}
+  try{const r=await fetch('/api/site-settings',{credentials:'same-origin',cache:'no-store'}),j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'설정을 불러오지 못했습니다.');window.JJDD_SITE_SETTINGS=j;applyMetricOverridesToPeople(j.metricOverrides||{}, {rerender:true});renderNowIssueSetting(j.nowIssue);renderSurveySetting(j.survey,j.loggedIn);renderRapidRiseTop10();applyPresidentPageAvailability();if(document.getElementById('page-president')?.classList.contains('active'))renderPresidentOrganizationPage();if(document.getElementById('page-survey')?.classList.contains('active'))loadSurveyPosts(true).catch(()=>renderSurveyPage());syncResponsiveContent();renderPortalHome();}
   catch(e){console.warn('site settings unavailable',e);}
 }
 async function submitSurveyVote(){
@@ -12928,7 +12978,7 @@ async function submitSurveyVote(){
   if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='ranking';openAccountModal('login');if(st)st.textContent='로그인 후 설문에 참여해주세요.';return;}
   if(!selected){if(st)st.textContent='설문 문항을 하나 선택해주세요.';return;}
   const btn=document.getElementById('surveySubmitBtn');if(btn)btn.disabled=true;if(st)st.textContent='응답 저장 중...';
-  try{const j=await accountApi('/api/site-settings',{method:'POST',body:JSON.stringify({action:'vote-survey',optionIndex:Number(selected.value)})});if(window.JJDD_SITE_SETTINGS)window.JJDD_SITE_SETTINGS.survey=j.survey;renderSurveySetting(j.survey,true);renderSurveyPage();renderPortalHome();}
+  try{const j=await accountApi('/api/site-settings',{method:'POST',body:JSON.stringify({action:'vote-survey',optionIndex:Number(selected.value)})});if(window.JJDD_SITE_SETTINGS)window.JJDD_SITE_SETTINGS.survey=j.survey;renderSurveySetting(j.survey,true);loadSurveyPosts(true).catch(()=>renderSurveyPage());renderPortalHome();}
   catch(e){if(st)st.textContent=e.message;if(btn)btn.disabled=false;}
 }
 window.loadSiteSettings=loadSiteSettings;
@@ -13403,7 +13453,13 @@ async function loadItsMeComments(postId){
   const key=`itsme-comments-${postId}`,cached=jjddSpeedRead(key,600000),el=document.getElementById('itsmeCommentList');if(cached?.rows){jjddRenderCachedComments('itsme',postId,cached.rows);(async()=>{try{const j=await itsmeApi({action:'comments',mode:'list',postId},'POST'),rows=Array.isArray(j.comments)?j.comments:[];jjddSpeedWrite(key,{rows});if(String(itsmeSelectedPost?.id)===String(postId))jjddRenderCachedComments('itsme',postId,rows);}catch(_){}})();return true;}
   if(el)el.innerHTML='<div class="itsme-empty">시민 토론을 불러오는 중입니다…</div>';try{const j=await itsmeApi({action:'comments',mode:'list',postId},'POST'),rows=Array.isArray(j.comments)?j.comments:[];jjddSpeedWrite(key,{rows});jjddRenderCachedComments('itsme',postId,rows);return true;}catch(e){if(el)el.innerHTML=`<div class="itsme-empty">${accountEsc(e.message)}</div>`;return false;}
 }
-async function itsmeLikePost(id){if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='itsme';openAccountModal('login');return;}const p=itsmePosts.find(x=>String(x.id)===String(id));if(!p)return;try{await itsmeApi({action:p.liked?'unlike':'like',postId:id},'POST');await loadItsMe(true);await openItsMePost(id,{skipHistory:true,scroll:false});scheduleBadgeRefresh(true);}catch(e){alert(e.message)}}
+async function itsmeLikePost(id){
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='itsme';openAccountModal('login');return;}
+  const p=itsmePosts.find(x=>String(x.id)===String(id));if(!p)return;
+  const beforeLiked=Boolean(p.liked),beforeCount=Number(p.likeCount||0),nextLiked=!beforeLiked;p.liked=nextLiked;p.likeCount=Math.max(0,beforeCount+(nextLiked?1:-1));
+  const btn=document.getElementById('itsmeLikeBtn');if(btn){btn.classList.toggle('active',nextLiked);btn.textContent=`${nextLiked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount).toLocaleString('ko-KR')}`;}
+  try{const j=await itsmeApi({action:nextLiked?'like':'unlike',postId:id},'POST');p.liked=Boolean(j.liked??nextLiked);p.likeCount=Number(j.likeCount??p.likeCount);if(btn){btn.classList.toggle('active',p.liked);btn.textContent=`${p.liked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount).toLocaleString('ko-KR')}`;}jjddIdle(()=>{renderItsMePosts();renderPortalHome();scheduleBadgeRefresh(true);},500);}catch(e){p.liked=beforeLiked;p.likeCount=beforeCount;if(btn){btn.classList.toggle('active',beforeLiked);btn.textContent=`${beforeLiked?'♥ 공감중':'♡ 공감'} · ${beforeCount.toLocaleString('ko-KR')}`;}alert(e.message);}
+}
 async function itsmeToggleFollow(p){if(!window.JJDD_ACCOUNT_USER)return;try{await badgeApi(p.followingAuthor?'unfollow':'follow',{userId:p.authorId},'POST');await loadItsMe(true);await openItsMePost(p.id,{skipHistory:true,scroll:false});scheduleBadgeRefresh(true);}catch(e){alert(e.message)}}
 function backItsMeList(){const st=jjddUiHistoryState();if(st?.page==='itsme'&&st?.view==='post'){try{history.back();return}catch(_){}}jjddSetItsMeListSurface();jjddWriteUiHistory({page:'itsme',view:'list'},{replace:true});}
 document.getElementById('itsmeBackBtn')?.addEventListener('click',backItsMeList);document.getElementById('itsmeReloadBtn')?.addEventListener('click',()=>loadItsMe(true));
@@ -13479,7 +13535,9 @@ async function openCommunityPost(id,opts={}){
 async function communityLikePost(postId){
   if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='community';openAccountModal('login');return;}
   const p=communityPosts.find(x=>String(x.id)===String(postId));if(!p)return;
-  try{await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:p.liked?'unlike':'like',postId})}});await loadCommunity(true);await openCommunityPost(postId,{skipHistory:true,scroll:false});scheduleBadgeRefresh(true);}catch(e){alert(e.message);}
+  const beforeLiked=Boolean(p.liked),beforeCount=Number(p.likeCount||0),nextLiked=!beforeLiked;p.liked=nextLiked;p.likeCount=Math.max(0,beforeCount+(nextLiked?1:-1));
+  const btn=document.getElementById('communityLikeCurrent');if(btn){btn.classList.toggle('active',nextLiked);btn.textContent=`${nextLiked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount).toLocaleString('ko-KR')}`;}
+  try{const j=await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:nextLiked?'like':'unlike',postId})}});p.liked=Boolean(j.liked);p.likeCount=Number(j.likeCount??p.likeCount);if(btn){btn.classList.toggle('active',p.liked);btn.textContent=`${p.liked?'♥ 공감중':'♡ 공감'} · ${Number(p.likeCount).toLocaleString('ko-KR')}`;}jjddIdle(()=>{renderCommunityPosts();renderPortalHome();scheduleBadgeRefresh(true);},500);}catch(e){p.liked=beforeLiked;p.likeCount=beforeCount;if(btn){btn.classList.toggle('active',beforeLiked);btn.textContent=`${beforeLiked?'♥ 공감중':'♡ 공감'} · ${beforeCount.toLocaleString('ko-KR')}`;}alert(e.message);}
 }
 async function loadCommunityComments(postId){
   const key=`community-comments-${postId}`,cached=jjddSpeedRead(key,600000),el=document.getElementById('communityCommentList');if(cached?.rows){jjddRenderCachedComments('community',postId,cached.rows);(async()=>{try{const j=await communityApi({init:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'comments',mode:'list',postId})}}),rows=Array.isArray(j.comments)?j.comments:[];jjddSpeedWrite(key,{rows});if(String(communitySelectedPost?.id)===String(postId))jjddRenderCachedComments('community',postId,rows);}catch(_){}})();return true;}
@@ -13595,21 +13653,13 @@ function portalPollHTML(){
   return `<b>${portalEsc(title)}</b><p>${portalEsc(portalTrim(text,128))}</p><button type="button" onclick="showPage('survey')">설문 보기 →</button>`;
 }
 function portalSurveyFeatureHTML(){
-  const survey=window.JJDD_SITE_SETTINGS?.survey||{};
-  const title=survey.title||survey.question||document.getElementById('surveyTitle')?.textContent?.trim()||'지금 정치 현안에 대해 어떻게 생각하시나요?';
-  const options=Array.isArray(survey.options)&&survey.options.length?survey.options:['매우 긍정적','긍정적','보통','부정적'];
-  const stats=survey.stats||{};
-  const counts=Array.isArray(stats.counts)&&stats.counts.length===options.length?stats.counts:options.map((_,i)=>[58,28,9,5][i]||0);
-  const sum=Math.max(1,counts.reduce((a,b)=>a+Number(b||0),0));
-  const topIdx=counts.reduce((best,v,i,a)=>Number(v)>Number(a[best]||0)?i:best,0);
-  const currentPct=Math.round(Number(counts[topIdx]||0)/sum*100);
-  const currentTop=options[topIdx]||'응답 집계 중';
-  const cards=[
-    {kicker:'01 · CURRENT',title,answer:currentTop,pct:currentPct,more:true},
-    {kicker:'02 · NATIONAL ASSEMBLY',title:'국회가 민생 현안을 다루는 속도, 어떻게 평가하시나요?',answer:'더 빨라져야 한다',pct:64,more:false},
-    {kicker:'03 · LOCAL POLITICS',title:'지역정치에서 가장 먼저 바뀌어야 할 것은 무엇이라고 보시나요?',answer:'생활 밀착 정책',pct:47,more:false}
-  ];
-  return `<div class="portal-home-survey-grid">${cards.map((c,i)=>`<article class="portal-home-survey-card"><span class="kicker">${portalEsc(c.kicker)}</span><b>${portalEsc(portalTrim(c.title,88))}</b><div class="result"><span>${portalEsc(c.answer)}</span><strong>${Number(c.pct)}%</strong></div><div class="portal-home-survey-track"><i style="width:${Math.max(2,Math.min(100,Number(c.pct)||0))}%"></i></div>${c.more?'<button type="button" onclick="showPage(\'survey\')">설문 더보기 →</button>':'<span class="portal-home-survey-state">HOME 미리보기</span>'}</article>`).join('')}</div>`;
+  const rows=(Array.isArray(surveyPosts)&&surveyPosts.length?surveyPosts.slice(0,3):[]);
+  if(rows.length){
+    return `<div class="portal-home-survey-grid">${rows.map((p,i)=>{const opts=Array.isArray(p.options)?p.options:[],counts=Array.isArray(p.stats?.counts)?p.stats.counts:opts.map(()=>0),sum=Math.max(1,Number(p.stats?.total||counts.reduce((a,b)=>a+Number(b||0),0))),topIdx=counts.length?counts.reduce((best,v,idx,a)=>Number(v)>Number(a[best]||0)?idx:best,0):0,pct=Math.round(Number(counts[topIdx]||0)/sum*100),answer=opts[topIdx]||'응답 집계 중';return `<article class="portal-home-survey-card"><span class="kicker">0${i+1} · ${p.status==='ENDED'?'RESULT':'CURRENT'}</span><b>${portalEsc(portalTrim(p.title,88))}</b><div class="result"><span>${portalEsc(answer)}</span><strong>${pct}%</strong></div><div class="portal-home-survey-track"><i style="width:${Math.max(2,Math.min(100,pct||0))}%"></i></div>${i===0?`<button type="button" onclick="showPage('survey');setTimeout(()=>selectSurveyPost('${String(p.id).replace(/'/g,"\\'")}'),60)">설문 더보기 →</button>`:'<span class="portal-home-survey-state">HOME 미리보기</span>'}</article>`;}).join('')}</div>`;
+  }
+  const survey=window.JJDD_SITE_SETTINGS?.survey||{},title=survey.title||survey.question||'지금 정치 현안에 대해 어떻게 생각하시나요?',options=Array.isArray(survey.options)&&survey.options.length?survey.options:['매우 긍정적','긍정적','보통','부정적'],stats=survey.stats||{},counts=Array.isArray(stats.counts)&&stats.counts.length===options.length?stats.counts:options.map((_,i)=>[58,28,9,5][i]||0),sum=Math.max(1,counts.reduce((a,b)=>a+Number(b||0),0)),topIdx=counts.reduce((best,v,i,a)=>Number(v)>Number(a[best]||0)?i:best,0),currentPct=Math.round(Number(counts[topIdx]||0)/sum*100),currentTop=options[topIdx]||'응답 집계 중';
+  const cards=[{kicker:'01 · CURRENT',title,answer:currentTop,pct:currentPct,more:true},{kicker:'02 · NATIONAL ASSEMBLY',title:'국회가 민생 현안을 다루는 속도, 어떻게 평가하시나요?',answer:'더 빨라져야 한다',pct:64,more:false},{kicker:'03 · LOCAL POLITICS',title:'지역정치에서 가장 먼저 바뀌어야 할 것은 무엇이라고 보시나요?',answer:'생활 밀착 정책',pct:47,more:false}];
+  return `<div class="portal-home-survey-grid">${cards.map(c=>`<article class="portal-home-survey-card"><span class="kicker">${portalEsc(c.kicker)}</span><b>${portalEsc(portalTrim(c.title,88))}</b><div class="result"><span>${portalEsc(c.answer)}</span><strong>${Number(c.pct)}%</strong></div><div class="portal-home-survey-track"><i style="width:${Math.max(2,Math.min(100,Number(c.pct)||0))}%"></i></div>${c.more?'<button type="button" onclick="showPage(\'survey\')">설문 더보기 →</button>':'<span class="portal-home-survey-state">HOME 미리보기</span>'}</article>`).join('')}</div>`;
 }
 const JJDD_HOME_ITSME_DEMO=[
   {id:null,roleTag:'국회의원',title:'청년 전세대출 심사를 실제 주거비 부담 중심으로 바꿔주세요',content:'소득 숫자만으로는 보이지 않는 월세·보증금·통근비 부담까지 정책 설계에 반영됐으면 합니다.',author:'생활정책제안',likeCount:184,commentCount:31,score:614},
@@ -13695,53 +13745,89 @@ function renderPortalFavorites(filter='all'){
 window.renderPortalFavorites=renderPortalFavorites;
 function runPortalFavorite(item){
   if(!item)return;
-  closePortalDrawer(true);
-  if(item.type==='politician'){
-    const watched=people.find(p=>p.name===item.title||String(item.action||'').includes(`openDetail(${Number(p.id)})`));
-    if(watched&&Number.isFinite(Number(watched.id))){openDetail(Number(watched.id));return;}
-    openPresident();return;
-  }
-  if(item.type==='column'){openArticle(0);return;}
-  if(item.type==='compare'){showPage('compare');return;}
-  if(item.type==='community'){showPage('community');setTimeout(()=>openCommunityPost('demo_comm_1'),80);return;}
-  if(item.type==='itsme'){showPage('itsme');return;}
+  jjddPortalNavigateAfterOverlay(()=>{
+    if(item.type==='politician'){
+      const watched=people.find(p=>p.name===item.title||String(item.action||'').includes(`openDetail(${Number(p.id)})`));
+      if(watched&&Number.isFinite(Number(watched.id))){openDetail(Number(watched.id));return;}
+      openPresident();return;
+    }
+    if(item.type==='column'){openArticle(0);return;}
+    if(item.type==='compare'){showPage('compare');return;}
+    if(item.type==='community'){showPage('community');setTimeout(()=>openCommunityPost('demo_comm_1'),80);return;}
+    if(item.type==='itsme'){showPage('itsme');return;}
+  });
 }
 
-function renderSurveyPage(){
-  const host=document.getElementById('surveyPageBody'),title=document.getElementById('surveyPageTitle'),archive=document.getElementById('surveyArchiveList');if(!host)return;
-  const survey=window.JJDD_SITE_SETTINGS?.survey||{};
-  const q=survey.title||survey.question||document.getElementById('surveyTitle')?.textContent?.trim()||'정참시 설문';
-  const subtitle=survey.subtitle||'지금 정치 현안에 대한 시민의 생각을 확인해보세요.';
-  const options=Array.isArray(survey.options)?survey.options:[];
-  const stats=survey.stats||{};
-  const counts=Array.isArray(stats.counts)?stats.counts:options.map(()=>0);
-  const total=Number(stats.total||counts.reduce((a,b)=>a+Number(b||0),0));
-  const voted=Number.isInteger(stats.userVote);
-  if(title)title.textContent=q;
-  let html=`<div class="survey-subtitle">${portalEsc(subtitle)}</div>`;
-  if(voted){
-    html+=options.map((o,i)=>{const c=Number(counts[i]||0),pct=total?c/total*100:0;return `<div class="survey-result"><div class="survey-result-head"><span>${i===stats.userVote?'✓ ':''}${portalEsc(o)}</span><b>${pct.toFixed(1)}%</b></div><div class="survey-result-bar"><span style="width:${pct}%"></span></div></div>`;}).join('');
-    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · 참여 완료</div>`;
+let surveyPosts=[],surveySelectedId='',surveyIsAdmin=false,surveyLoadPromise=null,surveyComments=[];
+async function surveyPostApi(url='/api/surveys',init){
+  const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(init?.headers||{})},...(init||{})});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||`HTTP ${r.status}`);return j;
+}
+function surveyFallbackPosts(){
+  const survey=window.JJDD_SITE_SETTINGS?.survey||{},options=Array.isArray(survey.options)?survey.options:[],stats=survey.stats||{};
+  return [{...survey,current:true,status:survey.active===false?'ENDED':'ACTIVE',stats:{counts:Array.isArray(stats.counts)?stats.counts:options.map(()=>0),total:Number(stats.total||0),userVote:Number.isInteger(stats.userVote)?stats.userVote:null},commentCount:0}];
+}
+function selectedSurveyPost(){const rows=surveyPosts.length?surveyPosts:surveyFallbackPosts();return rows.find(x=>String(x.id)===String(surveySelectedId))||rows[0]||null;}
+async function loadSurveyPosts(force=false){
+  if(surveyLoadPromise)return surveyLoadPromise;
+  if(!force&&surveyPosts.length){renderSurveyPage();return true;}
+  surveyLoadPromise=(async()=>{try{const j=await surveyPostApi('/api/surveys');surveyPosts=Array.isArray(j.posts)?j.posts:[];surveyIsAdmin=Boolean(j.isAdmin);if(!surveySelectedId&&surveyPosts[0])surveySelectedId=String(surveyPosts[0].id);renderSurveyPage();renderPortalHome();return true;}catch(e){if(!surveyPosts.length)surveyPosts=surveyFallbackPosts();renderSurveyPage();return false;}finally{surveyLoadPromise=null;}})();return surveyLoadPromise;
+}
+function surveyPercent(count,total){return total?Number(count||0)/total*100:0;}
+function surveyResultHTML(post){
+  const options=Array.isArray(post?.options)?post.options:[],stats=post?.stats||{},counts=Array.isArray(stats.counts)?stats.counts:options.map(()=>0),total=Number(stats.total||counts.reduce((a,b)=>a+Number(b||0),0)),voted=Number.isInteger(stats.userVote),canVote=post?.current&&post?.status!=='ENDED'&&post?.active!==false;
+  let html=`<div class="survey-subtitle">${portalEsc(post?.subtitle||'')}</div>`;
+  if(voted||!canVote){
+    html+=options.map((o,i)=>{const pct=surveyPercent(counts[i],total);return `<div class="survey-result"><div class="survey-result-head"><span>${i===stats.userVote?'✓ ':''}${portalEsc(o)}</span><b>${pct.toFixed(1)}%</b></div><div class="survey-result-bar"><span style="width:${pct}%"></span></div></div>`;}).join('');
+    html+=`<div class="survey-total">응답 ${total.toLocaleString('ko-KR')}명 · ${canVote?'참여 완료':'종료된 설문'}</div>`;
   }else{
     html+=`<div class="survey-options">${options.map((o,i)=>`<label class="survey-option"><input type="radio" name="jjddSurveyPageOption" value="${i}"><span>${portalEsc(o)}</span></label>`).join('')}</div><button class="survey-submit" id="surveyPageSubmitBtn" type="button">설문 참여</button><div class="survey-status" id="surveyPageStatus">${window.JJDD_ACCOUNT_USER?'1계정당 1회 참여할 수 있습니다.':'로그인 후 설문에 참여할 수 있습니다.'}</div>`;
   }
-  host.innerHTML=html;
-  document.getElementById('surveyPageSubmitBtn')?.addEventListener('click',submitSurveyPageVote);
-  if(archive)archive.innerHTML=[
-    ['민생경제 정책에서 가장 먼저 체감돼야 할 분야는?','종료 · 결과 보기'],
-    ['지역정치에서 가장 중요하게 보는 기준은?','종료 · 결과 보기'],
-    ['정치인 비교에서 가장 먼저 확인하는 정보는?','종료 · 결과 보기']
-  ].map(x=>`<button type="button" class="survey-archive-item"><b>${x[0]}</b><span>${x[1]}</span></button>`).join('');
+  return html;
 }
+function renderSurveyAdminInline(post){
+  const box=document.getElementById('surveyAdminInline');if(!box)return;box.hidden=!surveyIsAdmin;if(!surveyIsAdmin||!post)return;
+  document.getElementById('surveyInlineTitle').value=post.title||'';document.getElementById('surveyInlineSubtitle').value=post.subtitle||'';document.getElementById('surveyInlineOptions').value=(post.options||[]).join('\n');document.getElementById('surveyInlineStatus').value=post.status==='ENDED'?'ENDED':'ACTIVE';
+  const counts=document.getElementById('surveyInlineCounts'),wrap=document.getElementById('surveyInlineCountsWrap');if(counts)counts.value=(post.stats?.counts||post.counts||[]).join(', ');if(wrap)wrap.style.display=post.current?'none':'';
+  const st=document.getElementById('surveyInlineStatusText');if(st)st.textContent='';
+}
+function renderSurveyPage(){
+  const host=document.getElementById('surveyPageBody'),title=document.getElementById('surveyPageTitle'),archive=document.getElementById('surveyArchiveList');if(!host)return;
+  const rows=surveyPosts.length?surveyPosts:surveyFallbackPosts(),post=selectedSurveyPost();if(!post)return;
+  surveySelectedId=String(post.id||'');if(title)title.textContent=post.title||'정참시 설문';host.innerHTML=surveyResultHTML(post);document.getElementById('surveyPageSubmitBtn')?.addEventListener('click',submitSurveyPageVote);
+  if(archive)archive.innerHTML=rows.map(p=>`<button type="button" class="survey-archive-item ${String(p.id)===String(post.id)?'active':''}" data-survey-open="${portalEsc(p.id)}"><b>${portalEsc(p.title||'정참시 설문')}</b><span>${p.status==='ENDED'?'종료 · 결과/토론 보기':'진행 중 · 참여/토론'}</span><em>댓글 ${Number(p.commentCount||0).toLocaleString('ko-KR')}</em></button>`).join('');
+  archive?.querySelectorAll('[data-survey-open]').forEach(btn=>btn.addEventListener('click',()=>selectSurveyPost(btn.dataset.surveyOpen)));
+  renderSurveyAdminInline(post);loadSurveyComments(post.id).catch(()=>{});renderSurveyLoginState();
+}
+function selectSurveyPost(id,opts={}){
+  const row=(surveyPosts.length?surveyPosts:surveyFallbackPosts()).find(x=>String(x.id)===String(id));if(!row)return false;surveySelectedId=String(row.id);renderSurveyPage();
+  if(!opts.skipHistory&&!JJDD_RESTORING_UI_HISTORY){jjddEnsureUiHistory();jjddWriteUiHistory({page:'survey',view:'poll',surveyId:surveySelectedId});}
+  if(opts.scroll!==false)document.getElementById('surveyPageTitle')?.scrollIntoView({behavior:opts.instant?'auto':'smooth',block:'start'});return true;
+}
+function renderSurveyLoginState(){const btn=document.getElementById('surveyCommentBtn'),st=document.getElementById('surveyCommentStatus');if(btn)btn.textContent=window.JJDD_ACCOUNT_USER?'댓글 등록':'로그인 후 댓글';if(st&&!st.textContent)st.textContent=window.JJDD_ACCOUNT_USER?'설문 결과와 함께 의견을 토론해보세요.':'로그인 후 댓글 토론에 참여할 수 있습니다.';}
+async function loadSurveyComments(id){
+  const list=document.getElementById('surveyCommentList'),cnt=document.getElementById('surveyCommentCount');if(!list)return;
+  try{const j=await surveyPostApi(`/api/surveys?action=comments&id=${encodeURIComponent(id)}`);if(String(selectedSurveyPost()?.id)!==String(id))return;surveyComments=Array.isArray(j.comments)?j.comments:[];if(cnt)cnt.textContent=String(surveyComments.length);list.innerHTML=surveyComments.length?surveyComments.map(c=>`<div class="community-comment" data-survey-comment="${portalEsc(c.id)}"><b>${portalEsc(c.author)} · ${portalEsc(c.role||'FREE')}</b><span>${communityDate(c.createdAt)}</span><p>${portalEsc(c.content)}</p>${surveyIsAdmin?`<button type="button" class="survey-comment-admin-delete" data-survey-comment-delete="${portalEsc(c.id)}">삭제</button>`:''}</div>`).join(''):'<div class="community-comment-empty">첫 댓글 토론을 시작해보세요.</div>';list.querySelectorAll('[data-survey-comment-delete]').forEach(b=>b.addEventListener('click',()=>deleteSurveyComment(id,b.dataset.surveyCommentDelete)));}catch(e){list.innerHTML='<div class="community-comment-empty">댓글을 불러오지 못했습니다.</div>';}
+}
+async function submitSurveyComment(){
+  const post=selectedSurveyPost(),input=document.getElementById('surveyCommentInput'),st=document.getElementById('surveyCommentStatus');if(!post||!input)return;
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='survey';openAccountModal('login');return;}const content=input.value.trim();if(!content){if(st)st.textContent='댓글 내용을 입력해주세요.';return;}
+  const optimistic={id:`local_${Date.now()}`,author:window.JJDD_ACCOUNT_USER.nickname||window.JJDD_ACCOUNT_USER.username||'회원',role:window.JJDD_ACCOUNT_USER.role||'FREE',content,createdAt:new Date().toISOString()};surveyComments=[optimistic,...surveyComments];input.value='';const list=document.getElementById('surveyCommentList'),cnt=document.getElementById('surveyCommentCount');if(cnt)cnt.textContent=String(surveyComments.length);if(list)list.insertAdjacentHTML('afterbegin',`<div class="community-comment" id="${optimistic.id}"><b>${portalEsc(optimistic.author)} · ${portalEsc(optimistic.role)}</b><span>방금</span><p>${portalEsc(content)}</p></div>`);if(st)st.textContent='댓글을 저장하고 있습니다…';
+  try{const j=await surveyPostApi('/api/surveys',{method:'POST',body:JSON.stringify({action:'comment',surveyId:post.id,content})});if(st)st.textContent='댓글이 등록되었습니다.';const row=surveyPosts.find(x=>String(x.id)===String(post.id));if(row)row.commentCount=Number(j.count||row.commentCount||0);await loadSurveyComments(post.id);}catch(e){surveyComments=surveyComments.filter(x=>x.id!==optimistic.id);document.getElementById(optimistic.id)?.remove();if(cnt)cnt.textContent=String(surveyComments.length);if(st)st.textContent=e.message;}
+}
+async function deleteSurveyComment(surveyId,commentId){if(!confirm('이 댓글을 삭제할까요?'))return;try{await surveyPostApi('/api/surveys',{method:'POST',body:JSON.stringify({action:'admin-delete-comment',surveyId,commentId})});await loadSurveyComments(surveyId);}catch(e){alert(e.message);}}
 async function submitSurveyPageVote(){
-  const selected=document.querySelector('input[name="jjddSurveyPageOption"]:checked'),st=document.getElementById('surveyPageStatus'),btn=document.getElementById('surveyPageSubmitBtn');
-  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='survey';openAccountModal('login');if(st)st.textContent='로그인 후 설문에 참여해주세요.';return;}
-  if(!selected){if(st)st.textContent='설문 문항을 하나 선택해주세요.';return;}
-  if(btn)btn.disabled=true;if(st)st.textContent='응답 저장 중...';
-  try{const j=await accountApi('/api/site-settings',{method:'POST',body:JSON.stringify({action:'vote-survey',optionIndex:Number(selected.value)})});if(window.JJDD_SITE_SETTINGS)window.JJDD_SITE_SETTINGS.survey=j.survey;renderSurveySetting(j.survey,true);renderSurveyPage();renderPortalHome();}
-  catch(e){if(st)st.textContent=e.message;if(btn)btn.disabled=false;}
+  const post=selectedSurveyPost(),selected=document.querySelector('input[name="jjddSurveyPageOption"]:checked'),st=document.getElementById('surveyPageStatus'),btn=document.getElementById('surveyPageSubmitBtn');if(!post)return;
+  if(!window.JJDD_ACCOUNT_USER){window.JJDD_ACCOUNT_RETURN_PAGE='survey';openAccountModal('login');if(st)st.textContent='로그인 후 설문에 참여해주세요.';return;}if(!selected){if(st)st.textContent='설문 문항을 하나 선택해주세요.';return;}if(btn)btn.disabled=true;if(st)st.textContent='응답 저장 중...';
+  try{const j=await surveyPostApi('/api/surveys',{method:'POST',body:JSON.stringify({action:'vote',surveyId:post.id,optionIndex:Number(selected.value)})});post.stats=j.stats||post.stats;renderSurveyPage();renderSurveySetting({...post,stats:post.stats},true);renderPortalHome();}catch(e){if(st)st.textContent=e.message;if(btn)btn.disabled=false;}
 }
-window.renderSurveyPage=renderSurveyPage;
+async function saveSurveyInlineAdmin(){
+  const post=selectedSurveyPost(),st=document.getElementById('surveyInlineStatusText'),btn=document.getElementById('surveyInlineSaveBtn');if(!post||!surveyIsAdmin)return;
+  const title=document.getElementById('surveyInlineTitle').value.trim(),subtitle=document.getElementById('surveyInlineSubtitle').value.trim(),options=document.getElementById('surveyInlineOptions').value.split(/\n+/).map(x=>x.trim()).filter(Boolean),status=document.getElementById('surveyInlineStatus').value,counts=document.getElementById('surveyInlineCounts').value.split(',').map(x=>Number(x.trim())).filter(x=>Number.isFinite(x));if(btn)btn.disabled=true;if(st)st.textContent='저장 중…';
+  try{const j=await surveyPostApi('/api/surveys',{method:'POST',body:JSON.stringify({action:'admin-update',id:post.id,title,subtitle,options,status,counts})});const idx=surveyPosts.findIndex(x=>String(x.id)===String(post.id));if(idx>=0)surveyPosts[idx]=j.post;if(j.post.current&&window.JJDD_SITE_SETTINGS)window.JJDD_SITE_SETTINGS.survey={...j.post,stats:j.post.stats};surveySelectedId=String(j.post.id);if(st)st.textContent='수정 저장 완료';renderSurveyPage();renderSurveySetting(j.post,Boolean(window.JJDD_ACCOUNT_USER));renderPortalHome();}catch(e){if(st)st.textContent=e.message;}finally{if(btn)btn.disabled=false;}
+}
+window.renderSurveyPage=renderSurveyPage;window.loadSurveyPosts=loadSurveyPosts;window.selectSurveyPost=selectSurveyPost;
+document.getElementById('surveyCommentBtn')?.addEventListener('click',submitSurveyComment);document.getElementById('surveyInlineSaveBtn')?.addEventListener('click',saveSurveyInlineAdmin);
 
 // Drawer bindings are delegated from document because the drawer HTML is parsed after this script.
 // This fixes X/outside-click not firing on the three HOME drawers.
@@ -13762,7 +13848,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){
   else if(document.getElementById('portalDrawerBackdrop')?.classList.contains('open'))closePortalDrawer(false);
   else if(JJDD_ACTIVE_OVERLAY)jjddCloseActiveOverlayVisual();
 }});
-document.addEventListener('DOMContentLoaded',()=>{renderPortalFavorites('all');renderSurveyPage();});
+document.addEventListener('DOMContentLoaded',()=>{renderPortalFavorites('all');renderSurveyPage();loadSurveyPosts(false).catch(()=>{});});
 // ===== /v2.8.4 =====
 
 // ===== /v2.8.0 =====
@@ -13878,8 +13964,8 @@ async function loadReferralDashboard(){
   <aside class="portal-drawer left" id="portalServiceDrawer" hidden>
     <div class="portal-drawer-head"><div><h2>정참시 전체서비스</h2><small>정치의 모든 기능을 한곳에서</small></div><button class="portal-drawer-close" type="button" data-portal-close>×</button></div>
     <div class="portal-service-groups">
-      <section class="portal-service-group"><h3>지금 정치</h3><div class="portal-service-links"><button onclick="closePortalDrawer(true);showPage('home')"><b>HOME</b><small>오늘 정치 한눈에</small></button><button onclick="closePortalDrawer(true);showPage('ranking')"><b>NOW Rank</b><small>실시간 정치 순위</small></button><button onclick="closePortalDrawer(true);showPage('president')"><b>대통령 · 정부</b><small>국정과 조직</small></button><button onclick="closePortalDrawer(true);showPage('compare')"><b>비교분석</b><small>정치인 맞대결</small></button></div></section>
-      <section class="portal-service-group"><h3>읽고 참여하기</h3><div class="portal-service-links"><button onclick="closePortalDrawer(true);showPage('community')"><b>정뮤니티</b><small>시민 정치광장</small></button><button onclick="closePortalDrawer(true);showPage('news')"><b>COLUMN</b><small>정치 인사이트</small></button><button onclick="closePortalDrawer(true);showPage('survey')"><b>정참시 설문</b><small>시민 의견 · 결과</small></button><button onclick="closePortalDrawer(true);showPage('itsme')"><b>IT'S ME</b><small>정책제안 · 나의 정치</small></button><button onclick="closePortalDrawer(true);showPage('my')"><b>MY</b><small>활동과 배지</small></button></div></section>
+      <section class="portal-service-group"><h3>지금 정치</h3><div class="portal-service-links"><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('home'))"><b>HOME</b><small>오늘 정치 한눈에</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('ranking'))"><b>NOW Rank</b><small>실시간 정치 순위</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('president'))"><b>대통령 · 정부</b><small>국정과 조직</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('compare'))"><b>비교분석</b><small>정치인 맞대결</small></button></div></section>
+      <section class="portal-service-group"><h3>읽고 참여하기</h3><div class="portal-service-links"><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('community'))"><b>정뮤니티</b><small>시민 정치광장</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('news'))"><b>COLUMN</b><small>정치 인사이트</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('survey'))"><b>정참시 설문</b><small>시민 의견 · 결과</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('itsme'))"><b>IT'S ME</b><small>정책제안 · 나의 정치</small></button><button onclick="jjddPortalNavigateAfterOverlay(()=>showPage('my'))"><b>MY</b><small>활동과 배지</small></button></div></section>
     </div>
   </aside>
   <aside class="portal-drawer right" id="portalAlertDrawer" hidden>
