@@ -1,3 +1,13 @@
+## v2.8.8.8 · SEARCH RESTORE / SURVEY CLEANUP
+
+### v2.8.8.8 변경사항
+- 통합검색 페이지 전환 과정에서 누락됐던 `globalSearchSyncTabs` / `setGlobalSearchTab` / `globalSearchEmptyBlock` / `globalSearchSectionHTML` 4개 렌더링 헬퍼를 복구했습니다.
+- `김민석`, `정청래`, `더불어 민주당` 등 정치인·정당 검색이 0건/무반응으로 끝나지 않고 실제 결과 카드와 건수를 다시 렌더링합니다.
+- 통합검색의 전체 / 정치인 / 정당 / COLUMN / 정뮤니티 / 키워드 탭 전환도 함께 복구했습니다.
+- HOME `지금 시민들의 선택` 3개 설문 카드의 개별 `설문 상세` 버튼을 모두 제거했습니다. 상단 `전체 설문 보기 →` 동선만 유지합니다.
+- v2.8.8.7의 설문 전체 선택지 노출, 득표율·득표수·총 투표수, 설문/커뮤니티 위치 교체는 그대로 유지합니다.
+- 관리자 화면 버전: v2.8.8.8 · SEARCH RESTORE / SURVEY CLEANUP
+
 ## v2.8.8.7 · SURVEY COMMUNITY SWAP
 
 ### v2.8.8.7 변경사항

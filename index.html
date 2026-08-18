@@ -13381,6 +13381,27 @@ function closeGlobalSearch(skipHistory=false){
   const modal=document.getElementById('globalSearchModal');if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
   document.body.style.overflow='';
 }
+// ===== v2.8.8.8 · GLOBAL SEARCH HELPER RESTORE =====
+// v2.8.8.3의 팝업→페이지 전환 과정에서 누락된 검색 렌더링 헬퍼를 복구한다.
+function globalSearchSyncTabs(){
+  document.querySelectorAll('[data-global-search-tab]').forEach(btn=>{
+    const on=btn.dataset.globalSearchTab===GLOBAL_SEARCH_ACTIVE_TAB;
+    btn.classList.toggle('active',on);
+    btn.setAttribute('aria-selected',String(on));
+  });
+}
+function setGlobalSearchTab(tab){
+  GLOBAL_SEARCH_ACTIVE_TAB=['all','people','party','column','community','keyword'].includes(tab)?tab:'all';
+  globalSearchSyncTabs();
+  renderGlobalSearchResults(GLOBAL_SEARCH_LAST_QUERY,GLOBAL_SEARCH_LAST_CONTEXT);
+}
+function globalSearchEmptyBlock(text){
+  return `<div class="global-search-empty-section">${globalSearchEsc(text)}</div>`;
+}
+function globalSearchSectionHTML(label,count,body,emptyText='관련 결과가 아직 없습니다.'){
+  return `<section class="global-search-section"><div class="global-search-section-head"><b>${globalSearchEsc(label)}</b><span>${Number(count||0).toLocaleString('ko-KR')}건</span></div><div class="global-search-section-body">${body||globalSearchEmptyBlock(emptyText)}</div></section>`;
+}
+// ===== /v2.8.8.8 =====
 function runPortalSearchPage(){
   const input=document.getElementById('portalSearchPageInput'),q=String(input?.value||'').trim();GLOBAL_SEARCH_ACTIVE_TAB='all';GLOBAL_SEARCH_LAST_QUERY=q;GLOBAL_SEARCH_LAST_CONTEXT={};globalSearchSyncTabs();renderGlobalSearchResults(q,{});globalSearchWarmContent(q,{});
   if(!JJDD_RESTORING_UI_HISTORY)jjddWriteUiHistory({page:'search',view:'results',query:q,tab:'all'},{replace:true});
@@ -13841,9 +13862,7 @@ function portalSurveyFeatureHTML(){
       const count=counts[idx]||0,pct=pctOf(count,total);
       return `<div class="portal-home-survey-choice"><div class="choice-head"><span>${portalEsc(opt)}</span><strong>${pct}% <small>${count.toLocaleString('ko-KR')}표</small></strong></div><div class="portal-home-survey-track"><i style="width:${Math.max(0,Math.min(100,pct))}%"></i></div></div>`;
     }).join(''):'<div class="portal-home-survey-empty">선택지를 준비하고 있습니다.</div>';
-    const id=String(p.id||'').replace(/'/g,"\\'");
-    const open=p.id?`showPage('survey');setTimeout(()=>selectSurveyPost('${id}'),60)`:`showPage('survey')`;
-    return `<article class="portal-home-survey-card"><span class="kicker">${String(i+1).padStart(2,'0')} · ${status}</span><b>${portalEsc(portalTrim(p.title||'정참시 설문',110))}</b>${p.subtitle?`<p class="portal-home-survey-desc">${portalEsc(portalTrim(p.subtitle,150))}</p>`:''}<div class="portal-home-survey-choices">${choices}</div><div class="portal-home-survey-total">총 ${total.toLocaleString('ko-KR')}표</div><button type="button" onclick="${open}">설문 상세 →</button></article>`;
+    return `<article class="portal-home-survey-card"><span class="kicker">${String(i+1).padStart(2,'0')} · ${status}</span><b>${portalEsc(portalTrim(p.title||'정참시 설문',110))}</b>${p.subtitle?`<p class="portal-home-survey-desc">${portalEsc(portalTrim(p.subtitle,150))}</p>`:''}<div class="portal-home-survey-choices">${choices}</div><div class="portal-home-survey-total">총 ${total.toLocaleString('ko-KR')}표</div></article>`;
   };
   const rows=(Array.isArray(surveyPosts)&&surveyPosts.length?surveyPosts.slice(0,3):[]);
   if(rows.length)return `<div class="portal-home-survey-grid">${rows.map(surveyCardHTML).join('')}</div>`;
